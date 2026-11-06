@@ -39,11 +39,19 @@
             height: 100%;
             font-family: 'Plus Jakarta Sans', sans-serif;
             color: var(--white);
-            background-color: var(--navy-dark);
+            background-color: #07111e;
             overflow-x: hidden;
         }
 
-        /* ===== FULLSCREEN UIS BACKGROUND ===== */
+        /* ===== GAMBAR KAMPUS UIS JELAS (TANPA GRADIENT GELAP / BLUR) ===== */
+        .bg-uis {
+            position: fixed;
+            inset: 0;
+            background: url('{{ asset('volt/assets/img/uis.png') }}') center center / cover no-repeat;
+            z-index: 1;
+        }
+
+        /* Layout penengah */
         .login-page {
             position: relative;
             min-height: 100vh;
@@ -52,47 +60,27 @@
             align-items: center;
             justify-content: center;
             padding: 30px 20px;
-        }
-
-        /* Background Kampus UIS */
-        .bg-uis {
-            position: fixed;
-            inset: 0;
-            background: url('{{ asset('volt/assets/img/uis.png') }}') center center / cover no-repeat;
-            z-index: 1;
-            transform: scale(1.02);
-        }
-
-        /* Overlay gelap & elegan agar kampus tetap tampak jelas namun kartu login kontras */
-        .bg-overlay {
-            position: fixed;
-            inset: 0;
-            background: radial-gradient(circle at center, rgba(7, 17, 30, 0.72) 0%, rgba(5, 11, 20, 0.88) 100%);
-            backdrop-filter: blur(2px);
-            z-index: 2;
+            z-index: 5;
         }
 
         /* ===== CENTERED LOGIN CARD ===== */
         .login-card {
             position: relative;
-            z-index: 10;
             width: 100%;
             max-width: 440px;
-            background: rgba(9, 20, 36, 0.82);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-top: 1px solid rgba(198, 146, 20, 0.45);
+            background: rgba(10, 22, 38, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-top: 2px solid var(--uis-gold);
             border-radius: 20px;
             padding: 40px 36px 32px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.05);
-            animation: cardFadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.08);
+            animation: cardFadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         @keyframes cardFadeUp {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(18px);
             }
             to {
                 opacity: 1;
@@ -113,8 +101,8 @@
             width: 82px;
             height: 82px;
             border-radius: 18px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1.5px solid rgba(198, 146, 20, 0.4);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1.5px solid rgba(198, 146, 20, 0.45);
             padding: 6px;
             margin-bottom: 14px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
@@ -160,8 +148,8 @@
             letter-spacing: 1px;
             padding: 3px 12px;
             border-radius: 50px;
-            background: rgba(5, 104, 57, 0.35);
-            border: 1px solid rgba(13, 139, 79, 0.5);
+            background: rgba(5, 104, 57, 0.45);
+            border: 1px solid rgba(13, 139, 79, 0.6);
             color: #6ee7b7;
         }
 
@@ -170,8 +158,8 @@
             display: none;
             align-items: center;
             gap: 10px;
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid rgba(239, 68, 68, 0.4);
+            background: rgba(239, 68, 68, 0.18);
+            border: 1px solid rgba(239, 68, 68, 0.5);
             border-radius: 10px;
             padding: 10px 14px;
             margin-bottom: 20px;
@@ -215,8 +203,8 @@
 
         .form-control-custom {
             width: 100%;
-            background: rgba(7, 15, 27, 0.65);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(7, 15, 27, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 10px;
             padding: 12px 42px 12px 42px;
             font-size: 13.5px;
@@ -227,13 +215,13 @@
         }
 
         .form-control-custom::placeholder {
-            color: rgba(148, 163, 184, 0.5);
+            color: rgba(148, 163, 184, 0.55);
         }
 
         .form-control-custom:focus {
-            background: rgba(7, 15, 27, 0.9);
+            background: rgba(7, 15, 27, 0.95);
             border-color: var(--uis-gold);
-            box-shadow: 0 0 0 3px rgba(198, 146, 20, 0.2);
+            box-shadow: 0 0 0 3px rgba(198, 146, 20, 0.25);
         }
 
         .form-control-custom:focus + .input-icon,
@@ -259,34 +247,22 @@
             color: var(--uis-gold-light);
         }
 
-        /* Row bantuan & remember */
+        /* Row Bantuan Login */
         .form-meta {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: flex-end;
             margin-bottom: 22px;
             font-size: 12px;
-        }
-
-        .remember-wrap {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            cursor: pointer;
-            color: var(--slate-300);
-            user-select: none;
-        }
-        .remember-wrap input[type="checkbox"] {
-            accent-color: var(--uis-gold);
-            cursor: pointer;
-            width: 15px;
-            height: 15px;
         }
 
         .link-help {
             color: var(--uis-gold-light);
             text-decoration: none;
             font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
             transition: all 0.2s;
         }
         .link-help:hover {
@@ -328,7 +304,7 @@
         /* Divider & Footer */
         .card-divider {
             height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
             margin: 24px 0 16px;
         }
 
@@ -347,8 +323,8 @@
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(5, 11, 20, 0.8);
-            backdrop-filter: blur(6px);
+            background: rgba(5, 11, 20, 0.85);
+            backdrop-filter: blur(4px);
             z-index: 9999;
             align-items: center;
             justify-content: center;
@@ -391,9 +367,8 @@
     <span>Memverifikasi Akun...</span>
 </div>
 
-<!-- Background Kampus UIS -->
+<!-- Background Kampus UIS Jelas (Tanpa Gradient Gelap / Blur) -->
 <div class="bg-uis"></div>
-<div class="bg-overlay"></div>
 
 <!-- Centered Layout -->
 <div class="login-page">
@@ -479,19 +454,15 @@
                 </div>
             </div>
 
-            <!-- Options -->
+            <!-- Bantuan Login -->
             <div class="form-meta">
-                <label class="remember-wrap">
-                    <input type="checkbox" name="remember" id="chkRemember">
-                    <span>Ingat saya</span>
-                </label>
                 <a 
                     href="https://wa.me/6282283736481?text=Halo%20Admin%20Humas%20UIS,%20saya%20butuh%20bantuan%20login%20ke%20SIHUMAS." 
                     target="_blank" 
                     rel="noopener" 
                     class="link-help"
                 >
-                    <i class="fa-brands fa-whatsapp me-1"></i> Bantuan Login
+                    <i class="fa-brands fa-whatsapp"></i> Bantuan Login
                 </a>
             </div>
 
