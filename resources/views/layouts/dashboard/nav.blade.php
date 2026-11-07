@@ -58,11 +58,11 @@
 
                     {{-- Notification Bell --}}
                     <li class="nav-item dropdown me-2">
-                        <a class="nav-link text-gray-700 notification-bell-btn dropdown-toggle p-0"
+                        <a class="nav-link text-gray-700 notification-bell-btn dropdown-toggle"
                             data-unread-notifications="{{ $hasNotifications ? 'true' : 'false' }}" href="#"
                             role="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false"
                             title="Notifikasi Pengajuan">
-                            <svg class="icon icon-xs text-gray-700" fill="currentColor" viewBox="0 0 20 20"
+                            <svg style="width: 19px; height: 19px; display: block; margin: 0 auto;" fill="currentColor" viewBox="0 0 20 20"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path
                                     d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z">
@@ -267,40 +267,44 @@
 
     /* Tombol lonceng notifikasi melingkar */
     .notification-bell-btn {
-        position: relative;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
-        background-color: #F3F4F6;
-        transition: background-color 0.2s ease;
+        position: relative !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 40px !important;
+        height: 40px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border-radius: 50% !important;
+        background-color: #F3F4F6 !important;
+        transition: background-color 0.2s ease !important;
+        text-align: center !important;
+        line-height: 1 !important;
     }
 
     .notification-bell-btn:hover {
-        background-color: #E5E7EB;
+        background-color: #E5E7EB !important;
     }
 
-    /* Badge notifikasi presisi pada pojok tombol */
+    /* Badge notifikasi presisi di atas pojok tombol */
     .bell-badge-fixed {
-        position: absolute;
-        top: -3px;
-        right: -3px;
-        min-width: 18px;
-        height: 18px;
-        padding: 0 4px;
-        background-color: #f0ad4e;
-        color: #ffffff;
-        border-radius: 999px;
-        font-size: 10px;
-        font-weight: 700;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        line-height: 1;
-        z-index: 10;
-        box-shadow: 0 0 0 2px #ffffff;
+        position: absolute !important;
+        top: -6px !important;
+        right: -4px !important;
+        min-width: 20px !important;
+        height: 20px !important;
+        padding: 0 5px !important;
+        background-color: #f0ad4e !important;
+        color: #ffffff !important;
+        border-radius: 999px !important;
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        line-height: 1 !important;
+        z-index: 15 !important;
+        box-shadow: 0 0 0 2px #ffffff !important;
     }
 
     /* Pill profil pengguna */
