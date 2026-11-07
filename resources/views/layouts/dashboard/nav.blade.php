@@ -2,17 +2,25 @@
     <div class="card border-0 shadow-sm w-100 bg-white" style="border-radius: 0.75rem;">
         <div class="card-body py-2 px-3 px-md-4">
             <div class="d-flex justify-content-between align-items-center w-100" id="navbarSupportedContent">
-                <!-- Brand / Left Side Info -->
+                <!-- Search Halaman -->
                 <div class="d-flex align-items-center">
-                    <div class="d-flex align-items-center">
-                        <img src="{{ asset('volt/assets/img/logouis.png') }}" alt="Logo UIS" class="me-2" style="width: 28px; height: 28px; object-fit: contain;">
-                        <div class="d-flex flex-column">
-                            <span class="fw-bold text-gray-800" style="font-size: 0.95rem; line-height: 1.2;">
-                                SIHUMAS
-                            </span>
-                            <span class="text-muted d-none d-md-inline" style="font-size: 0.72rem; line-height: 1.1;">
-                                Universitas Ibnu Sina
-                            </span>
+                    <div class="position-relative page-search-wrapper" style="width: 260px; max-width: 100%;">
+                        <form id="pageSearchForm" onsubmit="return false;" class="m-0">
+                            <div class="input-group input-group-merge page-search-group">
+                                <span class="input-group-text bg-gray-100 border-0 text-gray-500 ps-3 pe-2" id="search-addon" style="border-radius: 2rem 0 0 2rem;">
+                                    <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    </svg>
+                                </span>
+                                <input type="text" class="form-control bg-gray-100 border-0 ps-1 text-gray-800 shadow-none" id="pageSearchInput"
+                                    placeholder="Cari halaman..." aria-label="Cari halaman" aria-describedby="search-addon"
+                                    autocomplete="off" style="border-radius: 0 2rem 2rem 0; font-size: 0.85rem; height: 38px;">
+                            </div>
+                        </form>
+
+                        <!-- Autocomplete dropdown -->
+                        <div id="pageSearchResults" class="dropdown-menu shadow-lg border-0 mt-1 py-1 w-100"
+                            style="display: none; position: absolute; top: 100%; left: 0; z-index: 1050; border-radius: 0.5rem; max-height: 320px; overflow-y: auto;">
                         </div>
                     </div>
                 </div>
@@ -320,4 +328,136 @@
         background: #F3F4F6;
         border-color: #D1D5DB;
     }
+
+    /* Page Search Bar styling */
+    .page-search-wrapper {
+        transition: width 0.2s ease;
+    }
+
+    .page-search-group .input-group-text,
+    .page-search-group .form-control {
+        transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .page-search-group:focus-within .input-group-text,
+    .page-search-group:focus-within .form-control {
+        background-color: #ffffff !important;
+        box-shadow: 0 0 0 1px #2563EB !important;
+    }
+
+    .page-search-item.active,
+    .page-search-item:hover {
+        background-color: #F3F4F6 !important;
+    }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('pageSearchInput');
+    const searchResults = document.getElementById('pageSearchResults');
+    if (!searchInput || !searchResults) return;
+
+    const pages = [
+        { title: 'Dashboard', url: '{{ route("dashboard") }}', icon: '📊', category: 'Utama' },
+        { title: 'Pengajuan Kegiatan', url: '{{ route("pengajuan.index") }}', icon: '📝', category: 'Kegiatan' },
+        @if(Auth::user()->is_admin)
+        { title: 'Kotak Masuk Pengajuan', url: '{{ route("kotak-masuk-pengajuan.index") }}', icon: '📥', category: 'Kegiatan' },
+        @endif
+        { title: 'Pelaporan Kegiatan', url: '{{ route("publikasi.index") }}', icon: '📑', category: 'Kegiatan' },
+        @if(Auth::user()->is_admin)
+        { title: 'Tahun Akademik', url: '{{ route("tahun-akademik.index") }}', icon: '📅', category: 'Master Data' },
+        { title: 'Unit Kegiatan', url: '{{ route("unit-kegiatan.index") }}', icon: '🏢', category: 'Master Data' },
+        { title: 'Rekap Kegiatan', url: '{{ route("laporan-publikasi.index") }}', icon: '📁', category: 'Laporan' },
+        { title: 'Pengguna', url: '{{ route("users.index") }}', icon: '👥', category: 'Pengaturan' },
+        { title: 'Pengaturan WhatsApp', url: '{{ route("settings.index") }}', icon: '💬', category: 'Pengaturan' },
+        { title: 'Backup Database & Storage', url: '{{ route("backup.index") }}', icon: '💾', category: 'Pengaturan' },
+        @endif
+        { title: 'Data Pegawai / Profil', url: '{{ route("pegawai.index", Auth::user()->id) }}', icon: '👤', category: 'Profil' }
+    ];
+
+    let activeIndex = -1;
+    let filteredPages = [];
+
+    function renderResults(query) {
+        query = query.trim().toLowerCase();
+        if (!query) {
+            searchResults.style.display = 'none';
+            searchResults.innerHTML = '';
+            activeIndex = -1;
+            filteredPages = [];
+            return;
+        }
+
+        filteredPages = pages.filter(p =>
+            p.title.toLowerCase().includes(query) ||
+            p.category.toLowerCase().includes(query)
+        );
+
+        if (filteredPages.length === 0) {
+            searchResults.innerHTML = '<div class="px-3 py-2 text-muted text-center" style="font-size: 0.8rem;">Halaman tidak ditemukan</div>';
+        } else {
+            searchResults.innerHTML = filteredPages.map((page, index) => `
+                <a href="${page.url}" class="dropdown-item d-flex align-items-center py-2 px-3 page-search-item ${index === 0 ? 'active' : ''}" data-index="${index}">
+                    <span class="me-2" style="font-size: 1rem;">${page.icon}</span>
+                    <div class="d-flex flex-column text-truncate">
+                        <span class="fw-semibold text-gray-800" style="font-size: 0.84rem;">${page.title}</span>
+                        <small class="text-muted" style="font-size: 0.72rem;">${page.category}</small>
+                    </div>
+                </a>
+            `).join('');
+            activeIndex = 0;
+        }
+
+        searchResults.style.display = 'block';
+    }
+
+    searchInput.addEventListener('input', function () {
+        renderResults(this.value);
+    });
+
+    searchInput.addEventListener('focus', function () {
+        if (this.value.trim().length > 0) {
+            renderResults(this.value);
+        }
+    });
+
+    searchInput.addEventListener('keydown', function (e) {
+        const items = searchResults.querySelectorAll('.page-search-item');
+        if (!items.length) return;
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            activeIndex = (activeIndex + 1) % items.length;
+            updateActiveItem(items);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            activeIndex = (activeIndex - 1 + items.length) % items.length;
+            updateActiveItem(items);
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (activeIndex >= 0 && filteredPages[activeIndex]) {
+                window.location.href = filteredPages[activeIndex].url;
+            }
+        } else if (e.key === 'Escape') {
+            searchResults.style.display = 'none';
+        }
+    });
+
+    function updateActiveItem(items) {
+        items.forEach((item, idx) => {
+            if (idx === activeIndex) {
+                item.classList.add('active');
+                item.scrollIntoView({ block: 'nearest' });
+            } else {
+                item.classList.remove('active');
+            }
+        });
+    }
+
+    document.addEventListener('click', function (e) {
+        if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+            searchResults.style.display = 'none';
+        }
+    });
+});
+</script>
