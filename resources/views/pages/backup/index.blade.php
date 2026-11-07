@@ -146,11 +146,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Footer Copyright -->
-        <div class="text-center mt-5 mb-3" style="font-size: 12.5px; color: #64748b;">
-            &copy; {{ date('Y') }} <strong>SIHUMAS</strong> Universitas Ibnu Sina. All Rights Reserved.
-        </div>
     </div>
 
     <!-- Modal 1: Restore Database -->
