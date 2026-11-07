@@ -33,3 +33,4 @@ class LaporanPublikasiTest extends TestCase
         $response->assertStatus(200);
     }
 }
+
