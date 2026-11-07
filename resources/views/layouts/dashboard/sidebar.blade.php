@@ -98,233 +98,6 @@
                   </a>
               </li>
 
-              @if (AUth::user()->is_admin)
-                  <li class="nav-item {{ request()->routeIs('kotak-masuk-pengajuan.index') ? 'active' : '' }}">
-                      <a href="{{ route('kotak-masuk-pengajuan.index') }}" class="nav-link" style="position: relative;">
-                          <span class="sidebar-icon">
-                              <svg height="20" viewBox="0 -15 512.00203 512" width="20"
-                                  xmlns="http://www.w3.org/2000/svg" id="fi_1161728">
-                                  <path
-                                      d="m405.003906 42.765625h-298.011718c-18.445313 0-33.398438 14.953125-33.398438 33.398437v163.71875h364.808594v-163.71875c0-18.445312-14.953125-33.398437-33.398438-33.398437zm0 0"
-                                      fill="#e4f5f7"></path>
-                                  <path
-                                      d="m420.410156 84.046875h-328.824218c-20.351563 0-36.851563 16.496094-36.851563 36.847656v180.652344h402.527344v-180.652344c0-20.351562-16.5-36.847656-36.851563-36.847656zm0 0"
-                                      fill="#bfdadd"></path>
-                                  <path
-                                      d="m479.28125 173.355469v225.765625h-446.566406v-225.765625c0-22.582031 18.300781-40.890625 40.878906-40.890625h364.808594c22.578125 0 40.878906 18.308594 40.878906 40.890625zm0 0"
-                                      fill="#e4f5f7"></path>
-                                  <path
-                                      d="m479.28125 228.722656v170.398438h-446.566406v-170.398438c2.695312-.691406 5.523437-1.066406 8.433594-1.066406h94.433593c13.261719 0 24.625 9.46875 27.019531 22.507812l3.890626 21.25c2.382812 13.039063 13.75 22.507813 27.011718 22.507813h124.988282c13.261718 0 24.625-9.46875 27.019531-22.507813l3.890625-21.25c2.394531-13.039062 13.757812-22.507812 27.019531-22.507812h94.433594c2.910156 0 5.726562.363281 8.425781 1.066406zm0 0"
-                                      fill="#bfdadd"></path>
-                                  <path
-                                      d="m349.402344 272.59375-3.890625 21.246094c-2.390625 13.042968-13.757813 22.515625-27.015625 22.515625h-124.992188c-13.257812 0-24.625-9.472657-27.015625-22.515625l-3.890625-21.246094c-2.390625-13.042969-13.757812-22.515625-27.015625-22.515625h-94.433593c-18.527344 0-33.542969 15.019531-33.542969 33.542969v143.570312c0 26.34375 21.351562 47.695313 47.695312 47.695313h401.402344c26.339844 0 47.695313-21.351563 47.695313-47.695313v-143.570312c0-18.523438-15.019532-33.539063-33.542969-33.539063h-94.433594c-13.261719-.003906-24.628906 9.46875-27.019531 22.511719zm0 0"
-                                      fill="#ffc217"></path>
-                                  <path
-                                      d="m45.621094 427.191406v-143.570312c0-18.523438 15.019531-33.539063 33.542968-33.539063h-38.015624c-18.527344 0-33.542969 15.015625-33.542969 33.539063v143.574218c0 26.339844 21.351562 47.691407 47.695312 47.691407h38.015625c-26.339844 0-47.695312-21.351563-47.695312-47.695313zm0 0"
-                                      fill="#e5a505"></path>
-                                  <path
-                                      d="m305.632812 160.441406v-152.835937h-99.269531v152.835937h-66.457031l116.089844 116.089844 116.09375-116.089844zm0 0"
-                                      fill="#6ce7f3"></path>
-                                  <path
-                                      d="m486.890625 245.730469v-72.375c0-16.5625-8.332031-31.730469-22.023437-40.628907v-11.828124c0-14.519532-7.136719-28.039063-18.867188-36.316407v-8.417969c0-22.605468-18.390625-41-41-41h-91.761719v-27.558593c0-4.199219-3.40625-7.605469-7.605469-7.605469h-99.269531c-4.203125 0-7.605469 3.40625-7.605469 7.605469v27.558593h-91.761718c-22.613282 0-41.011719 18.394532-41.011719 41v8.421876c-11.722656 8.273437-18.855469 21.792968-18.855469 36.3125v11.828124c-13.691406 8.898438-22.023437 24.066407-22.023437 40.628907v72.378906c-14.742188 6.261719-25.105469 20.886719-25.105469 37.886719v143.570312c0 30.492188 24.808594 55.300782 55.300781 55.300782h299.132813c4.199218 0 7.601562-3.40625 7.601562-7.605469s-3.402344-7.601563-7.601562-7.601563h-299.132813c-22.109375 0-40.09375-17.988281-40.09375-40.09375v-143.570312c0-14.300782 11.636719-25.9375 25.9375-25.9375h94.4375c9.589844 0 17.804688 6.847656 19.535157 16.28125l3.894531 21.246094c3.050781 16.65625 17.558593 28.746093 34.492187 28.746093h124.992188c16.9375 0 31.441406-12.089843 34.492187-28.746093l3.894531-21.246094c1.730469-9.433594 9.945313-16.28125 19.539063-16.28125h94.433594c14.300781 0 25.9375 11.636718 25.9375 25.9375v143.570312c0 22.105469-17.984375 40.09375-40.089844 40.09375h-71.851563c-4.199218 0-7.605468 3.402344-7.605468 7.601563s3.40625 7.605469 7.605468 7.605469h71.851563c30.492187 0 55.300781-24.808594 55.300781-55.300782v-143.570312c-.003906-17-10.371094-31.625-25.113281-37.890625zm-37.230469-119.527344c-3.679687-.875-7.464844-1.332031-11.261718-1.332031h-125.160157v-33.214844h107.171875c5.007813 0 9.941406 1.285156 14.269532 3.714844 9.242187 5.175781 14.980468 14.957031 14.980468 25.523437zm-44.660156-75.832031c14.222656 0 25.792969 11.570312 25.792969 25.792968v1.535157c-3.386719-.8125-6.871094-1.25-10.382813-1.25h-107.175781v-26.074219h91.765625zm-106.972656-35.164063v145.234375c0 4.199219 3.40625 7.601563 7.605468 7.601563h48.097657l-97.734375 97.734375-97.734375-97.734375h48.101562c4.199219 0 7.601563-3.402344 7.601563-7.601563v-145.234375zm-220.722656 80.164063c4.339843-2.429688 9.277343-3.714844 14.28125-3.714844h25.613281c4.199219 0 7.605469-3.402344 7.605469-7.601562 0-4.199219-3.40625-7.605469-7.605469-7.605469h-25.613281c-3.511719 0-7 .4375-10.394532 1.25v-1.535157c0-14.222656 11.578125-25.792968 25.804688-25.792968h91.761718v26.078125h-51.140624c-4.199219 0-7.601563 3.40625-7.601563 7.605469 0 4.199218 3.402344 7.601562 7.601563 7.601562h51.140624v33.214844h-125.167968c-3.796875 0-7.578125.457031-11.253906 1.332031v-5.304687c0-10.570313 5.738281-20.351563 14.96875-25.527344zm299.113281 147.105468c-16.933594 0-31.441407 12.089844-34.492188 28.746094l-3.894531 21.246094c-1.726562 9.433594-9.945312 16.28125-19.535156 16.28125h-124.992188c-9.589844 0-17.804687-6.847656-19.535156-16.285156l-3.890625-21.242188c-3.054687-16.65625-17.5625-28.746094-34.496094-28.746094h-94.4375c-.277343 0-.554687.015626-.832031.019532v-69.144532c0-12.457031 6.871094-23.773437 17.933594-29.53125 4.761718-2.484374 9.921875-3.742187 15.34375-3.742187h125.167968v12.757813h-58.851562c-3.078125 0-5.847656 1.851562-7.027344 4.691406-1.175781 2.84375-.523437 6.113281 1.648438 8.289062l116.09375 116.089844c1.425781 1.425781 3.359375 2.226562 5.375 2.226562s3.949218-.800781 5.378906-2.226562l116.089844-116.089844c2.175781-2.175781 2.824218-5.445312 1.648437-8.289062-1.175781-2.839844-3.949219-4.691406-7.027343-4.691406h-58.851563v-12.757813h125.164063c5.417968 0 10.582031 1.257813 15.355468 3.746094 11.058594 5.753906 17.929688 17.070312 17.929688 29.527343v69.144532c-.277344-.003906-.550782-.019532-.832032-.019532zm0 0">
-                                  </path>
-                              </svg>
-                          </span>
-
-                          <span class="sidebar-text text-capitalize">Kotak Masuk</span>
-
-                          <span class="sidebar-subtext text-capitalize"
-                              style="display:block; text-align:start; margin-left:35px;">
-                              Pengajuan kegiatan
-
-                              @if (($notifikasi_pengajuan_admin ?? 0) > 0)
-                                  <span
-                                      style="
-                        position:absolute;
-                        top: -45px;
-                        right: -20px;
-                        background:red;
-                        color:white;
-                        border-radius:999px;
-                        min-width:20px;
-                        height:20px;
-                        padding:0 6px;
-                        display:inline-flex;
-                        justify-content:center;
-                        align-items:center;
-                        font-size:12px;
-                        line-height:1;
-                    ">
-                                      {{ $notifikasi_pengajuan_admin }}
-                                  </span>
-                              @endif
-                          </span>
-                      </a>
-                  </li>
-              @endif
-
-              {{-- <li class="nav-item {{ request()->routeIs('pengajuan.index') ? 'active' : '' }}">
-                  <a href="{{ route('pengajuan.index') }}" class="nav-link">
-                      <span class="sidebar-icon">
-                          <svg id="fi_4698732" height="20" viewBox="0 0 512 512" width="20"
-                              xmlns="http://www.w3.org/2000/svg">
-                              <path d="m319.934 193.458 6.063-101.011-55.756-84.447 225.759 38.894z" fill="#fbe9d8">
-                              </path>
-                              <rect fill="#ffb632" height="208" rx="32" width="272" x="160" y="296">
-                              </rect>
-                              <path
-                                  d="m316.323 200.6a8 8 0 0 0 8.729-.991l176.066-146.566a8 8 0 0 0 -3.76-14.032l-225.758-38.895a8 8 0 0 0 -8.035 12.292l54.288 82.221-5.9 98.35a8 8 0 0 0 4.37 7.621zm-29.218-181.577 190.455 32.813-148.532 123.643 4.609-76.8 71.7-19.212a8 8 0 1 0 -4.14-15.455l-71.697 19.214z">
-                              </path>
-                              <path
-                                  d="m152 328v144a40.045 40.045 0 0 0 40 40h208a40.045 40.045 0 0 0 40-40v-144a40.045 40.045 0 0 0 -40-40h-208a40.045 40.045 0 0 0 -40 40zm248 168h-208a24.028 24.028 0 0 1 -24-24v-129.294l106.27 68.763a40.064 40.064 0 0 0 43.46 0l106.27-68.763v129.294a24.028 24.028 0 0 1 -24 24zm23.639-172.119-114.6 74.154a24.038 24.038 0 0 1 -26.077 0l-114.6-74.154a24.035 24.035 0 0 1 23.638-19.881h208a24.034 24.034 0 0 1 23.639 19.881z">
-                              </path>
-                              <path
-                                  d="m209.715 136.478a8 8 0 0 0 2.791-.5c7.043-2.623 14.278-5.2 21.5-7.648a8 8 0 1 0 -5.139-15.152c-7.375 2.5-14.76 5.128-21.95 7.806a8 8 0 0 0 2.794 15.5z">
-                              </path>
-                              <path
-                                  d="m43.276 374.663a8 8 0 0 0 .4 11.307 112.626 112.626 0 0 0 19.824 14.754 8 8 0 0 0 8.083-13.809 96.536 96.536 0 0 1 -17-12.653 8 8 0 0 0 -11.307.401z">
-                              </path>
-                              <path
-                                  d="m254.371 113.312a7.993 7.993 0 0 0 9.933 5.416c9.893-2.913 17.425-4.908 22-6.069a8 8 0 1 0 -3.934-15.508c-4.71 1.2-12.451 3.245-22.584 6.227a8 8 0 0 0 -5.415 9.934z">
-                              </path>
-                              <path
-                                  d="m11.177 277.87a109.447 109.447 0 0 0 -3.164 24.437 8 8 0 0 0 7.876 8.122h.126a8 8 0 0 0 8-7.877 93.418 93.418 0 0 1 2.7-20.859 8 8 0 0 0 -15.536-3.824z">
-                              </path>
-                              <path
-                                  d="m176.794 132.965c-7.273 3.09-14.446 6.291-21.319 9.514a8 8 0 1 0 6.794 14.486c6.695-3.141 13.687-6.261 20.78-9.274a8 8 0 1 0 -6.255-14.726z">
-                              </path>
-                              <path
-                                  d="m110.335 183.718a7.96 7.96 0 0 0 4.188-1.19c6.2-3.817 12.783-7.63 19.573-11.332a8 8 0 0 0 -7.659-14.048c-7.036 3.837-13.868 7.792-20.3 11.757a8 8 0 0 0 4.2 14.813z">
-                              </path>
-                              <path
-                                  d="m89.386 403.744a8 8 0 0 0 6.06 9.554 112.6 112.6 0 0 0 24.554 2.702 8 8 0 0 0 0-16 96.616 96.616 0 0 1 -21.06-2.315 8 8 0 0 0 -9.554 6.059z">
-                              </path>
-                              <path
-                                  d="m79.021 187.311c-6.53 4.914-12.7 9.972-18.335 15.034a8 8 0 0 0 10.691 11.9c5.294-4.755 11.1-9.517 17.264-14.153a8 8 0 0 0 -9.62-12.785z">
-                              </path>
-                              <path
-                                  d="m48.954 225.173a8 8 0 0 0 -11.247 1.221 155.234 155.234 0 0 0 -13.707 19.947 8 8 0 1 0 13.878 7.959 139.463 139.463 0 0 1 12.3-17.881 8 8 0 0 0 -1.224-11.246z">
-                              </path>
-                              <path
-                                  d="m28.05 331.686a8 8 0 1 0 -15.322 4.607 111.556 111.556 0 0 0 9.7 22.739 8 8 0 1 0 13.929-7.873 95.5 95.5 0 0 1 -8.307-19.473z">
-                              </path>
-                          </svg>
-                      </span>
-                      <span class="sidebar-text text-capitalize">
-                          Pengajuan Kegiatan
-                          <!-- Admin Notifications -->
-                          @if (session('notifikasi_pengajuan_pending') > 0)
-                              <span class="badge bg-warning text-white"
-                                  style="position: absolute; bottom: 15px; left: 160px;">
-                                  {{ session('notifikasi_pengajuan_pending') }}
-                              </span>
-                          @endif
-
-                          @if (session('notifikasi_pengajuan_diterima') > 0)
-                              <span class="badge bg-success text-white"
-                                  style="position: absolute; bottom: 15px; left: 160px;">
-                                  {{ session('notifikasi_pengajuan_diterima') }}
-                              </span>
-                          @endif
-
-                          @if (session('notifikasi_pengajuan_ditolak') > 0)
-                              <span class="badge bg-danger text-white"
-                                  style="position: absolute; bottom: 15px; left: 160px;">
-                                  {{ session('notifikasi_pengajuan_ditolak') }}
-                              </span>
-                          @endif
-
-                          <!-- Fakultas Notifications (FEB) -->
-                          @if (session('notifikasi_pengajuan_feb') > 0)
-                              <span class="badge bg-warning text-white"
-                                  style="position: absolute; bottom: 15px; left: 160px;">
-                                  {{ session('notifikasi_pengajuan_feb') }}
-                              </span>
-                          @endif
-
-                          @if (session('notifikasi_pengajuan_feb_diterima') > 0)
-                              <span class="badge bg-success text-white"
-                                  style="position: absolute; bottom: 15px; left: 160px;">
-                                  {{ session('notifikasi_pengajuan_feb_diterima') }}
-                              </span>
-                          @endif
-
-                          @if (session('notifikasi_pengajuan_feb_ditolak') > 0)
-                              <span class="badge bg-danger text-white"
-                                  style="position: absolute; bottom: 15px; left: 160px;">
-                                  {{ session('notifikasi_pengajuan_feb_ditolak') }}
-                              </span>
-                          @endif
-
-                          <!-- Fakultas Notifications (FST) -->
-                          @if (session('notifikasi_pengajuan_fst') > 0)
-                              <span class="badge bg-warning text-white"
-                                  style="position: absolute; bottom: 15px; left: 160px;">
-                                  {{ session('notifikasi_pengajuan_fst') }}
-                              </span>
-                          @endif
-
-                          @if (session('notifikasi_pengajuan_fst_diterima') > 0)
-                              <span class="badge bg-success text-white"
-                                  style="position: absolute; bottom: 15px; left: 160px;">
-                                  {{ session('notifikasi_pengajuan_fst_diterima') }}
-                              </span>
-                          @endif
-
-                          @if (session('notifikasi_pengajuan_fst_ditolak') > 0)
-                              <span class="badge bg-danger text-white"
-                                  style="position: absolute; bottom: 15px; left: 160px;">
-                                  {{ session('notifikasi_pengajuan_fst_ditolak') }}
-                              </span>
-                          @endif
-
-                           <!-- Fakultas Notifications (FIKES) -->
-                          @if (session('notifikasi_pengajuan_fikes') > 0)
-                              <span class="badge bg-warning text-white"
-                                  style="position: absolute; bottom: 15px; left: 160px;">
-                                  {{ session('notifikasi_pengajuan_fikes') }}
-                              </span>
-                          @endif
-
-                          @if (session('notifikasi_pengajuan_fikes_diterima') > 0)
-                              <span class="badge bg-success text-white"
-                                  style="position: absolute; bottom: 15px; left: 160px;">
-                                  {{ session('notifikasi_pengajuan_fikes_diterima') }}
-                              </span>
-                          @endif
-
-                          @if (session('notifikasi_pengajuan_fikes_ditolak') > 0)
-                              <span class="badge bg-danger text-white"
-                                  style="position: absolute; bottom: 15px; left: 160px;">
-                                  {{ session('notifikasi_pengajuan_fikes_ditolak') }}
-                              </span>
-                          @endif
-
-                          <!-- Fakultas Notifications (REKTORAT) -->
-                          @if (session('notifikasi_pengajuan_rektorat') > 0)
-                              <span class="badge bg-warning text-white"
-                                  style="position: absolute; bottom: 15px; left: 160px;">
-                                  {{ session('notifikasi_pengajuan_rektorat') }}
-                              </span>
-                          @endif
-
-                          @if (session('notifikasi_pengajuan_rektorat_diterima') > 0)
-                              <span class="badge bg-success text-white"
-                                  style="position: absolute; bottom: 15px; left: 160px;">
-                                  {{ session('notifikasi_pengajuan_rektorat_diterima') }}
-                              </span>
-                          @endif
-
-                          @if (session('notifikasi_pengajuan_rektorat_ditolak') > 0)
-                              <span class="badge bg-danger text-white"
-                                  style="position: absolute; bottom: 15px; left: 160px;">
-                                  {{ session('notifikasi_pengajuan_rektorat_ditolak') }}
-                              </span>
-                          @endif
-                      </span>
-                  </a>
-              </li> --}}
-
               @php
                   $notif = session('pengajuan_notif', []);
                   $user = auth()->user();
@@ -475,6 +248,220 @@
 
                   /* danger */
               </style>
+
+              @if (AUth::user()->is_admin)
+                  <li class="nav-item {{ request()->routeIs('kotak-masuk-pengajuan.index') ? 'active' : '' }}">
+                      <a href="{{ route('kotak-masuk-pengajuan.index') }}" class="nav-link" style="position: relative;">
+                          <span class="sidebar-icon">
+                              <svg height="20" viewBox="0 -15 512.00203 512" width="20"
+                                  xmlns="http://www.w3.org/2000/svg" id="fi_1161728">
+                                  <path
+                                      d="m405.003906 42.765625h-298.011718c-18.445313 0-33.398438 14.953125-33.398438 33.398437v163.71875h364.808594v-163.71875c0-18.445312-14.953125-33.398437-33.398438-33.398437zm0 0"
+                                      fill="#e4f5f7"></path>
+                                  <path
+                                      d="m420.410156 84.046875h-328.824218c-20.351563 0-36.851563 16.496094-36.851563 36.847656v180.652344h402.527344v-180.652344c0-20.351562-16.5-36.847656-36.851563-36.847656zm0 0"
+                                      fill="#bfdadd"></path>
+                                  <path
+                                      d="m479.28125 173.355469v225.765625h-446.566406v-225.765625c0-22.582031 18.300781-40.890625 40.878906-40.890625h364.808594c22.578125 0 40.878906 18.308594 40.878906 40.890625zm0 0"
+                                      fill="#e4f5f7"></path>
+                                  <path
+                                      d="m479.28125 228.722656v170.398438h-446.566406v-170.398438c2.695312-.691406 5.523437-1.066406 8.433594-1.066406h94.433593c13.261719 0 24.625 9.46875 27.019531 22.507812l3.890626 21.25c2.382812 13.039063 13.75 22.507813 27.011718 22.507813h124.988282c13.261718 0 24.625-9.46875 27.019531-22.507813l3.890625-21.25c2.394531-13.039062 13.757812-22.507812 27.019531-22.507812h94.433594c2.910156 0 5.726562.363281 8.425781 1.066406zm0 0"
+                                      fill="#bfdadd"></path>
+                                  <path
+                                      d="m349.402344 272.59375-3.890625 21.246094c-2.390625 13.042968-13.757813 22.515625-27.015625 22.515625h-124.992188c-13.257812 0-24.625-9.472657-27.015625-22.515625l-3.890625-21.246094c-2.390625-13.042969-13.757812-22.515625-27.015625-22.515625h-94.433593c-18.527344 0-33.542969 15.019531-33.542969 33.542969v143.570312c0 26.34375 21.351562 47.695313 47.695312 47.695313h401.402344c26.339844 0 47.695313-21.351563 47.695313-47.695313v-143.570312c0-18.523438-15.019532-33.539063-33.542969-33.539063h-94.433594c-13.261719-.003906-24.628906 9.46875-27.019531 22.511719zm0 0"
+                                      fill="#ffc217"></path>
+                                  <path
+                                      d="m45.621094 427.191406v-143.570312c0-18.523438 15.019531-33.539063 33.542968-33.539063h-38.015624c-18.527344 0-33.542969 15.015625-33.542969 33.539063v143.574218c0 26.339844 21.351562 47.691407 47.695312 47.691407h38.015625c-26.339844 0-47.695312-21.351563-47.695312-47.695313zm0 0"
+                                      fill="#e5a505"></path>
+                                  <path
+                                      d="m305.632812 160.441406v-152.835937h-99.269531v152.835937h-66.457031l116.089844 116.089844 116.09375-116.089844zm0 0"
+                                      fill="#6ce7f3"></path>
+                                  <path
+                                      d="m486.890625 245.730469v-72.375c0-16.5625-8.332031-31.730469-22.023437-40.628907v-11.828124c0-14.519532-7.136719-28.039063-18.867188-36.316407v-8.417969c0-22.605468-18.390625-41-41-41h-91.761719v-27.558593c0-4.199219-3.40625-7.605469-7.605469-7.605469h-99.269531c-4.203125 0-7.605469 3.40625-7.605469 7.605469v27.558593h-91.761718c-22.613282 0-41.011719 18.394532-41.011719 41v8.421876c-11.722656 8.273437-18.855469 21.792968-18.855469 36.3125v11.828124c-13.691406 8.898438-22.023437 24.066407-22.023437 40.628907v72.378906c-14.742188 6.261719-25.105469 20.886719-25.105469 37.886719v143.570312c0 30.492188 24.808594 55.300782 55.300781 55.300782h299.132813c4.199218 0 7.601562-3.40625 7.601562-7.605469s-3.402344-7.601563-7.601562-7.601563h-299.132813c-22.109375 0-40.09375-17.988281-40.09375-40.09375v-143.570312c0-14.300782 11.636719-25.9375 25.9375-25.9375h94.4375c9.589844 0 17.804688 6.847656 19.535157 16.28125l3.894531 21.246094c3.050781 16.65625 17.558593 28.746093 34.492187 28.746093h124.992188c16.9375 0 31.441406-12.089843 34.492187-28.746093l3.894531-21.246094c1.730469-9.433594 9.945313-16.28125 19.539063-16.28125h94.433594c14.300781 0 25.9375 11.636718 25.9375 25.9375v143.570312c0 22.105469-17.984375 40.09375-40.089844 40.09375h-71.851563c-4.199218 0-7.605468 3.402344-7.605468 7.601563s3.40625 7.605469 7.605468 7.605469h71.851563c30.492187 0 55.300781-24.808594 55.300781-55.300782v-143.570312c-.003906-17-10.371094-31.625-25.113281-37.890625zm-37.230469-119.527344c-3.679687-.875-7.464844-1.332031-11.261718-1.332031h-125.160157v-33.214844h107.171875c5.007813 0 9.941406 1.285156 14.269532 3.714844 9.242187 5.175781 14.980468 14.957031 14.980468 25.523437zm-44.660156-75.832031c14.222656 0 25.792969 11.570312 25.792969 25.792968v1.535157c-3.386719-.8125-6.871094-1.25-10.382813-1.25h-107.175781v-26.074219h91.765625zm-106.972656-35.164063v145.234375c0 4.199219 3.40625 7.601563 7.605468 7.601563h48.097657l-97.734375 97.734375-97.734375-97.734375h48.101562c4.199219 0 7.601563-3.402344 7.601563-7.601563v-145.234375zm-220.722656 80.164063c4.339843-2.429688 9.277343-3.714844 14.28125-3.714844h25.613281c4.199219 0 7.605469-3.402344 7.605469-7.601562 0-4.199219-3.40625-7.605469-7.605469-7.605469h-25.613281c-3.511719 0-7 .4375-10.394532 1.25v-1.535157c0-14.222656 11.578125-25.792968 25.804688-25.792968h91.761718v26.078125h-51.140624c-4.199219 0-7.601563 3.40625-7.601563 7.605469 0 4.199218 3.402344 7.601562 7.601563 7.601562h51.140624v33.214844h-125.167968c-3.796875 0-7.578125.457031-11.253906 1.332031v-5.304687c0-10.570313 5.738281-20.351563 14.96875-25.527344zm299.113281 147.105468c-16.933594 0-31.441407 12.089844-34.492188 28.746094l-3.894531 21.246094c-1.726562 9.433594-9.945312 16.28125-19.535156 16.28125h-124.992188c-9.589844 0-17.804687-6.847656-19.535156-16.285156l-3.890625-21.242188c-3.054687-16.65625-17.5625-28.746094-34.496094-28.746094h-94.4375c-.277343 0-.554687.015626-.832031.019532v-69.144532c0-12.457031 6.871094-23.773437 17.933594-29.53125 4.761718-2.484374 9.921875-3.742187 15.34375-3.742187h125.167968v12.757813h-58.851562c-3.078125 0-5.847656 1.851562-7.027344 4.691406-1.175781 2.84375-.523437 6.113281 1.648438 8.289062l116.09375 116.089844c1.425781 1.425781 3.359375 2.226562 5.375 2.226562s3.949218-.800781 5.378906-2.226562l116.089844-116.089844c2.175781-2.175781 2.824218-5.445312 1.648437-8.289062-1.175781-2.839844-3.949219-4.691406-7.027343-4.691406h-58.851563v-12.757813h125.164063c5.417968 0 10.582031 1.257813 15.355468 3.746094 11.058594 5.753906 17.929688 17.070312 17.929688 29.527343v69.144532c-.277344-.003906-.550782-.019532-.832032-.019532zm0 0">
+                                  </path>
+                              </svg>
+                          </span>
+
+                          <span class="sidebar-text text-capitalize">Kotak Masuk</span>
+
+                          <span class="sidebar-subtext text-capitalize"
+                              style="display:block; text-align:start; margin-left:35px;">
+                              Pengajuan kegiatan
+
+                              @if (($notifikasi_pengajuan_admin ?? 0) > 0)
+                                  <span
+                                      style="
+                        position:absolute;
+                        top: -45px;
+                        right: -20px;
+                        background:red;
+                        color:white;
+                        border-radius:999px;
+                        min-width:20px;
+                        height:20px;
+                        padding:0 6px;
+                        display:inline-flex;
+                        justify-content:center;
+                        align-items:center;
+                        font-size:12px;
+                        line-height:1;
+                    ">
+                                      {{ $notifikasi_pengajuan_admin }}
+                                  </span>
+                              @endif
+                          </span>
+                      </a>
+                  </li>
+              @endif
+                              <path
+                                  d="m152 328v144a40.045 40.045 0 0 0 40 40h208a40.045 40.045 0 0 0 40-40v-144a40.045 40.045 0 0 0 -40-40h-208a40.045 40.045 0 0 0 -40 40zm248 168h-208a24.028 24.028 0 0 1 -24-24v-129.294l106.27 68.763a40.064 40.064 0 0 0 43.46 0l106.27-68.763v129.294a24.028 24.028 0 0 1 -24 24zm23.639-172.119-114.6 74.154a24.038 24.038 0 0 1 -26.077 0l-114.6-74.154a24.035 24.035 0 0 1 23.638-19.881h208a24.034 24.034 0 0 1 23.639 19.881z">
+                              </path>
+                              <path
+                                  d="m209.715 136.478a8 8 0 0 0 2.791-.5c7.043-2.623 14.278-5.2 21.5-7.648a8 8 0 1 0 -5.139-15.152c-7.375 2.5-14.76 5.128-21.95 7.806a8 8 0 0 0 2.794 15.5z">
+                              </path>
+                              <path
+                                  d="m43.276 374.663a8 8 0 0 0 .4 11.307 112.626 112.626 0 0 0 19.824 14.754 8 8 0 0 0 8.083-13.809 96.536 96.536 0 0 1 -17-12.653 8 8 0 0 0 -11.307.401z">
+                              </path>
+                              <path
+                                  d="m254.371 113.312a7.993 7.993 0 0 0 9.933 5.416c9.893-2.913 17.425-4.908 22-6.069a8 8 0 1 0 -3.934-15.508c-4.71 1.2-12.451 3.245-22.584 6.227a8 8 0 0 0 -5.415 9.934z">
+                              </path>
+                              <path
+                                  d="m11.177 277.87a109.447 109.447 0 0 0 -3.164 24.437 8 8 0 0 0 7.876 8.122h.126a8 8 0 0 0 8-7.877 93.418 93.418 0 0 1 2.7-20.859 8 8 0 0 0 -15.536-3.824z">
+                              </path>
+                              <path
+                                  d="m176.794 132.965c-7.273 3.09-14.446 6.291-21.319 9.514a8 8 0 1 0 6.794 14.486c6.695-3.141 13.687-6.261 20.78-9.274a8 8 0 1 0 -6.255-14.726z">
+                              </path>
+                              <path
+                                  d="m110.335 183.718a7.96 7.96 0 0 0 4.188-1.19c6.2-3.817 12.783-7.63 19.573-11.332a8 8 0 0 0 -7.659-14.048c-7.036 3.837-13.868 7.792-20.3 11.757a8 8 0 0 0 4.2 14.813z">
+                              </path>
+                              <path
+                                  d="m89.386 403.744a8 8 0 0 0 6.06 9.554 112.6 112.6 0 0 0 24.554 2.702 8 8 0 0 0 0-16 96.616 96.616 0 0 1 -21.06-2.315 8 8 0 0 0 -9.554 6.059z">
+                              </path>
+                              <path
+                                  d="m79.021 187.311c-6.53 4.914-12.7 9.972-18.335 15.034a8 8 0 0 0 10.691 11.9c5.294-4.755 11.1-9.517 17.264-14.153a8 8 0 0 0 -9.62-12.785z">
+                              </path>
+                              <path
+                                  d="m48.954 225.173a8 8 0 0 0 -11.247 1.221 155.234 155.234 0 0 0 -13.707 19.947 8 8 0 1 0 13.878 7.959 139.463 139.463 0 0 1 12.3-17.881 8 8 0 0 0 -1.224-11.246z">
+                              </path>
+                              <path
+                                  d="m28.05 331.686a8 8 0 1 0 -15.322 4.607 111.556 111.556 0 0 0 9.7 22.739 8 8 0 1 0 13.929-7.873 95.5 95.5 0 0 1 -8.307-19.473z">
+                              </path>
+                          </svg>
+                      </span>
+                      <span class="sidebar-text text-capitalize">
+                          Pengajuan Kegiatan
+                          <!-- Admin Notifications -->
+                          @if (session('notifikasi_pengajuan_pending') > 0)
+                              <span class="badge bg-warning text-white"
+                                  style="position: absolute; bottom: 15px; left: 160px;">
+                                  {{ session('notifikasi_pengajuan_pending') }}
+                              </span>
+                          @endif
+
+                          @if (session('notifikasi_pengajuan_diterima') > 0)
+                              <span class="badge bg-success text-white"
+                                  style="position: absolute; bottom: 15px; left: 160px;">
+                                  {{ session('notifikasi_pengajuan_diterima') }}
+                              </span>
+                          @endif
+
+                          @if (session('notifikasi_pengajuan_ditolak') > 0)
+                              <span class="badge bg-danger text-white"
+                                  style="position: absolute; bottom: 15px; left: 160px;">
+                                  {{ session('notifikasi_pengajuan_ditolak') }}
+                              </span>
+                          @endif
+
+                          <!-- Fakultas Notifications (FEB) -->
+                          @if (session('notifikasi_pengajuan_feb') > 0)
+                              <span class="badge bg-warning text-white"
+                                  style="position: absolute; bottom: 15px; left: 160px;">
+                                  {{ session('notifikasi_pengajuan_feb') }}
+                              </span>
+                          @endif
+
+                          @if (session('notifikasi_pengajuan_feb_diterima') > 0)
+                              <span class="badge bg-success text-white"
+                                  style="position: absolute; bottom: 15px; left: 160px;">
+                                  {{ session('notifikasi_pengajuan_feb_diterima') }}
+                              </span>
+                          @endif
+
+                          @if (session('notifikasi_pengajuan_feb_ditolak') > 0)
+                              <span class="badge bg-danger text-white"
+                                  style="position: absolute; bottom: 15px; left: 160px;">
+                                  {{ session('notifikasi_pengajuan_feb_ditolak') }}
+                              </span>
+                          @endif
+
+                          <!-- Fakultas Notifications (FST) -->
+                          @if (session('notifikasi_pengajuan_fst') > 0)
+                              <span class="badge bg-warning text-white"
+                                  style="position: absolute; bottom: 15px; left: 160px;">
+                                  {{ session('notifikasi_pengajuan_fst') }}
+                              </span>
+                          @endif
+
+                          @if (session('notifikasi_pengajuan_fst_diterima') > 0)
+                              <span class="badge bg-success text-white"
+                                  style="position: absolute; bottom: 15px; left: 160px;">
+                                  {{ session('notifikasi_pengajuan_fst_diterima') }}
+                              </span>
+                          @endif
+
+                          @if (session('notifikasi_pengajuan_fst_ditolak') > 0)
+                              <span class="badge bg-danger text-white"
+                                  style="position: absolute; bottom: 15px; left: 160px;">
+                                  {{ session('notifikasi_pengajuan_fst_ditolak') }}
+                              </span>
+                          @endif
+
+                           <!-- Fakultas Notifications (FIKES) -->
+                          @if (session('notifikasi_pengajuan_fikes') > 0)
+                              <span class="badge bg-warning text-white"
+                                  style="position: absolute; bottom: 15px; left: 160px;">
+                                  {{ session('notifikasi_pengajuan_fikes') }}
+                              </span>
+                          @endif
+
+                          @if (session('notifikasi_pengajuan_fikes_diterima') > 0)
+                              <span class="badge bg-success text-white"
+                                  style="position: absolute; bottom: 15px; left: 160px;">
+                                  {{ session('notifikasi_pengajuan_fikes_diterima') }}
+                              </span>
+                          @endif
+
+                          @if (session('notifikasi_pengajuan_fikes_ditolak') > 0)
+                              <span class="badge bg-danger text-white"
+                                  style="position: absolute; bottom: 15px; left: 160px;">
+                                  {{ session('notifikasi_pengajuan_fikes_ditolak') }}
+                              </span>
+                          @endif
+
+                          <!-- Fakultas Notifications (REKTORAT) -->
+                          @if (session('notifikasi_pengajuan_rektorat') > 0)
+                              <span class="badge bg-warning text-white"
+                                  style="position: absolute; bottom: 15px; left: 160px;">
+                                  {{ session('notifikasi_pengajuan_rektorat') }}
+                              </span>
+                          @endif
+
+                          @if (session('notifikasi_pengajuan_rektorat_diterima') > 0)
+                              <span class="badge bg-success text-white"
+                                  style="position: absolute; bottom: 15px; left: 160px;">
+                                  {{ session('notifikasi_pengajuan_rektorat_diterima') }}
+                              </span>
+                          @endif
+
+                          @if (session('notifikasi_pengajuan_rektorat_ditolak') > 0)
+                              <span class="badge bg-danger text-white"
+                                  style="position: absolute; bottom: 15px; left: 160px;">
+                                  {{ session('notifikasi_pengajuan_rektorat_ditolak') }}
+                              </span>
+                          @endif
+                      </span>
+                  </a>
+              </li> --}}
 
               <li class="nav-item {{ request()->routeIs('publikasi.index') ? 'active' : '' }}">
                   <a href="{{ route('publikasi.index') }}" class="nav-link d-flex justify-content-between">
