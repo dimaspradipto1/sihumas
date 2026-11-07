@@ -29,6 +29,13 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'fakultas' => 'UNIVERSITAS IBNU SINA',
+            'is_admin' => false,
+            'is_rektorat' => false,
+            'is_feb' => false,
+            'is_fst' => false,
+            'is_fikes' => false,
+            'is_users' => true,
         ];
     }
 

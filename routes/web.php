@@ -13,6 +13,7 @@ use App\Http\Controllers\TahunAkademikController;
 use App\Http\Controllers\LaporanPublikasiController;
 use App\Http\Controllers\KotakMasukPengajuanController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\BackupController;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,4 +53,9 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
     Route::resource('/pegawai', PegawaiController::class);
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [SettingController::class, 'update'])->name('settings.update');
+    Route::get('/backup', [BackupController::class, 'index'])->name('backup.index');
+    Route::get('/backup/database', [BackupController::class, 'downloadDatabase'])->name('backup.database.download');
+    Route::post('/backup/database/restore', [BackupController::class, 'restoreDatabase'])->name('backup.database.restore');
+    Route::get('/backup/storage', [BackupController::class, 'downloadStorage'])->name('backup.storage.download');
+    Route::post('/backup/storage/restore', [BackupController::class, 'restoreStorage'])->name('backup.storage.restore');
 });

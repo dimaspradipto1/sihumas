@@ -1007,6 +1007,15 @@
                           <span class="sidebar-text text-capitalize">Pengaturan WA</span>
                       </a>
                   </li>
+
+                  <li class="nav-item {{ request()->routeIs('backup.*') ? 'active' : '' }}">
+                      <a href="{{ route('backup.index') }}" class="nav-link">
+                          <span class="sidebar-icon">
+                              <i class="fa-solid fa-database" style="font-size: 20px; width: 20px; text-align: center;"></i>
+                          </span>
+                          <span class="sidebar-text text-capitalize">Backup Database &amp; Storage</span>
+                      </a>
+                  </li>
               @endif
 
               <li role="separator" class="dropdown-divider mt-4 mb-3 bs-white-rgb"></li>
