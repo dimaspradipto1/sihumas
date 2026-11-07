@@ -19,6 +19,7 @@ class DashboardTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('Administrator');
+        $response->assertSee('Jadwal Minggu Ini');
         $response->assertSee('Rekapitulasi Kegiatan per Unit');
     }
 
@@ -50,3 +51,4 @@ class DashboardTest extends TestCase
         $response->assertSee('Unit Rektorat');
     }
 }
+

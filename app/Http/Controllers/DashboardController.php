@@ -135,7 +135,71 @@ class DashboardController extends Controller
             $my_recent_pengajuan = $queryRecent->latest('id')->take(6)->get();
         }
 
-        // Events / Kegiatan Terkini yang Disetujui
+        // -------------------------------------------------------------
+        // Jadwal Minggu Ini (Edlink Style Calendar Schedule)
+        // -------------------------------------------------------------
+        $weekOffset = (int) $request->get('week_offset', 0);
+        $referenceDate = now()->addWeeks($weekOffset);
+        $startOfWeek = $referenceDate->copy()->startOfWeek(\Carbon\Carbon::MONDAY);
+        $todayStr = now()->format('Y-m-d');
+        $todayFormatted = 'Hari ini: ' . now()->locale('id')->translatedFormat('d F Y');
+
+        $shortDayNames = [
+            1 => 'Sen',
+            2 => 'Sel',
+            3 => 'Rab',
+            4 => 'Kam',
+            5 => 'Jum',
+            6 => 'Sab',
+            7 => 'Min',
+        ];
+
+        $weekDays = [];
+        $weekEvents = [];
+
+        for ($i = 0; $i < 7; $i++) {
+            $dayDate = $startOfWeek->copy()->addDays($i);
+            $dayDateStr = $dayDate->format('Y-m-d');
+            $dayOfWeekIso = $dayDate->dayOfWeekIso;
+
+            $weekDays[] = [
+                'dayName' => $shortDayNames[$dayOfWeekIso] ?? $dayDate->locale('id')->isoFormat('ddd'),
+                'dayNumber' => $dayDate->format('d'),
+                'date' => $dayDateStr,
+                'isToday' => ($dayDateStr === $todayStr),
+                'fullDate' => $dayDate->locale('id')->translatedFormat('d F Y'),
+            ];
+
+            // Ambil seluruh kegiatan disetujui yang berlangsung pada hari ini
+            $events = Pengajuan::with('user')
+                ->where('status', 'diterima')
+                ->whereDate('tgl_awal', '<=', $dayDateStr)
+                ->whereDate('tgl_selesai', '>=', $dayDateStr)
+                ->orderBy('jam_kegiatan', 'asc')
+                ->get()
+                ->map(function ($ev) use ($user) {
+                    return [
+                        'id' => $ev->id,
+                        'nama_kegiatan' => $ev->nama_kegiatan,
+                        'organizer' => $ev->user->name ?? 'Penyelenggara',
+                        'tempat_kegiatan' => $ev->tempat_kegiatan,
+                        'jam_kegiatan' => $ev->jam_kegiatan,
+                        'waktu_selesai' => $ev->waktu_selesai,
+                        'is_mine' => ($ev->user_id === $user->id),
+                        'url' => route('pengajuan.show', $ev->id),
+                    ];
+                })
+                ->toArray();
+
+            $weekEvents[$dayDateStr] = $events;
+        }
+
+        // Tentukan tanggal default yang aktif:
+        // Jika minggu ini memuat hari ini, aktifkan hari ini
+        // Jika tidak, aktifkan hari pertama (Senin)
+        $selectedDate = collect($weekDays)->firstWhere('isToday', true)['date'] ?? $weekDays[0]['date'];
+
+        // Events / Kegiatan Terkini yang Disetujui (untuk backward compatibility / search)
         $latest_pengajuan = Pengajuan::with('user')
             ->where('status', 'diterima')
             ->when($request->search, function ($query) use ($request) {
@@ -225,6 +289,12 @@ class DashboardController extends Controller
             'list_feb' => $list_feb,
             'list_fst' => $list_fst,
             'list_fikes' => $list_fikes,
+            // Edlink calendar schedule data:
+            'weekDays' => $weekDays,
+            'weekEvents' => $weekEvents,
+            'selectedDate' => $selectedDate,
+            'todayFormatted' => $todayFormatted,
+            'weekOffset' => $weekOffset,
         ]);
     }
 }

@@ -50,7 +50,64 @@
         </div>
     </div>
 
-    {{-- 2. METRIC / KPI STAT CARDS --}}
+    {{-- 2. JADWAL MINGGU INI (EDLINK STYLE SCHEDULE WIDGET - PLACED AT THE TOP) --}}
+    <div class="card border-0 shadow-sm mb-4 edlink-schedule-card">
+        <div class="card-body p-4">
+            <!-- Header: Title & Today Date / Week Navigator -->
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-3">
+                <div class="d-flex align-items-center gap-2 mb-2 mb-sm-0">
+                    <h4 class="fw-bold text-gray-900 mb-0" style="font-size: 1.25rem;">Jadwal Minggu Ini</h4>
+                    <div class="btn-group btn-group-sm ms-2" role="group">
+                        <a href="{{ route('dashboard', ['week_offset' => $weekOffset - 1]) }}" class="btn btn-outline-light border text-muted py-0 px-2" title="Minggu Sebelumnya">
+                            <i class="fa-solid fa-chevron-left" style="font-size: 10px;"></i>
+                        </a>
+                        @if ($weekOffset !== 0)
+                            <a href="{{ route('dashboard') }}" class="btn btn-outline-light border text-primary py-0 px-2 fw-semibold" style="font-size: 11px;">
+                                Minggu Ini
+                            </a>
+                        @endif
+                        <a href="{{ route('dashboard', ['week_offset' => $weekOffset + 1]) }}" class="btn btn-outline-light border text-muted py-0 px-2" title="Minggu Berikutnya">
+                            <i class="fa-solid fa-chevron-right" style="font-size: 10px;"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="text-muted fw-normal" style="font-size: 0.85rem;">
+                    {{ $todayFormatted }}
+                </div>
+            </div>
+
+            <!-- Edlink Weekday Selector Row -->
+            <div class="edlink-week-selector position-relative mt-2">
+                <div class="edlink-days-row d-flex justify-content-between text-center position-relative">
+                    @foreach ($weekDays as $day)
+                        <div class="edlink-day-item {{ $day['date'] === $selectedDate ? 'active' : '' }}"
+                             data-date="{{ $day['date'] }}"
+                             data-full-date="{{ $day['fullDate'] }}"
+                             onclick="selectEdlinkDay('{{ $day['date'] }}', '{{ $day['fullDate'] }}', this)">
+                            <div class="edlink-day-name mb-2">{{ $day['dayName'] }}</div>
+                            <div class="edlink-day-number-wrapper">
+                                <span class="edlink-day-number">{{ $day['dayNumber'] }}</span>
+                            </div>
+                            <div class="edlink-caret-indicator {{ $day['date'] === $selectedDate ? '' : 'd-none' }}">
+                                <svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1 1L7 7L13 1" stroke="#E2E8F0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="#FFFFFF"/>
+                                </svg>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                <div class="edlink-divider-line"></div>
+            </div>
+
+            <!-- Selected Date Events Content Area -->
+            <div class="edlink-content-area pt-3 pb-1" id="edlinkContentArea">
+                <!-- Javascript will dynamically display events for selected day or empty state -->
+                <div id="edlinkEventsListContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    {{-- 3. METRIC / KPI STAT CARDS --}}
     @if ($role === 'admin')
         {{-- Stat Cards Khusus Administrator (Overview Seluruh Universitas) --}}
         <div class="row mb-4 g-3">
@@ -211,7 +268,7 @@
         </div>
     @endif
 
-    {{-- 3. MIDDLE SECTION (BERBEDA SESUAI ROLE) --}}
+    {{-- 4. MIDDLE SECTION (BERBEDA SESUAI ROLE) --}}
     @if ($role === 'admin')
         {{-- Tampilan Middle Khusus Administrator --}}
         <div class="row mb-4 g-4">
@@ -455,95 +512,6 @@
             </div>
         </div>
     @endif
-
-    {{-- 4. BOTTOM SECTION: AGENDA & KEGIATAN UNIVERSITAS (EVENTS LIST) --}}
-    <div class="row">
-        <div class="col-12">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white border-bottom py-3 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2">
-                    <div>
-                        <h2 class="fs-6 fw-bold mb-0 text-gray-900">
-                            <i class="fa-solid fa-calendar-days text-danger me-2"></i> Agenda Kegiatan Universitas Terdekat
-                        </h2>
-                        <small class="text-muted">Jadwal kegiatan resmi yang telah disetujui oleh Humas & Publikasi</small>
-                    </div>
-                    <form action="{{ url()->current() }}" method="GET" class="m-0" style="min-width: 260px;">
-                        <div class="input-group input-group-sm">
-                            <span class="input-group-text bg-gray-100 border-end-0 text-muted">
-                                <i class="fa-solid fa-magnifying-glass"></i>
-                            </span>
-                            <input type="text" name="search" id="eventSearchInput"
-                                class="form-control bg-gray-100 border-start-0 text-gray-800 shadow-none ps-0"
-                                placeholder="Cari agenda kegiatan..." value="{{ request('search') }}" aria-label="Search">
-                        </div>
-                    </form>
-                </div>
-
-                <div class="card-body p-4" id="eventsListContainer">
-                    @forelse ($latest_pengajuan as $item)
-                        <div class="event-item-card d-flex flex-column flex-sm-row align-items-sm-center justify-content-between p-3 mb-3 border rounded-3 bg-white">
-                            <div class="d-flex align-items-center mb-3 mb-sm-0">
-                                <!-- Calendar Icon Box -->
-                                <div class="calendar-badge me-3 flex-shrink-0">
-                                    <div class="calendar-badge-month">
-                                        {{ \Carbon\Carbon::parse($item->tgl_awal)->locale('id')->translatedFormat('M') }}
-                                    </div>
-                                    <div class="calendar-badge-day">
-                                        {{ \Carbon\Carbon::parse($item->tgl_awal)->format('d') }}
-                                    </div>
-                                </div>
-                                <div>
-                                    <h5 class="fw-bold text-gray-900 mb-1" style="font-size: 14px;">
-                                        {{ $item->nama_kegiatan }}
-                                    </h5>
-                                    <div class="d-flex flex-wrap align-items-center gap-2 text-muted" style="font-size: 12px;">
-                                        <span>
-                                            <i class="fa-solid fa-building me-1 text-primary"></i>
-                                            {{ $item->user->name ?? 'Penyelenggara' }}
-                                        </span>
-                                        <span>&bull;</span>
-                                        <span>
-                                            <i class="fa-solid fa-location-dot me-1 text-danger"></i>
-                                            {{ $item->tempat_kegiatan }}
-                                        </span>
-                                        <span>&bull;</span>
-                                        <span>
-                                            <i class="fa-solid fa-clock me-1 text-warning"></i>
-                                            {{ $item->jam_kegiatan }} - {{ $item->waktu_selesai }} WIB
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center gap-2">
-                                <span class="badge bg-success-soft text-success px-3 py-1 rounded-pill fw-semibold" style="font-size: 11px;">
-                                    Disetujui
-                                </span>
-                                <a href="{{ route('pengajuan.show', $item->id) }}" class="btn btn-outline-secondary btn-sm px-2 py-1" title="Lihat Agenda">
-                                    <i class="fa-solid fa-arrow-right"></i>
-                                </a>
-                            </div>
-                        </div>
-                    @empty
-                        <div class="text-center py-5">
-                            <div class="mb-3 text-muted">
-                                <i class="fa-solid fa-calendar-xmark fa-3x" style="opacity: 0.35;"></i>
-                            </div>
-                            <h6 class="fw-bold text-gray-800 mb-1">Belum Ada Agenda Mendatang</h6>
-                            <p class="text-muted small mb-0">
-                                Kegiatan yang telah disetujui oleh Humas akan otomatis ditampilkan dalam jadwal kalender ini.
-                            </p>
-                        </div>
-                    @endforelse
-                </div>
-
-                @if ($latest_pengajuan->hasPages())
-                    <div class="card-footer bg-white border-top py-3 d-flex justify-content-center" id="eventsPaginationContainer">
-                        {{ $latest_pengajuan->links('pagination::bootstrap-5') }}
-                    </div>
-                @endif
-            </div>
-        </div>
-    </div>
 </div>
 
 {{-- DASHBOARD STYLING --}}
@@ -567,6 +535,98 @@
         border-radius: 50%;
         background: radial-gradient(circle, rgba(52, 211, 153, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
         pointer-events: none;
+    }
+
+    /* EDLINK SCHEDULE COMPONENT */
+    .edlink-schedule-card {
+        border-radius: 1rem !important;
+        background: #ffffff;
+    }
+    .edlink-days-row {
+        gap: 8px;
+        z-index: 2;
+    }
+    .edlink-divider-line {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background-color: #E2E8F0;
+        z-index: 1;
+    }
+    .edlink-day-item {
+        flex: 1;
+        cursor: pointer;
+        padding-bottom: 12px;
+        position: relative;
+        user-select: none;
+        transition: color 0.15s ease;
+    }
+    .edlink-day-name {
+        font-size: 13px;
+        color: #64748B;
+        font-weight: 500;
+        transition: color 0.15s ease, font-weight 0.15s ease;
+    }
+    .edlink-day-number-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .edlink-day-number {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1E293B;
+        width: 36px;
+        height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: background-color 0.2s ease, color 0.2s ease;
+    }
+    .edlink-day-item:hover .edlink-day-name {
+        color: #059669;
+    }
+    .edlink-day-item.active .edlink-day-name {
+        color: #059669;
+        font-weight: 700;
+    }
+    .edlink-day-item.active .edlink-day-number {
+        background-color: #059669;
+        color: #ffffff;
+    }
+    .edlink-caret-indicator {
+        position: absolute;
+        bottom: -7px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 3;
+        line-height: 1;
+    }
+
+    /* Event Cards in Edlink */
+    .edlink-event-card {
+        border: 1px solid #E2E8F0;
+        border-radius: 0.75rem;
+        background: #ffffff;
+        transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .edlink-event-card:hover {
+        transform: translateY(-2px);
+        border-color: #CBD5E1;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .edlink-time-pill {
+        background: #ECFDF5;
+        color: #059669;
+        font-weight: 700;
+        font-size: 11.5px;
+        padding: 4px 10px;
+        border-radius: 20px;
+        display: inline-flex;
+        align-items: center;
     }
 
     /* Stat Cards */
@@ -596,39 +656,6 @@
     .bg-info-soft    { background-color: #F0F9FF !important; color: #0284C7 !important; }
     .bg-purple       { background-color: #9333ea !important; }
 
-    /* Calendar Badge */
-    .calendar-badge {
-        width: 52px;
-        height: 54px;
-        border-radius: 8px;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        border: 1px solid #E2E8F0;
-        text-align: center;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-    }
-    .calendar-badge-month {
-        background: #DC2626;
-        color: #ffffff;
-        font-size: 10px;
-        font-weight: 700;
-        text-transform: uppercase;
-        padding: 2px 0;
-        line-height: 1.2;
-    }
-    .calendar-badge-day {
-        background: #ffffff;
-        color: #1E293B;
-        font-size: 18px;
-        font-weight: 800;
-        flex-grow: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        line-height: 1;
-    }
-
     /* Workflow Timeline */
     .step-badge {
         width: 24px;
@@ -642,14 +669,6 @@
         flex-shrink: 0;
     }
 
-    .event-item-card {
-        transition: border-color 0.15s ease, background-color 0.15s ease;
-    }
-    .event-item-card:hover {
-        border-color: #CBD5E1 !important;
-        background-color: #F8FAFC !important;
-    }
-
     /* Chartist Styling */
     .line-chart .ct-bar:nth-of-type(1) { stroke: #007F3B !important; }
     .line-chart .ct-bar:nth-of-type(2) { stroke: #fe9a20 !important; }
@@ -661,6 +680,127 @@
 
 @push('scripts')
 <script>
+    // Data Events Minggu Ini dari Server
+    const edlinkEventsMap = @json($weekEvents);
+    let currentSelectedDate = "{{ $selectedDate }}";
+
+    function selectEdlinkDay(dateStr, fullDateStr, element) {
+        currentSelectedDate = dateStr;
+
+        // Update class active pada daftar hari
+        document.querySelectorAll('.edlink-day-item').forEach(item => {
+            item.classList.remove('active');
+            const caret = item.querySelector('.edlink-caret-indicator');
+            if (caret) caret.classList.add('d-none');
+        });
+
+        if (element) {
+            element.classList.add('active');
+            const caret = element.querySelector('.edlink-caret-indicator');
+            if (caret) caret.classList.remove('d-none');
+        }
+
+        renderEdlinkDayEvents(dateStr);
+    }
+
+    function renderEdlinkDayEvents(dateStr) {
+        const container = document.getElementById('edlinkEventsListContainer');
+        if (!container) return;
+
+        const events = edlinkEventsMap[dateStr] || [];
+
+        if (events.length === 0) {
+            // Tampilan Kosong persis seperti Edlink
+            container.innerHTML = `
+                <div class="text-center py-4 my-2">
+                    <div class="mb-3">
+                        <svg width="120" height="110" viewBox="0 0 140 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Desk calendar -->
+                            <rect x="25" y="24" width="75" height="65" rx="10" fill="#F1F5F9" stroke="#94A3B8" stroke-width="2"/>
+                            <!-- Calendar rings -->
+                            <rect x="38" y="16" width="6" height="14" rx="3" fill="#64748B"/>
+                            <rect x="58" y="16" width="6" height="14" rx="3" fill="#64748B"/>
+                            <rect x="78" y="16" width="6" height="14" rx="3" fill="#64748B"/>
+                            <!-- Calendar grid cells -->
+                            <rect x="34" y="38" width="12" height="10" rx="2" fill="#CBD5E1"/>
+                            <rect x="52" y="38" width="12" height="10" rx="2" fill="#CBD5E1"/>
+                            <rect x="70" y="38" width="12" height="10" rx="2" fill="#CBD5E1"/>
+                            <rect x="34" y="52" width="12" height="10" rx="2" fill="#CBD5E1"/>
+                            <rect x="52" y="52" width="12" height="10" rx="2" fill="#CBD5E1"/>
+                            <rect x="70" y="52" width="12" height="10" rx="2" fill="#CBD5E1"/>
+                            <rect x="34" y="66" width="12" height="10" rx="2" fill="#CBD5E1"/>
+                            <rect x="52" y="66" width="12" height="10" rx="2" fill="#CBD5E1"/>
+                            <!-- Alarm clock -->
+                            <circle cx="88" cy="74" r="24" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2.5"/>
+                            <circle cx="88" cy="74" r="19" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1.5"/>
+                            <!-- Clock ears -->
+                            <rect x="70" y="52" width="7" height="12" rx="3" transform="rotate(-30 70 52)" fill="#94A3B8"/>
+                            <rect x="100" y="50" width="7" height="12" rx="3" transform="rotate(30 100 50)" fill="#94A3B8"/>
+                            <!-- Clock feet -->
+                            <rect x="73" y="93" width="6" height="8" rx="2" transform="rotate(25 73 93)" fill="#94A3B8"/>
+                            <rect x="97" y="95" width="6" height="8" rx="2" transform="rotate(-25 97 95)" fill="#94A3B8"/>
+                            <!-- Clock face happy lines -->
+                            <path d="M82 72L85 75L82 78" stroke="#64748B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M94 72L91 75L94 78" stroke="#64748B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M85 80C86.5 81.5 89.5 81.5 91 80" stroke="#64748B" stroke-width="1.5" stroke-linecap="round"/>
+                            <!-- Sparkle stars -->
+                            <path d="M72 10L73.5 14L77.5 15.5L73.5 17L72 21L70.5 17L66.5 15.5L70.5 14L72 10Z" fill="#94A3B8"/>
+                            <path d="M38 88L39 91L42 92L39 93L38 96L37 93L34 92L37 91L38 88Z" fill="#CBD5E1"/>
+                        </svg>
+                    </div>
+                    <p class="text-gray-700 fw-medium mb-0" style="font-size: 14px;">
+                        Tidak ada jadwal kegiatan di tanggal ini
+                    </p>
+                </div>
+            `;
+        } else {
+            let html = '<div class="row g-3">';
+            events.forEach(ev => {
+                html += `
+                    <div class="col-12 col-md-6">
+                        <div class="edlink-event-card p-3 h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <span class="edlink-time-pill">
+                                        <i class="fa-solid fa-clock me-1" style="font-size: 11px;"></i>
+                                        ${ev.jam_kegiatan} - ${ev.waktu_selesai} WIB
+                                    </span>
+                                    <span class="badge bg-success-soft text-success px-2 py-1 rounded-pill fw-semibold" style="font-size: 10.5px;">
+                                        Disetujui
+                                    </span>
+                                </div>
+                                <h5 class="fw-bold text-gray-900 mb-1" style="font-size: 14.5px;">
+                                    ${ev.nama_kegiatan}
+                                </h5>
+                                <div class="text-muted small mb-2 d-flex align-items-center flex-wrap gap-2">
+                                    <span>
+                                        <i class="fa-solid fa-building me-1 text-primary"></i> ${ev.organizer}
+                                    </span>
+                                    <span>&bull;</span>
+                                    <span>
+                                        <i class="fa-solid fa-location-dot me-1 text-danger"></i> ${ev.tempat_kegiatan}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="pt-2 border-top d-flex justify-content-end">
+                                <a href="${ev.url}" class="btn btn-outline-primary btn-sm py-1 px-3 fw-semibold" style="font-size: 11.5px;">
+                                    Lihat Detail &rarr;
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
+    }
+
+    // Inisialisasi tampilan hari aktif pertama kali
+    document.addEventListener('DOMContentLoaded', function () {
+        renderEdlinkDayEvents(currentSelectedDate);
+    });
+
     @if ($role === 'admin')
         // Bar Chart: Pemantauan Kegiatan Per Fakultas
         new Chartist.Bar('.line-chart', {
@@ -807,62 +947,5 @@
         });
         observer.observe(document.body, { childList: true, subtree: true, characterData: true });
     @endif
-
-    // Live Search for Events
-    const searchInput = document.getElementById('eventSearchInput');
-    const eventsContainer = document.getElementById('eventsListContainer');
-    const paginationContainer = document.getElementById('eventsPaginationContainer');
-    let typingTimer;
-    const doneTypingInterval = 400;
-
-    if (searchInput) {
-        searchInput.addEventListener('input', function() {
-            clearTimeout(typingTimer);
-            typingTimer = setTimeout(performSearch, doneTypingInterval);
-        });
-
-        searchInput.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                clearTimeout(typingTimer);
-                performSearch();
-            }
-        });
-    }
-
-    function performSearch() {
-        const query = searchInput.value;
-        const url = new URL(window.location.href);
-        url.searchParams.set('search', query);
-        url.searchParams.set('page', 1);
-
-        window.history.pushState({}, '', url);
-
-        fetch(url, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        })
-        .then(response => response.text())
-        .then(html => {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
-
-            const newEvents = doc.getElementById('eventsListContainer');
-            const newPagination = doc.getElementById('eventsPaginationContainer');
-
-            if (newEvents && eventsContainer) {
-                eventsContainer.innerHTML = newEvents.innerHTML;
-            }
-            if (paginationContainer) {
-                if (newPagination) {
-                    paginationContainer.innerHTML = newPagination.innerHTML;
-                    paginationContainer.style.display = '';
-                } else {
-                    paginationContainer.innerHTML = '';
-                    paginationContainer.style.display = 'none';
-                }
-            }
-        })
-        .catch(error => console.error('Error fetching events:', error));
-    }
 </script>
 @endpush
