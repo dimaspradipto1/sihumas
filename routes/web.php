@@ -43,12 +43,11 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
     Route::resource('/pengajuan', PengajuanController::class);
     Route::resource('kotak-masuk-pengajuan', KotakMasukPengajuanController::class);
     Route::resource('/users', UserController::class);
-    Route::resource('/laporan-publikasi', LaporanPublikasiController::class);
+    Route::get('/laporan-publikasi', [LaporanPublikasiController::class, 'index'])->name('laporan-publikasi.index');
+    Route::get('/laporan-publikasi/show', [LaporanPublikasiController::class, 'show'])->name('laporan-publikasi.show');
     Route::resource('/tahun-akademik', TahunAkademikController::class);
     Route::get('/user/{id}/update-password',[UserController::class, 'showUpdatePasswordForm'])->name('users.showUpdatePasswordForm');
     Route::put('/user/{id}/update-password', [UserController::class, 'updatePassword'])->name('users.updatePassword');
-    Route::get('/laporan-publikasi', [LaporanPublikasiController::class, 'index'])->name('laporan-publikasi.index');
-    Route::get('/laporan-publikasi/show', [LaporanPublikasiController::class, 'show'])->name('laporan-publikasi.show');
     Route::resource('/unit-kegiatan', UnitKegiatanController::class);
     Route::resource('/pegawai', PegawaiController::class);
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
