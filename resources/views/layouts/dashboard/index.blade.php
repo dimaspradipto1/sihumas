@@ -2,21 +2,21 @@
 
 @section('content')
 <div class="py-3">
-    {{-- 1. HERO WELCOME BANNER (PROFESSIONAL & ROLE-TAILORED) --}}
+    {{-- 1. HERO WELCOME BANNER (PROFESSIONAL UIS GREEN #046B26 & YELLOW #FED802) --}}
     <div class="card border-0 shadow-sm mb-4 text-white overflow-hidden hero-welcome-card">
         <div class="card-body p-4 p-lg-5 position-relative">
             <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center position-relative" style="z-index: 2;">
                 <div class="mb-3 mb-lg-0">
                     <div class="d-inline-flex align-items-center gap-2 mb-2 px-3 py-1 rounded-pill hero-role-badge">
-                        <span class="badge bg-warning text-dark fw-bold text-uppercase px-2 py-1" style="font-size: 10px; letter-spacing: 0.5px;">
+                        <span class="badge hero-role-tag">
                             {{ $roleLabel }}
                         </span>
-                        <span class="text-white small fw-medium">{{ $unitName }}</span>
+                        <span class="text-white small fw-semibold">{{ $unitName }}</span>
                     </div>
                     <h1 class="h3 fw-bold text-white mb-2">
                         Selamat Datang, {{ Auth::user()->name }}! 👋
                     </h1>
-                    <p class="text-white-50 mb-0 font-small" style="max-width: 680px; line-height: 1.6;">
+                    <p class="hero-desc mb-0 font-small" style="max-width: 680px; line-height: 1.6;">
                         @if ($role === 'admin')
                             Sistem Informasi Humas & Publikasi Universitas Ibnu Sina. Pantau status pengajuan kegiatan, verifikasi permohonan dari seluruh fakultas, serta kelola dokumentasi publikasi secara terpadu.
                         @else
@@ -26,26 +26,26 @@
                 </div>
                 <div class="d-flex flex-wrap gap-2 flex-shrink-0">
                     @if ($role === 'admin')
-                        <a href="{{ route('kotak-masuk-pengajuan.index') }}" class="btn btn-warning text-dark fw-bold px-3 py-2 shadow-sm d-inline-flex align-items-center">
+                        <a href="{{ route('kotak-masuk-pengajuan.index') }}" class="btn btn-uis-yellow px-3 py-2 shadow-sm d-inline-flex align-items-center">
                             <i class="fa-solid fa-inbox me-2"></i> Kotak Masuk
                             @if (($total_pending ?? 0) > 0)
-                                <span class="badge bg-danger ms-2 px-2 py-1 rounded-pill">{{ $total_pending }}</span>
+                                <span class="badge bg-danger ms-2 px-2 py-1 rounded-pill text-white">{{ $total_pending }}</span>
                             @endif
                         </a>
-                        <a href="{{ route('publikasi.index') }}" class="btn btn-light text-dark fw-semibold px-3 py-2 shadow-sm d-inline-flex align-items-center">
-                            <i class="fa-solid fa-newspaper me-2 text-primary"></i> Pelaporan Kegiatan
+                        <a href="{{ route('publikasi.index') }}" class="btn btn-uis-white px-3 py-2 shadow-sm d-inline-flex align-items-center">
+                            <i class="fa-solid fa-newspaper me-2"></i> Pelaporan Kegiatan
                         </a>
                     @else
-                        <a href="{{ route('pengajuan.create') }}" class="btn btn-warning text-dark fw-bold px-3 py-2 shadow-sm d-inline-flex align-items-center">
+                        <a href="{{ route('pengajuan.create') }}" class="btn btn-uis-yellow px-3 py-2 shadow-sm d-inline-flex align-items-center">
                             <i class="fa-solid fa-circle-plus me-2"></i> Buat Pengajuan Baru
                         </a>
-                        <a href="{{ route('pengajuan.index') }}" class="btn btn-light text-dark fw-semibold px-3 py-2 shadow-sm d-inline-flex align-items-center">
-                            <i class="fa-solid fa-list-check me-2 text-primary"></i> Status Pengajuan
+                        <a href="{{ route('pengajuan.index') }}" class="btn btn-uis-white px-3 py-2 shadow-sm d-inline-flex align-items-center">
+                            <i class="fa-solid fa-list-check me-2"></i> Status Pengajuan
                         </a>
                     @endif
                 </div>
             </div>
-            <!-- Background Decorative Element -->
+            <!-- Background Decorative Element (UIS Yellow Glow) -->
             <div class="hero-decorative-shape"></div>
         </div>
     </div>
@@ -516,25 +516,75 @@
 
 {{-- DASHBOARD STYLING --}}
 <style>
-    /* Hero Card */
+    /* Hero Card (UIS Brand Colors: Green #046B26 & Yellow #FED802) */
     .hero-welcome-card {
-        background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 55%, #047857 100%) !important;
+        background: linear-gradient(135deg, #024518 0%, #046B26 55%, #057d2d 100%) !important;
         border-radius: 1rem !important;
+        border-left: 6px solid #FED802 !important;
+        box-shadow: 0 6px 20px rgba(4, 107, 38, 0.28) !important;
     }
     .hero-role-badge {
-        background: rgba(255, 255, 255, 0.12);
-        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: rgba(0, 0, 0, 0.24);
+        border: 1px solid rgba(254, 216, 2, 0.5);
         backdrop-filter: blur(8px);
+    }
+    .hero-role-tag {
+        background-color: #FED802 !important;
+        color: #046B26 !important;
+        font-weight: 800 !important;
+        text-transform: uppercase;
+        padding: 4px 8px;
+        font-size: 10px;
+        letter-spacing: 0.5px;
+    }
+    .hero-desc {
+        color: #f8fafc !important;
+        font-size: 0.875rem;
     }
     .hero-decorative-shape {
         position: absolute;
         top: -60px;
         right: -60px;
-        width: 240px;
-        height: 240px;
+        width: 250px;
+        height: 250px;
         border-radius: 50%;
-        background: radial-gradient(circle, rgba(52, 211, 153, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
+        background: radial-gradient(circle, rgba(254, 216, 2, 0.22) 0%, rgba(254, 216, 2, 0) 70%);
         pointer-events: none;
+    }
+
+    /* UIS Buttons (Guaranteed Contrast & Readability) */
+    .btn-uis-yellow {
+        background-color: #FED802 !important;
+        color: #046B26 !important;
+        font-weight: 700 !important;
+        border: 1px solid #FED802 !important;
+        transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+    }
+    .btn-uis-yellow:hover {
+        background-color: #ebd002 !important;
+        color: #023814 !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(254, 216, 2, 0.4) !important;
+    }
+    .btn-uis-yellow i {
+        color: #046B26 !important;
+    }
+
+    .btn-uis-white {
+        background-color: #ffffff !important;
+        color: #046B26 !important;
+        font-weight: 700 !important;
+        border: 1px solid #ffffff !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+        transition: background-color 0.2s ease, transform 0.15s ease;
+    }
+    .btn-uis-white:hover {
+        background-color: #f1f5f9 !important;
+        color: #023814 !important;
+        transform: translateY(-1px);
+    }
+    .btn-uis-white i {
+        color: #046B26 !important;
     }
 
     /* EDLINK SCHEDULE COMPONENT */
@@ -587,14 +637,14 @@
         transition: background-color 0.2s ease, color 0.2s ease;
     }
     .edlink-day-item:hover .edlink-day-name {
-        color: #059669;
+        color: #046B26;
     }
     .edlink-day-item.active .edlink-day-name {
-        color: #059669;
+        color: #046B26;
         font-weight: 700;
     }
     .edlink-day-item.active .edlink-day-number {
-        background-color: #059669;
+        background-color: #046B26;
         color: #ffffff;
     }
     .edlink-caret-indicator {
@@ -620,7 +670,7 @@
     }
     .edlink-time-pill {
         background: #ECFDF5;
-        color: #059669;
+        color: #046B26;
         font-weight: 700;
         font-size: 11.5px;
         padding: 4px 10px;
