@@ -1,3 +1,17 @@
+  <style>
+      #sidebarMenu, 
+      #sidebarMenu .sidebar-inner, 
+      #sidebarMenu .simplebar-content,
+      #sidebarMenu .simplebar-content-wrapper,
+      #sidebarMenu .simplebar-mask {
+          overflow-x: hidden !important;
+      }
+      #sidebarMenu .simplebar-track.simplebar-horizontal {
+          display: none !important;
+          opacity: 0 !important;
+          visibility: hidden !important;
+      }
+  </style>
   <!-- sidebar mobile -->
   <nav id="sidebarMenu" class="sidebar d-lg-block bg-primary  text-white collapse" data-simplebar>
       <div class="sidebar-inner px-4 pt-3">
@@ -1011,9 +1025,9 @@
                   <li class="nav-item {{ request()->routeIs('backup.*') ? 'active' : '' }}">
                       <a href="{{ route('backup.index') }}" class="nav-link">
                           <span class="sidebar-icon">
-                              <i class="fa-solid fa-database" style="font-size: 20px; width: 20px; text-align: center;"></i>
+                              <i class="fa-solid fa-database" style="font-size: 18px; width: 20px; text-align: center;"></i>
                           </span>
-                          <span class="sidebar-text text-capitalize">Backup Database &amp; Storage</span>
+                          <span class="sidebar-text text-capitalize" style="font-size: 12px; letter-spacing: -0.3px;">Backup Database &amp; Storage</span>
                       </a>
                   </li>
               @endif
