@@ -1,876 +1,868 @@
 @extends('layouts.dashboard.template')
 
 @section('content')
-    <!-- sidebar -->
-    <div class="py-4">
-        <div class="dropdown">
-            {{-- <button class="btn btn-gray-800 d-inline-flex align-items-center me-2 dropdown-toggle"
-                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6">
-                    </path>
-                </svg>
-                New Task
-            </button> --}}
-            <div class="dropdown-menu dashboard-dropdown dropdown-menu-start mt-2 py-1">
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                    <svg class="dropdown-icon text-gray-400 me-2" fill="currentColor" viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z">
-                        </path>
-                    </svg>
-                    Add User
-                </a>
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                    <svg class="dropdown-icon text-gray-400 me-2" fill="currentColor" viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z">
-                        </path>
-                    </svg>
-                    Add Widget
-                </a>
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                    <svg class="dropdown-icon text-gray-400 me-2" fill="currentColor" viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z">
-                        </path>
-                        <path d="M9 13h2v5a1 1 0 11-2 0v-5z"></path>
-                    </svg>
-                    Upload Files
-                </a>
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                    <svg class="dropdown-icon text-gray-400 me-2" fill="currentColor" viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd"
-                            d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"></path>
-                    </svg>
-                    Preview Security
-                </a>
-            </div>
-        </div>
-        <!-- end sidebar -->
-
-        <!-- content -->
-        <div class="row">
-            <div class="col-12 mb-4">
-                <div class="card border-0 shadow">
-                    <div class="card-body">
-                        <header class="welcome-header">
-                            <h1>Selamat datang di Sistem Humas dan Publikasi</h1>
-                            <p>Sistem ini dirancang untuk memonitoring aktivitas seluruh bidang humas di masing-masing
-                                fakultas.<br>
-                                Kami berkomitmen untuk memastikan koordinasi yang efektif dan transparansi dalam setiap
-                                kegiatan
-                                humas di seluruh unit.
-                            </p>
-                        </header>
+<div class="py-3">
+    {{-- 1. HERO WELCOME BANNER (PROFESSIONAL & ROLE-TAILORED) --}}
+    <div class="card border-0 shadow-sm mb-4 text-white overflow-hidden hero-welcome-card">
+        <div class="card-body p-4 p-lg-5 position-relative">
+            <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center position-relative" style="z-index: 2;">
+                <div class="mb-3 mb-lg-0">
+                    <div class="d-inline-flex align-items-center gap-2 mb-2 px-3 py-1 rounded-pill hero-role-badge">
+                        <span class="badge bg-warning text-dark fw-bold text-uppercase px-2 py-1" style="font-size: 10px; letter-spacing: 0.5px;">
+                            {{ $roleLabel }}
+                        </span>
+                        <span class="text-white small fw-medium">{{ $unitName }}</span>
                     </div>
-                    <style>
-                        .welcome-header {
-                            background: linear-gradient(445deg, #4CAF50, #FFEB3B);
-                            /* Gradasi warna ungu ke biru */
-                            color: white;
-                            padding: 30px;
-                            border-radius: 15px;
-                            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-                            /* Memberikan kesan 'elevated' */
-                            text-align: center;
-                            margin-bottom: 20px;
-                            /* Memberikan jarak bawah */
-                        }
-
-                        .welcome-header h1 {
-                            font-size: 2.5rem;
-                            font-weight: 700;
-                            margin-bottom: 15px;
-                            /* Memberikan ruang di bawah judul */
-                        }
-
-                        .welcome-header p {
-                            font-size: 1.1rem;
-                            line-height: 1.6;
-                            font-weight: 400;
-                            text-align: center;
-                            max-width: 800px;
-                            margin: 0 auto;
-                        }
-
-                        /* Responsif: Pada layar lebih kecil (mobile) buat teks justify */
-                        @media (max-width: 767px) {
-                            .welcome-header h1 {
-                                font-size: 2rem;
-                                font-weight: 600;
-                            }
-
-                            .welcome-header p {
-                                font-size: 1rem;
-                                line-height: 1.4;
-                                font-weight: 400;
-                                text-align: justify;
-                                max-width: 800px;
-                                margin: 0 auto;
-                            }
-                        }
-
-                        /* Menambahkan efek animasi pada header */
-                        @keyframes fadeIn {
-                            0% {
-                                opacity: 0;
-                                transform: translateY(30px);
-                            }
-
-                            100% {
-                                opacity: 1;
-                                transform: translateY(0);
-                            }
-                        }
-
-                        /* Menerapkan animasi fadeIn pada header */
-                        .welcome-header {
-                            animation: fadeIn 1s ease-in-out;
-                        }
-                    </style>
-
-
+                    <h1 class="h3 fw-bold text-white mb-2">
+                        Selamat Datang, {{ Auth::user()->name }}! 👋
+                    </h1>
+                    <p class="text-white-50 mb-0 font-small" style="max-width: 680px; line-height: 1.6;">
+                        @if ($role === 'admin')
+                            Sistem Informasi Humas & Publikasi Universitas Ibnu Sina. Pantau status pengajuan kegiatan, verifikasi permohonan dari seluruh fakultas, serta kelola dokumentasi publikasi secara terpadu.
+                        @else
+                            Portal layanan terpadu Humas & Publikasi untuk {{ $unitName }}. Ajukan kegiatan unit Anda, pantau persetujuan berkas, dan laporkan dokumentasi publikasi kampus dengan cepat dan transparan.
+                        @endif
+                    </p>
                 </div>
-            </div>
-            @if(Auth::user()->is_admin == 1)
-            {{-- grafik  monitoring pelaporan kegiatan --}}
-            <div class="col-12 col-xl-12 mb-4">
-                <div class="card bg-yellow-100 border-0 shadow">
-                    <div class="card-header d-flex flex-column flex-sm-row align-items-sm-center flex-0">
-                        <div class="d-block mb-3 mb-sm-0">
-                            <div class="fs-5 fw-normal mb-2 text-capitalize"></div>
-                            <h2 class="h6 fw-extrabold text-capitalize mb-0">Monitoring Pelaporan Kegiatan</h2>
-                            <div class="small mt-2">
-                            </div>
-                        </div>
-                        <div class="d-flex ms-sm-auto mt-3 mt-sm-0">
-                            <a href="#" class="btn btn-secondary text-dark btn-sm me-2">Month</a>
-                            <a href="#" class="btn btn-dark btn-sm me-0 me-sm-3">Week</a>
-                        </div>
-                    </div>
-                    <div class="card-body p-2">
-                        <div class="line-chart ct-major-tenth"></div>
-                    </div>
-                </div>
-            </div>
-            {{-- end grafik monitoring pelaporan kegiatan --}}
-            @endif
-
-            {{-- grafik persentase monitoring pelaporan kegiatan --}}
-            {{-- <div class="col-6 col-xl-6">
-                <div class="col-12 px-0 mb-4">
-                    <div class="card border-0 shadow">
-                        <div class="card-header d-flex flex-row align-items-center flex-0 border-bottom">
-                            <div class="d-block">
-                                <div class="h6 fw-normal text-gray mb-2 text-capitalize">persentasi</div>
-                                <h2 class="h3 fw-extrabold text-capitalize">humas dan publikasi</h2>
-
-                            </div>
-                            <div class="d-block ms-auto">
-                                <div class="d-flex align-items-center text-end">
-                                    <span class="dot rounded-circle"
-                                        style="background-color: #007F3B; margin-right: 0.5rem;"></span>
-                                    <span class="fw-normal small text-uppercase">rektorat</span>
-                                </div>
-                                <div class="d-flex align-items-center text-end">
-                                    <span class="dot rounded-circle"
-                                        style="background-color: #fe9a20; margin-right: 0.5rem;"></span>
-                                    <span class="fw-normal small">FEB</span>
-                                </div>
-                                <div class="d-flex align-items-center text-end mb-2">
-                                    <span class="dot rounded-circle"
-                                        style="background-color: #810000; margin-right: 0.5rem;"></span>
-                                    <span class="fw-normal small">FST</span>
-                                </div>
-
-                                <div class="d-flex align-items-center text-end">
-                                    <span class="dot rounded-circle"
-                                        style="background-color: #B33791; margin-right: 0.5rem;"></span>
-                                    <span class="fw-normal small">FIKES</span>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="card-body p-2">
-                            <div class="ct-chart-ranking ct-golden-section ct-series-a"></div>
-                            <div class="pie-chart ct-golden-section ct-series-a"></div>
-                            <div class="pie-chart"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 px-0 mb-4">
-                    <div class="card border-0 shadow">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center justify-content-between border-bottom pb-3">
-                                <div>
-                                    <div class="h6 mb-0 d-flex align-items-center">
-                                        <svg class="icon icon-xs text-gray-500 me-2" fill="currentColor" viewBox="0 0 20 20"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd"
-                                                d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 5.73 6.974 6 7.5 6A1.5 1.5 0 019 7.5V8a2 2 0 004 0 2 2 0 011.523-1.943A5.977 5.977 0 0116 10c0 .34-.028.675-.083 1H15a2 2 0 00-2 2v2.197A5.973 5.973 0 0110 16v-2a2 2 0 00-2-2 2 2 0 01-2-2 2 2 0 00-1.668-1.973z"
-                                                clip-rule="evenodd"></path>
-                                        </svg>
-                                        Global Rank
-                                    </div>
-                                </div>
-                                <div>
-                                    <a href="#" class="d-flex align-items-center fw-bold">
-                                        #755
-                                        <svg class="icon icon-xs text-gray-500 ms-1" fill="currentColor" viewBox="0 0 20 20"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd"
-                                                d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 0l-2 2a1 1 0 101.414 1.414L8 10.414l1.293 1.293a1 1 0 001.414 0l4-4z"
-                                                clip-rule="evenodd"></path>
-                                        </svg>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-between border-bottom py-3">
-                                <div>
-                                    <div class="h6 mb-0 d-flex align-items-center">
-                                        <svg class="icon icon-xs text-gray-500 me-2" fill="currentColor" viewBox="0 0 20 20"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd"
-                                                d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z"
-                                                clip-rule="evenodd"></path>
-                                        </svg>
-                                        Country Rank
-                                    </div>
-                                    <div class="small card-stats">
-                                        United States
-                                        <svg class="icon icon-xs text-success" fill="currentColor" viewBox="0 0 20 20"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd"
-                                                d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
-                                                clip-rule="evenodd"></path>
-                                        </svg>
-                                    </div>
-                                </div>
-                                <div>
-                                    <a href="#" class="d-flex align-items-center fw-bold">
-                                        #32
-                                        <svg class="icon icon-xs text-gray-500 ms-1" fill="currentColor"
-                                            viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd"
-                                                d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 0l-2 2a1 1 0 101.414 1.414L8 10.414l1.293 1.293a1 1 0 001.414 0l4-4z"
-                                                clip-rule="evenodd"></path>
-                                        </svg>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-between pt-3">
-                                <div>
-                                    <div class="h6 mb-0 d-flex align-items-center">
-                                        <svg class="icon icon-xs text-gray-500 me-2" fill="currentColor"
-                                            viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd"
-                                                d="M2 6a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1H8a3 3 0 00-3 3v1.5a1.5 1.5 0 01-3 0V6z"
-                                                clip-rule="evenodd"></path>
-                                            <path d="M6 12a2 2 0 012-2h8a2 2 0 012 2v2a2 2 0 01-2 2H2h2a2 2 0 002-2v-2z">
-                                            </path>
-                                        </svg>
-                                        Category Rank
-                                    </div>
-                                    <div class="small card-stats">
-                                        Computers Electronics > Technology
-                                        <svg class="icon icon-xs text-success" fill="currentColor" viewBox="0 0 20 20"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd"
-                                                d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
-                                                clip-rule="evenodd"></path>
-                                        </svg>
-                                    </div>
-                                </div>
-                                <div>
-                                    <a href="#" class="d-flex align-items-center fw-bold">
-                                        #11
-                                        <svg class="icon icon-xs text-gray-500 ms-1" fill="currentColor"
-                                            viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd"
-                                                d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 0l-2 2a1 1 0 101.414 1.414L8 10.414l1.293 1.293a1 1 0 001.414 0l4-4z"
-                                                clip-rule="evenodd"></path>
-                                        </svg>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div> --}}
-            {{-- end grafik persentase monitoring pelaporan kegiatan --}}
-        </div>
-
-        <div class="row mt-4">
-            <div class="col-12 col-xl-12">
-                <div class="card border-0 shadow">
-                    <div class="card-header border-bottom d-flex align-items-center justify-content-between">
-                        <h2 class="fs-5 fw-bold mb-0">Events</h2>
-                        <form action="{{ url()->current() }}" method="GET" class="d-flex" style="max-width: 300px;">
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-text border-gray-300" id="basic-addon1">
-                                    <svg class="icon icon-xxs" fill="currentColor" viewBox="0 0 20 20"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd"
-                                            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                            clip-rule="evenodd"></path>
-                                    </svg>
-                                </span>
-                                <input type="text" name="search" id="eventSearchInput"
-                                    class="form-control border-gray-300" placeholder="Cari..."
-                                    value="{{ request('search') }}" aria-label="Search">
-                            </div>
-                        </form>
-                    </div>
-                    <div class="card-body" id="eventsListContainer">
-                        @forelse ($latest_pengajuan as $item)
-                            <div class="row align-items-center d-block d-sm-flex border-bottom pb-4 mb-4">
-                                <div class="col-auto mb-3 mb-sm-0">
-                                    <div class="calendar">
-                                        <span
-                                            class="calendar-month">{{ \Carbon\Carbon::parse($item->tgl_awal)->locale('id')->translatedFormat('M') }}</span>
-                                        <span
-                                            class="calendar-day">{{ \Carbon\Carbon::parse($item->tgl_awal)->format('d') }}</span>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <h3 class="h5 mb-1">{{ $item->nama_kegiatan }}</h3>
-                                    <span>Diselenggarakan Oleh <span
-                                            class="text-primary">{{ $item->user->name ?? 'N/A' }}</span></span>
-                                    <div class="small fw-bold text-gray-700 mt-1">
-                                        @if ($item->tgl_awal == $item->tgl_selesai)
-                                            Waktu Pelaksanaan: {{ $item->jam_kegiatan }} - {{ $item->waktu_selesai }} WIB
-                                        @else
-                                            Waktu Pelaksanaan:
-                                            {{ \Carbon\Carbon::parse($item->tgl_awal)->locale('id')->translatedFormat('D, d M') }}
-                                            -
-                                            {{ \Carbon\Carbon::parse($item->tgl_selesai)->locale('id')->translatedFormat('D, d M Y') }}
-                                        @endif
-                                    </div>
-                                    <span class="small fw-bold text-gray-700">Tempat Pelaksanaan:
-                                        {{ $item->tempat_kegiatan }}</span>
-                                </div>
-                            </div>
-                        @empty
-                            <div class="text-center py-4">
-                                <p class="text-muted">Tidak ada kegiatan yang akan datang.</p>
-                            </div>
-                        @endforelse
-                    </div>
-                    @if(Auth::user()->is_admin == 1)
-                    <div class="card-footer border-top py-3" id="eventsPaginationContainer">
-                        <div class="d-flex justify-content-center mb-3">
-                            {{ $latest_pengajuan->links('pagination::bootstrap-5') }}
-                        </div>
-                        <div class="text-center">
-                            <a href="{{ route('kotak-masuk-pengajuan.index') }}"
-                                class="text-gray-800 fw-bold d-inline-flex align-items-center">
-                                <svg class="icon icon-xxs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
-                                    </path>
-                                </svg>
-                                See all
-                            </a>
-                        </div>
-                    </div>
+                <div class="d-flex flex-wrap gap-2 flex-shrink-0">
+                    @if ($role === 'admin')
+                        <a href="{{ route('kotak-masuk-pengajuan.index') }}" class="btn btn-warning text-dark fw-bold px-3 py-2 shadow-sm d-inline-flex align-items-center">
+                            <i class="fa-solid fa-inbox me-2"></i> Kotak Masuk
+                            @if (($total_pending ?? 0) > 0)
+                                <span class="badge bg-danger ms-2 px-2 py-1 rounded-pill">{{ $total_pending }}</span>
+                            @endif
+                        </a>
+                        <a href="{{ route('publikasi.index') }}" class="btn btn-light text-dark fw-semibold px-3 py-2 shadow-sm d-inline-flex align-items-center">
+                            <i class="fa-solid fa-newspaper me-2 text-primary"></i> Pelaporan Kegiatan
+                        </a>
+                    @else
+                        <a href="{{ route('pengajuan.create') }}" class="btn btn-warning text-dark fw-bold px-3 py-2 shadow-sm d-inline-flex align-items-center">
+                            <i class="fa-solid fa-circle-plus me-2"></i> Buat Pengajuan Baru
+                        </a>
+                        <a href="{{ route('pengajuan.index') }}" class="btn btn-light text-dark fw-semibold px-3 py-2 shadow-sm d-inline-flex align-items-center">
+                            <i class="fa-solid fa-list-check me-2 text-primary"></i> Status Pengajuan
+                        </a>
                     @endif
                 </div>
             </div>
+            <!-- Background Decorative Element -->
+            <div class="hero-decorative-shape"></div>
         </div>
+    </div>
 
-        <style>
-            .calendar {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                background-color: #e52d2d;
-                border-radius: 12px;
-                width: 70px;
-                height: 70px;
-                overflow: hidden;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            }
-
-            .calendar-month {
-                font-size: 11px;
-                font-weight: 800;
-                text-transform: uppercase;
-                color: white;
-                padding: 3px 0;
-                width: 100%;
-                text-align: center;
-            }
-
-            .calendar-day {
-                font-size: 24px;
-                font-weight: 800;
-                background-color: white;
-                color: #333;
-                width: 100%;
-                height: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding-bottom: 5px;
-            }
-
-            .h5 {
-                font-weight: 700;
-                color: #263238;
-            }
-
-            .text-gray-700 {
-                color: #4b5563 !important;
-            }
-
-            @media (max-width: 767px) {
-                .card-header h2 {
-                    font-size: 1rem !important;
-                    line-height: 1.2;
-                }
-
-                .card-header {
-                    padding: 0.75rem !important;
-                }
-
-                .line-chart {
-                    height: 250px !important;
-                }
-            }
-
-            /* Proteksi agar teks tidak overflow */
-            .card-header h2 {
-                white-space: normal;
-                word-wrap: break-word;
-            }
-
-            /* Warna Bar Chart dan Pie Chart per Fakultas */
-            /* Rektorat - Green */
-            .line-chart .ct-bar:nth-of-type(1),
-            .pie-chart .ct-series-a .ct-slice-donut {
-                stroke: #007F3B !important;
-            }
-
-            /* FEB - Orange */
-            .line-chart .ct-bar:nth-of-type(2),
-            .pie-chart .ct-series-b .ct-slice-donut {
-                stroke: #fe9a20 !important;
-            }
-
-            /* FST - Dark Red */
-            .line-chart .ct-bar:nth-of-type(3),
-            .pie-chart .ct-series-c .ct-slice-donut {
-                stroke: #810000 !important;
-            }
-
-            /* FIKES - Purple/Pink */
-            .line-chart .ct-bar:nth-of-type(4),
-            .pie-chart .ct-series-d .ct-slice-donut {
-                stroke: #B33791 !important;
-            }
-
-            /* Custom Styling untuk Bar Chart agar lebih ramping */
-            .line-chart .ct-bar {
-                stroke-width: 15px;
-            }
-        </style>
-
-    {{-- jumlah pelaporan kegiatan --}}
-    @if(Auth::user()->is_admin == 1)
-        <div class="row mt-4">
-            <div class="col-12 col-xl-12">
-                <div class="row">
-                    <div class="col-12 mb-4">
-                        <div class="card border-0 shadow">
-                            <div class="card-header">
-                                <div class="row align-items-center">
-                                    <div class="col">
-                                        <h2 class="fs-5 fw-bold mb-0 text-capitalize">pelaporan kegiatan</h2>
-                                    </div>
-                                </div>
+    {{-- 2. METRIC / KPI STAT CARDS --}}
+    @if ($role === 'admin')
+        {{-- Stat Cards Khusus Administrator (Overview Seluruh Universitas) --}}
+        <div class="row mb-4 g-3">
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="card border-0 shadow-sm h-100 stat-card">
+                    <div class="card-body p-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="text-muted text-uppercase fw-semibold mb-1" style="font-size: 11.5px; letter-spacing: 0.5px;">
+                                    Total Pengajuan
+                                </h6>
+                                <h3 class="fw-bold mb-0 text-gray-900">{{ $total_pengajuan ?? 0 }}</h3>
+                                <small class="text-muted" style="font-size: 11px;">Semua Fakultas & Rektorat</small>
                             </div>
-                            <div class="table-responsive">
-                                <table class="table align-items-center table-flush">
-                                    <thead class="thead-light">
-                                        <tr>
-                                            <th class="border-bottom" scope="col">HUMAS DAN PUBLIKASI</th>
-                                            <th class="border-bottom text-center" scope="col">JUMLAH PENGAJUAN</th>
-                                            <th class="border-bottom text-center" scope="col">JUMLAH PELAPORAN</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th class="text-gray-900" scope="row">
-                                                Rektorat
-                                            </th>
-                                            <td class="fw-bolder text-gray-500 text-center">
-                                                {{ $pengajuan_rektorat ?? 0 }}
-                                            </td>
-                                            <td class="fw-bolder text-gray-500 text-center">
-                                                {{ $publikasi_rektorat ?? 0 }}
-                                            </td>
+                            <div class="stat-icon-wrapper bg-primary-soft text-primary">
+                                <i class="fa-solid fa-file-lines fa-lg"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                                        </tr>
-                                        <tr>
-                                            <th class="text-gray-900" scope="row">
-                                                Fakultas Ekonomi dan Bisnis
-                                            </th>
-                                            <td class="fw-bolder text-gray-500 text-center">
-                                                {{ $pengajuan_feb ?? 0 }}
-                                            </td>
-                                            <td class="fw-bolder text-gray-500 text-center">
-                                                {{ $publikasi_feb ?? 0 }}
-                                            </td>
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="card border-0 shadow-sm h-100 stat-card {{ ($total_pending ?? 0) > 0 ? 'border-warning-subtle' : '' }}">
+                    <div class="card-body p-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="text-muted text-uppercase fw-semibold mb-1" style="font-size: 11.5px; letter-spacing: 0.5px;">
+                                    Menunggu Verifikasi
+                                </h6>
+                                <h3 class="fw-bold mb-0 text-warning">{{ $total_pending ?? 0 }}</h3>
+                                <small class="text-muted" style="font-size: 11px;">Perlu review admin</small>
+                            </div>
+                            <div class="stat-icon-wrapper bg-warning-soft text-warning">
+                                <i class="fa-solid fa-hourglass-half fa-lg"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                                        </tr>
-                                        <tr>
-                                            <th class="text-gray-900" scope="row">
-                                                Fakultas Sains dan Teknologi
-                                            </th>
-                                            <td class="fw-bolder text-gray-500 text-center">
-                                                {{ $pengajuan_fst ?? 0 }}
-                                            </td>
-                                            <td class="fw-bolder text-gray-500 text-center">
-                                                {{ $publikasi_fst ?? 0 }}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th class="text-gray-900" scope="row">
-                                                Fakultas Ilmu Kesehatan
-                                            </th>
-                                            <td class="fw-bolder text-gray-500 text-center">
-                                                {{ $pengajuan_fikes ?? 0 }}
-                                            </td>
-                                            <td class="fw-bolder text-gray-500 text-center">
-                                                {{ $publikasi_fikes ?? 0 }}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="card border-0 shadow-sm h-100 stat-card">
+                    <div class="card-body p-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="text-muted text-uppercase fw-semibold mb-1" style="font-size: 11.5px; letter-spacing: 0.5px;">
+                                    Pengajuan Disetujui
+                                </h6>
+                                <h3 class="fw-bold mb-0 text-success">{{ $total_diterima ?? 0 }}</h3>
+                                <small class="text-muted" style="font-size: 11px;">Diterima & dijadwalkan</small>
+                            </div>
+                            <div class="stat-icon-wrapper bg-success-soft text-success">
+                                <i class="fa-solid fa-circle-check fa-lg"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="card border-0 shadow-sm h-100 stat-card">
+                    <div class="card-body p-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="text-muted text-uppercase fw-semibold mb-1" style="font-size: 11.5px; letter-spacing: 0.5px;">
+                                    Pelaporan Publikasi
+                                </h6>
+                                <h3 class="fw-bold mb-0 text-info">{{ $total_publikasi ?? 0 }}</h3>
+                                <small class="text-muted" style="font-size: 11px;">Dokumentasi & rilis</small>
+                            </div>
+                            <div class="stat-icon-wrapper bg-info-soft text-info">
+                                <i class="fa-solid fa-newspaper fa-lg"></i>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        {{-- end jumlah pelaporan kegiatan --}}
+    @else
+        {{-- Stat Cards Khusus Fakultas / Rektorat / Pengguna --}}
+        <div class="row mb-4 g-3">
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="card border-0 shadow-sm h-100 stat-card">
+                    <div class="card-body p-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="text-muted text-uppercase fw-semibold mb-1" style="font-size: 11.5px; letter-spacing: 0.5px;">
+                                    Total Pengajuan Anda
+                                </h6>
+                                <h3 class="fw-bold mb-0 text-gray-900">{{ $unit_stats['pengajuan'] ?? $unit_stats['total'] ?? 0 }}</h3>
+                                <small class="text-muted" style="font-size: 11px;">Permohonan diajukan</small>
+                            </div>
+                            <div class="stat-icon-wrapper bg-primary-soft text-primary">
+                                <i class="fa-solid fa-paper-plane fa-lg"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="card border-0 shadow-sm h-100 stat-card">
+                    <div class="card-body p-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="text-muted text-uppercase fw-semibold mb-1" style="font-size: 11.5px; letter-spacing: 0.5px;">
+                                    Menunggu Persetujuan
+                                </h6>
+                                <h3 class="fw-bold mb-0 text-warning">{{ $unit_stats['pending'] ?? 0 }}</h3>
+                                <small class="text-muted" style="font-size: 11px;">Sedang ditinjau Humas</small>
+                            </div>
+                            <div class="stat-icon-wrapper bg-warning-soft text-warning">
+                                <i class="fa-solid fa-clock fa-lg"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="card border-0 shadow-sm h-100 stat-card">
+                    <div class="card-body p-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="text-muted text-uppercase fw-semibold mb-1" style="font-size: 11.5px; letter-spacing: 0.5px;">
+                                    Pengajuan Disetujui
+                                </h6>
+                                <h3 class="fw-bold mb-0 text-success">{{ $unit_stats['diterima'] ?? 0 }}</h3>
+                                <small class="text-muted" style="font-size: 11px;">Siap publikasi & dokumentasi</small>
+                            </div>
+                            <div class="stat-icon-wrapper bg-success-soft text-success">
+                                <i class="fa-solid fa-check-double fa-lg"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="card border-0 shadow-sm h-100 stat-card">
+                    <div class="card-body p-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="text-muted text-uppercase fw-semibold mb-1" style="font-size: 11.5px; letter-spacing: 0.5px;">
+                                    Laporan Selesai
+                                </h6>
+                                <h3 class="fw-bold mb-0 text-info">{{ $unit_stats['publikasi'] ?? 0 }}</h3>
+                                <small class="text-muted" style="font-size: 11px;">Publikasi telah dirilis</small>
+                            </div>
+                            <div class="stat-icon-wrapper bg-info-soft text-info">
+                                <i class="fa-solid fa-bullhorn fa-lg"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     @endif
-    @endsection
 
-
-    @push('scripts')
-        <script>
-            // Bar Chart: Pemantauan Kegiatan Per Fakultas (Accepted)
-            new Chartist.Bar('.line-chart', {
-                labels: ['Rektorat', 'FEB', 'FST', 'FIKES'],
-                series: [
-                    [{
-                            meta: JSON.stringify({
-                                unit: "Rektorat",
-                                total: {{ $pengajuan_rektorat }},
-                                items: @json($list_rektorat)
-                            }),
-                            value: {{ $pengajuan_rektorat }}
-                        },
-                        {
-                            meta: JSON.stringify({
-                                unit: "FEB",
-                                total: {{ $pengajuan_feb }},
-                                items: @json($list_feb)
-                            }),
-                            value: {{ $pengajuan_feb }}
-                        },
-                        {
-                            meta: JSON.stringify({
-                                unit: "FST",
-                                total: {{ $pengajuan_fst }},
-                                items: @json($list_fst)
-                            }),
-                            value: {{ $pengajuan_fst }}
-                        },
-                        {
-                            meta: JSON.stringify({
-                                unit: "FIKES",
-                                total: {{ $pengajuan_fikes }},
-                                items: @json($list_fikes)
-                            }),
-                            value: {{ $pengajuan_fikes }}
-                        }
-                    ]
-                ]
-            }, {
-                low: 0,
-                showArea: true,
-                plugins: [
-                    Chartist.plugins.tooltip({
-                        class: 'chartist-tooltip',
-                        appendToBody: true,
-                        // Return the raw meta, the observer will transform it
-                        transformTooltipTextFnc: function(meta) {
-                            return meta;
-                        }
-                    })
-                ],
-                axisY: {
-                    onlyInteger: true,
-                    offset: 30
-                },
-                axisX: {
-                    offset: 40
-                }
-            }, [
-                ['screen and (max-width: 640px)', {
-                    axisX: {
-                        labelInterpolationFnc: function(value) {
-                            // Gunakan inisial/singkatan saja di mobile jika terlalu panjang
-                            if (value === 'Rektorat') return 'Rekt';
-                            if (value === 'Fakultas Ekonomi dan Bisnis') return 'FEB';
-                            if (value === 'Fakultas Sains dan Teknologi') return 'FST';
-                            if (value === 'Fakultas Ilmu Kesehatan') return 'FIKES';
-                            return value;
-                        }
-                    }
-                }]
-            ]);
-
-            // Pie Chart: Persentase Pengajuan Diterima
-            var pieData = {
-                series: [
-                    {{ $pengajuan_rektorat }},
-                    {{ $pengajuan_feb }},
-                    {{ $pengajuan_fst }},
-                    {{ $pengajuan_fikes }}
-                ],
-            };
-
-            var sum = function(a, b) {
-                return a + b;
-            };
-
-            new Chartist.Pie('.pie-chart', pieData, {
-                labelInterpolationFnc: function(value) {
-                    var total = pieData.series.reduce(sum);
-                    if (total === 0) return '0%';
-                    return Math.round(value / total * 100) + '%';
-                },
-                low: 0,
-                donut: true,
-                donutSolid: true,
-                showLabel: true,
-                plugins: [
-                    Chartist.plugins.tooltip()
-                ],
-                chartPadding: 0,
-            });
-
-            function renderTooltipTable(data) {
-                if (!data) return '';
-                let unitName = data.unit || 'Fakultas';
-                let totalCount = typeof data.total !== 'undefined' ? data.total : (data.items ? data.items.length : 0);
-
-                let html = `
-                    <div class="tooltip-table-wrapper">
-                        <div class="tooltip-header">${unitName} — Total: ${totalCount} Kegiatan</div>
-                        <table class="tooltip-table">
-                            <thead>
+    {{-- 3. MIDDLE SECTION (BERBEDA SESUAI ROLE) --}}
+    @if ($role === 'admin')
+        {{-- Tampilan Middle Khusus Administrator --}}
+        <div class="row mb-4 g-4">
+            <!-- Monitoring Rekapitulasi per Unit Fakultas & Rektorat -->
+            <div class="col-12 col-xl-7">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white border-bottom py-3 d-flex align-items-center justify-content-between">
+                        <div>
+                            <h2 class="fs-6 fw-bold mb-0 text-gray-900">
+                                <i class="fa-solid fa-chart-pie text-primary me-2"></i> Rekapitulasi Kegiatan per Unit
+                            </h2>
+                            <small class="text-muted">Aktivitas pengajuan dan pelaporan per fakultas & rektorat</small>
+                        </div>
+                        <a href="{{ route('laporan-publikasi.index') }}" class="btn btn-outline-primary btn-sm fw-semibold">
+                            Lihat Rekap
+                        </a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table align-items-center table-hover mb-0">
+                            <thead class="bg-gray-50 text-muted" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">
                                 <tr>
-                                    <th>NAMA KEGIATAN</th>
-                                    <th>WAKTU PELAKSANAAN</th>
-                                    <th>JUMLAH</th>
+                                    <th class="ps-3 py-3">Unit / Fakultas</th>
+                                    <th class="text-center py-3">Pengajuan</th>
+                                    <th class="text-center py-3">Disetujui</th>
+                                    <th class="text-center py-3">Pending</th>
+                                    <th class="text-center py-3">Pelaporan</th>
                                 </tr>
                             </thead>
                             <tbody>
-                `;
-
-                if (data.items && data.items.length > 0) {
-                    data.items.forEach(item => {
-                        let waktu = item.tgl;
-                        if (item.tgl_akhir && item.tgl_akhir !== item.tgl) {
-                            waktu += ` - ${item.tgl_akhir}`;
-                        }
-                        html += `
-                            <tr>
-                                <td>${item.nama}</td>
-                                <td>${waktu}</td>
-                                <td style="text-align:center">${item.total}</td>
-                            </tr>
-                        `;
-                    });
-                } else {
-                    html += `<tr><td colspan="3" style="text-align:center; padding: 10px;">Tidak ada kegiatan</td></tr>`;
-                }
-
-                html += `
+                                @foreach ($units as $key => $unit)
+                                    <tr>
+                                        <td class="ps-3 py-3">
+                                            <div class="d-flex align-items-center">
+                                                <span class="badge {{ $unit['badgeClass'] }} me-2" style="width: 10px; height: 10px; border-radius: 50%; padding: 0;"></span>
+                                                <div>
+                                                    <span class="fw-semibold text-gray-900 d-block" style="font-size: 13px;">{{ $unit['fullName'] }}</span>
+                                                    <small class="text-muted" style="font-size: 11px;">Kode: {{ $unit['name'] }}</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center py-3">
+                                            <span class="badge bg-gray-100 text-gray-800 fw-bold px-2 py-1">
+                                                {{ $unit['pengajuan'] }}
+                                            </span>
+                                        </td>
+                                        <td class="text-center py-3">
+                                            <span class="badge bg-success-soft text-success fw-bold px-2 py-1">
+                                                {{ $unit['diterima'] }}
+                                            </span>
+                                        </td>
+                                        <td class="text-center py-3">
+                                            @if ($unit['pending'] > 0)
+                                                <span class="badge bg-warning text-dark fw-bold px-2 py-1">
+                                                    {{ $unit['pending'] }}
+                                                </span>
+                                            @else
+                                                <span class="text-muted small">0</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-center py-3">
+                                            <span class="badge bg-info-soft text-info fw-bold px-2 py-1">
+                                                {{ $unit['publikasi'] }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
-                `;
-                return html;
+                </div>
+            </div>
+
+            <!-- Grafik Monitoring Aktivitas (Clean White Card) -->
+            <div class="col-12 col-xl-5">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white border-bottom py-3 d-flex align-items-center justify-content-between">
+                        <div>
+                            <h2 class="fs-6 fw-bold mb-0 text-gray-900">
+                                <i class="fa-solid fa-chart-column text-success me-2"></i> Grafik Aktivitas Diterima
+                            </h2>
+                            <small class="text-muted">Perbandingan kegiatan disetujui per unit</small>
+                        </div>
+                        <span class="badge bg-light text-muted fw-normal" style="font-size: 11px;">Terkini</span>
+                    </div>
+                    <div class="card-body p-3 d-flex flex-column justify-content-between">
+                        <div class="line-chart ct-major-tenth" style="height: 230px;"></div>
+                        <div class="d-flex justify-content-center flex-wrap gap-3 pt-3 border-top mt-2" style="font-size: 11.5px;">
+                            <span class="d-inline-flex align-items-center text-muted">
+                                <span class="d-inline-block rounded-circle me-1" style="width: 10px; height: 10px; background: #007F3B;"></span> Rektorat
+                            </span>
+                            <span class="d-inline-flex align-items-center text-muted">
+                                <span class="d-inline-block rounded-circle me-1" style="width: 10px; height: 10px; background: #fe9a20;"></span> FEB
+                            </span>
+                            <span class="d-inline-flex align-items-center text-muted">
+                                <span class="d-inline-block rounded-circle me-1" style="width: 10px; height: 10px; background: #810000;"></span> FST
+                            </span>
+                            <span class="d-inline-flex align-items-center text-muted">
+                                <span class="d-inline-block rounded-circle me-1" style="width: 10px; height: 10px; background: #B33791;"></span> FIKES
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @else
+        {{-- Tampilan Middle Khusus Fakultas / Rektorat / Pengguna --}}
+        <div class="row mb-4 g-4">
+            <!-- Riwayat Pengajuan Terkini Unit Saya -->
+            <div class="col-12 col-xl-8">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white border-bottom py-3 d-flex align-items-center justify-content-between">
+                        <div>
+                            <h2 class="fs-6 fw-bold mb-0 text-gray-900">
+                                <i class="fa-solid fa-clock-rotate-left text-primary me-2"></i> Pengajuan Terkini Unit Anda
+                            </h2>
+                            <small class="text-muted">Daftar kegiatan yang baru saja diajukan oleh {{ $unitName }}</small>
+                        </div>
+                        <a href="{{ route('pengajuan.index') }}" class="btn btn-outline-primary btn-sm fw-semibold">
+                            Lihat Semua
+                        </a>
+                    </div>
+                    <div class="card-body p-0">
+                        @if ($my_recent_pengajuan->isNotEmpty())
+                            <div class="table-responsive">
+                                <table class="table table-hover align-items-center mb-0">
+                                    <thead class="bg-gray-50 text-muted" style="font-size: 11px; text-transform: uppercase;">
+                                        <tr>
+                                            <th class="ps-3 py-3">Nama Kegiatan</th>
+                                            <th class="py-3">Jadwal Pelaksanaan</th>
+                                            <th class="text-center py-3">Status</th>
+                                            <th class="text-end pe-3 py-3">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($my_recent_pengajuan as $item)
+                                            <tr>
+                                                <td class="ps-3 py-3">
+                                                    <span class="fw-bold text-gray-900 d-block" style="font-size: 13px;">
+                                                        {{ $item->nama_kegiatan }}
+                                                    </span>
+                                                    <small class="text-muted" style="font-size: 11px;">
+                                                        <i class="fa-solid fa-location-dot me-1 text-danger"></i> {{ $item->tempat_kegiatan }}
+                                                    </small>
+                                                </td>
+                                                <td class="py-3" style="font-size: 12px;">
+                                                    <span class="d-block text-gray-800">
+                                                        {{ \Carbon\Carbon::parse($item->tgl_awal)->locale('id')->translatedFormat('d M Y') }}
+                                                    </span>
+                                                    <small class="text-muted">{{ $item->jam_kegiatan }} WIB</small>
+                                                </td>
+                                                <td class="text-center py-3">
+                                                    @if ($item->status === 'diterima')
+                                                        <span class="badge bg-success-soft text-success px-2 py-1 rounded-pill fw-semibold" style="font-size: 11px;">
+                                                            <i class="fa-solid fa-check me-1"></i> Disetujui
+                                                        </span>
+                                                    @elseif ($item->status === 'ditolak')
+                                                        <span class="badge bg-danger-soft text-danger px-2 py-1 rounded-pill fw-semibold" style="font-size: 11px;">
+                                                            <i class="fa-solid fa-xmark me-1"></i> Ditolak
+                                                        </span>
+                                                    @else
+                                                        <span class="badge bg-warning-soft text-warning px-2 py-1 rounded-pill fw-semibold" style="font-size: 11px;">
+                                                            <i class="fa-solid fa-clock me-1"></i> Menunggu
+                                                        </span>
+                                                    @endif
+                                                </td>
+                                                <td class="text-end pe-3 py-3">
+                                                    <a href="{{ route('pengajuan.show', $item->id) }}" class="btn btn-sm btn-light border py-1 px-2" title="Lihat Rincian">
+                                                        <i class="fa-solid fa-eye text-primary"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @else
+                            <div class="text-center py-5">
+                                <div class="mb-3 text-muted">
+                                    <i class="fa-solid fa-file-circle-question fa-3x" style="opacity: 0.3;"></i>
+                                </div>
+                                <h6 class="fw-bold text-gray-700 mb-1">Belum Ada Pengajuan Kegiatan</h6>
+                                <p class="text-muted small mb-3">Unit Anda belum mengajukan kegiatan humas & publikasi.</p>
+                                <a href="{{ route('pengajuan.create') }}" class="btn btn-primary btn-sm px-3 fw-semibold">
+                                    <i class="fa-solid fa-plus me-1"></i> Ajukan Kegiatan Pertama
+                                </a>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            <!-- Petunjuk & Bantuan Humas -->
+            <div class="col-12 col-xl-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white border-bottom py-3">
+                        <h2 class="fs-6 fw-bold mb-0 text-gray-900">
+                            <i class="fa-solid fa-circle-info text-info me-2"></i> Alur Layanan Humas
+                        </h2>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="timeline-workflow">
+                            <div class="d-flex align-items-start mb-3">
+                                <div class="step-badge bg-primary text-white me-3">1</div>
+                                <div>
+                                    <h6 class="fw-bold text-gray-900 mb-0" style="font-size: 13px;">Input Formulir Pengajuan</h6>
+                                    <small class="text-muted" style="font-size: 11.5px;">Isi nama kegiatan, tanggal, waktu, tempat, dan kebutuhan publikasi.</small>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-start mb-3">
+                                <div class="step-badge bg-warning text-dark me-3">2</div>
+                                <div>
+                                    <h6 class="fw-bold text-gray-900 mb-0" style="font-size: 13px;">Verifikasi Administrator</h6>
+                                    <small class="text-muted" style="font-size: 11.5px;">Admin Humas & Publikasi meninjau permohonan dan menyetujui jadwal.</small>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-start mb-3">
+                                <div class="step-badge bg-success text-white me-3">3</div>
+                                <div>
+                                    <h6 class="fw-bold text-gray-900 mb-0" style="font-size: 13px;">Pelaksanaan & Publikasi</h6>
+                                    <small class="text-muted" style="font-size: 11.5px;">Kegiatan terlaksana, liputan dirilis, dan berkas diarsipkan.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-3 rounded mt-4 bg-light border">
+                            <div class="d-flex align-items-center">
+                                <i class="fa-brands fa-whatsapp text-success fa-2x me-3"></i>
+                                <div>
+                                    <h6 class="fw-bold mb-0 text-gray-900" style="font-size: 12.5px;">Butuh Bantuan Koordinasi?</h6>
+                                    <small class="text-muted d-block" style="font-size: 11px;">Hubungi Admin Humas UIS via WhatsApp</small>
+                                    <a href="https://wa.me/6289523712219" target="_blank" class="fw-bold text-success text-decoration-none mt-1 d-inline-block" style="font-size: 11.5px;">
+                                        Chat Admin &rarr;
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    {{-- 4. BOTTOM SECTION: AGENDA & KEGIATAN UNIVERSITAS (EVENTS LIST) --}}
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom py-3 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2">
+                    <div>
+                        <h2 class="fs-6 fw-bold mb-0 text-gray-900">
+                            <i class="fa-solid fa-calendar-days text-danger me-2"></i> Agenda Kegiatan Universitas Terdekat
+                        </h2>
+                        <small class="text-muted">Jadwal kegiatan resmi yang telah disetujui oleh Humas & Publikasi</small>
+                    </div>
+                    <form action="{{ url()->current() }}" method="GET" class="m-0" style="min-width: 260px;">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-gray-100 border-end-0 text-muted">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </span>
+                            <input type="text" name="search" id="eventSearchInput"
+                                class="form-control bg-gray-100 border-start-0 text-gray-800 shadow-none ps-0"
+                                placeholder="Cari agenda kegiatan..." value="{{ request('search') }}" aria-label="Search">
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card-body p-4" id="eventsListContainer">
+                    @forelse ($latest_pengajuan as $item)
+                        <div class="event-item-card d-flex flex-column flex-sm-row align-items-sm-center justify-content-between p-3 mb-3 border rounded-3 bg-white">
+                            <div class="d-flex align-items-center mb-3 mb-sm-0">
+                                <!-- Calendar Icon Box -->
+                                <div class="calendar-badge me-3 flex-shrink-0">
+                                    <div class="calendar-badge-month">
+                                        {{ \Carbon\Carbon::parse($item->tgl_awal)->locale('id')->translatedFormat('M') }}
+                                    </div>
+                                    <div class="calendar-badge-day">
+                                        {{ \Carbon\Carbon::parse($item->tgl_awal)->format('d') }}
+                                    </div>
+                                </div>
+                                <div>
+                                    <h5 class="fw-bold text-gray-900 mb-1" style="font-size: 14px;">
+                                        {{ $item->nama_kegiatan }}
+                                    </h5>
+                                    <div class="d-flex flex-wrap align-items-center gap-2 text-muted" style="font-size: 12px;">
+                                        <span>
+                                            <i class="fa-solid fa-building me-1 text-primary"></i>
+                                            {{ $item->user->name ?? 'Penyelenggara' }}
+                                        </span>
+                                        <span>&bull;</span>
+                                        <span>
+                                            <i class="fa-solid fa-location-dot me-1 text-danger"></i>
+                                            {{ $item->tempat_kegiatan }}
+                                        </span>
+                                        <span>&bull;</span>
+                                        <span>
+                                            <i class="fa-solid fa-clock me-1 text-warning"></i>
+                                            {{ $item->jam_kegiatan }} - {{ $item->waktu_selesai }} WIB
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge bg-success-soft text-success px-3 py-1 rounded-pill fw-semibold" style="font-size: 11px;">
+                                    Disetujui
+                                </span>
+                                <a href="{{ route('pengajuan.show', $item->id) }}" class="btn btn-outline-secondary btn-sm px-2 py-1" title="Lihat Agenda">
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="text-center py-5">
+                            <div class="mb-3 text-muted">
+                                <i class="fa-solid fa-calendar-xmark fa-3x" style="opacity: 0.35;"></i>
+                            </div>
+                            <h6 class="fw-bold text-gray-800 mb-1">Belum Ada Agenda Mendatang</h6>
+                            <p class="text-muted small mb-0">
+                                Kegiatan yang telah disetujui oleh Humas akan otomatis ditampilkan dalam jadwal kalender ini.
+                            </p>
+                        </div>
+                    @endforelse
+                </div>
+
+                @if ($latest_pengajuan->hasPages())
+                    <div class="card-footer bg-white border-top py-3 d-flex justify-content-center" id="eventsPaginationContainer">
+                        {{ $latest_pengajuan->links('pagination::bootstrap-5') }}
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- DASHBOARD STYLING --}}
+<style>
+    /* Hero Card */
+    .hero-welcome-card {
+        background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 55%, #047857 100%) !important;
+        border-radius: 1rem !important;
+    }
+    .hero-role-badge {
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(8px);
+    }
+    .hero-decorative-shape {
+        position: absolute;
+        top: -60px;
+        right: -60px;
+        width: 240px;
+        height: 240px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(52, 211, 153, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
+        pointer-events: none;
+    }
+
+    /* Stat Cards */
+    .stat-card {
+        border-radius: 0.75rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08) !important;
+    }
+    .stat-icon-wrapper {
+        width: 48px;
+        height: 48px;
+        border-radius: 0.65rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    /* Soft Colors */
+    .bg-primary-soft { background-color: #EFF6FF !important; color: #2563EB !important; }
+    .bg-success-soft { background-color: #ECFDF5 !important; color: #059669 !important; }
+    .bg-warning-soft { background-color: #FFFBEB !important; color: #D97706 !important; }
+    .bg-danger-soft  { background-color: #FEF2F2 !important; color: #DC2626 !important; }
+    .bg-info-soft    { background-color: #F0F9FF !important; color: #0284C7 !important; }
+    .bg-purple       { background-color: #9333ea !important; }
+
+    /* Calendar Badge */
+    .calendar-badge {
+        width: 52px;
+        height: 54px;
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #E2E8F0;
+        text-align: center;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    .calendar-badge-month {
+        background: #DC2626;
+        color: #ffffff;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        padding: 2px 0;
+        line-height: 1.2;
+    }
+    .calendar-badge-day {
+        background: #ffffff;
+        color: #1E293B;
+        font-size: 18px;
+        font-weight: 800;
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+    }
+
+    /* Workflow Timeline */
+    .step-badge {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .event-item-card {
+        transition: border-color 0.15s ease, background-color 0.15s ease;
+    }
+    .event-item-card:hover {
+        border-color: #CBD5E1 !important;
+        background-color: #F8FAFC !important;
+    }
+
+    /* Chartist Styling */
+    .line-chart .ct-bar:nth-of-type(1) { stroke: #007F3B !important; }
+    .line-chart .ct-bar:nth-of-type(2) { stroke: #fe9a20 !important; }
+    .line-chart .ct-bar:nth-of-type(3) { stroke: #810000 !important; }
+    .line-chart .ct-bar:nth-of-type(4) { stroke: #B33791 !important; }
+    .line-chart .ct-bar { stroke-width: 18px; }
+</style>
+@endsection
+
+@push('scripts')
+<script>
+    @if ($role === 'admin')
+        // Bar Chart: Pemantauan Kegiatan Per Fakultas
+        new Chartist.Bar('.line-chart', {
+            labels: ['Rektorat', 'FEB', 'FST', 'FIKES'],
+            series: [
+                [
+                    {
+                        meta: JSON.stringify({
+                            unit: "Rektorat",
+                            total: {{ $pengajuan_rektorat }},
+                            items: @json($list_rektorat)
+                        }),
+                        value: {{ $pengajuan_rektorat }}
+                    },
+                    {
+                        meta: JSON.stringify({
+                            unit: "FEB",
+                            total: {{ $pengajuan_feb }},
+                            items: @json($list_feb)
+                        }),
+                        value: {{ $pengajuan_feb }}
+                    },
+                    {
+                        meta: JSON.stringify({
+                            unit: "FST",
+                            total: {{ $pengajuan_fst }},
+                            items: @json($list_fst)
+                        }),
+                        value: {{ $pengajuan_fst }}
+                    },
+                    {
+                        meta: JSON.stringify({
+                            unit: "FIKES",
+                            total: {{ $pengajuan_fikes }},
+                            items: @json($list_fikes)
+                        }),
+                        value: {{ $pengajuan_fikes }}
+                    }
+                ]
+            ]
+        }, {
+            low: 0,
+            showArea: true,
+            plugins: [
+                Chartist.plugins.tooltip({
+                    class: 'chartist-tooltip',
+                    appendToBody: true,
+                    transformTooltipTextFnc: function(meta) {
+                        return meta;
+                    }
+                })
+            ],
+            axisY: {
+                onlyInteger: true,
+                offset: 30
+            },
+            axisX: {
+                offset: 40
             }
-
-            function updateTooltipContent(node) {
-                // If already containing the table wrapper, skip (to avoid recursive loops)
-                if (node.querySelector('.tooltip-table-wrapper')) return;
-
-                const rawContent = node.textContent || "";
-                if (rawContent.includes('{"') && rawContent.includes('}')) {
-                    const startIdx = rawContent.indexOf('{');
-                    const endIdx = rawContent.lastIndexOf('}');
-
-                    if (startIdx !== -1 && endIdx !== -1 && endIdx > startIdx) {
-                        try {
-                            const jsonStr = rawContent.substring(startIdx, endIdx + 1);
-                            const data = JSON.parse(jsonStr);
-                            node.innerHTML = renderTooltipTable(data);
-                        } catch (e) {
-                            // Silent fail for non-JSON content
-                        }
+        }, [
+            ['screen and (max-width: 640px)', {
+                axisX: {
+                    labelInterpolationFnc: function(value) {
+                        if (value === 'Rektorat') return 'Rekt';
+                        if (value === 'FEB') return 'FEB';
+                        if (value === 'FST') return 'FST';
+                        if (value === 'FIKES') return 'FIKES';
+                        return value;
                     }
                 }
+            }]
+        ]);
+
+        function renderTooltipTable(data) {
+            if (!data) return '';
+            let unitName = data.unit || 'Fakultas';
+            let totalCount = typeof data.total !== 'undefined' ? data.total : (data.items ? data.items.length : 0);
+
+            let html = `
+                <div class="tooltip-table-wrapper" style="padding: 10px; font-family: inherit;">
+                    <div style="font-weight: 700; font-size: 12px; margin-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 4px; color: #34d399;">
+                        ${unitName} — Total: ${totalCount} Disetujui
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+                        <thead>
+                            <tr style="color: #94a3b8; text-transform: uppercase;">
+                                <th style="text-align: left; padding: 4px 6px;">Kegiatan</th>
+                                <th style="text-align: right; padding: 4px 6px;">Waktu</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            if (data.items && data.items.length > 0) {
+                data.items.slice(0, 5).forEach(item => {
+                    html += `
+                        <tr style="border-top: 1px solid rgba(255,255,255,0.06);">
+                            <td style="padding: 4px 6px; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${item.nama}</td>
+                            <td style="padding: 4px 6px; text-align: right; color: #cbd5e1;">${item.tgl}</td>
+                        </tr>
+                    `;
+                });
+            } else {
+                html += `<tr><td colspan="2" style="text-align:center; padding: 6px; color: #94a3b8;">Belum ada kegiatan</td></tr>`;
             }
 
-            // Observer to fix tooltips
-            const observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
-                    if (mutation.type === 'childList') {
-                        mutation.addedNodes.forEach(node => {
-                            if (node.classList && node.classList.contains('chartist-tooltip')) {
-                                updateTooltipContent(node);
-                            }
-                        });
-                    }
-                    if (mutation.target.classList && mutation.target.classList.contains('chartist-tooltip')) {
-                        updateTooltipContent(mutation.target);
-                    }
-                });
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            return html;
+        }
+
+        function updateTooltipContent(node) {
+            if (node.querySelector('.tooltip-table-wrapper')) return;
+            const rawContent = node.textContent || "";
+            if (rawContent.includes('{"') && rawContent.includes('}')) {
+                const startIdx = rawContent.indexOf('{');
+                const endIdx = rawContent.lastIndexOf('}');
+                if (startIdx !== -1 && endIdx !== -1 && endIdx > startIdx) {
+                    try {
+                        const jsonStr = rawContent.substring(startIdx, endIdx + 1);
+                        const data = JSON.parse(jsonStr);
+                        node.innerHTML = renderTooltipTable(data);
+                    } catch (e) {}
+                }
+            }
+        }
+
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList') {
+                    mutation.addedNodes.forEach(node => {
+                        if (node.classList && node.classList.contains('chartist-tooltip')) {
+                            updateTooltipContent(node);
+                        }
+                    });
+                }
+                if (mutation.target.classList && mutation.target.classList.contains('chartist-tooltip')) {
+                    updateTooltipContent(mutation.target);
+                }
             });
-            observer.observe(document.body, {
-                childList: true,
-                subtree: true,
-                characterData: true
-            });
+        });
+        observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+    @endif
 
-            // Live Search for Events
-            const searchInput = document.getElementById('eventSearchInput');
-            const eventsContainer = document.getElementById('eventsListContainer');
-            const paginationContainer = document.getElementById('eventsPaginationContainer');
-            let typingTimer;
-            const doneTypingInterval = 500; // 0.5 seconds
+    // Live Search for Events
+    const searchInput = document.getElementById('eventSearchInput');
+    const eventsContainer = document.getElementById('eventsListContainer');
+    const paginationContainer = document.getElementById('eventsPaginationContainer');
+    let typingTimer;
+    const doneTypingInterval = 400;
 
-            if (searchInput) {
-                searchInput.addEventListener('input', function() {
-                    clearTimeout(typingTimer);
-                    typingTimer = setTimeout(performSearch, doneTypingInterval);
-                });
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(performSearch, doneTypingInterval);
+        });
 
-                searchInput.addEventListener('keydown', function(event) {
-                    if (event.key === 'Enter') {
-                        event.preventDefault();
-                        clearTimeout(typingTimer);
-                        performSearch();
-                    }
-                });
+        searchInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                clearTimeout(typingTimer);
+                performSearch();
             }
+        });
+    }
 
-            function performSearch() {
-                const query = searchInput.value;
-                const url = new URL(window.location.href);
-                url.searchParams.set('search', query);
-                url.searchParams.set('page', 1); // Reset to page 1 on new search
+    function performSearch() {
+        const query = searchInput.value;
+        const url = new URL(window.location.href);
+        url.searchParams.set('search', query);
+        url.searchParams.set('page', 1);
 
-                // Update URL without reload
-                window.history.pushState({}, '', url);
+        window.history.pushState({}, '', url);
 
-                // Fetch new data
-                fetch(url, {
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    })
-                    .then(response => response.text())
-                    .then(html => {
-                        const parser = new DOMParser();
-                        const doc = parser.parseFromString(html, 'text/html');
+        fetch(url, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
 
-                        const newEvents = doc.getElementById('eventsListContainer');
-                        const newPagination = doc.getElementById('eventsPaginationContainer');
+            const newEvents = doc.getElementById('eventsListContainer');
+            const newPagination = doc.getElementById('eventsPaginationContainer');
 
-                        if (newEvents && eventsContainer) {
-                            eventsContainer.innerHTML = newEvents.innerHTML;
-                        }
-                        if (newPagination && paginationContainer) {
-                            paginationContainer.innerHTML = newPagination.innerHTML;
-                        }
-                    })
-                    .catch(error => console.error('Error fetching events:', error));
+            if (newEvents && eventsContainer) {
+                eventsContainer.innerHTML = newEvents.innerHTML;
             }
-        </script>
-        <style>
-            .chartist-tooltip {
-                position: absolute;
-                display: block;
-                min-width: 18rem;
-                max-width: 30rem;
-                padding: 0;
-                background: rgba(0, 0, 0, 0.95);
-                color: #fff;
-                font-family: inherit;
-                font-size: 0.8rem;
-                border-radius: 0.5rem;
-                pointer-events: none;
-                z-index: 10000;
-                text-align: left;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-                border: 1px solid rgba(255, 255, 255, 0.1);
-                overflow: hidden;
+            if (paginationContainer) {
+                if (newPagination) {
+                    paginationContainer.innerHTML = newPagination.innerHTML;
+                    paginationContainer.style.display = '';
+                } else {
+                    paginationContainer.innerHTML = '';
+                    paginationContainer.style.display = 'none';
+                }
             }
-
-            .tooltip-table-wrapper {
-                padding: 12px;
-            }
-
-            .tooltip-header {
-                font-weight: 700;
-                font-size: 0.9rem;
-                margin-bottom: 10px;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-                padding-bottom: 6px;
-                color: #FFEB3B;
-            }
-
-            .tooltip-table {
-                width: 100%;
-                border-collapse: collapse;
-            }
-
-            .tooltip-table th {
-                text-align: left;
-                padding: 6px 10px;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-                color: #bbb;
-                font-size: 0.75rem;
-                text-transform: uppercase;
-                letter-spacing: 0.05em;
-            }
-
-            .tooltip-table td {
-                padding: 8px 10px;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-                vertical-align: top;
-            }
-
-            .tooltip-table tr:last-child td {
-                border-bottom: none;
-            }
-        </style>
-    @endpush
+        })
+        .catch(error => console.error('Error fetching events:', error));
+    }
+</script>
+@endpush
