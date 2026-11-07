@@ -530,7 +530,7 @@
 </script>
 
 <!-- SweetAlert2 Alert Integration -->
-@include('vendor.sweetalert.alert')
+@sweetAlert
 
 </body>
 </html>

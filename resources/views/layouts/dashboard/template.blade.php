@@ -70,7 +70,7 @@
 
         <!-- navbar -->
         @include('layouts.dashboard.nav')
-        @include('sweetalert::alert')
+        @sweetAlert
 
         @yield('content')
 
