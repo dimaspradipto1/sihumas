@@ -1023,11 +1023,11 @@
                   </li>
 
                   <li class="nav-item {{ request()->routeIs('backup.*') ? 'active' : '' }}">
-                      <a href="{{ route('backup.index') }}" class="nav-link">
+                      <a href="{{ route('backup.index') }}" class="nav-link d-flex align-items-center">
                           <span class="sidebar-icon">
-                              <i class="fa-solid fa-database" style="font-size: 18px; width: 20px; text-align: center;"></i>
+                              <i class="fa-solid fa-database" style="font-size: 20px; width: 20px; text-align: center;"></i>
                           </span>
-                          <span class="sidebar-text text-capitalize" style="font-size: 12px; letter-spacing: -0.3px;">Backup Database &amp; Storage</span>
+                          <span class="sidebar-text text-capitalize" style="white-space: normal; line-height: 1.25;">Backup Database &amp; Storage</span>
                       </a>
                   </li>
               @endif
