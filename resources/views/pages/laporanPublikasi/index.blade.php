@@ -22,35 +22,8 @@
                 </button>
                 <div class="dropdown-menu dashboard-dropdown dropdown-menu-start mt-2 py-2"
                     style="max-width: 800px; width: 100%; padding: 10px;">
-                    <form class="row g-3" action="{{ route('laporan-publikasi.show') }}" method="GET">
+                    <form class="row g-3" action="{{ route('laporan-publikasi.show') }}" method="GET" target="_blank">
                         <div class="row my-2">
-                            {{-- <div class="col-md-12 my-2">
-              <select name="tahun_akademik" id="tahun_akademik" class="form-select single"
-                style="width: 100%; padding: 8px;">
-                <option value="">Pilih Tahun Akademik</option>
-                @foreach ($tahunAkademik as $tahun)
-                <option value="{{ $tahun->tahun_akademik }}" {{ ($selectedPeriode ??
-                  request('tahun_akademik'))==$tahun->tahun_akademik ? 'selected' : '' }}>
-                  {{ $tahun->tahun_akademik }}
-                </option>
-                @endforeach
-              </select>
-            </div>
-          </div>
-          <div role="separator" class="dropdown-divider my-1"></div> --}}
-
-                            {{-- <div class="row my-2">
-            <div class="col-md-12 my-2">
-              <select name="prodi" id="prodi" class="form-select single" style="width: 100%; padding: 8px;">
-                <option value="">Pilih Program Studi</option>
-                <option value="Fakultas Ekonomi dan Bisnis">Fakultas Ekonomi dan Bisnis</option>
-                <option value="Fakultas Sains dan Teknologi">Fakultas Sains dan Teknologi</option>
-                <option value="Fakultas Ilmu Kesehatan">Fakultas Ilmu Kesehatan</option>
-              </select>
-            </div>
-          </div>
-          <div role="separator" class="dropdown-divider my-1"></div> --}}
-
                             <!-- Tanggal Awal dan Tanggal Selesai -->
                             <div class="row my-2">
                                 <!-- Tanggal Awal -->
@@ -77,12 +50,13 @@
                                     </button>
                                 </div>
                                 <div class="col-md-6 col-xl-3">
-                                    <button type="submit" class="btn btn-outline-primary button-gap-all"
+                                    <a href="{{ route('laporan-publikasi.show') }}" target="_blank" class="btn btn-outline-primary button-gap-all d-inline-flex align-items-center justify-content-center"
                                         style="padding: 8px 16px; width: 100%; text-align: center;">
-                                        <i class="fa-solid fa-clipboard-list"></i> All Reports
-                                    </button>
+                                        <i class="fa-solid fa-clipboard-list me-1"></i> All Reports
+                                    </a>
                                 </div>
                             </div>
+                        </div>
                     </form>
                 </div>
             </div>

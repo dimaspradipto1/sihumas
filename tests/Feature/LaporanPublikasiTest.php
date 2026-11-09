@@ -19,6 +19,7 @@ class LaporanPublikasiTest extends TestCase
 
         $response = $this->actingAs($user)->get(route('laporan-publikasi.index'));
         $response->assertStatus(200);
+        $response->assertSee('target="_blank"', false);
         $this->assertEquals(url('laporan-publikasi/show'), route('laporan-publikasi.show'));
     }
 
