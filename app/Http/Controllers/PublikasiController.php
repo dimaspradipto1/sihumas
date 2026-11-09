@@ -73,7 +73,7 @@ class PublikasiController extends Controller
      */
     public function edit(Publikasi $publikasi)
     {
-       
+        $publikasi->loadMissing('pengajuan');
         $pengajuan = $publikasi->pengajuan;  
         return view('pages.publikasi.edit', compact('publikasi', 'pengajuan'));
     }
@@ -83,15 +83,15 @@ class PublikasiController extends Controller
      */
     public function update(Request $request, Publikasi $publikasi)
     {
-        $data['nama_kegiatan'] = $request->nama_kegiatan;
-        $data['tgl_awal'] = $request->tgl_awal;
-        $data['tgl_akhir'] = $request->tgl_akhir;
-        $data['upload_laporan'] = $request->upload_laporan;
-        $data['link_dokumentasi'] = $request->link_dokumentasi;
-        $data['link_publikasi'] = $request->link_publikasi;
+        $data = $request->only([
+            'tahun_akademik_id',
+            'upload_laporan',
+            'link_dokumentasi',
+            'link_publikasi',
+        ]);
 
         $publikasi->update($data);
-        // Alert::success('Success, Data Successfully Updated')->toToast()->autoclose(3000);
+        Alert::success('Success, Data Successfully Updated')->toToast()->autoclose(3000);
         return redirect()->route('publikasi.index');
     }
 

@@ -31,7 +31,7 @@
         <div class="row">
             <div class="col-12 mb-4">
                 <div class="card border-0 shadow components-section">
-                    <form action="{{ route('publikasi.update', $publikasi->id) }}" method="POST">
+                    <form action="{{ route('publikasi.update', $publikasi) }}" method="POST">
                         @csrf
                         @method('PUT')
 
@@ -42,7 +42,7 @@
                                     <!-- Nama Kegiatan -->
                                     <div class="mb-4">
                                         <label for="nama_kegiatan" class="text-uppercase">Nama Kegiatan</label>
-                                        <textarea name="nama_kegiatan" class="form-control" id="nama_kegiatan" readonly>{{ old('nama_kegiatan') ?? ($pengajuan->nama_kegiatan ?? '') }}</textarea>
+                                        <textarea name="nama_kegiatan" class="form-control" id="nama_kegiatan" readonly>{{ old('nama_kegiatan') ?? ($pengajuan?->nama_kegiatan ?? '') }}</textarea>
                                     </div>
 
                                     <div class="row mb-4">
@@ -51,7 +51,7 @@
                                             <div class="mb-4 mb-md-0">
                                                 <label for="tgl_awal" class="text-uppercase">Tanggal Awal</label>
                                                 <input type="date" name="tgl_awal"
-                                                    value="{{ old('tgl_awal') ?? $pengajuan->tgl_awal }}"
+                                                    value="{{ old('tgl_awal') ?? ($pengajuan?->tgl_awal ?? '') }}"
                                                     class="form-control" id="tgl_awal" readonly>
                                             </div>
                                         </div>
@@ -60,7 +60,7 @@
                                             <div class="mb-4 mb-md-0">
                                                 <label for="tgl_akhir" class="text-uppercase">Tanggal Akhir</label>
                                                 <input type="date" name="tgl_akhir"
-                                                    value="{{ old('tgl_selesai') ?? $pengajuan->tgl_selesai }}"
+                                                    value="{{ old('tgl_akhir') ?? (old('tgl_selesai') ?? ($pengajuan?->tgl_selesai ?? '')) }}"
                                                     class="form-control" id="tgl_akhir" readonly>
                                             </div>
                                         </div>
@@ -90,25 +90,19 @@
                                     <!-- Link Laporan -->
                                     <div class="mb-4">
                                         <label for="upload_laporan" class="text-uppercase">Link Laporan</label>
-                                        <textarea name="upload_laporan" class="form-control" id="upload_laporan">{{ old('upload_laporan') ?? ($pengajuan->upload_laporan ?? '') }}</textarea>
-                                        {{-- <input type="text" name="upload_laporan" class="form-control"
-                                            value="{{ old('upload_laporan') ?? $pengajuan->upload_laporan }}"> --}}
+                                        <textarea name="upload_laporan" class="form-control" id="upload_laporan">{{ old('upload_laporan') ?? ($publikasi->upload_laporan ?? ($pengajuan->upload_laporan ?? '')) }}</textarea>
                                     </div>
 
                                     <!-- Link Dokumentasi -->
                                     <div class="mb-4">
                                         <label for="link_dokumentasi" class="text-uppercase">Link Dokumentasi</label>
-                                        <textarea name="link_dokumentasi" class="form-control" id="link_dokumentasi">{{ old('link_dokumentasi') ?? ($pengajuan->link_dokumentasi ?? '') }}</textarea>
-                                        {{-- <input type="text" name="link_dokumentasi" class="form-control"
-                                            value="{{ old('link_dokumentasi') ?? $pengajuan->link_dokumentasi }}"> --}}
+                                        <textarea name="link_dokumentasi" class="form-control" id="link_dokumentasi">{{ old('link_dokumentasi') ?? ($publikasi->link_dokumentasi ?? ($pengajuan->link_dokumentasi ?? '')) }}</textarea>
                                     </div>
 
                                     <!-- Link Publikasi -->
                                     <div class="mb-4">
                                         <label for="link_publikasi" class="text-uppercase">Link Publikasi</label>
-                                        <textarea name="link_publikasi" class="form-control" id="link_publikasi">{{ old('link_publikasi') ?? ($pengajuan->link_publikasi ?? '') }}</textarea>
-                                        {{-- <input type="text" name="link_publikasi" class="form-control"
-                                            value="{{ old('link_publikasi') ?? $pengajuan->link_publikasi }}"> --}}
+                                        <textarea name="link_publikasi" class="form-control" id="link_publikasi">{{ old('link_publikasi') ?? ($publikasi->link_publikasi ?? ($pengajuan->link_publikasi ?? '')) }}</textarea>
                                     </div>
                                 </div>
                             </div>

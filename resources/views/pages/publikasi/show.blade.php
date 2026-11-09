@@ -42,7 +42,7 @@
                                             <td class="text-uppercase text-dark text-xxs font-weight-bolder opacity-7 px-1"
                                                 style="width: 1%;">:</td>
                                             <td class="text-uppercase text-dark text-xxs font-weight-bolder opacity-7 text-capitalize"
-                                                style="width: 95%;">{{ $publikasi->tahunAkademik->tahun_akademik }}</td>
+                                                style="width: 95%;">{{ $publikasi->tahunAkademik?->tahun_akademik ?? '-' }}</td>
                                         </tr>
 
                                         <tr>
@@ -52,7 +52,7 @@
                                                 :</td>
                                             <td
                                                 class="text-uppercase text-dark text-xxs font-weight-bolder opacity-7 text-capitalize">
-                                                {{ $publikasi->pengajuan->nama_kegiatan }}</td>
+                                                {{ $publikasi->pengajuan?->nama_kegiatan ?? '-' }}</td>
                                         </tr>
                                         <tr>
                                             <td class="text-uppercase text-dark text-xxs font-weight-bolder opacity-7">
@@ -60,7 +60,7 @@
                                             <td class="text-uppercase text-dark text-xxs font-weight-bolder opacity-7 px-1">
                                                 :</td>
                                             <td class="text-uppercase text-dark text-xxs font-weight-bolder opacity-7">
-                                                {{ \Carbon\Carbon::parse($publikasi->pengajuan->tgl_awal)->locale('id')->translatedFormat('l, d F y') }}
+                                                {{ $publikasi->pengajuan?->tgl_awal ? \Carbon\Carbon::parse($publikasi->pengajuan->tgl_awal)->locale('id')->translatedFormat('l, d F Y') : '-' }}
                                             </td>
                                         </tr>
                                         <tr>
@@ -69,7 +69,7 @@
                                             <td class="text-uppercase text-dark text-xxs font-weight-bolder opacity-7 px-1">
                                                 :</td>
                                             <td class="text-uppercase text-dark text-xxs font-weight-bolder opacity-7">
-                                                {{ \Carbon\Carbon::parse($publikasi->pengajuan->tgl_selesai)->locale('id')->translatedFormat('l, d F Y') }}
+                                                {{ $publikasi->pengajuan?->tgl_selesai ? \Carbon\Carbon::parse($publikasi->pengajuan->tgl_selesai)->locale('id')->translatedFormat('l, d F Y') : '-' }}
                                             </td>
                                         </tr>
                                         <tr>

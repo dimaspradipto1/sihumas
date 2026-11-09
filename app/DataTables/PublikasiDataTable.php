@@ -24,11 +24,11 @@ class PublikasiDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         if (auth()->user()->is_admin) {
-            // When the user is an admin, ensure the query properly joins the 'pengajuan' table
-            $query = Publikasi::with('pengajuan');
+            // When the user is an admin, ensure the query properly joins relations
+            $query = Publikasi::with(['pengajuan', 'tahunAkademik', 'user']);
         } else {
             // For non-admin users, filter the results based on the current user's ID
-            $query = Publikasi::with('pengajuan')
+            $query = Publikasi::with(['pengajuan', 'tahunAkademik', 'user'])
                 ->where('publikasis.user_id', auth()->user()->id);
         }
 
@@ -36,15 +36,20 @@ class PublikasiDataTable extends DataTable
             ->addIndexColumn()
             ->addColumn('DT_RowIndex', '')
             ->addColumn('nama_kegiatan', function ($publikasi) {
-                return '<a href="' . route('pengajuan.edit', $publikasi->pengajuan->id) . '" class="text-decoration-none text-success">' . $publikasi->pengajuan->nama_kegiatan . '</a>';
+                if (!$publikasi->pengajuan) {
+                    return '-';
+                }
+                return '<a href="' . route('pengajuan.edit', $publikasi->pengajuan->id) . '" class="text-decoration-none text-success">' . e($publikasi->pengajuan->nama_kegiatan) . '</a>';
             })
             ->addColumn('tgl_awal', function ($publikasi) {
                 Carbon::setlocale('id');
-                return Carbon::parse($publikasi->tgl_awal)->translatedFormat('l, d F Y');
+                $tgl = $publikasi->tgl_awal ?? $publikasi->pengajuan?->tgl_awal;
+                return $tgl ? Carbon::parse($tgl)->translatedFormat('l, d F Y') : '-';
             })
             ->addColumn('tgl_akhir', function ($publikasi) {
                 Carbon::setLocale('id');
-                return Carbon::parse($publikasi->tgl_akhir)->translatedFormat('l, d F Y');
+                $tgl = $publikasi->tgl_akhir ?? $publikasi->pengajuan?->tgl_selesai;
+                return $tgl ? Carbon::parse($tgl)->translatedFormat('l, d F Y') : '-';
             })
             ->editColumn('pengajuan_id', function ($publikasi) {
                 // Use the 'pengajuan' relation to fetch 'nama_kegiatan'
@@ -54,16 +59,13 @@ class PublikasiDataTable extends DataTable
                 return $publikasi->upload_laporan ? '<a href="' . $publikasi->upload_laporan . '" target="_blank" class="text-success px-3 me-1"><i class="fa-solid fa-eye"></i> Lihat Laporan</a>' : '-';
             })
             ->editColumn('tahun_akademik_id', function ($item) {
-                return $item->tahun_akademik ? $item->tahun_akademik->tahun_akademik : '-';
+                return $item->tahunAkademik ? $item->tahunAkademik->tahun_akademik : '-';
             })
             ->addColumn('user_id', function ($publikasi) {
                 if (auth()->user()->is_admin) {
-                    return $publikasi->user->name;
+                    return $publikasi->user?->name ?? '-';
                 }
                 return '';
-            })
-            ->editColumn('upload_laporan', function ($publikasi) {
-                return $publikasi->upload_laporan ? '<a href="' . $publikasi->upload_laporan . '" target="_blank" class="text-success px-3 me-1"><i class="fa-solid fa-eye"></i> Lihat Laporan</a>' : '-';
             })
             ->editColumn('link_dokumentasi', function ($publikasi) {
                 return $publikasi->link_dokumentasi ? '<a href="' . $publikasi->link_dokumentasi . '" target="_blank" class="text-secondary px-3 me-1"><i class="fa-solid fa-eye"></i> Lihat Dokumentasi</a>' : '-';
@@ -74,12 +76,12 @@ class PublikasiDataTable extends DataTable
 
             ->addColumn('action', function ($publikasi) {
                 return '
-                     <a href="' . route('publikasi.show', $publikasi->id) . '" class="btn btn-sm btn-primary text-white px-3"><i class="fa-solid fa-eye"></i></a>
-                     <a href="' . route('publikasi.edit', $publikasi->id) . '" class="btn btn-sm btn-warning text-white px-3"><i class="fa-solid fa-pen-to-square"></i></a>
-                     <form action="' . route('publikasi.destroy', $publikasi->id) . '" method="POST" style="display: inline">
+                     <a href="' . route('publikasi.show', $publikasi) . '" class="btn btn-sm btn-primary text-white px-3"><i class="fa-solid fa-eye"></i></a>
+                     <a href="' . route('publikasi.edit', $publikasi) . '" class="btn btn-sm btn-warning text-white px-3"><i class="fa-solid fa-pen-to-square"></i></a>
+                     <form action="' . route('publikasi.destroy', $publikasi) . '" method="POST" style="display: inline">
                          ' . csrf_field() . '
                          ' . method_field('DELETE') . '
-                         <button type="submit" class="btn btn-sm btn-danger px-3" onclick="return confrm(\'Yakin ingin menghapus data ini?\')"><i class="fa-solid fa-trash-can"></i></button>
+                         <button type="submit" class="btn btn-sm btn-danger px-3" onclick="return confirm(\'Yakin ingin menghapus data ini?\')"><i class="fa-solid fa-trash-can"></i></button>
                      </form>
                  ';
             })
