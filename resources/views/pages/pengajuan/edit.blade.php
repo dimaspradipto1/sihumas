@@ -558,10 +558,10 @@
                 let message = `*PENUGASAN KEGIATAN HUMAS*\n\n` +
                     `Halo *${nama}*,\n` +
                     `Anda ditugaskan untuk kegiatan berikut:\n\n` +
-                    `📌 *Nama Kegiatan:* ${kegiatan}\n` +
-                    `🏢 *Unit:* ${unit}\n` +
-                    `📝 *Status:* ${statusText}\n` +
-                    `💬 *Catatan:* ${catatan}\n\n` +
+                    `- *Nama Kegiatan:* ${kegiatan}\n` +
+                    `- *Unit:* ${unit}\n` +
+                    `- *Status:* ${statusText}\n` +
+                    `- *Catatan:* ${catatan}\n\n` +
                     `Mohon untuk dipersiapkan. Terima kasih.\n_SIHUMAS_`;
 
                 window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');

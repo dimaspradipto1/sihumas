@@ -327,13 +327,13 @@ class PengajuanController extends Controller
                 $message = "*PENUGASAN KEGIATAN HUMAS*\n\n" .
                     "Halo *{$namaPic}*,\n" .
                     "Anda telah ditugaskan untuk kegiatan berikut:\n\n" .
-                    "📌 *Nama Kegiatan:* {$kegiatan}\n" .
-                    "🏢 *Unit:* {$unit}\n" .
-                    "📅 *Tanggal:* {$tglAwal} s/d {$tglSelesai}\n" .
-                    "⏰ *Waktu:* {$waktu}\n" .
-                    "📍 *Tempat:* {$tempat}\n" .
-                    "👤 *Pemohon:* {$pemohon} ({$pemohonWa})\n" .
-                    "📝 *Status / Catatan:* {$status} (" . ($catatan !== '-' ? $catatan : 'Telah diverifikasi') . ")\n\n" .
+                    "- *Nama Kegiatan:* {$kegiatan}\n" .
+                    "- *Unit:* {$unit}\n" .
+                    "- *Tanggal:* {$tglAwal} s/d {$tglSelesai}\n" .
+                    "- *Waktu:* {$waktu}\n" .
+                    "- *Tempat:* {$tempat}\n" .
+                    "- *Pemohon:* {$pemohon} ({$pemohonWa})\n" .
+                    "- *Status / Catatan:* {$status} (" . ($catatan !== '-' ? $catatan : 'Telah diverifikasi') . ")\n\n" .
                     "Mohon untuk dikoordinasikan dan dipersiapkan dengan baik. Terima kasih.\n\n" .
                     "_Sistem Informasi Humas (SIHUMAS)_";
 
