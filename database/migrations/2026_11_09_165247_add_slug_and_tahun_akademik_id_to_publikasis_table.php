@@ -12,9 +12,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('publikasis', function (Blueprint $table) {
-            $table->string('slug')->nullable()->unique()->after('id');
-            $table->foreignId('tahun_akademik_id')->nullable()->after('user_id')->constrained('tahun_akademiks')->nullOnDelete();
+            if (!Schema::hasColumn('publikasis', 'slug')) {
+                $table->string('slug')->nullable()->unique()->after('id');
+            }
+            if (!Schema::hasColumn('publikasis', 'tahun_akademik_id')) {
+                $table->foreignId('tahun_akademik_id')->nullable()->after('user_id')->constrained('tahun_akademiks')->nullOnDelete();
+            }
         });
+
+        if (Schema::hasColumn('publikasis', 'slug')) {
+            \App\Models\Publikasi::with('pengajuan')->whereNull('slug')->orWhere('slug', '')->get()->each(function ($p) {
+                $title = $p->pengajuan?->nama_kegiatan;
+                $p->slug = \App\Models\Publikasi::generateUniqueSlug($title, $p->id);
+                $p->saveQuietly();
+            });
+        }
     }
 
     /**

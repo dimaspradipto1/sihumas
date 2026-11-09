@@ -75,10 +75,11 @@ class PublikasiDataTable extends DataTable
             })
 
             ->addColumn('action', function ($publikasi) {
+                $target = !empty($publikasi->slug) ? $publikasi->slug : $publikasi->id;
                 return '
-                     <a href="' . route('publikasi.show', $publikasi) . '" class="btn btn-sm btn-primary text-white px-3"><i class="fa-solid fa-eye"></i></a>
-                     <a href="' . route('publikasi.edit', $publikasi) . '" class="btn btn-sm btn-warning text-white px-3"><i class="fa-solid fa-pen-to-square"></i></a>
-                     <form action="' . route('publikasi.destroy', $publikasi) . '" method="POST" style="display: inline">
+                     <a href="' . route('publikasi.show', $target) . '" class="btn btn-sm btn-primary text-white px-3"><i class="fa-solid fa-eye"></i></a>
+                     <a href="' . route('publikasi.edit', $target) . '" class="btn btn-sm btn-warning text-white px-3"><i class="fa-solid fa-pen-to-square"></i></a>
+                     <form action="' . route('publikasi.destroy', $target) . '" method="POST" style="display: inline">
                          ' . csrf_field() . '
                          ' . method_field('DELETE') . '
                          <button type="submit" class="btn btn-sm btn-danger px-3" onclick="return confirm(\'Yakin ingin menghapus data ini?\')"><i class="fa-solid fa-trash-can"></i></button>

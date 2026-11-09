@@ -63,6 +63,11 @@ class Publikasi extends Model
         return 'slug';
     }
 
+    public function getRouteKey()
+    {
+        return !empty($this->slug) ? $this->slug : (string) $this->id;
+    }
+
     public function resolveRouteBinding($value, $field = null)
     {
         return $this->where($field ?? 'slug', $value)

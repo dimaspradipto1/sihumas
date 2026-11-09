@@ -62,4 +62,22 @@ class PublikasiTest extends TestCase
         ]);
         $this->assertEquals('workshop-ui-ux-modern-2', $duplicatePublikasi->slug);
     }
+
+    public function test_publikasi_with_null_slug_falls_back_to_id_gracefully(): void
+    {
+        $user = User::factory()->create([
+            'is_admin' => 1,
+        ]);
+
+        $publikasi = new Publikasi();
+        $publikasi->id = 999;
+        $publikasi->slug = null;
+
+        // Must not throw UrlGenerationException
+        $url = route('publikasi.show', $publikasi);
+        $this->assertEquals(url('/publikasi/999'), $url);
+
+        $urlEdit = route('publikasi.edit', $publikasi);
+        $this->assertEquals(url('/publikasi/999/edit'), $urlEdit);
+    }
 }
