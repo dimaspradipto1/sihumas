@@ -207,184 +207,210 @@
                     @endif
 
                     @if (Auth::user()->is_admin)
-                    <div class="card border-0 shadow mb-4">
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered">
-                                    {{-- <tr>
-                                        <th>Tahun Akademik</th>
-                                        <td
-                                            class="badge bg-primary text-uppercase font-weight-bolder text-white mx-3 my-2 badge-xl">
-                                            @foreach ($tahunAkademik as $tahun)
-                                            @if ($tahun->id == $pengajuan->tahun_akademik_id)
-                                            {{ $tahun->tahun_akademik }}
-                                            @endif
-                                            @endforeach
-                                        </td>
-                                    </tr> --}}
-                                    <tr>
-                                        <th>Nama Kegiatan</th>
-                                        <td>{{ $pengajuan->nama_kegiatan }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Tanggal Kegiatan</th>
-                                        {{-- <td>{{
-                                            \Carbon\Carbon::parse($pengajuan->tgl_awal)->locale('id')->isoFormat('dddd,
-                                            D MMMM Y') }}
-                                        </td> --}}
-                                        <td>
-                                            <input type="date" name="tgl_awal" id="tgl_awal" class="form-control" value="{{ $pengajuan->tgl_awal }}">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Tanggal Selesai</th>
-                                        {{-- <td>{{
-                                            \Carbon\Carbon::parse($pengajuan->tgl_selesai)->locale('id')->isoFormat('dddd,
-                                            D MMMM Y') }}
-                                        </td> --}}
-                                        <td>
-                                            <input type="date" name="tgl_selesai" id="tgl_selesai" class="form-control" value="{{ $pengajuan->tgl_selesai }}">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Waktu Kegiatan</th>
-                                        <td>{{ $pengajuan->jam_kegiatan }} WIB</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Waktu Selesai</th>
-                                        <td>{{ $pengajuan->waktu_selesai }} WIB</td>
-                                        {{-- <td><input type="time" name="waktu_selesai" value="{{ $pengajuan->waktu_selesai }}"></td> --}}
-                                    </tr>
-                                    <tr>
-                                        <th>Link Zoom</th>
-                                        <td>{{ $pengajuan->link_zoom }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Deskripsi</th>
-                                        <td>{{ trim(strip_tags($pengajuan->deskripsi_kegiatan ?? '')) ?: '-' }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Kebutuhan Perlengkapan</th>
-                                        <td>{{ trim(strip_tags($pengajuan->perlengkapan ?? '')) ?: '-' }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Unit Kegiatan</th>
-                                        <td>{{ $pengajuan->unit_kegiatan }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Status Pengajuan</th>
-                                        <td>
-                                            @if ($pengajuan->status == 'pending')
-                                            <span class="badge bg-warning badge-xl px-3 py-2">{{ $pengajuan->status }}
-                                                <i class="fa-solid fa-spinner"></i></span>
-                                            @elseif($pengajuan->status == 'diterima')
-                                            <span class="badge bg-success badge-xl px-3 py-2">{{ $pengajuan->status }}
-                                                <i class="fa-solid fa-check"></i></span>
-                                            @elseif($pengajuan->status == 'ditolak')
-                                            <span class="badge bg-danger badge-xl px-3 py-2">{{ $pengajuan->status }}
-                                                <i class="fa-solid fa-xmark"></i></span>
-                                            @endif
-                                        </td>
-                                    </tr>
+                    <div class="card-body p-4">
+                        <div class="row">
+                            <!-- Kolom Kiri: Detail Pengajuan / Review -->
+                            <div class="col-12 col-xl-7 mb-4">
+                                <div class="card border border-light shadow-sm h-100">
+                                    <div class="card-header bg-gray-100 py-3">
+                                        <h5 class="card-title mb-0 text-gray-800">
+                                            <i class="fa-solid fa-file-lines me-2 text-primary"></i> Detail Pengajuan (Review)
+                                        </h5>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped mb-0">
+                                                <tbody>
+                                                    <tr>
+                                                        <th style="width: 35%;" class="ps-3">Pemohon</th>
+                                                        <td>
+                                                            <strong>{{ $pengajuan->user?->name ?? '-' }}</strong>
+                                                            @if ($pengajuan->user?->email)
+                                                                <br><small class="text-muted"><i class="fa-regular fa-envelope me-1"></i>{{ $pengajuan->user->email }}</small>
+                                                            @endif
+                                                            @if ($pengajuan->user?->no_wa)
+                                                                <br><small class="text-success"><i class="fa-brands fa-whatsapp me-1"></i>{{ $pengajuan->user->no_wa }}</small>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="ps-3">Nama Kegiatan</th>
+                                                        <td><span class="badge bg-primary text-uppercase">{{ $pengajuan->nama_kegiatan }}</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="ps-3">Tanggal Kegiatan</th>
+                                                        <td>
+                                                            <div class="row g-2">
+                                                                <div class="col-6">
+                                                                    <small class="text-muted d-block">Mulai:</small>
+                                                                    <input type="date" name="tgl_awal" id="tgl_awal" class="form-control form-control-sm" value="{{ $pengajuan->tgl_awal }}">
+                                                                </div>
+                                                                <div class="col-6">
+                                                                    <small class="text-muted d-block">Selesai:</small>
+                                                                    <input type="date" name="tgl_selesai" id="tgl_selesai" class="form-control form-control-sm" value="{{ $pengajuan->tgl_selesai }}">
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="ps-3">Waktu Kegiatan</th>
+                                                        <td>{{ $pengajuan->jam_kegiatan }} WIB - {{ $pengajuan->waktu_selesai }} WIB</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="ps-3">Unit Kegiatan</th>
+                                                        <td>{{ $pengajuan->unit_kegiatan }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="ps-3">Tempat Kegiatan</th>
+                                                        <td>{{ $pengajuan->tempat_kegiatan ?? '-' }}</td>
+                                                    </tr>
+                                                    @if ($pengajuan->link_zoom)
+                                                    <tr>
+                                                        <th class="ps-3">Link Zoom</th>
+                                                        <td>
+                                                            <a href="{{ $pengajuan->link_zoom }}" target="_blank" class="text-decoration-underline text-break">
+                                                                {{ $pengajuan->link_zoom }}
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    @endif
+                                                    <tr>
+                                                        <th class="ps-3">Deskripsi</th>
+                                                        <td>{{ trim(strip_tags($pengajuan->deskripsi_kegiatan ?? '')) ?: '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="ps-3">Kebutuhan Perlengkapan</th>
+                                                        <td>{{ trim(strip_tags($pengajuan->perlengkapan ?? '')) ?: '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="ps-3">File Lampiran</th>
+                                                        <td>
+                                                            @if ($pengajuan->upload_file)
+                                                                <a href="{{ asset('storage/' . $pengajuan->upload_file) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                                    <i class="fa-solid fa-file-arrow-down me-1"></i> Unduh File ({{ basename($pengajuan->upload_file) }})
+                                                                </a>
+                                                            @else
+                                                                <span class="text-muted">Tidak ada file</span>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="ps-3">Gambar / Desain (PNG)</th>
+                                                        <td>
+                                                            @if ($pengajuan->upload_png)
+                                                                <div>
+                                                                    <a href="{{ asset('storage/' . $pengajuan->upload_png) }}" target="_blank">
+                                                                        <img src="{{ asset('storage/' . $pengajuan->upload_png) }}" alt="Desain" class="img-thumbnail" style="max-height: 140px;">
+                                                                    </a>
+                                                                    <div class="mt-1">
+                                                                        <a href="{{ asset('storage/' . $pengajuan->upload_png) }}" target="_blank" class="btn btn-xs btn-outline-success">
+                                                                            <i class="fa-solid fa-eye me-1"></i> Lihat Gambar Penuh
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            @else
+                                                                <span class="text-muted">Tidak ada gambar</span>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                                    <tr>
-                                        @if (Auth::user()->is_admin)
-                                        <th>Edit Status Pengajuan</th>
-                                        <td>
-                                            <div class="mb-4">
-                                                <label for="status" class="text-uppercase">status</label>
-                                                <div class="form-group">
-                                                    <select class="form-control form-control-sm" name="status"
-                                                        id="status">
-                                                        <option value="pending" {{ $pengajuan->status == 'pending' ?
-                                                            'selected' : '' }}>
-                                                            pending</option>
-                                                        <option value="diterima" {{ $pengajuan->status == 'diterima' ?
-                                                            'selected' : '' }}>
-                                                            diterima</option>
-                                                        <option value="ditolak" {{ $pengajuan->status == 'ditolak' ?
-                                                            'selected' : '' }}>
-                                                            ditolak</option>
-                                                    </select>
-                                                </div>
+                            <!-- Kolom Kanan: Verifikasi & Penugasan -->
+                            <div class="col-12 col-xl-5 mb-4">
+                                <div class="card border border-light shadow-sm">
+                                    <div class="card-header bg-gray-100 py-3">
+                                        <h5 class="card-title mb-0 text-gray-800">
+                                            <i class="fa-solid fa-clipboard-check me-2 text-success"></i> Verifikasi & Penugasan
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Status Pengajuan -->
+                                        <div class="mb-3">
+                                            <label for="status" class="form-label font-weight-bold">Status Pengajuan <span class="text-danger">*</span></label>
+                                            <select class="form-select" name="status" id="status" required>
+                                                <option value="pending" {{ $pengajuan->status == 'pending' ? 'selected' : '' }}>Pending</option>
+                                                <option value="diterima" {{ $pengajuan->status == 'diterima' ? 'selected' : '' }}>Diterima</option>
+                                                <option value="ditolak" {{ $pengajuan->status == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                                            </select>
+                                        </div>
 
+                                        <!-- Petugas Ditugaskan -->
+                                        <div class="mb-3">
+                                            <label for="petugas_ditugaskan" class="form-label font-weight-bold">Petugas / PIC yang Ditugaskan</label>
+                                            <input type="text" class="form-control" name="petugas_ditugaskan" id="petugas_ditugaskan"
+                                                value="{{ old('petugas_ditugaskan', $pengajuan->petugas_ditugaskan) }}"
+                                                placeholder="Contoh: Habib dan Ujang / Tim Dokumentasi">
+                                            <small class="text-muted">Nama petugas humas yang ditugaskan untuk kegiatan ini.</small>
+                                        </div>
+
+                                        <!-- Nomor WhatsApp Tujuan -->
+                                        <div class="mb-3">
+                                            <label for="no_wa_tujuan" class="form-label font-weight-bold">Nomor WhatsApp Tujuan</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-success text-white"><i class="fa-brands fa-whatsapp"></i></span>
+                                                <input type="text" class="form-control" name="no_wa_tujuan" id="no_wa_tujuan"
+                                                    value="{{ old('no_wa_tujuan', $pengajuan->no_wa_tujuan ?? $pengajuan->user?->no_wa) }}"
+                                                    placeholder="Contoh: 08123456789 atau 628123456789">
                                             </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Alasan Ditolak/Diterima</th>
-                                        <td>
-                                            <textarea class="form-control" name="alasan_ditolak" rows="3"
-                                                placeholder="Masukkan alasan ditolak/diterima jika tidak ada masukan berikan tanda (-)">{{ old('alasan_ditolak', $pengajuan->alasan_ditolak) ?: '' }}</textarea>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Email Tujuan</th>
-                                        <td>
-                                            <input type="email" class="form-control" name="email_tujuan"
-                                                value="{{ old('email_tujuan', $pengajuan->email_tujuan) }}"
+                                            <div class="d-flex flex-wrap gap-1 mt-2">
+                                                @if ($pengajuan->user?->no_wa)
+                                                    <button type="button" class="btn btn-xs btn-outline-primary" onclick="setNomorWa('{{ $pengajuan->user->no_wa }}')">
+                                                        <i class="fa-solid fa-user me-1"></i> WA Pemohon ({{ $pengajuan->user->no_wa }})
+                                                    </button>
+                                                @endif
+                                                <button type="button" class="btn btn-xs btn-success text-white" onclick="kirimWhatsAppLangsung()">
+                                                    <i class="fa-brands fa-whatsapp me-1"></i> Chat WhatsApp
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Email Tujuan -->
+                                        <div class="mb-3">
+                                            <label for="email_tujuan" class="form-label font-weight-bold">Email Tujuan Notifikasi</label>
+                                            <input type="email" class="form-control" name="email_tujuan" id="email_tujuan"
+                                                value="{{ old('email_tujuan', $pengajuan->email_tujuan ?? $pengajuan->user?->email) }}"
                                                 placeholder="contoh: pengguna@gmail.com">
-                                        </td>
-                                    </tr>
-                                    {{-- Menampilkan tr jika nama_kegiatan memuat 'Desain' --}}
-                                    @if ($pengajuan->nama_kegiatan == 'Desain' || $pengajuan->nama_kegiatan == 'Desain dan Dokumentasi')
-                                    <tr>
-                                        <th>Link Desain</th>
-                                        <td>
-                                            <textarea class="form-control" name="link_desain"
-                                                rows="3">{{ old('link_desain', $pengajuan->link_desain) }}</textarea>
-                                        </td>
-                                    </tr>
-                                    @endif
-                                    <tr>
-                                        <th>File Lampiran</th>
-                                        <td>
-                                            @if ($pengajuan->upload_file)
-                                                <a href="{{ asset('storage/' . $pengajuan->upload_file) }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                                    <i class="fa-solid fa-file-arrow-down me-1"></i> Unduh File ({{ basename($pengajuan->upload_file) }})
-                                                </a>
-                                            @else
-                                                <span class="text-muted">Tidak ada file lampiran</span>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Gambar / Desain (PNG)</th>
-                                        <td>
-                                            @if ($pengajuan->upload_png)
-                                                <div class="d-inline-block">
-                                                    <a href="{{ asset('storage/' . $pengajuan->upload_png) }}" target="_blank">
-                                                        <img src="{{ asset('storage/' . $pengajuan->upload_png) }}" alt="Desain" class="img-thumbnail" style="max-height: 150px;">
-                                                    </a>
-                                                    <div class="mt-1">
-                                                        <a href="{{ asset('storage/' . $pengajuan->upload_png) }}" target="_blank" class="btn btn-xs btn-outline-success">
-                                                            <i class="fa-solid fa-eye me-1"></i> Buka Gambar Penuh
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            @else
-                                                <span class="text-muted">Tidak ada gambar</span>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                    @endif
-                                    </tr>
-                                </table>
-                                <button class="btn btn-gray-800 d-inline-flex align-items-center me-2 aria-haspopup="
-                                    true" onclick="return confirm('Yakin ingin mengubah status pengajuan?')">
-                                    <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 6v6m0 0v6m0-6h6m-6 0H6">
-                                        </path>
-                                    </svg>
-                                    UPDATE
-                                </button>
-                                <a href="{{ route('pengajuan.index') }}"
-                                    class="btn btn-danger d-inline-flex align-items-center me-2">
-                                    BACK
-                                </a>
-                                </tr>
+                                        </div>
+
+                                        <!-- Alasan / Catatan Verifikasi -->
+                                        <div class="mb-3">
+                                            <label for="alasan_ditolak" class="form-label font-weight-bold">Catatan / Alasan Verifikasi</label>
+                                            <textarea class="form-control" name="alasan_ditolak" id="alasan_ditolak" rows="3"
+                                                placeholder="Tuliskan catatan verifikasi atau alasan bila status ditolak/diterima...">{{ old('alasan_ditolak', $pengajuan->alasan_ditolak) ?: '' }}</textarea>
+                                        </div>
+
+                                        <!-- Link Desain jika relevan -->
+                                        @if ($pengajuan->nama_kegiatan == 'Desain' || $pengajuan->nama_kegiatan == 'Desain dan Dokumentasi')
+                                        <div class="mb-3">
+                                            <label for="link_desain" class="form-label font-weight-bold">Link Desain</label>
+                                            <textarea class="form-control" name="link_desain" id="link_desain" rows="2"
+                                                placeholder="Masukkan link Google Drive / Figma / Canva desain...">{{ old('link_desain', $pengajuan->link_desain) }}</textarea>
+                                        </div>
+                                        @endif
+
+                                        <!-- Action Buttons -->
+                                        <div class="pt-3 border-top d-flex gap-2">
+                                            <button type="submit" class="btn btn-gray-800 d-inline-flex align-items-center"
+                                                onclick="return confirm('Yakin ingin menyimpan perubahan verifikasi dan penugasan?')">
+                                                <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M12 6v6m0 0v6m0-6h6m-6 0H6">
+                                                    </path>
+                                                </svg>
+                                                UPDATE
+                                            </button>
+                                            <a href="{{ route('pengajuan.index') }}" class="btn btn-danger d-inline-flex align-items-center">
+                                                <i class="fa-solid fa-right-from-bracket me-2"></i> BACK
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -411,6 +437,51 @@
                     preview.src = '#';
                     previewContainer.classList.add('d-none');
                 }
+            }
+
+            function setNomorWa(no) {
+                const input = document.getElementById('no_wa_tujuan');
+                if (input) {
+                    input.value = no;
+                    input.focus();
+                }
+            }
+
+            function kirimWhatsAppLangsung() {
+                const inputWa = document.getElementById('no_wa_tujuan');
+                let rawPhone = inputWa ? inputWa.value.trim() : '';
+                if (!rawPhone) {
+                    alert('Silakan masukkan nomor WhatsApp tujuan terlebih dahulu.');
+                    if (inputWa) inputWa.focus();
+                    return;
+                }
+
+                let phone = rawPhone.replace(/\D/g, '');
+                if (phone.startsWith('0')) {
+                    phone = '62' + phone.substring(1);
+                } else if (phone.startsWith('8')) {
+                    phone = '62' + phone;
+                }
+
+                const kegiatan = @json($pengajuan->nama_kegiatan);
+                const unit = @json($pengajuan->unit_kegiatan);
+                const statusSelect = document.getElementById('status');
+                const statusText = statusSelect ? statusSelect.options[statusSelect.selectedIndex].text.toUpperCase() : '';
+                const petugasInput = document.getElementById('petugas_ditugaskan');
+                const petugas = (petugasInput && petugasInput.value.trim()) ? petugasInput.value.trim() : '-';
+                const alasanInput = document.getElementById('alasan_ditolak');
+                const catatan = (alasanInput && alasanInput.value.trim()) ? alasanInput.value.trim() : '-';
+
+                let message = `*UPDATE PENGAJUAN HUMAS*\n\n` +
+                    `*Kegiatan:* ${kegiatan}\n` +
+                    `*Unit:* ${unit}\n` +
+                    `*Status:* ${statusText}\n` +
+                    `*Petugas Ditugaskan:* ${petugas}\n` +
+                    `*Catatan/Alasan:* ${catatan}\n\n` +
+                    `Sistem Informasi Humas (SIHUMAS)`;
+
+                const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+                window.open(url, '_blank');
             }
         </script>
     @endpush

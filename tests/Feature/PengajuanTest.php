@@ -87,5 +87,58 @@ class PengajuanTest extends TestCase
         $showResponse->assertSee('Gambar / Desain (PNG)');
         $showResponse->assertSee(basename($pengajuan->upload_file));
     }
+
+    public function test_admin_can_assign_petugas_and_whatsapp_number(): void
+    {
+        $admin = User::factory()->create([
+            'is_admin' => true,
+        ]);
+
+        $user = User::factory()->create([
+            'is_fst' => true,
+            'no_wa' => '081234567890',
+        ]);
+
+        $pengajuan = Pengajuan::create([
+            'user_id' => $user->id,
+            'nama_kegiatan' => 'Dokumentasi',
+            'tgl_awal' => now()->toDateString(),
+            'tgl_selesai' => now()->addDay()->toDateString(),
+            'jam_kegiatan' => '08:00',
+            'waktu_selesai' => '11:00',
+            'tempat_kegiatan' => 'Auditorium',
+            'unit_kegiatan' => 'FST',
+            'deskripsi_kegiatan' => 'Dokumentasi wisuda',
+            'status' => 'pending',
+        ]);
+
+        $editResponse = $this->actingAs($admin)->get(route('pengajuan.edit', $pengajuan->id));
+        $editResponse->assertStatus(200);
+        $editResponse->assertSee('Petugas / PIC yang Ditugaskan');
+        $editResponse->assertSee('Nomor WhatsApp Tujuan');
+
+        $updateResponse = $this->actingAs($admin)->put(route('pengajuan.update', $pengajuan->id), [
+            'status' => 'diterima',
+            'petugas_ditugaskan' => 'Habib dan Ujang',
+            'no_wa_tujuan' => '081298765432',
+            'alasan_ditolak' => 'Pengajuan diterima dan petugas telah ditugaskan.',
+            'tgl_awal' => $pengajuan->tgl_awal,
+            'tgl_selesai' => $pengajuan->tgl_selesai,
+        ]);
+
+        $updateResponse->assertRedirect(route('kotak-masuk-pengajuan.index'));
+
+        $this->assertDatabaseHas('pengajuans', [
+            'id' => $pengajuan->id,
+            'status' => 'diterima',
+            'petugas_ditugaskan' => 'Habib dan Ujang',
+            'no_wa_tujuan' => '081298765432',
+        ]);
+
+        $showResponse = $this->actingAs($admin)->get(route('pengajuan.show', $pengajuan->id));
+        $showResponse->assertStatus(200);
+        $showResponse->assertSee('Habib dan Ujang');
+        $showResponse->assertSee('081298765432');
+    }
 }
 

@@ -263,11 +263,13 @@ class PengajuanController extends Controller
                         'tgl_selesai' => $request->tgl_selesai ?? $pengajuan->tgl_selesai,
                     ]);
                 }
-            } else {
-                // Jika laporanPublikasi tidak ada, buat data laporanPublikasi baru
+            } elseif ($pengajuan->publikasi && ($request->has('tgl_awal') || $request->has('tgl_selesai'))) {
+                // Jika laporanPublikasi tidak ada dan publikasi ada, buat data laporanPublikasi baru
                 $pengajuan->laporanPublikasi()->create([
-                    'tgl_awal'    => $request->tgl_awal,
-                    'tgl_selesai' => $request->tgl_selesai,
+                    'user_id'      => $pengajuan->user_id ?? auth()->id(),
+                    'publikasi_id' => $pengajuan->publikasi->id,
+                    'tgl_awal'     => $request->tgl_awal ?? $pengajuan->tgl_awal,
+                    'tgl_selesai'  => $request->tgl_selesai ?? $pengajuan->tgl_selesai,
                 ]);
             }
 
@@ -328,11 +330,13 @@ class PengajuanController extends Controller
                         'tgl_selesai' => $request->tgl_selesai ?? $pengajuan->tgl_selesai,
                     ]);
                 }
-            } else {
-                // Jika laporanPublikasi tidak ada, buat data laporanPublikasi baru
+            } elseif ($pengajuan->publikasi && ($request->has('tgl_awal') || $request->has('tgl_selesai'))) {
+                // Jika laporanPublikasi tidak ada dan publikasi ada, buat data laporanPublikasi baru
                 $pengajuan->laporanPublikasi()->create([
-                    'tgl_awal'    => $request->tgl_awal,
-                    'tgl_selesai' => $request->tgl_selesai,
+                    'user_id'      => $pengajuan->user_id ?? auth()->id(),
+                    'publikasi_id' => $pengajuan->publikasi->id,
+                    'tgl_awal'     => $request->tgl_awal ?? $pengajuan->tgl_awal,
+                    'tgl_selesai'  => $request->tgl_selesai ?? $pengajuan->tgl_selesai,
                 ]);
             }
 

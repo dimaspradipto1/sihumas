@@ -35,6 +35,8 @@ class PengajuanRequest extends FormRequest
             'unit_kegiatan' => 'required|string|max:255',
             'tempat_kegiatan' => 'required|string|max:255',
             'alasan_ditolak' => 'nullable|string',
+            'petugas_ditugaskan' => 'nullable|string|max:255',
+            'no_wa_tujuan' => 'nullable|string|max:30',
             'email_tujuan' => 'nullable|email',
             'upload_file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,zip,rar|max:10240',
             'upload_png' => 'nullable|file|mimes:png,jpg,jpeg,webp|max:5120',

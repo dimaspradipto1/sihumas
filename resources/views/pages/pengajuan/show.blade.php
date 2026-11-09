@@ -101,6 +101,28 @@
                         <th>Alasan Ditolak/Diterima</th>
                         <td>{{ $pengajuan->alasan_ditolak ?? '-' }}</td>
                     </tr>
+                    <tr>
+                        <th>Petugas Ditugaskan</th>
+                        <td>
+                            @if ($pengajuan->petugas_ditugaskan)
+                                <span class="badge bg-info text-white"><i class="fa-solid fa-user-tie me-1"></i> {{ $pengajuan->petugas_ditugaskan }}</span>
+                            @else
+                                <span class="text-muted">-</span>
+                            @endif
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>No. WhatsApp Tujuan</th>
+                        <td>
+                            @if ($pengajuan->no_wa_tujuan)
+                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $pengajuan->no_wa_tujuan) }}" target="_blank" class="badge bg-success text-white">
+                                    <i class="fa-brands fa-whatsapp me-1"></i> {{ $pengajuan->no_wa_tujuan }}
+                                </a>
+                            @else
+                                <span class="text-muted">-</span>
+                            @endif
+                        </td>
+                    </tr>
                     @if ($pengajuan->nama_kegiatan == 'Desain' || $pengajuan->nama_kegiatan == 'Desain dan Dokumentasi')
                         <tr>
                             <th>Link Desain</th>
