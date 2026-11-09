@@ -99,14 +99,45 @@
                     </tr>
                     <tr>
                         <th>Alasan Ditolak/Diterima</th>
-                        <td>{{ $pengajuan->alasan_ditolak }}</td>
+                        <td>{{ $pengajuan->alasan_ditolak ?? '-' }}</td>
                     </tr>
                     @if ($pengajuan->nama_kegiatan == 'Desain' || $pengajuan->nama_kegiatan == 'Desain dan Dokumentasi')
                         <tr>
                             <th>Link Desain</th>
-                            <td>{{ $pengajuan->link_desain }}</td>
+                            <td>{{ $pengajuan->link_desain ?? '-' }}</td>
                         </tr>
                     @endif
+                    <tr>
+                        <th>File Lampiran</th>
+                        <td>
+                            @if ($pengajuan->upload_file)
+                                <a href="{{ asset('storage/' . $pengajuan->upload_file) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                    <i class="fa-solid fa-file-arrow-down me-1"></i> Unduh File ({{ basename($pengajuan->upload_file) }})
+                                </a>
+                            @else
+                                <span class="text-muted">-</span>
+                            @endif
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Gambar / Desain (PNG)</th>
+                        <td>
+                            @if ($pengajuan->upload_png)
+                                <div class="d-inline-block">
+                                    <a href="{{ asset('storage/' . $pengajuan->upload_png) }}" target="_blank">
+                                        <img src="{{ asset('storage/' . $pengajuan->upload_png) }}" alt="Desain / Gambar" class="img-thumbnail rounded shadow-sm" style="max-height: 200px;">
+                                    </a>
+                                    <div class="mt-1">
+                                        <a href="{{ asset('storage/' . $pengajuan->upload_png) }}" target="_blank" class="btn btn-xs btn-outline-success">
+                                            <i class="fa-solid fa-eye me-1"></i> Buka Gambar Penuh
+                                        </a>
+                                    </div>
+                                </div>
+                            @else
+                                <span class="text-muted">-</span>
+                            @endif
+                        </td>
+                    </tr>
                 </table>
             </div>
         </div>

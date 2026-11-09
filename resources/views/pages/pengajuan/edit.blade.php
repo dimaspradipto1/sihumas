@@ -30,7 +30,7 @@
     <div class="row">
         <div class="col-12 mb-4">
             <div class="card border-0 shadow components-section">
-                <form action="{{ route('pengajuan.update', $pengajuan->id) }}" method="POST">
+                <form action="{{ route('pengajuan.update', $pengajuan->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 
@@ -116,6 +116,56 @@
                                                 class="text-danger">(jika ada)</span></label>
                                         <textarea class="form-control" name="link_zoom" id=""
                                             rows="3">{{ old('link_zoom', $pengajuan->link_zoom) }}</textarea>
+                                    </div>
+                                </div>
+
+                                <!-- Upload File Dokumen -->
+                                <div class="mb-4">
+                                    <label for="upload_file" class="text-capitalize fw-bold">Upload File / Berkas Lampiran <span
+                                            class="text-muted small fw-normal">(PDF, DOC, DOCX, XLS, ZIP - Maks. 10MB)</span></label>
+                                    @if ($pengajuan->upload_file)
+                                        <div class="mb-2 p-2 bg-light rounded border d-flex align-items-center justify-content-between">
+                                            <span class="small text-truncate me-2"><i class="fa-solid fa-file-lines text-primary me-1"></i> File saat ini: <strong>{{ basename($pengajuan->upload_file) }}</strong></span>
+                                            <a href="{{ asset('storage/' . $pengajuan->upload_file) }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2">
+                                                <i class="fa-solid fa-download"></i> Unduh
+                                            </a>
+                                        </div>
+                                    @endif
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fa-solid fa-file-arrow-up"></i></span>
+                                        <input type="file" name="upload_file" id="upload_file" class="form-control"
+                                            accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar">
+                                    </div>
+                                    <small class="text-muted">Biarkan kosong jika tidak ingin mengubah file lampiran.</small>
+                                </div>
+
+                                <!-- Upload Gambar / PNG -->
+                                <div class="mb-4">
+                                    <label for="upload_png" class="text-capitalize fw-bold">Upload Gambar / Desain <span
+                                            class="text-muted small fw-normal">(Format PNG, JPG, JPEG, WEBP - Maks. 5MB)</span></label>
+                                    @if ($pengajuan->upload_png)
+                                        <div class="mb-2">
+                                            <p class="text-xs text-muted mb-1">Gambar saat ini:</p>
+                                            <div class="border rounded p-1 bg-light d-inline-block shadow-sm">
+                                                <a href="{{ asset('storage/' . $pengajuan->upload_png) }}" target="_blank">
+                                                    <img src="{{ asset('storage/' . $pengajuan->upload_png) }}" alt="Current Image"
+                                                        class="img-fluid rounded" style="max-height: 120px; object-fit: contain;">
+                                                </a>
+                                            </div>
+                                        </div>
+                                    @endif
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fa-solid fa-image"></i></span>
+                                        <input type="file" name="upload_png" id="upload_png" class="form-control"
+                                            accept=".png,.jpg,.jpeg,.webp" onchange="previewImageEdit(this)">
+                                    </div>
+                                    <small class="text-muted">Biarkan kosong jika tidak ingin mengubah gambar/desain.</small>
+                                    <div id="imagePreviewContainerEdit" class="mt-3 d-none">
+                                        <p class="text-xs text-muted mb-1 fw-bold">Pratinjau Gambar Baru:</p>
+                                        <div class="border rounded p-2 bg-light d-inline-block shadow-sm">
+                                            <img id="imagePreviewEdit" src="#" alt="Preview"
+                                                class="img-fluid rounded" style="max-height: 200px; object-fit: contain;">
+                                        </div>
                                     </div>
                                 </div>
 
@@ -284,6 +334,37 @@
                                         </td>
                                     </tr>
                                     @endif
+                                    <tr>
+                                        <th>File Lampiran</th>
+                                        <td>
+                                            @if ($pengajuan->upload_file)
+                                                <a href="{{ asset('storage/' . $pengajuan->upload_file) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fa-solid fa-file-arrow-down me-1"></i> Unduh File ({{ basename($pengajuan->upload_file) }})
+                                                </a>
+                                            @else
+                                                <span class="text-muted">Tidak ada file lampiran</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Gambar / Desain (PNG)</th>
+                                        <td>
+                                            @if ($pengajuan->upload_png)
+                                                <div class="d-inline-block">
+                                                    <a href="{{ asset('storage/' . $pengajuan->upload_png) }}" target="_blank">
+                                                        <img src="{{ asset('storage/' . $pengajuan->upload_png) }}" alt="Desain" class="img-thumbnail" style="max-height: 150px;">
+                                                    </a>
+                                                    <div class="mt-1">
+                                                        <a href="{{ asset('storage/' . $pengajuan->upload_png) }}" target="_blank" class="btn btn-xs btn-outline-success">
+                                                            <i class="fa-solid fa-eye me-1"></i> Buka Gambar Penuh
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            @else
+                                                <span class="text-muted">Tidak ada gambar</span>
+                                            @endif
+                                        </td>
+                                    </tr>
                                     @endif
                                     </tr>
                                 </table>
@@ -311,3 +392,23 @@
         </div>
     </div>
     @endsection
+
+    @push('scripts')
+        <script>
+            function previewImageEdit(input) {
+                const previewContainer = document.getElementById('imagePreviewContainerEdit');
+                const preview = document.getElementById('imagePreviewEdit');
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        previewContainer.classList.remove('d-none');
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                } else {
+                    preview.src = '#';
+                    previewContainer.classList.add('d-none');
+                }
+            }
+        </script>
+    @endpush

@@ -36,6 +36,8 @@ class PengajuanRequest extends FormRequest
             'tempat_kegiatan' => 'required|string|max:255',
             'alasan_ditolak' => 'nullable|string',
             'email_tujuan' => 'nullable|email',
+            'upload_file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,zip,rar|max:10240',
+            'upload_png' => 'nullable|file|mimes:png,jpg,jpeg,webp|max:5120',
         ];
     }
 }

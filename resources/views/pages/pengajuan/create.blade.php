@@ -30,7 +30,7 @@
         <div class="row">
             <div class="col-12 mb-4">
                 <div class="card border-0 shadow components-section">
-                    <form action="{{ route('pengajuan.store') }}" method="POST">
+                    <form action="{{ route('pengajuan.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
                         <div class="card-body">
@@ -146,6 +146,37 @@
                                         </div>
                                     </div>
 
+                                    <!-- Upload File Dokumen -->
+                                    <div class="mb-4">
+                                        <label for="upload_file" class="text-capitalize fw-bold">Upload File / Berkas Lampiran <span
+                                                class="text-muted small fw-normal">(PDF, DOC, DOCX, XLS, ZIP - Maks. 10MB)</span></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fa-solid fa-file-arrow-up"></i></span>
+                                            <input type="file" name="upload_file" id="upload_file" class="form-control"
+                                                accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar">
+                                        </div>
+                                        <small class="text-muted">Lampirkan file proposal, surat permohonan, atau dokumen pendukung kegiatan.</small>
+                                    </div>
+
+                                    <!-- Upload Gambar / PNG -->
+                                    <div class="mb-4">
+                                        <label for="upload_png" class="text-capitalize fw-bold">Upload Gambar / Desain <span
+                                                class="text-muted small fw-normal">(Format PNG, JPG, JPEG, WEBP - Maks. 5MB)</span></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fa-solid fa-image"></i></span>
+                                            <input type="file" name="upload_png" id="upload_png" class="form-control"
+                                                accept=".png,.jpg,.jpeg,.webp" onchange="previewImage(this)">
+                                        </div>
+                                        <small class="text-muted">Lampirkan desain banner, flyer, pamflet, atau logo dalam format PNG/gambar.</small>
+                                        <div id="imagePreviewContainer" class="mt-3 d-none">
+                                            <p class="text-xs text-muted mb-1 fw-bold">Pratinjau Gambar / PNG:</p>
+                                            <div class="border rounded p-2 bg-light d-inline-block shadow-sm">
+                                                <img id="imagePreview" src="#" alt="Preview"
+                                                    class="img-fluid rounded" style="max-height: 200px; object-fit: contain;">
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     @if (Auth::user()->is_admin)
                                         <div class="mb-4">
                                             <label for="status" class="text-capitalize">status</label>
@@ -192,6 +223,23 @@
     @endsection
 
     @push('scripts')
+        <script>
+            function previewImage(input) {
+                const previewContainer = document.getElementById('imagePreviewContainer');
+                const preview = document.getElementById('imagePreview');
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        previewContainer.classList.remove('d-none');
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                } else {
+                    preview.src = '#';
+                    previewContainer.classList.add('d-none');
+                }
+            }
+        </script>
         <script>
             CKEDITOR.replace('deskripsi_kegiatan', {
                 versionCheck: false

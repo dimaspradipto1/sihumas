@@ -88,6 +88,39 @@
                     <span class="badge bg-warning badge-xl px-3 py-2">{{ $pengajuan->status }} <i class="fa-solid fa-spinner"></i></span>
                 @elseif($pengajuan->status == 'diterima') 
                     <span class="badge bg-success badge-xl px-3 py-2">{{ $pengajuan->status }} <i class="fa-solid fa-check"></i></span>
+                @elseif($pengajuan->status == 'ditolak')
+                    <span class="badge bg-danger badge-xl px-3 py-2">{{ $pengajuan->status }} <i class="fa-solid fa-xmark"></i></span>
+                @endif
+            </td>
+          </tr>
+          <tr>
+            <th>File Lampiran</th>
+            <td>
+                @if ($pengajuan->upload_file)
+                    <a href="{{ asset('storage/' . $pengajuan->upload_file) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                        <i class="fa-solid fa-file-arrow-down me-1"></i> Unduh File ({{ basename($pengajuan->upload_file) }})
+                    </a>
+                @else
+                    <span class="text-muted">-</span>
+                @endif
+            </td>
+          </tr>
+          <tr>
+            <th>Gambar / Desain (PNG)</th>
+            <td>
+                @if ($pengajuan->upload_png)
+                    <div class="d-inline-block">
+                        <a href="{{ asset('storage/' . $pengajuan->upload_png) }}" target="_blank">
+                            <img src="{{ asset('storage/' . $pengajuan->upload_png) }}" alt="Desain / Gambar" class="img-thumbnail rounded shadow-sm" style="max-height: 200px;">
+                        </a>
+                        <div class="mt-1">
+                            <a href="{{ asset('storage/' . $pengajuan->upload_png) }}" target="_blank" class="btn btn-xs btn-outline-success">
+                                <i class="fa-solid fa-eye me-1"></i> Buka Gambar Penuh
+                            </a>
+                        </div>
+                    </div>
+                @else
+                    <span class="text-muted">-</span>
                 @endif
             </td>
           </tr>

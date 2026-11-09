@@ -19,6 +19,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 use App\Models\Setting;
 use App\Services\WhatsAppService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class PengajuanController extends Controller
 {
@@ -93,6 +94,16 @@ class PengajuanController extends Controller
     {
         $data = $request->validated();
 
+        $uploadFilePath = null;
+        if ($request->hasFile('upload_file')) {
+            $uploadFilePath = $request->file('upload_file')->store('pengajuan/files', 'public');
+        }
+
+        $uploadPngPath = null;
+        if ($request->hasFile('upload_png')) {
+            $uploadPngPath = $request->file('upload_png')->store('pengajuan/images', 'public');
+        }
+
         $pengajuan = Pengajuan::create([
             'user_id'           => auth()->id(),
             'nama_kegiatan'     => $data['nama_kegiatan'],
@@ -107,6 +118,8 @@ class PengajuanController extends Controller
             'tempat_kegiatan'   => $data['tempat_kegiatan'],
             'alasan_ditolak'    => $data['alasan_ditolak'] ?? null,
             'email_tujuan'      => $data['email_tujuan'] ?? null,
+            'upload_file'       => $uploadFilePath,
+            'upload_png'        => $uploadPngPath,
             'status'            => 'pending',
         ]);
 
@@ -218,6 +231,21 @@ class PengajuanController extends Controller
         if (auth()->user()->is_admin) {
             // Mengupdate data pengajuan
             $data = $request->all();
+
+            if ($request->hasFile('upload_file')) {
+                if ($pengajuan->upload_file && Storage::disk('public')->exists($pengajuan->upload_file)) {
+                    Storage::disk('public')->delete($pengajuan->upload_file);
+                }
+                $data['upload_file'] = $request->file('upload_file')->store('pengajuan/files', 'public');
+            }
+
+            if ($request->hasFile('upload_png')) {
+                if ($pengajuan->upload_png && Storage::disk('public')->exists($pengajuan->upload_png)) {
+                    Storage::disk('public')->delete($pengajuan->upload_png);
+                }
+                $data['upload_png'] = $request->file('upload_png')->store('pengajuan/images', 'public');
+            }
+
             $pengajuan->update($data);
 
             // Cek apakah laporanPublikasi ada dan update jika ada
@@ -253,14 +281,29 @@ class PengajuanController extends Controller
             return redirect()->route('kotak-masuk-pengajuan.index');
         }
 
-        // Cek jika pengguna adalah is_feb, is_fst, atau is_fikes
-        elseif (auth()->user()->is_feb || auth()->user()->is_fst || auth()->user()->is_fikes) {
+        // Cek jika pengguna adalah is_feb, is_fst, is_fikes, atau is_rektorat
+        elseif (auth()->user()->is_feb || auth()->user()->is_fst || auth()->user()->is_fikes || auth()->user()->is_rektorat) {
             // Jika status bukan 'ditolak', ubah status menjadi 'pending'
             if ($request->status != 'ditolak') {
                 $pengajuan->status = 'pending';
             }
 
             $data = $request->all();
+
+            if ($request->hasFile('upload_file')) {
+                if ($pengajuan->upload_file && Storage::disk('public')->exists($pengajuan->upload_file)) {
+                    Storage::disk('public')->delete($pengajuan->upload_file);
+                }
+                $data['upload_file'] = $request->file('upload_file')->store('pengajuan/files', 'public');
+            }
+
+            if ($request->hasFile('upload_png')) {
+                if ($pengajuan->upload_png && Storage::disk('public')->exists($pengajuan->upload_png)) {
+                    Storage::disk('public')->delete($pengajuan->upload_png);
+                }
+                $data['upload_png'] = $request->file('upload_png')->store('pengajuan/images', 'public');
+            }
+
             $pengajuan->update($data);
 
             // Cek apakah laporanPublikasi ada dan update jika ada
