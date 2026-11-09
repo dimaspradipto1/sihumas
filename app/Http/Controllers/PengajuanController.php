@@ -176,7 +176,6 @@ class PengajuanController extends Controller
 
             $waUrl = 'https://wa.me/' . $waAdmin . '?text=' . urlencode($waMessage);
             session()->flash('wa_redirect_url', $waUrl);
-            Alert::success('Success', 'Data berhasil ditambahkan. Meneruskan ke WhatsApp Admin...')->toToast()->autoclose(3000)->timerProgressBar();
         } else {
             Alert::success('Success', 'Data berhasil ditambahkan dan email telah dikirim.')->toToast()->autoclose(3000)->timerProgressBar();
         }
