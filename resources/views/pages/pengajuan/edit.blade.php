@@ -41,9 +41,15 @@
                             <div class="col-lg-6 col-sm-6">
 
                                 <div class="mb-4">
-                                    <label for="nama_mahasiswa" class="text-capitalize">nama kegiatan</label>
-                                    <textarea name="nama_kegiatan" id="nama_kegiatan" class="form-control"
-                                        rows="3">{{ old('nama_kegiatan', $pengajuan->nama_kegiatan) }}</textarea>
+                                    <label for="nama_kegiatan" class="text-capitalize">nama kegiatan</label>
+                                    <select name="nama_kegiatan" id="nama_kegiatan" class="form-select single" required>
+                                        <option value="">Pilih Nama Kegiatan</option>
+                                        <option value="Desain" {{ old('nama_kegiatan', $pengajuan->nama_kegiatan) == 'Desain' ? 'selected' : '' }}>Desain</option>
+                                        <option value="Dokumentasi" {{ old('nama_kegiatan', $pengajuan->nama_kegiatan) == 'Dokumentasi' ? 'selected' : '' }}>Dokumentasi</option>
+                                        <option value="Desain dan Dokumentasi" {{ old('nama_kegiatan', $pengajuan->nama_kegiatan) == 'Desain dan Dokumentasi' ? 'selected' : '' }}>Desain dan Dokumentasi</option>
+                                        <option value="Publikasi" {{ old('nama_kegiatan', $pengajuan->nama_kegiatan) == 'Publikasi' ? 'selected' : '' }}>Publikasi</option>
+                                        <option value="Tamu Undangan" {{ old('nama_kegiatan', $pengajuan->nama_kegiatan) == 'Tamu Undangan' ? 'selected' : '' }}>Tamu</option>
+                                    </select>
                                 </div>
 
                                 <div class="mb-4">
@@ -268,8 +274,8 @@
                                                 placeholder="contoh: pengguna@gmail.com">
                                         </td>
                                     </tr>
-                                    {{-- Menampilkan tr hanya jika nama_kegiatan adalah 'desain' --}}
-                                    @if ($pengajuan->nama_kegiatan == 'Desain')
+                                    {{-- Menampilkan tr jika nama_kegiatan memuat 'Desain' --}}
+                                    @if ($pengajuan->nama_kegiatan == 'Desain' || $pengajuan->nama_kegiatan == 'Desain dan Dokumentasi')
                                     <tr>
                                         <th>Link Desain</th>
                                         <td>

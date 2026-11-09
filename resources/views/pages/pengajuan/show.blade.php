@@ -101,7 +101,7 @@
                         <th>Alasan Ditolak/Diterima</th>
                         <td>{{ $pengajuan->alasan_ditolak }}</td>
                     </tr>
-                    @if ($pengajuan->nama_kegiatan == 'Desain')
+                    @if ($pengajuan->nama_kegiatan == 'Desain' || $pengajuan->nama_kegiatan == 'Desain dan Dokumentasi')
                         <tr>
                             <th>Link Desain</th>
                             <td>{{ $pengajuan->link_desain }}</td>
