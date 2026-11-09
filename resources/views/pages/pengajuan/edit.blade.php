@@ -210,7 +210,7 @@
                     <div class="card-body p-4">
                         <div class="row">
                             <!-- Kolom Kiri: Detail Pengajuan / Review -->
-                            <div class="col-12 col-xl-7 mb-4">
+                            <div class="col-12 col-lg-6 mb-4">
                                 <div class="card border border-light shadow-sm h-100">
                                     <div class="card-header bg-gray-100 py-3">
                                         <h5 class="card-title mb-0 text-gray-800">
@@ -222,8 +222,8 @@
                                             <table class="table table-striped mb-0">
                                                 <tbody>
                                                     <tr>
-                                                        <th style="width: 35%;" class="ps-3">Pemohon</th>
-                                                        <td>
+                                                        <th style="width: 32%; white-space: nowrap;" class="ps-3">Pemohon</th>
+                                                        <td class="text-break">
                                                             <strong>{{ $pengajuan->user?->name ?? '-' }}</strong>
                                                             @if ($pengajuan->user?->email)
                                                                 <br><small class="text-muted"><i class="fa-regular fa-envelope me-1"></i>{{ $pengajuan->user->email }}</small>
@@ -262,12 +262,12 @@
                                                     </tr>
                                                     <tr>
                                                         <th class="ps-3">Tempat Kegiatan</th>
-                                                        <td>{{ $pengajuan->tempat_kegiatan ?? '-' }}</td>
+                                                        <td class="text-break">{{ $pengajuan->tempat_kegiatan ?? '-' }}</td>
                                                     </tr>
                                                     @if ($pengajuan->link_zoom)
                                                     <tr>
                                                         <th class="ps-3">Link Zoom</th>
-                                                        <td>
+                                                        <td class="text-break">
                                                             <a href="{{ $pengajuan->link_zoom }}" target="_blank" class="text-decoration-underline text-break">
                                                                 {{ $pengajuan->link_zoom }}
                                                             </a>
@@ -276,11 +276,11 @@
                                                     @endif
                                                     <tr>
                                                         <th class="ps-3">Deskripsi</th>
-                                                        <td>{{ trim(strip_tags($pengajuan->deskripsi_kegiatan ?? '')) ?: '-' }}</td>
+                                                        <td class="text-break">{{ trim(strip_tags($pengajuan->deskripsi_kegiatan ?? '')) ?: '-' }}</td>
                                                     </tr>
                                                     <tr>
                                                         <th class="ps-3">Kebutuhan Perlengkapan</th>
-                                                        <td>{{ trim(strip_tags($pengajuan->perlengkapan ?? '')) ?: '-' }}</td>
+                                                        <td class="text-break">{{ trim(strip_tags($pengajuan->perlengkapan ?? '')) ?: '-' }}</td>
                                                     </tr>
                                                     <tr>
                                                         <th class="ps-3">File Lampiran</th>
@@ -321,7 +321,7 @@
                             </div>
 
                             <!-- Kolom Kanan: Verifikasi & Penugasan -->
-                            <div class="col-12 col-xl-5 mb-4">
+                            <div class="col-12 col-lg-6 mb-4">
                                 <div class="card border border-light shadow-sm">
                                     <div class="card-header bg-gray-100 py-3">
                                         <h5 class="card-title mb-0 text-gray-800">
@@ -339,13 +339,13 @@
                                             </select>
                                         </div>
 
-                                        <!-- Petugas / PIC yang Ditugaskan (Multiple) -->
-                                        <div class="mb-3">
+                                        <!-- Petugas / PIC yang Ditugaskan (Multiple Card Repeater) -->
+                                        <div class="mb-4">
                                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                                <label class="form-label font-weight-bold mb-0">
+                                                <label class="form-label font-weight-bold mb-0 text-dark">
                                                     <i class="fa-solid fa-users text-primary me-1"></i> Petugas / PIC yang Ditugaskan
                                                 </label>
-                                                <button type="button" class="btn btn-xs btn-primary" onclick="tambahBarisPic()">
+                                                <button type="button" class="btn btn-sm btn-primary d-inline-flex align-items-center" onclick="tambahBarisPic()">
                                                     <i class="fa-solid fa-plus me-1"></i> Tambah PIC
                                                 </button>
                                             </div>
@@ -368,48 +368,46 @@
                                                 }
                                             @endphp
 
-                                            <div class="table-responsive">
-                                                <table class="table table-sm table-bordered align-middle mb-1" id="tabelPic">
-                                                    <thead class="bg-gray-100">
-                                                        <tr>
-                                                            <th style="width: 48%;">Nama Petugas / PIC</th>
-                                                            <th style="width: 42%;">No. WhatsApp</th>
-                                                            <th style="width: 10%; text-align: center;">Aksi</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="kontainerPic">
-                                                        @foreach ($daftarPic as $index => $pic)
-                                                            <tr class="baris-pic">
-                                                                <td>
-                                                                    <input type="text" name="pic_nama[]" class="form-control form-control-sm input-pic-nama"
-                                                                        value="{{ $pic['nama'] ?? '' }}" placeholder="Contoh: Habib">
-                                                                </td>
-                                                                <td>
-                                                                    <div class="input-group input-group-sm">
-                                                                        <span class="input-group-text bg-success text-white py-0"><i class="fa-brands fa-whatsapp"></i></span>
-                                                                        <input type="text" name="pic_no_wa[]" class="form-control form-control-sm input-pic-wa"
-                                                                            value="{{ $pic['no_wa'] ?? '' }}" placeholder="08123456789">
-                                                                    </div>
-                                                                </td>
-                                                                <td class="text-center">
-                                                                    <div class="d-flex justify-content-center gap-1">
-                                                                        <button type="button" class="btn btn-xs btn-outline-success" title="Chat WA PIC ini" onclick="chatWaPic(this)">
-                                                                            <i class="fa-brands fa-whatsapp"></i>
-                                                                        </button>
-                                                                        <button type="button" class="btn btn-xs btn-outline-danger" title="Hapus PIC" onclick="hapusBarisPic(this)">
-                                                                            <i class="fa-solid fa-trash"></i>
-                                                                        </button>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        @endforeach
-                                                    </tbody>
-                                                </table>
+                                            <div id="kontainerPic" class="d-flex flex-column gap-2 mb-2">
+                                                @foreach ($daftarPic as $index => $pic)
+                                                    <div class="baris-pic border rounded p-3 bg-white shadow-sm">
+                                                        <div class="row g-2 align-items-end">
+                                                            <div class="col-12 col-md-6">
+                                                                <label class="form-label small text-muted fw-bold mb-1">
+                                                                    <i class="fa-solid fa-user me-1 text-primary"></i> Nama Petugas / PIC
+                                                                </label>
+                                                                <input type="text" name="pic_nama[]" class="form-control input-pic-nama"
+                                                                    value="{{ $pic['nama'] ?? '' }}" placeholder="Contoh: Dimas Pradipto, S.Kom">
+                                                            </div>
+                                                            <div class="col-8 col-md-4">
+                                                                <label class="form-label small text-muted fw-bold mb-1">
+                                                                    <i class="fa-brands fa-whatsapp me-1 text-success"></i> No. WhatsApp
+                                                                </label>
+                                                                <div class="input-group">
+                                                                    <span class="input-group-text bg-success text-white"><i class="fa-brands fa-whatsapp"></i></span>
+                                                                    <input type="text" name="pic_no_wa[]" class="form-control input-pic-wa"
+                                                                        value="{{ $pic['no_wa'] ?? '' }}" placeholder="082283736181">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-4 col-md-2 text-end">
+                                                                <div class="btn-group w-100" role="group">
+                                                                    <button type="button" class="btn btn-outline-success" title="Chat WA PIC" onclick="chatWaPic(this)">
+                                                                        <i class="fa-brands fa-whatsapp"></i>
+                                                                    </button>
+                                                                    <button type="button" class="btn btn-outline-danger" title="Hapus PIC" onclick="hapusBarisPic(this)">
+                                                                        <i class="fa-solid fa-trash"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
                                             </div>
-                                            <div class="d-flex justify-content-between align-items-center mt-1">
-                                                <small class="text-muted">Bisa input lebih dari 1 PIC. Notifikasi WhatsApp penugasan akan disiapkan saat submit.</small>
+
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-muted"><i class="fa-solid fa-circle-info me-1"></i> Notifikasi WhatsApp penugasan otomatis disiapkan untuk setiap PIC saat UPDATE.</small>
                                                 <button type="button" class="btn btn-xs btn-outline-primary" onclick="tambahBarisPic()">
-                                                    <i class="fa-solid fa-user-plus me-1"></i> Tambah PIC
+                                                    <i class="fa-solid fa-plus me-1"></i> Tambah PIC
                                                 </button>
                                             </div>
                                         </div>
@@ -485,45 +483,54 @@
             }
 
             function tambahBarisPic() {
-                const tbody = document.getElementById('kontainerPic');
-                if (!tbody) return;
-                const tr = document.createElement('tr');
-                tr.className = 'baris-pic';
-                tr.innerHTML = `
-                    <td>
-                        <input type="text" name="pic_nama[]" class="form-control form-control-sm input-pic-nama" placeholder="Contoh: Ujang">
-                    </td>
-                    <td>
-                        <div class="input-group input-group-sm">
-                            <span class="input-group-text bg-success text-white py-0"><i class="fa-brands fa-whatsapp"></i></span>
-                            <input type="text" name="pic_no_wa[]" class="form-control form-control-sm input-pic-wa" placeholder="08123456789">
+                const kontainer = document.getElementById('kontainerPic');
+                if (!kontainer) return;
+
+                const div = document.createElement('div');
+                div.className = 'baris-pic border rounded p-3 bg-white shadow-sm';
+                div.innerHTML = `
+                    <div class="row g-2 align-items-end">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small text-muted fw-bold mb-1">
+                                <i class="fa-solid fa-user me-1 text-primary"></i> Nama Petugas / PIC
+                            </label>
+                            <input type="text" name="pic_nama[]" class="form-control input-pic-nama" placeholder="Contoh: Dimas Pradipto, S.Kom">
                         </div>
-                    </td>
-                    <td class="text-center">
-                        <div class="d-flex justify-content-center gap-1">
-                            <button type="button" class="btn btn-xs btn-outline-success" title="Chat WA PIC ini" onclick="chatWaPic(this)">
-                                <i class="fa-brands fa-whatsapp"></i>
-                            </button>
-                            <button type="button" class="btn btn-xs btn-outline-danger" title="Hapus PIC" onclick="hapusBarisPic(this)">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
+                        <div class="col-8 col-md-4">
+                            <label class="form-label small text-muted fw-bold mb-1">
+                                <i class="fa-brands fa-whatsapp me-1 text-success"></i> No. WhatsApp
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-success text-white"><i class="fa-brands fa-whatsapp"></i></span>
+                                <input type="text" name="pic_no_wa[]" class="form-control input-pic-wa" placeholder="082283736181">
+                            </div>
                         </div>
-                    </td>
+                        <div class="col-4 col-md-2 text-end">
+                            <div class="btn-group w-100" role="group">
+                                <button type="button" class="btn btn-outline-success" title="Chat WA PIC" onclick="chatWaPic(this)">
+                                    <i class="fa-brands fa-whatsapp"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-danger" title="Hapus PIC" onclick="hapusBarisPic(this)">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 `;
-                tbody.appendChild(tr);
-                const input = tr.querySelector('.input-pic-nama');
+                kontainer.appendChild(div);
+                const input = div.querySelector('.input-pic-nama');
                 if (input) input.focus();
             }
 
             function hapusBarisPic(btn) {
-                const tbody = document.getElementById('kontainerPic');
-                const rows = tbody.querySelectorAll('.baris-pic');
-                if (rows.length > 1) {
-                    btn.closest('tr').remove();
+                const kontainer = document.getElementById('kontainerPic');
+                const items = kontainer.querySelectorAll('.baris-pic');
+                if (items.length > 1) {
+                    btn.closest('.baris-pic').remove();
                 } else {
-                    const row = btn.closest('tr');
-                    row.querySelector('.input-pic-nama').value = '';
-                    row.querySelector('.input-pic-wa').value = '';
+                    const item = btn.closest('.baris-pic');
+                    item.querySelector('.input-pic-nama').value = '';
+                    item.querySelector('.input-pic-wa').value = '';
                 }
             }
 
