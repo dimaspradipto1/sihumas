@@ -151,9 +151,6 @@ class PengajuanController extends Controller
             $emailTujuan = 'humasuis@gmail.com';  // Jika bukan admin atau email_tujuan tidak diisi, kirim ke email default
         }
 
-
-        config(['mail.from.address' => auth()->user()->email]);
-
         // Kirim email setelah pengajuan berhasil
         Mail::to($emailTujuan)
             ->send(new PengajuanSubmitted($pengajuan));
