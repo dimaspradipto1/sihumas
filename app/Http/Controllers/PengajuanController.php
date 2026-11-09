@@ -372,13 +372,23 @@ class PengajuanController extends Controller
             if ($isEmailValid) {
                 try {
                     Mail::to($emailTujuan)->send(new PengajuanUpdatedMail($pengajuan));  // Kirim email ke tujuan yang sudah dipilih
-                    Alert::success('SUCCESS', 'Data berhasil diperbarui dan email telah dikirim.')->autoclose(2000)->toToast();
+                    if (empty($waPicList)) {
+                        Alert::success('SUCCESS', 'Data berhasil diperbarui dan email telah dikirim.')->autoclose(2000)->toToast();
+                    }
                 } catch (\Exception $e) {
-                    Alert::error('Error', 'Email gagal dikirim, tetapi data berhasil diperbarui.')->toToast()->autoclose(3000)->timerProgressBar();
+                    if (empty($waPicList)) {
+                        Alert::error('Error', 'Email gagal dikirim, tetapi data berhasil diperbarui.')->toToast()->autoclose(3000)->timerProgressBar();
+                    }
                 }
             } else {
                 // Jika email tidak valid atau kosong, beri tahu pengguna
-                Alert::info('Info', 'Email tidak valid atau kosong. Data berhasil diperbarui, tetapi email tidak dikirim.')->toToast()->autoclose(3000)->timerProgressBar();
+                if (empty($waPicList)) {
+                    Alert::info('Info', 'Email tidak valid atau kosong. Data berhasil diperbarui, tetapi email tidak dikirim.')->toToast()->autoclose(3000)->timerProgressBar();
+                }
+            }
+
+            if (!empty($waPicList)) {
+                session()->forget('alert.config');
             }
 
             return redirect()->route('kotak-masuk-pengajuan.index');

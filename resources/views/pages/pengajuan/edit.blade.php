@@ -404,11 +404,8 @@
                                                 @endforeach
                                             </div>
 
-                                            <div class="d-flex justify-content-between align-items-center">
+                                            <div class="mt-1">
                                                 <small class="text-muted"><i class="fa-solid fa-circle-info me-1"></i> Notifikasi WhatsApp penugasan otomatis disiapkan untuk setiap PIC saat UPDATE.</small>
-                                                <button type="button" class="btn btn-xs btn-outline-primary" onclick="tambahBarisPic()">
-                                                    <i class="fa-solid fa-plus me-1"></i> Tambah PIC
-                                                </button>
                                             </div>
                                         </div>
 

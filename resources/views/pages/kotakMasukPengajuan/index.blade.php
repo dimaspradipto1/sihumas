@@ -84,6 +84,8 @@
                     title: 'Verifikasi & Penugasan Berhasil!',
                     html: htmlContent,
                     icon: 'success',
+                    timer: null,
+                    timerProgressBar: false,
                     showConfirmButton: false,
                     showCancelButton: true,
                     cancelButtonText: '<i class="fa-solid fa-forward me-1"></i> Lewati',
