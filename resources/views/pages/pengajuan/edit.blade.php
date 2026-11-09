@@ -38,7 +38,7 @@
                     Auth::user()->is_rektorat)
                     <div class="card-body">
                         <div class="row mb-4">
-                            <div class="col-lg-6 col-sm-6">
+                            <div class="col-12">
 
                                 <div class="mb-4">
                                     <label for="nama_kegiatan" class="text-capitalize">nama kegiatan</label>
@@ -119,52 +119,54 @@
                                     </div>
                                 </div>
 
-                                <!-- Upload File Dokumen -->
-                                <div class="mb-4">
-                                    <label for="upload_file" class="text-capitalize fw-bold">Upload File / Berkas Lampiran <span
-                                            class="text-muted small fw-normal">(PDF, DOC, DOCX, XLS, ZIP - Maks. 10MB)</span></label>
-                                    @if ($pengajuan->upload_file)
-                                        <div class="mb-2 p-2 bg-light rounded border d-flex align-items-center justify-content-between">
-                                            <span class="small text-truncate me-2"><i class="fa-solid fa-file-lines text-primary me-1"></i> File saat ini: <strong>{{ basename($pengajuan->upload_file) }}</strong></span>
-                                            <a href="{{ asset('storage/' . $pengajuan->upload_file) }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2">
-                                                <i class="fa-solid fa-download"></i> Unduh
-                                            </a>
-                                        </div>
-                                    @endif
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fa-solid fa-file-arrow-up"></i></span>
-                                        <input type="file" name="upload_file" id="upload_file" class="form-control"
-                                            accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar">
-                                    </div>
-                                    <small class="text-muted">Biarkan kosong jika tidak ingin mengubah file lampiran.</small>
-                                </div>
-
-                                <!-- Upload Gambar / PNG -->
-                                <div class="mb-4">
-                                    <label for="upload_png" class="text-capitalize fw-bold">Upload Gambar / Desain <span
-                                            class="text-muted small fw-normal">(Format PNG, JPG, JPEG, WEBP - Maks. 5MB)</span></label>
-                                    @if ($pengajuan->upload_png)
-                                        <div class="mb-2">
-                                            <p class="text-xs text-muted mb-1">Gambar saat ini:</p>
-                                            <div class="border rounded p-1 bg-light d-inline-block shadow-sm">
-                                                <a href="{{ asset('storage/' . $pengajuan->upload_png) }}" target="_blank">
-                                                    <img src="{{ asset('storage/' . $pengajuan->upload_png) }}" alt="Current Image"
-                                                        class="img-fluid rounded" style="max-height: 120px; object-fit: contain;">
+                                <div class="row mb-4">
+                                    <!-- Upload File Dokumen -->
+                                    <div class="col-md-6 mb-3 mb-md-0">
+                                        <label for="upload_file" class="text-capitalize fw-bold">Upload File / Berkas Lampiran <span
+                                                class="text-muted small fw-normal">(PDF, DOC, DOCX, XLS, ZIP - Maks. 10MB)</span></label>
+                                        @if ($pengajuan->upload_file)
+                                            <div class="mb-2 p-2 bg-light rounded border d-flex align-items-center justify-content-between">
+                                                <span class="small text-truncate me-2"><i class="fa-solid fa-file-lines text-primary me-1"></i> File saat ini: <strong>{{ basename($pengajuan->upload_file) }}</strong></span>
+                                                <a href="{{ asset('storage/' . $pengajuan->upload_file) }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2">
+                                                    <i class="fa-solid fa-download"></i> Unduh
                                                 </a>
                                             </div>
+                                        @endif
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fa-solid fa-file-arrow-up"></i></span>
+                                            <input type="file" name="upload_file" id="upload_file" class="form-control"
+                                                accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar">
                                         </div>
-                                    @endif
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fa-solid fa-image"></i></span>
-                                        <input type="file" name="upload_png" id="upload_png" class="form-control"
-                                            accept=".png,.jpg,.jpeg,.webp" onchange="previewImageEdit(this)">
+                                        <small class="text-muted">Biarkan kosong jika tidak ingin mengubah file lampiran.</small>
                                     </div>
-                                    <small class="text-muted">Biarkan kosong jika tidak ingin mengubah gambar/desain.</small>
-                                    <div id="imagePreviewContainerEdit" class="mt-3 d-none">
-                                        <p class="text-xs text-muted mb-1 fw-bold">Pratinjau Gambar Baru:</p>
-                                        <div class="border rounded p-2 bg-light d-inline-block shadow-sm">
-                                            <img id="imagePreviewEdit" src="#" alt="Preview"
-                                                class="img-fluid rounded" style="max-height: 200px; object-fit: contain;">
+
+                                    <!-- Upload Gambar / PNG -->
+                                    <div class="col-md-6">
+                                        <label for="upload_png" class="text-capitalize fw-bold">Upload Gambar / Desain <span
+                                                class="text-muted small fw-normal">(Format PNG, JPG, JPEG, WEBP - Maks. 5MB)</span></label>
+                                        @if ($pengajuan->upload_png)
+                                            <div class="mb-2">
+                                                <p class="text-xs text-muted mb-1">Gambar saat ini:</p>
+                                                <div class="border rounded p-1 bg-light d-inline-block shadow-sm">
+                                                    <a href="{{ asset('storage/' . $pengajuan->upload_png) }}" target="_blank">
+                                                        <img src="{{ asset('storage/' . $pengajuan->upload_png) }}" alt="Current Image"
+                                                            class="img-fluid rounded" style="max-height: 120px; object-fit: contain;">
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        @endif
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fa-solid fa-image"></i></span>
+                                            <input type="file" name="upload_png" id="upload_png" class="form-control"
+                                                accept=".png,.jpg,.jpeg,.webp" onchange="previewImageEdit(this)">
+                                        </div>
+                                        <small class="text-muted">Biarkan kosong jika tidak ingin mengubah gambar/desain.</small>
+                                        <div id="imagePreviewContainerEdit" class="mt-3 d-none">
+                                            <p class="text-xs text-muted mb-1 fw-bold">Pratinjau Gambar Baru:</p>
+                                            <div class="border rounded p-2 bg-light d-inline-block shadow-sm">
+                                                <img id="imagePreviewEdit" src="#" alt="Preview"
+                                                    class="img-fluid rounded" style="max-height: 200px; object-fit: contain;">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

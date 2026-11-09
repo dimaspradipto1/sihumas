@@ -35,7 +35,7 @@
 
                         <div class="card-body">
                             <div class="row mb-4">
-                                <div class="col-lg-6 col-sm-6">
+                                <div class="col-12">
 
                                     <div class="mb-4">
                                         <label for="nama_mahasiswa" class="text-capitalize">tahun akademik</label>

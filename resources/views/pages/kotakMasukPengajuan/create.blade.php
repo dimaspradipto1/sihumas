@@ -35,7 +35,7 @@
 
                         <div class="card-body">
                             <div class="row mb-4">
-                                <div class="col-lg-6 col-sm-6">
+                                <div class="col-12">
 
                                     <div class="mb-4">
                                        <select name="tahun_akademik_id" id="tahun_akademik_id" class="form-select single">

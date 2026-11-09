@@ -35,7 +35,7 @@
 
                         <div class="card-body">
                             <div class="row mb-4">
-                                <div class="col-lg-6 col-sm-6">
+                                <div class="col-12">
 
                                     {{-- <div class="mb-4">
                                         <label for="tahun_akademik_id" class="text-capitalize">tahun akademik</label>
@@ -146,33 +146,35 @@
                                         </div>
                                     </div>
 
-                                    <!-- Upload File Dokumen -->
-                                    <div class="mb-4">
-                                        <label for="upload_file" class="text-capitalize fw-bold">Upload File / Berkas Lampiran <span
-                                                class="text-muted small fw-normal">(PDF, DOC, DOCX, XLS, ZIP - Maks. 10MB)</span></label>
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fa-solid fa-file-arrow-up"></i></span>
-                                            <input type="file" name="upload_file" id="upload_file" class="form-control"
-                                                accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar">
+                                    <div class="row mb-4">
+                                        <!-- Upload File Dokumen -->
+                                        <div class="col-md-6 mb-3 mb-md-0">
+                                            <label for="upload_file" class="text-capitalize fw-bold">Upload File / Berkas Lampiran <span
+                                                    class="text-muted small fw-normal">(PDF, DOC, DOCX, XLS, ZIP - Maks. 10MB)</span></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="fa-solid fa-file-arrow-up"></i></span>
+                                                <input type="file" name="upload_file" id="upload_file" class="form-control"
+                                                    accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar">
+                                            </div>
+                                            <small class="text-muted">Lampirkan file proposal, surat permohonan, atau dokumen pendukung kegiatan.</small>
                                         </div>
-                                        <small class="text-muted">Lampirkan file proposal, surat permohonan, atau dokumen pendukung kegiatan.</small>
-                                    </div>
 
-                                    <!-- Upload Gambar / PNG -->
-                                    <div class="mb-4">
-                                        <label for="upload_png" class="text-capitalize fw-bold">Upload Gambar / Desain <span
-                                                class="text-muted small fw-normal">(Format PNG, JPG, JPEG, WEBP - Maks. 5MB)</span></label>
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fa-solid fa-image"></i></span>
-                                            <input type="file" name="upload_png" id="upload_png" class="form-control"
-                                                accept=".png,.jpg,.jpeg,.webp" onchange="previewImage(this)">
-                                        </div>
-                                        <small class="text-muted">Lampirkan desain banner, flyer, pamflet, atau logo dalam format PNG/gambar.</small>
-                                        <div id="imagePreviewContainer" class="mt-3 d-none">
-                                            <p class="text-xs text-muted mb-1 fw-bold">Pratinjau Gambar / PNG:</p>
-                                            <div class="border rounded p-2 bg-light d-inline-block shadow-sm">
-                                                <img id="imagePreview" src="#" alt="Preview"
-                                                    class="img-fluid rounded" style="max-height: 200px; object-fit: contain;">
+                                        <!-- Upload Gambar / PNG -->
+                                        <div class="col-md-6">
+                                            <label for="upload_png" class="text-capitalize fw-bold">Upload Gambar / Desain <span
+                                                    class="text-muted small fw-normal">(Format PNG, JPG, JPEG, WEBP - Maks. 5MB)</span></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="fa-solid fa-image"></i></span>
+                                                <input type="file" name="upload_png" id="upload_png" class="form-control"
+                                                    accept=".png,.jpg,.jpeg,.webp" onchange="previewImage(this)">
+                                            </div>
+                                            <small class="text-muted">Lampirkan desain banner, flyer, pamflet, atau logo dalam format PNG/gambar.</small>
+                                            <div id="imagePreviewContainer" class="mt-3 d-none">
+                                                <p class="text-xs text-muted mb-1 fw-bold">Pratinjau Gambar / PNG:</p>
+                                                <div class="border rounded p-2 bg-light d-inline-block shadow-sm">
+                                                    <img id="imagePreview" src="#" alt="Preview"
+                                                        class="img-fluid rounded" style="max-height: 200px; object-fit: contain;">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
