@@ -45,4 +45,60 @@
     @else
         {!! $dataTable->scripts() !!}
     @endif
+
+    @if(session('wa_pic_list') && count(session('wa_pic_list')) > 0)
+        @php
+            $waPics = session('wa_pic_list');
+        @endphp
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const picList = @json($waPics);
+
+                if (picList.length === 1) {
+                    Swal.fire({
+                        title: 'Verifikasi & Penugasan Berhasil!',
+                        html: 'Pesan penugasan siap dikirim ke WhatsApp Petugas: <b>' + picList[0].nama + '</b> (' + picList[0].no_wa + ').',
+                        icon: 'success',
+                        showCancelButton: true,
+                        confirmButtonColor: '#25D366',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: '<i class="fa-brands fa-whatsapp me-2"></i> Kirim ke ' + picList[0].nama,
+                        cancelButtonText: 'Lewati',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.open(picList[0].url, '_blank');
+                        }
+                    });
+                } else {
+                    let htmlContent = '<p class="text-muted mb-3">Klik tombol di bawah untuk mengirim pesan penugasan WhatsApp ke masing-masing petugas:</p>';
+                    htmlContent += '<div class="d-grid gap-2">';
+                    picList.forEach((pic, i) => {
+                        htmlContent += `<a href="${pic.url}" target="_blank" class="btn btn-success text-white py-2"><i class="fa-brands fa-whatsapp me-2"></i> Kirim ke ${pic.nama} (${pic.no_wa})</a>`;
+                    });
+                    htmlContent += '</div>';
+                    htmlContent += `<div class="mt-3"><button type="button" class="btn btn-primary btn-sm w-100" id="btnBukaSemuaWa"><i class="fa-solid fa-up-right-from-square me-1"></i> Buka Semua WhatsApp Sekaligus</button></div>`;
+
+                    Swal.fire({
+                        title: 'Verifikasi & Penugasan Berhasil!',
+                        html: htmlContent,
+                        icon: 'success',
+                        showConfirmButton: false,
+                        showCloseButton: true,
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        didOpen: () => {
+                            const btnAll = document.getElementById('btnBukaSemuaWa');
+                            if (btnAll) {
+                                btnAll.addEventListener('click', () => {
+                                    picList.forEach(pic => window.open(pic.url, '_blank'));
+                                });
+                            }
+                        }
+                    });
+                }
+            });
+        </script>
+    @endif
 @endpush

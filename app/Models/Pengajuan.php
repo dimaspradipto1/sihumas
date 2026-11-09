@@ -11,7 +11,11 @@ class Pengajuan extends Model
 {
     use HasFactory;
 
-   protected $guarded = [];
+    protected $guarded = [];
+
+    protected $casts = [
+        'pic_petugas' => 'array',
+    ];
 
     public function user()
     {

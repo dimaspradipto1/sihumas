@@ -102,22 +102,28 @@
                         <td>{{ $pengajuan->alasan_ditolak ?? '-' }}</td>
                     </tr>
                     <tr>
-                        <th>Petugas Ditugaskan</th>
+                        <th>Petugas Ditugaskan (PIC)</th>
                         <td>
-                            @if ($pengajuan->petugas_ditugaskan)
+                            @if (!empty($pengajuan->pic_petugas) && is_array($pengajuan->pic_petugas))
+                                <div class="d-flex flex-wrap gap-2">
+                                    @foreach ($pengajuan->pic_petugas as $pic)
+                                        <div class="border rounded p-2 bg-light d-inline-flex align-items-center gap-2">
+                                            <span class="badge bg-primary"><i class="fa-solid fa-user me-1"></i> {{ $pic['nama'] ?: '-' }}</span>
+                                            @if (!empty($pic['no_wa']))
+                                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $pic['no_wa']) }}" target="_blank" class="badge bg-success text-white">
+                                                    <i class="fa-brands fa-whatsapp me-1"></i> {{ $pic['no_wa'] }}
+                                                </a>
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @elseif ($pengajuan->petugas_ditugaskan)
                                 <span class="badge bg-info text-white"><i class="fa-solid fa-user-tie me-1"></i> {{ $pengajuan->petugas_ditugaskan }}</span>
-                            @else
-                                <span class="text-muted">-</span>
-                            @endif
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>No. WhatsApp Tujuan</th>
-                        <td>
-                            @if ($pengajuan->no_wa_tujuan)
-                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $pengajuan->no_wa_tujuan) }}" target="_blank" class="badge bg-success text-white">
-                                    <i class="fa-brands fa-whatsapp me-1"></i> {{ $pengajuan->no_wa_tujuan }}
-                                </a>
+                                @if ($pengajuan->no_wa_tujuan)
+                                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $pengajuan->no_wa_tujuan) }}" target="_blank" class="badge bg-success text-white ms-2">
+                                        <i class="fa-brands fa-whatsapp me-1"></i> {{ $pengajuan->no_wa_tujuan }}
+                                    </a>
+                                @endif
                             @else
                                 <span class="text-muted">-</span>
                             @endif

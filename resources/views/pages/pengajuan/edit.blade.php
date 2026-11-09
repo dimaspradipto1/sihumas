@@ -339,32 +339,77 @@
                                             </select>
                                         </div>
 
-                                        <!-- Petugas Ditugaskan -->
+                                        <!-- Petugas / PIC yang Ditugaskan (Multiple) -->
                                         <div class="mb-3">
-                                            <label for="petugas_ditugaskan" class="form-label font-weight-bold">Petugas / PIC yang Ditugaskan</label>
-                                            <input type="text" class="form-control" name="petugas_ditugaskan" id="petugas_ditugaskan"
-                                                value="{{ old('petugas_ditugaskan', $pengajuan->petugas_ditugaskan) }}"
-                                                placeholder="Contoh: Habib dan Ujang / Tim Dokumentasi">
-                                            <small class="text-muted">Nama petugas humas yang ditugaskan untuk kegiatan ini.</small>
-                                        </div>
-
-                                        <!-- Nomor WhatsApp Tujuan -->
-                                        <div class="mb-3">
-                                            <label for="no_wa_tujuan" class="form-label font-weight-bold">Nomor WhatsApp Tujuan</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text bg-success text-white"><i class="fa-brands fa-whatsapp"></i></span>
-                                                <input type="text" class="form-control" name="no_wa_tujuan" id="no_wa_tujuan"
-                                                    value="{{ old('no_wa_tujuan', $pengajuan->no_wa_tujuan ?? $pengajuan->user?->no_wa) }}"
-                                                    placeholder="Contoh: 08123456789 atau 628123456789">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <label class="form-label font-weight-bold mb-0">
+                                                    <i class="fa-solid fa-users text-primary me-1"></i> Petugas / PIC yang Ditugaskan
+                                                </label>
+                                                <button type="button" class="btn btn-xs btn-primary" onclick="tambahBarisPic()">
+                                                    <i class="fa-solid fa-plus me-1"></i> Tambah PIC
+                                                </button>
                                             </div>
-                                            <div class="d-flex flex-wrap gap-1 mt-2">
-                                                @if ($pengajuan->user?->no_wa)
-                                                    <button type="button" class="btn btn-xs btn-outline-primary" onclick="setNomorWa('{{ $pengajuan->user->no_wa }}')">
-                                                        <i class="fa-solid fa-user me-1"></i> WA Pemohon ({{ $pengajuan->user->no_wa }})
-                                                    </button>
-                                                @endif
-                                                <button type="button" class="btn btn-xs btn-success text-white" onclick="kirimWhatsAppLangsung()">
-                                                    <i class="fa-brands fa-whatsapp me-1"></i> Chat WhatsApp
+
+                                            @php
+                                                $daftarPic = old('pic_nama') !== null
+                                                    ? array_map(function($nama, $noWa) { return ['nama' => $nama, 'no_wa' => $noWa]; }, old('pic_nama', []), old('pic_no_wa', []))
+                                                    : ($pengajuan->pic_petugas ?? []);
+
+                                                if (empty($daftarPic) && !empty($pengajuan->petugas_ditugaskan)) {
+                                                    $arrNama = array_map('trim', explode(',', $pengajuan->petugas_ditugaskan));
+                                                    $arrWa = array_map('trim', explode(',', $pengajuan->no_wa_tujuan ?? ''));
+                                                    foreach ($arrNama as $idx => $nama) {
+                                                        $daftarPic[] = ['nama' => $nama, 'no_wa' => $arrWa[$idx] ?? ''];
+                                                    }
+                                                }
+
+                                                if (empty($daftarPic)) {
+                                                    $daftarPic = [['nama' => '', 'no_wa' => '']];
+                                                }
+                                            @endphp
+
+                                            <div class="table-responsive">
+                                                <table class="table table-sm table-bordered align-middle mb-1" id="tabelPic">
+                                                    <thead class="bg-gray-100">
+                                                        <tr>
+                                                            <th style="width: 48%;">Nama Petugas / PIC</th>
+                                                            <th style="width: 42%;">No. WhatsApp</th>
+                                                            <th style="width: 10%; text-align: center;">Aksi</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="kontainerPic">
+                                                        @foreach ($daftarPic as $index => $pic)
+                                                            <tr class="baris-pic">
+                                                                <td>
+                                                                    <input type="text" name="pic_nama[]" class="form-control form-control-sm input-pic-nama"
+                                                                        value="{{ $pic['nama'] ?? '' }}" placeholder="Contoh: Habib">
+                                                                </td>
+                                                                <td>
+                                                                    <div class="input-group input-group-sm">
+                                                                        <span class="input-group-text bg-success text-white py-0"><i class="fa-brands fa-whatsapp"></i></span>
+                                                                        <input type="text" name="pic_no_wa[]" class="form-control form-control-sm input-pic-wa"
+                                                                            value="{{ $pic['no_wa'] ?? '' }}" placeholder="08123456789">
+                                                                    </div>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <div class="d-flex justify-content-center gap-1">
+                                                                        <button type="button" class="btn btn-xs btn-outline-success" title="Chat WA PIC ini" onclick="chatWaPic(this)">
+                                                                            <i class="fa-brands fa-whatsapp"></i>
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-xs btn-outline-danger" title="Hapus PIC" onclick="hapusBarisPic(this)">
+                                                                            <i class="fa-solid fa-trash"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-center mt-1">
+                                                <small class="text-muted">Bisa input lebih dari 1 PIC. Notifikasi WhatsApp penugasan akan disiapkan saat submit.</small>
+                                                <button type="button" class="btn btn-xs btn-outline-primary" onclick="tambahBarisPic()">
+                                                    <i class="fa-solid fa-user-plus me-1"></i> Tambah PIC
                                                 </button>
                                             </div>
                                         </div>
@@ -439,24 +484,61 @@
                 }
             }
 
-            function setNomorWa(no) {
-                const input = document.getElementById('no_wa_tujuan');
-                if (input) {
-                    input.value = no;
-                    input.focus();
+            function tambahBarisPic() {
+                const tbody = document.getElementById('kontainerPic');
+                if (!tbody) return;
+                const tr = document.createElement('tr');
+                tr.className = 'baris-pic';
+                tr.innerHTML = `
+                    <td>
+                        <input type="text" name="pic_nama[]" class="form-control form-control-sm input-pic-nama" placeholder="Contoh: Ujang">
+                    </td>
+                    <td>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-success text-white py-0"><i class="fa-brands fa-whatsapp"></i></span>
+                            <input type="text" name="pic_no_wa[]" class="form-control form-control-sm input-pic-wa" placeholder="08123456789">
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <div class="d-flex justify-content-center gap-1">
+                            <button type="button" class="btn btn-xs btn-outline-success" title="Chat WA PIC ini" onclick="chatWaPic(this)">
+                                <i class="fa-brands fa-whatsapp"></i>
+                            </button>
+                            <button type="button" class="btn btn-xs btn-outline-danger" title="Hapus PIC" onclick="hapusBarisPic(this)">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+                const input = tr.querySelector('.input-pic-nama');
+                if (input) input.focus();
+            }
+
+            function hapusBarisPic(btn) {
+                const tbody = document.getElementById('kontainerPic');
+                const rows = tbody.querySelectorAll('.baris-pic');
+                if (rows.length > 1) {
+                    btn.closest('tr').remove();
+                } else {
+                    const row = btn.closest('tr');
+                    row.querySelector('.input-pic-nama').value = '';
+                    row.querySelector('.input-pic-wa').value = '';
                 }
             }
 
-            function kirimWhatsAppLangsung() {
-                const inputWa = document.getElementById('no_wa_tujuan');
-                let rawPhone = inputWa ? inputWa.value.trim() : '';
-                if (!rawPhone) {
-                    alert('Silakan masukkan nomor WhatsApp tujuan terlebih dahulu.');
-                    if (inputWa) inputWa.focus();
+            function chatWaPic(btn) {
+                const row = btn.closest('tr');
+                const nama = row.querySelector('.input-pic-nama').value.trim() || 'Petugas Humas';
+                const rawWa = row.querySelector('.input-pic-wa').value.trim();
+
+                if (!rawWa) {
+                    alert('Silakan masukkan nomor WhatsApp PIC ini terlebih dahulu.');
+                    row.querySelector('.input-pic-wa').focus();
                     return;
                 }
 
-                let phone = rawPhone.replace(/\D/g, '');
+                let phone = rawWa.replace(/\D/g, '');
                 if (phone.startsWith('0')) {
                     phone = '62' + phone.substring(1);
                 } else if (phone.startsWith('8')) {
@@ -467,21 +549,19 @@
                 const unit = @json($pengajuan->unit_kegiatan);
                 const statusSelect = document.getElementById('status');
                 const statusText = statusSelect ? statusSelect.options[statusSelect.selectedIndex].text.toUpperCase() : '';
-                const petugasInput = document.getElementById('petugas_ditugaskan');
-                const petugas = (petugasInput && petugasInput.value.trim()) ? petugasInput.value.trim() : '-';
-                const alasanInput = document.getElementById('alasan_ditolak');
-                const catatan = (alasanInput && alasanInput.value.trim()) ? alasanInput.value.trim() : '-';
+                const catatanInput = document.getElementById('alasan_ditolak');
+                const catatan = (catatanInput && catatanInput.value.trim()) ? catatanInput.value.trim() : '-';
 
-                let message = `*UPDATE PENGAJUAN HUMAS*\n\n` +
-                    `*Kegiatan:* ${kegiatan}\n` +
-                    `*Unit:* ${unit}\n` +
-                    `*Status:* ${statusText}\n` +
-                    `*Petugas Ditugaskan:* ${petugas}\n` +
-                    `*Catatan/Alasan:* ${catatan}\n\n` +
-                    `Sistem Informasi Humas (SIHUMAS)`;
+                let message = `*PENUGASAN KEGIATAN HUMAS*\n\n` +
+                    `Halo *${nama}*,\n` +
+                    `Anda ditugaskan untuk kegiatan berikut:\n\n` +
+                    `📌 *Nama Kegiatan:* ${kegiatan}\n` +
+                    `🏢 *Unit:* ${unit}\n` +
+                    `📝 *Status:* ${statusText}\n` +
+                    `💬 *Catatan:* ${catatan}\n\n` +
+                    `Mohon untuk dipersiapkan. Terima kasih.\n_SIHUMAS_`;
 
-                const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-                window.open(url, '_blank');
+                window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
             }
         </script>
     @endpush

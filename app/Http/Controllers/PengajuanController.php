@@ -252,7 +252,102 @@ class PengajuanController extends Controller
                 $data['perlengkapan'] = trim(strip_tags($data['perlengkapan']));
             }
 
+            // Memproses daftar Petugas / PIC yang ditugaskan (bisa lebih dari 1)
+            $pics = [];
+            if ($request->has('pic_nama') && is_array($request->pic_nama)) {
+                foreach ($request->pic_nama as $index => $nama) {
+                    $nama = trim($nama ?? '');
+                    $noWa = trim($request->pic_no_wa[$index] ?? '');
+                    if ($nama !== '' || $noWa !== '') {
+                        $pics[] = [
+                            'nama' => $nama,
+                            'no_wa' => $noWa,
+                        ];
+                    }
+                }
+            } elseif ($request->has('pic_petugas') && is_array($request->pic_petugas)) {
+                foreach ($request->pic_petugas as $item) {
+                    $nama = trim($item['nama'] ?? '');
+                    $noWa = trim($item['no_wa'] ?? '');
+                    if ($nama !== '' || $noWa !== '') {
+                        $pics[] = [
+                            'nama' => $nama,
+                            'no_wa' => $noWa,
+                        ];
+                    }
+                }
+            } elseif ($request->filled('petugas_ditugaskan') || $request->filled('no_wa_tujuan')) {
+                $pics[] = [
+                    'nama' => trim($request->petugas_ditugaskan ?? ''),
+                    'no_wa' => trim($request->no_wa_tujuan ?? ''),
+                ];
+            }
+
+            if (!empty($pics)) {
+                $data['pic_petugas'] = $pics;
+                $data['petugas_ditugaskan'] = implode(', ', array_filter(array_column($pics, 'nama')));
+                $data['no_wa_tujuan'] = implode(', ', array_filter(array_column($pics, 'no_wa')));
+            } else {
+                $data['pic_petugas'] = null;
+                $data['petugas_ditugaskan'] = null;
+                $data['no_wa_tujuan'] = null;
+            }
+
+            unset($data['pic_nama'], $data['pic_no_wa']);
             $pengajuan->update($data);
+
+            // Generate link WhatsApp untuk setiap PIC yang memiliki nomor WA
+            $waPicList = [];
+            $kegiatan = $pengajuan->nama_kegiatan;
+            $unit = $pengajuan->unit_kegiatan;
+            $status = strtoupper($pengajuan->status);
+            $tglAwal = Carbon::parse($pengajuan->tgl_awal)->locale('id')->isoFormat('dddd, D MMMM Y');
+            $tglSelesai = Carbon::parse($pengajuan->tgl_selesai)->locale('id')->isoFormat('dddd, D MMMM Y');
+            $waktu = "{$pengajuan->jam_kegiatan} - {$pengajuan->waktu_selesai} WIB";
+            $tempat = $pengajuan->tempat_kegiatan ?? '-';
+            $catatan = $pengajuan->alasan_ditolak ?: '-';
+            $pemohon = $pengajuan->user?->name ?? '-';
+            $pemohonWa = $pengajuan->user?->no_wa ?? '-';
+
+            foreach ($pics as $pic) {
+                $rawWa = preg_replace('/[^0-9]/', '', $pic['no_wa'] ?? '');
+                if (!$rawWa) {
+                    continue;
+                }
+                if (str_starts_with($rawWa, '0')) {
+                    $cleanPhone = '62' . substr($rawWa, 1);
+                } elseif (str_starts_with($rawWa, '8')) {
+                    $cleanPhone = '62' . $rawWa;
+                } else {
+                    $cleanPhone = $rawWa;
+                }
+
+                $namaPic = $pic['nama'] ?: 'Petugas Humas';
+
+                $message = "*PENUGASAN KEGIATAN HUMAS*\n\n" .
+                    "Halo *{$namaPic}*,\n" .
+                    "Anda telah ditugaskan untuk kegiatan berikut:\n\n" .
+                    "📌 *Nama Kegiatan:* {$kegiatan}\n" .
+                    "🏢 *Unit:* {$unit}\n" .
+                    "📅 *Tanggal:* {$tglAwal} s/d {$tglSelesai}\n" .
+                    "⏰ *Waktu:* {$waktu}\n" .
+                    "📍 *Tempat:* {$tempat}\n" .
+                    "👤 *Pemohon:* {$pemohon} ({$pemohonWa})\n" .
+                    "📝 *Status / Catatan:* {$status} (" . ($catatan !== '-' ? $catatan : 'Telah diverifikasi') . ")\n\n" .
+                    "Mohon untuk dikoordinasikan dan dipersiapkan dengan baik. Terima kasih.\n\n" .
+                    "_Sistem Informasi Humas (SIHUMAS)_";
+
+                $waPicList[] = [
+                    'nama' => $namaPic,
+                    'no_wa' => $pic['no_wa'],
+                    'phone' => $cleanPhone,
+                    'url' => 'https://wa.me/' . $cleanPhone . '?text=' . urlencode($message),
+                ];
+            }
+
+            if (!empty($waPicList)) {
+                session()->flash('wa_pic_list', $waPicList);
+            }
 
             // Cek apakah laporanPublikasi ada dan update jika ada
             if ($pengajuan->laporanPublikasi) {

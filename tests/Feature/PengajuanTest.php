@@ -88,7 +88,7 @@ class PengajuanTest extends TestCase
         $showResponse->assertSee(basename($pengajuan->upload_file));
     }
 
-    public function test_admin_can_assign_petugas_and_whatsapp_number(): void
+    public function test_admin_can_assign_multiple_pics_and_their_whatsapp_numbers(): void
     {
         $admin = User::factory()->create([
             'is_admin' => true,
@@ -115,30 +115,41 @@ class PengajuanTest extends TestCase
         $editResponse = $this->actingAs($admin)->get(route('pengajuan.edit', $pengajuan->id));
         $editResponse->assertStatus(200);
         $editResponse->assertSee('Petugas / PIC yang Ditugaskan');
-        $editResponse->assertSee('Nomor WhatsApp Tujuan');
+        $editResponse->assertSee('Tambah PIC');
 
         $updateResponse = $this->actingAs($admin)->put(route('pengajuan.update', $pengajuan->id), [
             'status' => 'diterima',
-            'petugas_ditugaskan' => 'Habib dan Ujang',
-            'no_wa_tujuan' => '081298765432',
+            'pic_nama' => ['Habib', 'Ujang'],
+            'pic_no_wa' => ['081298765432', '085298765432'],
             'alasan_ditolak' => 'Pengajuan diterima dan petugas telah ditugaskan.',
             'tgl_awal' => $pengajuan->tgl_awal,
             'tgl_selesai' => $pengajuan->tgl_selesai,
         ]);
 
         $updateResponse->assertRedirect(route('kotak-masuk-pengajuan.index'));
+        $updateResponse->assertSessionHas('wa_pic_list');
 
         $this->assertDatabaseHas('pengajuans', [
             'id' => $pengajuan->id,
             'status' => 'diterima',
-            'petugas_ditugaskan' => 'Habib dan Ujang',
-            'no_wa_tujuan' => '081298765432',
+            'petugas_ditugaskan' => 'Habib, Ujang',
+            'no_wa_tujuan' => '081298765432, 085298765432',
         ]);
+
+        $pengajuanFresh = $pengajuan->fresh();
+        $this->assertCount(2, $pengajuanFresh->pic_petugas);
+        $this->assertEquals('Habib', $pengajuanFresh->pic_petugas[0]['nama']);
+        $this->assertEquals('Ujang', $pengajuanFresh->pic_petugas[1]['nama']);
 
         $showResponse = $this->actingAs($admin)->get(route('pengajuan.show', $pengajuan->id));
         $showResponse->assertStatus(200);
-        $showResponse->assertSee('Habib dan Ujang');
+        $showResponse->assertSee('Habib');
+        $showResponse->assertSee('Ujang');
         $showResponse->assertSee('081298765432');
+        $showResponse->assertSee('085298765432');
+
+        $indexResponse = $this->actingAs($admin)->get(route('kotak-masuk-pengajuan.index'));
+        $indexResponse->assertStatus(200);
     }
 }
 
