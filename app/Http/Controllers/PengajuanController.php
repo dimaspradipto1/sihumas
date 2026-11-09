@@ -111,8 +111,8 @@ class PengajuanController extends Controller
             'tgl_selesai'       => $data['tgl_selesai'],
             'jam_kegiatan'      => $data['jam_kegiatan'],
             'waktu_selesai'     => $data['waktu_selesai'],
-            'deskripsi_kegiatan' => $data['deskripsi_kegiatan'] ?? null,
-            'perlengkapan'      => $data['perlengkapan'] ?? null,
+            'deskripsi_kegiatan' => isset($data['deskripsi_kegiatan']) ? trim(strip_tags($data['deskripsi_kegiatan'])) : null,
+            'perlengkapan'      => isset($data['perlengkapan']) ? trim(strip_tags($data['perlengkapan'])) : null,
             'link_zoom'         => $data['link_zoom'] ?? null,
             'unit_kegiatan'     => $data['unit_kegiatan'],
             'tempat_kegiatan'   => $data['tempat_kegiatan'],
@@ -245,6 +245,13 @@ class PengajuanController extends Controller
                 $data['upload_png'] = $request->file('upload_png')->store('pengajuan/images', 'public');
             }
 
+            if (isset($data['deskripsi_kegiatan'])) {
+                $data['deskripsi_kegiatan'] = trim(strip_tags($data['deskripsi_kegiatan']));
+            }
+            if (isset($data['perlengkapan'])) {
+                $data['perlengkapan'] = trim(strip_tags($data['perlengkapan']));
+            }
+
             $pengajuan->update($data);
 
             // Cek apakah laporanPublikasi ada dan update jika ada
@@ -301,6 +308,13 @@ class PengajuanController extends Controller
                     Storage::disk('public')->delete($pengajuan->upload_png);
                 }
                 $data['upload_png'] = $request->file('upload_png')->store('pengajuan/images', 'public');
+            }
+
+            if (isset($data['deskripsi_kegiatan'])) {
+                $data['deskripsi_kegiatan'] = trim(strip_tags($data['deskripsi_kegiatan']));
+            }
+            if (isset($data['perlengkapan'])) {
+                $data['perlengkapan'] = trim(strip_tags($data['perlengkapan']));
             }
 
             $pengajuan->update($data);

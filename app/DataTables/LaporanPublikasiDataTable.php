@@ -35,7 +35,7 @@ class LaporanPublikasiDataTable extends DataTable
             return Carbon::parse($publikasi->pengajuan->tgl_selesai)->translatedFormat('l, d F Y');
         })
         ->addColumn('deskripsi_kegiatan', fn ($row) =>
-            $row->publikasi?->pengajuan?->deskripsi_kegiatan ?? '-'
+            trim(strip_tags($row->publikasi?->pengajuan?->deskripsi_kegiatan ?? '')) ?: '-'
         )
         ->addColumn('link_zoom', fn ($row) =>
             $row->publikasi?->pengajuan?->link_zoom ?? '-'

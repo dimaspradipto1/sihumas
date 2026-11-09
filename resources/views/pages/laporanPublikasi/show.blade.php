@@ -277,7 +277,7 @@
                         </td>
                         <td>{{ \Carbon\Carbon::parse($laporan->pengajuan->tgl_selesai)->locale('id')->translatedFormat('l, d F Y') }}
                         </td>
-                        <td>{{ $laporan->pengajuan->deskripsi_kegiatan }}</td>
+                        <td>{{ trim(strip_tags($laporan->pengajuan?->deskripsi_kegiatan ?? '')) ?: '-' }}</td>
                         {{-- <td><a href="{{ $laporan->pengajuan->link_zoom }}" target="_blank">Zoom Link</a></td> --}}
                         <td class="link-pelaporan">
                             <a href="{{ $laporan->publikasi->upload_laporan ?? '#' }}" target="_blank">

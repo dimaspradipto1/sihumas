@@ -261,11 +261,11 @@
                                     </tr>
                                     <tr>
                                         <th>Deskripsi</th>
-                                        <td>{{ $pengajuan->deskripsi_kegiatan }}</td>
+                                        <td>{{ trim(strip_tags($pengajuan->deskripsi_kegiatan ?? '')) ?: '-' }}</td>
                                     </tr>
                                     <tr>
                                         <th>Kebutuhan Perlengkapan</th>
-                                        <td>{{ $pengajuan->perlengkapan }}</td>
+                                        <td>{{ trim(strip_tags($pengajuan->perlengkapan ?? '')) ?: '-' }}</td>
                                     </tr>
                                     <tr>
                                         <th>Unit Kegiatan</th>
