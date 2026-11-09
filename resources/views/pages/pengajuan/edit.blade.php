@@ -30,7 +30,7 @@
     <div class="row">
         <div class="col-12 mb-4">
             <div class="card border-0 shadow components-section">
-                <form action="{{ route('pengajuan.update', $pengajuan->id) }}" method="POST" enctype="multipart/form-data">
+                <form id="formEditPengajuan" action="{{ route('pengajuan.update', $pengajuan->id) }}" method="POST" enctype="multipart/form-data" onsubmit="return handleFormSubmit(event)">
                     @csrf
                     @method('PUT')
 
@@ -438,8 +438,7 @@
 
                                         <!-- Action Buttons -->
                                         <div class="pt-3 border-top d-flex gap-2">
-                                            <button type="submit" class="btn btn-gray-800 d-inline-flex align-items-center"
-                                                onclick="return confirm('Yakin ingin menyimpan perubahan verifikasi dan penugasan?')">
+                                            <button type="submit" class="btn btn-gray-800 d-inline-flex align-items-center">
                                                 <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                                     xmlns="http://www.w3.org/2000/svg">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -569,6 +568,47 @@
                     `Mohon untuk dipersiapkan. Terima kasih.\n_SIHUMAS_`;
 
                 window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
+            }
+
+            let isFormConfirmed = false;
+
+            function handleFormSubmit(event) {
+                if (isFormConfirmed) {
+                    return true;
+                }
+                const statusSelect = document.getElementById('status');
+                if (!statusSelect) {
+                    return true;
+                }
+
+                event.preventDefault();
+                konfirmasiSimpanVerifikasi();
+                return false;
+            }
+
+            function konfirmasiSimpanVerifikasi() {
+                const form = document.getElementById('formEditPengajuan');
+                if (form && !form.reportValidity()) {
+                    return;
+                }
+
+                Swal.fire({
+                    title: 'Konfirmasi Verifikasi',
+                    text: 'Yakin ingin menyimpan perubahan verifikasi dan penugasan?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#1f2937',
+                    cancelButtonColor: '#e11d48',
+                    confirmButtonText: '<i class="fa-solid fa-check me-1"></i> Ya, Simpan',
+                    cancelButtonText: '<i class="fa-solid fa-xmark me-1"></i> Batal',
+                    reverseButtons: true,
+                    focusConfirm: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        isFormConfirmed = true;
+                        form.submit();
+                    }
+                });
             }
         </script>
     @endpush
