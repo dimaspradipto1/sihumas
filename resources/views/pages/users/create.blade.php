@@ -49,19 +49,18 @@
 
                 <div class="mb-4">
                   <label for="no_wa" class="text-uppercase">Nomor WhatsApp</label>
-                  <input type="text" name="no_wa" value="{{old('no_wa')}}" class="form-control" id="no_wa" placeholder="Contoh: 6285363572448">
+                  <input type="text" name="no_wa" value="{{old('no_wa')}}" class="form-control" id="no_wa" placeholder="Contoh: 08123456789 atau 628123456789">
                 </div>
 
                 <div class="mb-4">
-                  <label for="email" class="text-uppercase">fakultas</label>
+                  <label for="fakultas" class="text-uppercase">Unit</label>
                   <select name="fakultas" class="form-control" id="fakultas">
-                    <option >PILIH</option>
-                    <option >==================</option>
-                    <option value="UNIVERSITAS IBNU SINA">UNIVERSITAS IBNU SINA</option>
-                    <option value="REKTORAT">REKTORAT</option>
-                    <option value="FAKULTAS EKONOMI DAN BISNIS">FAKULTAS EKONOMI DAN BISNIS</option>
-                    <option value="FAKULTAS SAINS DAN TEKNOLOGI">FAKULTAS SAINS DAN TEKNOLOGI</option>
-                    <option value="FAKULTAS ILMU KESEHATAN">FAKULTAS ILMU KESEHATAN</option>
+                    <option value="">PILIH UNIT</option>
+                    <option value="UNIVERSITAS IBNU SINA" {{ old('fakultas') == 'UNIVERSITAS IBNU SINA' ? 'selected' : '' }}>UNIVERSITAS IBNU SINA</option>
+                    <option value="REKTORAT" {{ old('fakultas') == 'REKTORAT' ? 'selected' : '' }}>REKTORAT</option>
+                    <option value="FAKULTAS EKONOMI DAN BISNIS" {{ old('fakultas') == 'FAKULTAS EKONOMI DAN BISNIS' ? 'selected' : '' }}>FAKULTAS EKONOMI DAN BISNIS</option>
+                    <option value="FAKULTAS SAINS DAN TEKNOLOGI" {{ old('fakultas') == 'FAKULTAS SAINS DAN TEKNOLOGI' ? 'selected' : '' }}>FAKULTAS SAINS DAN TEKNOLOGI</option>
+                    <option value="FAKULTAS ILMU KESEHATAN" {{ old('fakultas') == 'FAKULTAS ILMU KESEHATAN' ? 'selected' : '' }}>FAKULTAS ILMU KESEHATAN</option>
                   </select>
                 </div>
 

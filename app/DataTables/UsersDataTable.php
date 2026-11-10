@@ -26,15 +26,29 @@ class UsersDataTable extends DataTable
             ->addColumn('DT_RowIndex', '')
             ->addColumn('action', function($user){
                 return '
-                    <a href="'.route('users.updatePassword', $user->id).'" class="btn btn-sm btn-info text-white px-3 "><i class="fa-solid fa-key"></i></a>
-                    <a href="'.route('users.edit', $user->id).'" class="btn btn-sm btn-warning text-white px-3" ><i class="fa-solid fa-pen-to-square"></i></a>
+                    <a href="'.route('users.updatePassword', $user->id).'" class="btn btn-sm btn-info text-white px-3" title="Ubah Password"><i class="fa-solid fa-key"></i></a>
+                    <a href="'.route('users.edit', $user->id).'" class="btn btn-sm btn-warning text-white px-3" title="Edit Pengguna"><i class="fa-solid fa-pen-to-square"></i></a>
                     <form action="'.route('users.destroy', $user->id).'" method="POST" style="display: inline">
                         '.csrf_field().'
                         '.method_field('DELETE').'
-                        <button type="submit" class="btn btn-sm btn-danger px-3" onclick="return confrm(\'Yakin ingin menghapus data ini?\')"><i class="fa-solid fa-trash"></i></button>
+                        <button type="submit" class="btn btn-sm btn-danger px-3" onclick="return confirm(\'Yakin ingin menghapus data ini?\')" title="Hapus Pengguna"><i class="fa-solid fa-trash"></i></button>
                     </form>
                 ';
             })
+            ->editColumn('no_wa', function ($user) {
+                if (empty($user->no_wa)) {
+                    return '<span class="text-muted">-</span>';
+                }
+                $clean = preg_replace('/[^0-9]/', '', $user->no_wa);
+                if (str_starts_with($clean, '0')) {
+                    $clean = '62' . substr($clean, 1);
+                }
+                return '<a href="https://wa.me/' . $clean . '" target="_blank" class="text-success fw-bold d-inline-flex align-items-center" title="Hubungi via WhatsApp"><i class="fa-brands fa-whatsapp me-1 text-success fs-6"></i> ' . e($user->no_wa) . '</a>';
+            })
+            ->editColumn('fakultas', function ($user) {
+                return $user->fakultas ? e($user->fakultas) : '<span class="text-muted">-</span>';
+            })
+            ->rawColumns(['action', 'no_wa', 'fakultas'])
             ->setRowId('DT_RowIndex');
     }
 
@@ -74,16 +88,16 @@ class UsersDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-
             Column::make('DT_RowIndex')->title('No'),
             Column::make('name')->title('Nama Pengguna'),
-            Column::make('email')->title('email'),
-            Column::make('fakultas')->title('fakultas'),
+            Column::make('email')->title('Email'),
+            Column::make('no_wa')->title('No. WhatsApp'),
+            Column::make('fakultas')->title('Unit'),
             Column::computed('action')
                 ->title('Aksi')
                 ->exportable(false)
                 ->printable(false)
-                ->width(60)
+                ->width(120)
                 ->addClass('text-center'),
         ];
     }

@@ -51,7 +51,19 @@
 
                 <div class="mb-4">
                   <label for="no_wa" class="text-uppercase">Nomor WhatsApp</label>
-                  <input type="text" name="no_wa" value="{{old('no_wa') ?? $user->no_wa}}" class="form-control" id="no_wa" placeholder="Contoh: 6285363572448">
+                  <input type="text" name="no_wa" value="{{old('no_wa') ?? $user->no_wa}}" class="form-control" id="no_wa" placeholder="Contoh: 08123456789 atau 628123456789">
+                </div>
+
+                <div class="mb-4">
+                  <label for="fakultas" class="text-uppercase">Unit</label>
+                  <select name="fakultas" class="form-control" id="fakultas">
+                    <option value="">PILIH UNIT</option>
+                    <option value="UNIVERSITAS IBNU SINA" {{ (old('fakultas', $user->fakultas) == 'UNIVERSITAS IBNU SINA') ? 'selected' : '' }}>UNIVERSITAS IBNU SINA</option>
+                    <option value="REKTORAT" {{ (old('fakultas', $user->fakultas) == 'REKTORAT') ? 'selected' : '' }}>REKTORAT</option>
+                    <option value="FAKULTAS EKONOMI DAN BISNIS" {{ (old('fakultas', $user->fakultas) == 'FAKULTAS EKONOMI DAN BISNIS') ? 'selected' : '' }}>FAKULTAS EKONOMI DAN BISNIS</option>
+                    <option value="FAKULTAS SAINS DAN TEKNOLOGI" {{ (old('fakultas', $user->fakultas) == 'FAKULTAS SAINS DAN TEKNOLOGI') ? 'selected' : '' }}>FAKULTAS SAINS DAN TEKNOLOGI</option>
+                    <option value="FAKULTAS ILMU KESEHATAN" {{ (old('fakultas', $user->fakultas) == 'FAKULTAS ILMU KESEHATAN') ? 'selected' : '' }}>FAKULTAS ILMU KESEHATAN</option>
+                  </select>
                 </div>
 
                 {{-- <div class="mb-4">

@@ -45,8 +45,9 @@ class UserController extends Controller
         $data['password'] = bcrypt($request->password);
         $data['remember_token'] = Str::random(60);
 
-        // Set fakultas status
+        // Set fakultas / unit status
         switch ($request->fakultas) {
+            case 'UNIVERSITAS IBNU SINA':
             case 'UNIVERISTAS IBNU SINA':
                 $data['is_admin'] = true;
                 break;
@@ -68,6 +69,7 @@ class UserController extends Controller
         }
 
         User::create($data);
+        Alert::success('success', 'data created successfully')->autoclose(2000)->toToast();
         return redirect()->route('users.index');
     }
 
@@ -92,7 +94,7 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $user = User::findOrfail($id);
+        $user = User::findOrFail($id);
 
         $user->update([
             'is_admin' => $request->has('is_admin') ? 1 : 0,
@@ -109,11 +111,16 @@ class UserController extends Controller
             'no_wa' => $request->no_wa ?? '',
         ];
 
-        if ($request->has('password')) {
-            $updateData['password'] = $request->password;
+        if ($request->has('fakultas')) {
+            $updateData['fakultas'] = $request->fakultas;
+        }
+
+        if ($request->has('password') && !empty($request->password)) {
+            $updateData['password'] = bcrypt($request->password);
         }
 
         $user->update($updateData);
+        Alert::success('success', 'data updated successfully')->autoclose(2000)->toToast();
         return redirect()->route('users.index');
     }
 
