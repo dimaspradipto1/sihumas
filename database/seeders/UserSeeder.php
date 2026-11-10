@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
         $users = [
             [
                 'name' => 'admin humas dan publikasi',
-                'email' => 'admin@gmail.com',
+                'email' => 'admin@uis.ac.id',
                 'no_wa' => '6282283736481',
                 'password' => Hash::make('password'),
                 'fakultas' => 'UNIVERSITAS IBNU SINA',
