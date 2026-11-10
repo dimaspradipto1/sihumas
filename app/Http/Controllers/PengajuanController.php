@@ -199,7 +199,9 @@ class PengajuanController extends Controller
         $tahunAkademik = TahunAkademik::all();
         $petugasHumas = User::where('is_humas', true)
             ->orderBy('name')
-            ->get(['id', 'name', 'no_wa', 'is_humas']);
+            ->get(['id', 'name', 'no_wa', 'is_humas'])
+            ->unique('name')
+            ->values();
         return view('pages.pengajuan.edit', compact('pengajuan', 'tahunAkademik', 'petugasHumas'));
     }
 

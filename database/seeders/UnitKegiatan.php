@@ -15,22 +15,22 @@ class UnitKegiatan extends Seeder
     {
         $unitKegiatan = [
             [
-                'unit_kegiatan' => 'Universitas Ibnu Sina',
+                'unit_kegiatan' => 'LPTI',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'unit_kegiatan' => 'Prodi Feb',
+                'unit_kegiatan' => 'Feb',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'unit_kegiatan' => 'Prodi Fst',
+                'unit_kegiatan' => 'Fst',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'unit_kegiatan' => 'Prodi Fikes',
+                'unit_kegiatan' => 'Fikes',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
