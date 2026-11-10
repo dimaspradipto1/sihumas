@@ -37,8 +37,8 @@ class NotifikasiPengajuanMiddleware
             'rektorat' => ['pending' => 0, 'diterima' => 0, 'ditolak' => 0],
         ];
 
-        // admin global (total semua pengajuan)
-        if (!empty($user->is_admin)) {
+        // admin & humas global (total semua pengajuan)
+        if (!empty($user->is_admin) || !empty($user->is_humas)) {
             $notif['admin'] = [
                 'pending'  => Pengajuan::where('status', 'pending')->count(),
                 'diterima' => Pengajuan::where('status', 'diterima')->count(),

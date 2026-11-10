@@ -18,7 +18,7 @@ class SharePengajuanNotif
     {
         $pendingPengajuan = 0;
 
-        if (auth()->check() && auth()->user()->is_admin) {
+        if (auth()->check() && (auth()->user()->is_admin || auth()->user()->is_humas)) {
             $pendingPengajuan = Pengajuan::where('status', 'pending')->count();
         }
 

@@ -23,8 +23,8 @@ class KotakMasukPengajuanController extends Controller
         // Hitung jumlah pengajuan dengan status 'diterima'
         $diterimaPengajuan = Pengajuan::where('status', 'diterima')->count();
 
-        // Jika user adalah admin, simpan notifikasi di session hanya jika ada pengajuan pending
-        if (auth()->user()->is_admin) {
+        // Jika user adalah admin atau humas, simpan notifikasi di session hanya jika ada pengajuan pending
+        if (auth()->user()->is_admin || auth()->user()->is_humas) {
             // Total notifikasi untuk admin (jumlah pengajuan pending)
             if ($pendingPengajuan > 0) {
                 session(['notifikasi_pengajuan_admin' => $pendingPengajuan]);

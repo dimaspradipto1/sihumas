@@ -50,5 +50,46 @@ class DashboardTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Unit Rektorat');
     }
+
+    public function test_humas_role_sees_appropriate_sidebar_and_dashboard(): void
+    {
+        $humas = User::factory()->create([
+            'is_admin' => false,
+            'is_humas' => true,
+        ]);
+
+        $response = $this->actingAs($humas)->get(route('dashboard'));
+
+        $response->assertStatus(200);
+        $response->assertSee('Petugas Humas');
+        $response->assertSee('Rekapitulasi Kegiatan per Unit');
+
+        // Sidebar yang HARUS muncul untuk role Humas
+        $response->assertSee(route('kotak-masuk-pengajuan.index'));
+        $response->assertSee(route('publikasi.index'));
+        $response->assertSee(route('laporan-publikasi.index'));
+        $response->assertSee(route('pengajuan.index'));
+
+        // Sidebar yang HARUS TERSEMBUNYI untuk role Humas (hanya untuk Super Admin)
+        $response->assertDontSee(route('tahun-akademik.index'));
+        $response->assertDontSee(route('unit-kegiatan.index'));
+        $response->assertDontSee(route('users.index'));
+        $response->assertDontSee(route('settings.index'));
+        $response->assertDontSee(route('backup.index'));
+    }
+
+    public function test_humas_can_access_kotak_masuk_and_rekap_kegiatan(): void
+    {
+        $humas = User::factory()->create([
+            'is_admin' => false,
+            'is_humas' => true,
+        ]);
+
+        $responseKotakMasuk = $this->actingAs($humas)->get(route('kotak-masuk-pengajuan.index'));
+        $responseKotakMasuk->assertStatus(200);
+
+        $responseRekap = $this->actingAs($humas)->get(route('laporan-publikasi.index'));
+        $responseRekap->assertStatus(200);
+    }
 }
 

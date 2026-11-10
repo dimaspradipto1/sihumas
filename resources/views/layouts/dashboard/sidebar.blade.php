@@ -105,7 +105,7 @@
                   // Tentukan scope sesuai role login
                   $scope = null;
 
-                  if (!empty($user->is_admin)) {
+                  if (!empty($user->is_admin) || !empty($user->is_humas)) {
                       $scope = 'admin';
                   } elseif (!empty($user->is_feb)) {
                       $scope = 'feb';
@@ -249,7 +249,7 @@
                   /* danger */
               </style>
 
-              @if (AUth::user()->is_admin)
+              @if (Auth::user()->is_admin || Auth::user()->is_humas)
                   <li class="nav-item {{ request()->routeIs('kotak-masuk-pengajuan.index') ? 'active' : '' }}">
                       <a href="{{ route('kotak-masuk-pengajuan.index') }}" class="nav-link" style="position: relative;">
                           <span class="sidebar-icon">
@@ -527,7 +527,7 @@
                   </li>
               @endif
 
-              @if (Auth::user()->is_admin)
+              @if (Auth::user()->is_admin || Auth::user()->is_humas)
                   <li class="nav-item {{ request()->routeIs('laporan-publikasi.index') ? 'active' : '' }}">
                       <a href="{{ route('laporan-publikasi.index') }}"
                           class="nav-link d-flex justify-content-between">
@@ -560,6 +560,9 @@
                           </span>
                       </a>
                   </li>
+              @endif
+
+              @if (Auth::user()->is_admin)
                   <li class="nav-item {{ request()->routeIs('users.index') ? 'active' : '' }}">
                       <a href="{{ route('users.index') }}" class="nav-link d-flex justify-content-between">
                           <span>

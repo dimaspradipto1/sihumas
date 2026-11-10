@@ -34,7 +34,7 @@
                         // Scope mengikuti role yang login
                         $scope = null;
 
-                        if (!empty($user->is_admin) || !empty($user->is_staffbaak)) {
+                        if (!empty($user->is_admin) || !empty($user->is_humas) || !empty($user->is_staffbaak)) {
                             $scope = 'admin';
                         } elseif (!empty($user->is_feb)) {
                             $scope = 'feb';
@@ -193,6 +193,8 @@
                                 <small class="text-muted d-block" style="font-size: 0.7rem; line-height: 1;">
                                     @if (!empty(Auth::user()->is_admin))
                                         Admin Humas
+                                    @elseif (!empty(Auth::user()->is_humas))
+                                        Petugas Humas
                                     @elseif (!empty(Auth::user()->is_rektorat))
                                         Rektorat
                                     @elseif (!empty(Auth::user()->is_feb))
@@ -360,14 +362,16 @@ document.addEventListener('DOMContentLoaded', function () {
     const pages = [
         { title: 'Dashboard', url: '{{ route("dashboard") }}', icon: '📊', category: 'Utama' },
         { title: 'Pengajuan Kegiatan', url: '{{ route("pengajuan.index") }}', icon: '📝', category: 'Kegiatan' },
-        @if(Auth::user()->is_admin)
+        @if(Auth::user()->is_admin || Auth::user()->is_humas)
         { title: 'Kotak Masuk Pengajuan', url: '{{ route("kotak-masuk-pengajuan.index") }}', icon: '📥', category: 'Kegiatan' },
         @endif
         { title: 'Pelaporan Kegiatan', url: '{{ route("publikasi.index") }}', icon: '📑', category: 'Kegiatan' },
+        @if(Auth::user()->is_admin || Auth::user()->is_humas)
+        { title: 'Rekap Kegiatan', url: '{{ route("laporan-publikasi.index") }}', icon: '📁', category: 'Laporan' },
+        @endif
         @if(Auth::user()->is_admin)
         { title: 'Tahun Akademik', url: '{{ route("tahun-akademik.index") }}', icon: '📅', category: 'Master Data' },
         { title: 'Unit Kegiatan', url: '{{ route("unit-kegiatan.index") }}', icon: '🏢', category: 'Master Data' },
-        { title: 'Rekap Kegiatan', url: '{{ route("laporan-publikasi.index") }}', icon: '📁', category: 'Laporan' },
         { title: 'Pengguna', url: '{{ route("users.index") }}', icon: '👥', category: 'Pengaturan' },
         { title: 'Pengaturan WhatsApp', url: '{{ route("settings.index") }}', icon: '💬', category: 'Pengaturan' },
         { title: 'Backup Database & Storage', url: '{{ route("backup.index") }}', icon: '💾', category: 'Pengaturan' },

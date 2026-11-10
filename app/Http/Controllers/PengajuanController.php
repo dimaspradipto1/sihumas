@@ -146,10 +146,10 @@ class PengajuanController extends Controller
             'pengajuan_id'  => $pengajuan->id,
         ]);
 
-        if (auth()->user()->is_admin && isset($data['email_tujuan'])) {
+        if ((auth()->user()->is_admin || auth()->user()->is_humas) && isset($data['email_tujuan'])) {
             $emailTujuan = $data['email_tujuan'];  // Gunakan email_tujuan jika diisi
         } else {
-            $emailTujuan = 'humasuis@gmail.com';  // Jika bukan admin atau email_tujuan tidak diisi, kirim ke email default
+            $emailTujuan = 'humasuis@gmail.com';  // Jika bukan admin/humas atau email_tujuan tidak diisi, kirim ke email default
         }
 
         // Kirim email setelah pengajuan berhasil
@@ -228,8 +228,8 @@ class PengajuanController extends Controller
             $isEmailValid = false;
         }
 
-        // Cek jika pengguna adalah admin
-        if (auth()->user()->is_admin) {
+        // Cek jika pengguna adalah admin atau petugas humas
+        if (auth()->user()->is_admin || auth()->user()->is_humas) {
             // Mengupdate data pengajuan
             $data = $request->all();
 

@@ -34,8 +34,7 @@
                     @csrf
                     @method('PUT')
 
-                    @if (Auth::user()->is_feb || Auth::user()->is_fst || Auth::user()->is_fikes ||
-                    Auth::user()->is_rektorat)
+                    @if (!Auth::user()->is_admin && !Auth::user()->is_humas)
                     <div class="card-body">
                         <div class="row mb-4">
                             <div class="col-12">
@@ -171,7 +170,7 @@
                                     </div>
                                 </div>
 
-                                @if (Auth::user()->is_admin)
+                                @if (Auth::user()->is_admin || Auth::user()->is_humas)
                                 <div class="mb-4">
                                     <label for="status" class="text-capitalize">status</label>
                                     <div class="form-group">
@@ -206,7 +205,7 @@
                     </div>
                     @endif
 
-                    @if (Auth::user()->is_admin)
+                    @if (Auth::user()->is_admin || Auth::user()->is_humas)
                     <div class="card-body p-4">
                         <div class="row">
                             <!-- Kolom Kiri: Detail Pengajuan / Review -->

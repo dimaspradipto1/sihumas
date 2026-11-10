@@ -21,6 +21,10 @@ class DashboardController extends Controller
             $role = 'admin';
             $roleLabel = 'Administrator';
             $unitName = 'Humas & Publikasi Universitas';
+        } elseif (!empty($user->is_humas)) {
+            $role = 'admin';
+            $roleLabel = 'Petugas Humas';
+            $unitName = 'Humas & Publikasi Universitas';
         } elseif (!empty($user->is_rektorat)) {
             $role = 'rektorat';
             $roleLabel = 'Operator Rektorat';

@@ -135,7 +135,7 @@
                                             value="{{ old('pic') }}">
                                     </div> --}}
 
-                                    @if (Auth::user()->is_admin)
+                                    @if (Auth::user()->is_admin || Auth::user()->is_humas)
                                         <div class="mb-4">
                                             <label for="status" class="text-uppercase">status</label>
                                             <div class="form-group">
