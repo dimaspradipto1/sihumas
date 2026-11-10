@@ -388,7 +388,7 @@
                                                                             if ($isSelected) $matched = true;
                                                                         @endphp
                                                                         <option value="{{ $ph->name }}" data-wa="{{ $ph->no_wa }}" {{ $isSelected ? 'selected' : '' }}>
-                                                                            {{ $ph->name }} {{ $ph->no_wa ? '('.$ph->no_wa.')' : '' }}
+                                                                            {{ $ph->name }}
                                                                         </option>
                                                                     @endforeach
                                                                 @endif
@@ -573,7 +573,7 @@
 
                 let optionsHtml = '<option value="">-- Cari & Pilih Petugas Humas --</option>';
                 if (listPetugasHumas && listPetugasHumas.length > 0) {
-                    optionsHtml += listPetugasHumas.map(ph => `<option value="${ph.name}" data-wa="${ph.no_wa || ''}">${ph.name} ${ph.no_wa ? '(' + ph.no_wa + ')' : ''}</option>`).join('');
+                    optionsHtml += listPetugasHumas.map(ph => `<option value="${ph.name}" data-wa="${ph.no_wa || ''}">${ph.name}</option>`).join('');
                 }
 
                 const div = document.createElement('div');
@@ -727,18 +727,39 @@
 
     @push('style')
         <style>
-            .baris-pic .input-group > * {
-                min-height: 40px;
+            .baris-pic .input-group {
+                display: flex !important;
+                align-items: stretch !important;
+            }
+            .baris-pic .input-group .input-group-text,
+            .baris-pic .input-group .form-control,
+            .baris-pic .input-group .btn {
+                height: 40px !important;
+                min-height: 40px !important;
+                max-height: 40px !important;
+                font-size: 0.875rem !important;
+                line-height: 1.5 !important;
+                box-sizing: border-box !important;
+                margin-top: 0 !important;
+                margin-bottom: 0 !important;
+            }
+            .baris-pic .input-group .form-control {
+                border-color: #d1d5db !important;
             }
             .baris-pic .input-group .btn {
-                border-color: #d1d5db;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
+                min-width: 80px;
+                padding-top: 0 !important;
+                padding-bottom: 0 !important;
+                padding-left: 0.75rem !important;
+                padding-right: 0.75rem !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                font-weight: 500 !important;
             }
             .baris-pic .input-group .btn-outline-success {
-                border-color: #10b981;
-                color: #10b981;
+                border-color: #10b981 !important;
+                color: #10b981 !important;
             }
             .baris-pic .input-group .btn-outline-success:hover,
             .baris-pic .input-group .btn-outline-success:active {
@@ -747,8 +768,8 @@
                 color: #ffffff !important;
             }
             .baris-pic .input-group .btn-outline-danger {
-                border-color: #ef4444;
-                color: #ef4444;
+                border-color: #ef4444 !important;
+                color: #ef4444 !important;
             }
             .baris-pic .input-group .btn-outline-danger:hover,
             .baris-pic .input-group .btn-outline-danger:active {
