@@ -400,27 +400,25 @@
                                                             </select>
                                                         </div>
 
-                                                        <!-- Baris 2: No. WhatsApp & Tombol Aksi -->
-                                                        <div class="row g-2 align-items-end">
-                                                            <div class="col-8 col-sm-9">
-                                                                <label class="form-label small text-muted fw-bold mb-1">
-                                                                    <i class="fa-brands fa-whatsapp me-1 text-success"></i> No. WhatsApp PIC
-                                                                </label>
-                                                                <div class="input-group">
-                                                                    <span class="input-group-text bg-success text-white"><i class="fa-brands fa-whatsapp"></i></span>
-                                                                    <input type="text" name="pic_no_wa[]" class="form-control input-pic-wa"
-                                                                        value="{{ $pic['no_wa'] ?? '' }}" placeholder="082283736181">
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-4 col-sm-3 text-end">
-                                                                <div class="btn-group w-100" role="group">
-                                                                    <button type="button" class="btn btn-outline-success" title="Chat WA PIC" onclick="chatWaPic(this)">
-                                                                        <i class="fa-brands fa-whatsapp"></i>
-                                                                    </button>
-                                                                    <button type="button" class="btn btn-outline-danger" title="Hapus PIC" onclick="hapusBarisPic(this)">
-                                                                        <i class="fa-solid fa-trash"></i>
-                                                                    </button>
-                                                                </div>
+                                                        <!-- Baris 2: No. WhatsApp & Tombol Aksi (Tersambung Rapi dalam 1 Input Group) -->
+                                                        <div>
+                                                            <label class="form-label small text-muted fw-bold mb-1">
+                                                                <i class="fa-brands fa-whatsapp me-1 text-success"></i> No. WhatsApp PIC
+                                                            </label>
+                                                            <div class="input-group">
+                                                                <span class="input-group-text bg-success text-white">
+                                                                    <i class="fa-brands fa-whatsapp"></i>
+                                                                </span>
+                                                                <input type="text" name="pic_no_wa[]" class="form-control input-pic-wa"
+                                                                    value="{{ $pic['no_wa'] ?? '' }}" placeholder="082283736181">
+                                                                <button type="button" class="btn btn-outline-success d-inline-flex align-items-center px-3" title="Chat WhatsApp PIC" onclick="chatWaPic(this)">
+                                                                    <i class="fa-brands fa-whatsapp"></i>
+                                                                    <span class="d-none d-sm-inline ms-1">Chat</span>
+                                                                </button>
+                                                                <button type="button" class="btn btn-outline-danger d-inline-flex align-items-center px-3" title="Hapus PIC" onclick="hapusBarisPic(this)">
+                                                                    <i class="fa-solid fa-trash"></i>
+                                                                    <span class="d-none d-sm-inline ms-1">Hapus</span>
+                                                                </button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -589,25 +587,23 @@
                             ${optionsHtml}
                         </select>
                     </div>
-                    <div class="row g-2 align-items-end">
-                        <div class="col-8 col-sm-9">
-                            <label class="form-label small text-muted fw-bold mb-1">
-                                <i class="fa-brands fa-whatsapp me-1 text-success"></i> No. WhatsApp PIC
-                            </label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-success text-white"><i class="fa-brands fa-whatsapp"></i></span>
-                                <input type="text" name="pic_no_wa[]" class="form-control input-pic-wa" placeholder="082283736181">
-                            </div>
-                        </div>
-                        <div class="col-4 col-sm-3 text-end">
-                            <div class="btn-group w-100" role="group">
-                                <button type="button" class="btn btn-outline-success" title="Chat WA PIC" onclick="chatWaPic(this)">
-                                    <i class="fa-brands fa-whatsapp"></i>
-                                </button>
-                                <button type="button" class="btn btn-outline-danger" title="Hapus PIC" onclick="hapusBarisPic(this)">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
+                    <div>
+                        <label class="form-label small text-muted fw-bold mb-1">
+                            <i class="fa-brands fa-whatsapp me-1 text-success"></i> No. WhatsApp PIC
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-success text-white">
+                                <i class="fa-brands fa-whatsapp"></i>
+                            </span>
+                            <input type="text" name="pic_no_wa[]" class="form-control input-pic-wa" placeholder="082283736181">
+                            <button type="button" class="btn btn-outline-success d-inline-flex align-items-center px-3" title="Chat WhatsApp PIC" onclick="chatWaPic(this)">
+                                <i class="fa-brands fa-whatsapp"></i>
+                                <span class="d-none d-sm-inline ms-1">Chat</span>
+                            </button>
+                            <button type="button" class="btn btn-outline-danger d-inline-flex align-items-center px-3" title="Hapus PIC" onclick="hapusBarisPic(this)">
+                                <i class="fa-solid fa-trash"></i>
+                                <span class="d-none d-sm-inline ms-1">Hapus</span>
+                            </button>
                         </div>
                     </div>
                 `;
@@ -727,4 +723,41 @@
                 });
             }
         </script>
+    @endpush
+
+    @push('style')
+        <style>
+            .baris-pic .input-group > * {
+                min-height: 40px;
+            }
+            .baris-pic .input-group .btn {
+                border-color: #d1d5db;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .baris-pic .input-group .btn-outline-success {
+                border-color: #10b981;
+                color: #10b981;
+            }
+            .baris-pic .input-group .btn-outline-success:hover,
+            .baris-pic .input-group .btn-outline-success:active {
+                background-color: #10b981 !important;
+                border-color: #10b981 !important;
+                color: #ffffff !important;
+            }
+            .baris-pic .input-group .btn-outline-danger {
+                border-color: #ef4444;
+                color: #ef4444;
+            }
+            .baris-pic .input-group .btn-outline-danger:hover,
+            .baris-pic .input-group .btn-outline-danger:active {
+                background-color: #ef4444 !important;
+                border-color: #ef4444 !important;
+                color: #ffffff !important;
+            }
+            .baris-pic .input-group .btn:focus {
+                box-shadow: none !important;
+            }
+        </style>
     @endpush
