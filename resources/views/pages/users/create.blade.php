@@ -73,8 +73,14 @@
                 </div>
 
                 <div class="mb-4">
-                  <label for="password" class="text-uppercase">password</label>
-                  <input type="password" class="form-control" name="password" value="{{old('password')}}">
+                  <label for="inputPassword" class="text-uppercase">Password</label>
+                  <div class="input-group">
+                    <input type="password" class="form-control" id="inputPassword" name="password" value="{{ old('password', 'password') }}" placeholder="Default: password">
+                    <button class="btn btn-outline-gray-400" type="button" onclick="togglePasswordVisibility('inputPassword', 'iconTogglePassword')" title="Lihat/Sembunyikan Password">
+                      <i class="fa-solid fa-eye" id="iconTogglePassword"></i>
+                    </button>
+                  </div>
+                  <small class="text-muted"><i class="fa-solid fa-circle-info me-1 text-primary"></i>Password default: <code>password</code> (klik ikon mata untuk melihat)</small>
                 </div>
 
               </div>
@@ -150,3 +156,23 @@
       </div>
     </div>
   @endsection
+
+  @push('scripts')
+  <script>
+    function togglePasswordVisibility(inputId, iconId) {
+      const input = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
+      if (!input || !icon) return;
+
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    }
+  </script>
+  @endpush

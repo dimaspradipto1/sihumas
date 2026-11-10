@@ -68,7 +68,7 @@ class UserController extends Controller
         $data['is_fst'] = $request->has('is_fst');
         $data['is_fikes'] = $request->has('is_fikes');
         $data['is_users'] = $request->has('is_users');
-        $data['password'] = bcrypt($request->password);
+        $data['password'] = bcrypt($request->filled('password') ? $request->password : 'password');
         $data['remember_token'] = Str::random(60);
 
         // Jika tidak ada role yang dicentang secara manual, tetapkan default berdasarkan unit

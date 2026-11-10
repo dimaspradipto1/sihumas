@@ -38,13 +38,23 @@
               <div class="col-12">
 
                 <div class="mb-4">
-                  <label for="new_password" class="text-uppercase">password baru</label>
-                  <input type="password" name="new_password" value="{{old('new_password')}}" class="form-control" id="new_password">
+                  <label for="new_password" class="text-uppercase">Password Baru</label>
+                  <div class="input-group">
+                    <input type="password" name="new_password" value="{{old('new_password')}}" class="form-control" id="new_password" placeholder="Masukkan password baru">
+                    <button class="btn btn-outline-gray-400" type="button" onclick="togglePasswordVisibility('new_password', 'iconNewPassword')" title="Lihat/Sembunyikan Password">
+                      <i class="fa-solid fa-eye" id="iconNewPassword"></i>
+                    </button>
+                  </div>
                 </div>
 
                 <div class="mb-4">
-                  <label for="new_password" class="text-uppercase">Konfirmasi Password Baru</label>
-                  <input type="password" name="new_password_confirmation" value="{{old('new_password_confirmation')}}" class="form-control" id="new_password_confirmation">
+                  <label for="new_password_confirmation" class="text-uppercase">Konfirmasi Password Baru</label>
+                  <div class="input-group">
+                    <input type="password" name="new_password_confirmation" value="{{old('new_password_confirmation')}}" class="form-control" id="new_password_confirmation" placeholder="Ulangi password baru">
+                    <button class="btn btn-outline-gray-400" type="button" onclick="togglePasswordVisibility('new_password_confirmation', 'iconConfirmPassword')" title="Lihat/Sembunyikan Password">
+                      <i class="fa-solid fa-eye" id="iconConfirmPassword"></i>
+                    </button>
+                  </div>
                 </div>
 
               </div>
@@ -67,3 +77,23 @@
       </div>
     </div>
   @endsection
+
+  @push('scripts')
+  <script>
+    function togglePasswordVisibility(inputId, iconId) {
+      const input = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
+      if (!input || !icon) return;
+
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    }
+  </script>
+  @endpush

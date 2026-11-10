@@ -49,6 +49,8 @@ class UserTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Nomor WhatsApp');
         $response->assertSee('Unit');
+        $response->assertSee('value="password"', false);
+        $response->assertSee('togglePasswordVisibility');
     }
 
     public function test_admin_can_create_user_with_no_wa_and_unit(): void
@@ -188,6 +190,29 @@ class UserTest extends TestCase
 
         $createdUser = User::where('email', $userData['email'])->first();
         $this->assertEquals($unit->id, $createdUser->unitKegiatan->id);
+    }
+
+    public function test_create_user_defaults_to_password_if_omitted(): void
+    {
+        $admin = User::factory()->create([
+            'fakultas' => 'UNIVERSITAS IBNU SINA',
+            'is_admin' => true,
+        ]);
+
+        $email = 'default_pass_' . uniqid() . '@uis.ac.id';
+        $userData = [
+            'name' => 'Default Pass User',
+            'email' => $email,
+            'fakultas' => 'REKTORAT',
+            // password field left empty
+        ];
+
+        $response = $this->actingAs($admin)->post(route('users.store'), $userData);
+        $response->assertRedirect(route('users.index'));
+
+        $user = User::where('email', $email)->first();
+        $this->assertNotNull($user);
+        $this->assertTrue(\Illuminate\Support\Facades\Hash::check('password', $user->password));
     }
 }
 
