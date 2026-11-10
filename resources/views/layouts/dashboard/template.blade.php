@@ -43,6 +43,10 @@
     {{--  datatables CSS  --}}
     <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css">
 
+    {{-- Select2 CSS --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css">
+
     <style>
         /* Pastikan scroll horizontal DataTables berada tepat di bawah tabel (di atas info & pagination) */
         .dataTables_wrapper .dataTables_scrollBody,
@@ -54,6 +58,51 @@
         /* Hindari container pembungkus card membuat scrollbar di bawah pagination */
         .card-body > .table-responsive {
             overflow-x: visible !important;
+        }
+
+        /* Styling Select2 agar serasi dengan tema Volt Dashboard */
+        .select2-container--bootstrap-5 .select2-selection {
+            min-height: 38px !important;
+            border-color: #d1d5db !important;
+            border-radius: 0.5rem !important;
+            font-size: 0.875rem !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+        .select2-container--bootstrap-5.select2-container--focus .select2-selection {
+            border-color: #1f2937 !important;
+            box-shadow: 0 0 0 0.2rem rgba(31, 41, 55, 0.15) !important;
+        }
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+            color: #1f2937 !important;
+            font-size: 0.875rem !important;
+            padding-left: 0.5rem !important;
+        }
+        .select2-container--bootstrap-5 .select2-dropdown {
+            border-color: #d1d5db !important;
+            border-radius: 0.5rem !important;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+            font-size: 0.875rem !important;
+            z-index: 9999 !important;
+        }
+        .select2-container--bootstrap-5 .select2-search__field {
+            border-radius: 0.375rem !important;
+            border: 1px solid #d1d5db !important;
+            font-size: 0.875rem !important;
+            padding: 0.4rem 0.75rem !important;
+        }
+        .select2-container--bootstrap-5 .select2-search__field:focus {
+            border-color: #1f2937 !important;
+            box-shadow: 0 0 0 0.2rem rgba(31, 41, 55, 0.15) !important;
+        }
+        .select2-container--bootstrap-5 .select2-results__option--highlighted[aria-selected] {
+            background-color: #1f2937 !important;
+            color: #ffffff !important;
+        }
+        .select2-container--bootstrap-5 .select2-results__option--selected {
+            background-color: #f3f4f6 !important;
+            color: #111827 !important;
+            font-weight: 600 !important;
         }
     </style>
 
@@ -140,6 +189,8 @@
     <script src="https://cdn.datatables.net/2.3.2/js/dataTables.bootstrap5.js"></script>
     {{-- ckeditor --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor/4.16.2/ckeditor.js"></script>
+    {{-- Select2 JS --}}
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     @stack('scripts')
     @stack('style')

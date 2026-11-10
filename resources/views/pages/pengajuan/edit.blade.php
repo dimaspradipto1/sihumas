@@ -385,7 +385,7 @@
 
                                                                 @if(isset($petugasHumas) && count($petugasHumas) > 0)
                                                                     <select class="form-select form-select-sm mb-1 select-petugas-humas" onchange="pilihPetugasHumas(this)">
-                                                                        <option value="">-- Pilih dari Petugas Humas --</option>
+                                                                        <option value="">-- Cari & Pilih Petugas Humas --</option>
                                                                         @foreach ($petugasHumas as $ph)
                                                                             <option value="{{ $ph->name }}" data-wa="{{ $ph->no_wa }}" {{ ($pic['nama'] ?? '') == $ph->name ? 'selected' : '' }}>
                                                                                 {{ $ph->name }} {{ $ph->no_wa ? '('.$ph->no_wa.')' : '' }}
@@ -499,6 +499,47 @@
 
             const listPetugasHumas = @json(isset($petugasHumas) ? $petugasHumas->map(fn($p) => ['name' => $p->name, 'no_wa' => $p->no_wa]) : []);
 
+            function inisialisasiSelect2(selectElem) {
+                if (window.$ && $.fn.select2) {
+                    const $el = $(selectElem);
+                    if ($el.hasClass('select2-hidden-accessible')) return;
+                    $el.select2({
+                        theme: 'bootstrap-5',
+                        width: '100%',
+                        placeholder: '-- Cari & Pilih Petugas Humas --',
+                        allowClear: true
+                    }).on('select2:select', function () {
+                        pilihPetugasHumas(this);
+                    }).on('select2:clear', function () {
+                        const row = this.closest('.baris-pic');
+                        if (row) {
+                            row.querySelector('.input-pic-nama').value = '';
+                            row.querySelector('.input-pic-wa').value = '';
+                        }
+                    });
+                }
+            }
+
+            // Auto-focus input pencarian saat Select2 dibuka
+            if (window.$) {
+                $(document).on('select2:open', function () {
+                    const searchField = document.querySelector('.select2-search__field');
+                    if (searchField) searchField.focus();
+                });
+            }
+
+            function inisialisasiSemuaSelect2() {
+                document.querySelectorAll('.select-petugas-humas').forEach(function (select) {
+                    inisialisasiSelect2(select);
+                });
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', inisialisasiSemuaSelect2);
+            } else {
+                inisialisasiSemuaSelect2();
+            }
+
             function pilihPetugasHumas(selectElem) {
                 const row = selectElem.closest('.baris-pic');
                 if (!row) return;
@@ -515,8 +556,11 @@
 
                 if (selectElem.value) {
                     inputNama.value = selectElem.value;
-                    const wa = selectedOption.getAttribute('data-wa') || '';
+                    const wa = selectedOption ? (selectedOption.getAttribute('data-wa') || '') : '';
                     inputWa.value = wa;
+                } else {
+                    inputNama.value = '';
+                    inputWa.value = '';
                 }
             }
 
@@ -528,7 +572,7 @@
                 if (listPetugasHumas && listPetugasHumas.length > 0) {
                     selectHumasHtml = `
                         <select class="form-select form-select-sm mb-1 select-petugas-humas" onchange="pilihPetugasHumas(this)">
-                            <option value="">-- Pilih dari Petugas Humas --</option>
+                            <option value="">-- Cari & Pilih Petugas Humas --</option>
                             ${listPetugasHumas.map(ph => `<option value="${ph.name}" data-wa="${ph.no_wa || ''}">${ph.name} ${ph.no_wa ? '(' + ph.no_wa + ')' : ''}</option>`).join('')}
                             <option value="__custom__">-- Ketik Manual --</option>
                         </select>
@@ -571,6 +615,12 @@
                     </div>
                 `;
                 kontainer.appendChild(div);
+
+                const newSelect = div.querySelector('.select-petugas-humas');
+                if (newSelect) {
+                    inisialisasiSelect2(newSelect);
+                }
+
                 const input = div.querySelector('.input-pic-nama');
                 if (input) input.focus();
             }
@@ -579,13 +629,24 @@
                 const kontainer = document.getElementById('kontainerPic');
                 const items = kontainer.querySelectorAll('.baris-pic');
                 if (items.length > 1) {
-                    btn.closest('.baris-pic').remove();
+                    const row = btn.closest('.baris-pic');
+                    const select = row.querySelector('.select-petugas-humas');
+                    if (window.$ && select && $(select).hasClass('select2-hidden-accessible')) {
+                        $(select).select2('destroy');
+                    }
+                    row.remove();
                 } else {
                     const item = btn.closest('.baris-pic');
                     item.querySelector('.input-pic-nama').value = '';
                     item.querySelector('.input-pic-wa').value = '';
                     const select = item.querySelector('.select-petugas-humas');
-                    if (select) select.value = '';
+                    if (select) {
+                        if (window.$ && $(select).hasClass('select2-hidden-accessible')) {
+                            $(select).val('').trigger('change');
+                        } else {
+                            select.value = '';
+                        }
+                    }
                 }
             }
 
