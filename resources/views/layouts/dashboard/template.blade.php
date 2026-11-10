@@ -43,6 +43,20 @@
     {{--  datatables CSS  --}}
     <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css">
 
+    <style>
+        /* Pastikan scroll horizontal DataTables berada tepat di bawah tabel (di atas info & pagination) */
+        .dataTables_wrapper .dataTables_scrollBody,
+        .dt-container .dt-scroll-body {
+            overflow-x: auto !important;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Hindari container pembungkus card membuat scrollbar di bawah pagination */
+        .card-body > .table-responsive {
+            overflow-x: visible !important;
+        }
+    </style>
+
     @stack('style')
 </head>
 

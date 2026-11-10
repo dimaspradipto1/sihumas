@@ -33,9 +33,7 @@
 
   <div class="card border-0 shadow mb-4">
     <div class="card-body">
-      <div class="table-responsive">
-        {{ $dataTable->table(['style' => 'width:100%; overflow-x: auto']) }}
-      </div>
+      {!! $dataTable->table(['class' => 'table table-striped table-bordered w-100', 'id' => 'users-table']) !!}
     </div>
   </div>
 @endsection

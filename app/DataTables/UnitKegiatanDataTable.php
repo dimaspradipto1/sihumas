@@ -58,6 +58,9 @@ class UnitKegiatanDataTable extends DataTable
                     //->dom('Bfrtip')
                     ->orderBy(1)
                     ->selectStyleSingle()
+                    ->parameters([
+                        'scrollX' => true,
+                    ])
                     ->buttons([
                         Button::make('excel'),
                         Button::make('csv'),
