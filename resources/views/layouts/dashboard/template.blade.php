@@ -104,7 +104,38 @@
             color: #111827 !important;
             font-weight: 600 !important;
         }
+
+        /* Transisi & Mode Hidden Sidebar */
+        .sidebar {
+            transition: transform 0.3s ease-in-out, margin-left 0.3s ease-in-out !important;
+        }
+        .content {
+            transition: margin-left 0.3s ease-in-out !important;
+        }
+        @media (min-width: 992px) {
+            html.sidebar-hidden #sidebarMenu,
+            body.sidebar-hidden #sidebarMenu {
+                transform: translateX(-100%) !important;
+            }
+            html.sidebar-hidden .content,
+            body.sidebar-hidden .content {
+                margin-left: 0 !important;
+            }
+        }
+        #sidebarToggle {
+            transition: all 0.2s ease-in-out;
+        }
+        #sidebarToggle:hover {
+            background-color: #e5e7eb !important;
+            color: #111827 !important;
+        }
     </style>
+
+    <script>
+        if (window.innerWidth >= 992 && localStorage.getItem('sidebar_hidden') === 'true') {
+            document.documentElement.classList.add('sidebar-hidden');
+        }
+    </script>
 
     @stack('style')
 </head>
@@ -199,6 +230,43 @@
             $('#yourTableId').DataTable({
                 "scrollX": true, // Mengaktifkan scroll horizontal
             });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.innerWidth >= 992 && localStorage.getItem('sidebar_hidden') === 'true') {
+                document.body.classList.add('sidebar-hidden');
+            }
+
+            const toggleBtn = document.getElementById('sidebarToggle');
+            const sidebarMenu = document.getElementById('sidebarMenu');
+
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (window.innerWidth >= 992) {
+                        document.body.classList.toggle('sidebar-hidden');
+                        document.documentElement.classList.toggle('sidebar-hidden');
+                        const isHidden = document.body.classList.contains('sidebar-hidden');
+                        localStorage.setItem('sidebar_hidden', isHidden ? 'true' : 'false');
+
+                        // Sesuaikan kolom datatables jika ada tabel di halaman
+                        if (window.$ && $.fn.dataTable) {
+                            setTimeout(function() {
+                                $($.fn.dataTable.tables(true)).DataTable().columns.adjust();
+                            }, 310);
+                        }
+                    } else {
+                        if (sidebarMenu) {
+                            if (window.bootstrap && bootstrap.Collapse) {
+                                const bsCollapse = bootstrap.Collapse.getInstance(sidebarMenu) || new bootstrap.Collapse(sidebarMenu, { toggle: false });
+                                bsCollapse.toggle();
+                            } else {
+                                sidebarMenu.classList.toggle('show');
+                            }
+                        }
+                    }
+                });
+            }
         });
     </script>
 

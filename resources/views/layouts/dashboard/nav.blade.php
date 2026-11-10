@@ -2,8 +2,19 @@
     <div class="card border-0 shadow-sm w-100 bg-white" style="border-radius: 0.75rem;">
         <div class="card-body py-2 px-3 px-md-4">
             <div class="d-flex justify-content-between align-items-center w-100" id="navbarSupportedContent">
-                <!-- Search Halaman -->
+                <!-- Left Side: Hamburger & Search Halaman -->
                 <div class="d-flex align-items-center">
+                    <!-- Hamburger Toggle Button -->
+                    <button id="sidebarToggle" type="button" class="btn btn-sm text-gray-700 me-2 me-md-3 d-flex align-items-center justify-content-center border-0 shadow-none"
+                        style="width: 38px; height: 38px; border-radius: 0.5rem; background-color: #f3f4f6; cursor: pointer;"
+                        title="Sembunyikan / Tampilkan Menu Sidebar"
+                        aria-label="Toggle Sidebar">
+                        <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+
+                    <!-- Search Halaman -->
                     <div class="position-relative page-search-wrapper" style="width: 260px; max-width: 100%;">
                         <form id="pageSearchForm" onsubmit="return false;" class="m-0">
                             <div class="input-group input-group-merge page-search-group">
