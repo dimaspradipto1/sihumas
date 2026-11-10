@@ -13,7 +13,7 @@ class SettingSeeder extends Seeder
     public function run(): void
     {
         $settings = [
-            'admin_whatsapp' => '6282283736481',
+            'admin_whatsapp' => '082283736481',
             'wa_message_template' => "Halo Admin, ada pengajuan kegiatan baru:\n\n*Nama Kegiatan:* {nama_kegiatan}\n*Tanggal:* {tgl_awal} s.d {tgl_selesai}\n*Tempat:* {tempat_kegiatan}\n*Pengaju:* {nama_user} (WA: {no_wa_user})\n\nSilakan cek di sistem SIHUMAS.",
         ];
 
