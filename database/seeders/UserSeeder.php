@@ -49,7 +49,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'name' => 'ujang',
-                'email' => 'rektorat@uis.ac.id',
+                'email' => 'ujang@uis.ac.id',
                 'no_wa' => '087701514453',
                 'password' => Hash::make('password'),
                 'fakultas'=>'Fakultas Ilmu Kesehatan',
