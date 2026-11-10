@@ -18,8 +18,17 @@ class SharePengajuanNotif
     {
         $pendingPengajuan = 0;
 
-        if (auth()->check() && (auth()->user()->is_admin || auth()->user()->is_humas)) {
-            $pendingPengajuan = Pengajuan::where('status', 'pending')->count();
+        if (auth()->check()) {
+            $user = auth()->user();
+            if (!empty($user->is_admin)) {
+                // Admin: jumlah pengajuan pending yang menunggu verifikasi
+                $pendingPengajuan = Pengajuan::where('status', 'pending')->count();
+            } elseif (!empty($user->is_humas)) {
+                // Petugas Humas: HANYA jumlah tugas yang ditugaskan kepada dirinya sebagai PIC
+                $pendingPengajuan = Pengajuan::assignedToUser($user)
+                    ->whereIn('status', ['pending', 'diterima'])
+                    ->count();
+            }
         }
 
         // dibagikan ke semua view, jadi sidebar di halaman manapun bisa akses

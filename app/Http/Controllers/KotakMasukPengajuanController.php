@@ -14,23 +14,35 @@ class KotakMasukPengajuanController extends Controller
      */
     public function index(KotakMasukPengajuanDataTable $dataTable)
     {
-        // Hitung jumlah pengajuan dengan status 'pending'
-        $pendingPengajuan = Pengajuan::where('status', 'pending')->count();
+        $user = auth()->user();
+        $isHumasOnly = !empty($user->is_humas) && empty($user->is_admin);
 
-        // Hitung jumlah pengajuan dengan status 'ditolak'
-        $ditolakPengajuan = Pengajuan::where('status', 'ditolak')->count();
+        if ($isHumasOnly) {
+            // Untuk Petugas Humas (PIC), hanya hitung data yang ditugaskan kepada dirinya
+            $baseQuery = Pengajuan::assignedToUser($user);
+            $pendingPengajuan = (clone $baseQuery)->where('status', 'pending')->count();
+            $ditolakPengajuan = (clone $baseQuery)->where('status', 'ditolak')->count();
+            $diterimaPengajuan = (clone $baseQuery)->where('status', 'diterima')->count();
 
-        // Hitung jumlah pengajuan dengan status 'diterima'
-        $diterimaPengajuan = Pengajuan::where('status', 'diterima')->count();
-
-        // Jika user adalah admin atau humas, simpan notifikasi di session hanya jika ada pengajuan pending
-        if (auth()->user()->is_admin || auth()->user()->is_humas) {
-            // Total notifikasi untuk admin (jumlah pengajuan pending)
-            if ($pendingPengajuan > 0) {
-                session(['notifikasi_pengajuan_admin' => $pendingPengajuan]);
+            // Notifikasi tugas yang ditugaskan kepada Petugas Humas
+            $totalTugas = (clone $baseQuery)->whereIn('status', ['pending', 'diterima'])->count();
+            if ($totalTugas > 0) {
+                session(['notifikasi_pengajuan_admin' => $totalTugas]);
             } else {
-                // Hapus session jika tidak ada pengajuan pending
                 session()->forget('notifikasi_pengajuan_admin');
+            }
+        } else {
+            // Untuk Super Admin, hitung seluruh data pengajuan
+            $pendingPengajuan = Pengajuan::where('status', 'pending')->count();
+            $ditolakPengajuan = Pengajuan::where('status', 'ditolak')->count();
+            $diterimaPengajuan = Pengajuan::where('status', 'diterima')->count();
+
+            if (auth()->user()->is_admin) {
+                if ($pendingPengajuan > 0) {
+                    session(['notifikasi_pengajuan_admin' => $pendingPengajuan]);
+                } else {
+                    session()->forget('notifikasi_pengajuan_admin');
+                }
             }
         }
 

@@ -46,4 +46,45 @@ class Pengajuan extends Model
     {
         return $this->hasOne(LaporanPublikasi::class);
     }
+
+    /**
+     * Scope query untuk pengajuan yang ditugaskan kepada user tertentu sebagai PIC / Petugas.
+     */
+    public function scopeAssignedToUser($query, $user)
+    {
+        if (!$user) {
+            return $query->whereRaw('0 = 1');
+        }
+
+        $name = trim($user->name ?? '');
+        $rawWa = trim($user->no_wa ?? '');
+        $digitsWa = preg_replace('/[^0-9]/', '', $rawWa);
+
+        if (empty($name) && empty($rawWa)) {
+            return $query->whereRaw('0 = 1');
+        }
+
+        return $query->where(function ($q) use ($name, $rawWa, $digitsWa) {
+            $hasClause = false;
+
+            if (!empty($name)) {
+                $q->where('petugas_ditugaskan', 'like', "%{$name}%")
+                  ->orWhere('pic_petugas', 'like', "%{$name}%");
+                $hasClause = true;
+            }
+
+            if (!empty($rawWa)) {
+                $action = $hasClause ? 'orWhere' : 'where';
+                $q->{$action}('no_wa_tujuan', 'like', "%{$rawWa}%")
+                  ->orWhere('pic_petugas', 'like', "%{$rawWa}%");
+                $hasClause = true;
+            }
+
+            if (strlen($digitsWa) >= 8) {
+                $suffixWa = substr($digitsWa, -8);
+                $q->orWhere('no_wa_tujuan', 'like', "%{$suffixWa}%")
+                  ->orWhere('pic_petugas', 'like', "%{$suffixWa}%");
+            }
+        });
+    }
 }

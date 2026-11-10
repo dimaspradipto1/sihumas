@@ -34,8 +34,10 @@
                         // Scope mengikuti role yang login
                         $scope = null;
 
-                        if (!empty($user->is_admin) || !empty($user->is_humas) || !empty($user->is_staffbaak)) {
+                        if (!empty($user->is_admin) || !empty($user->is_staffbaak)) {
                             $scope = 'admin';
+                        } elseif (!empty($user->is_humas)) {
+                            $scope = 'humas';
                         } elseif (!empty($user->is_feb)) {
                             $scope = 'feb';
                         } elseif (!empty($user->is_fst)) {
@@ -56,6 +58,7 @@
                         // Label judul sesuai scope
                         $scopeLabel = match ($scope) {
                             'admin' => 'All Faculties',
+                            'humas' => 'Tugas PIC Anda',
                             'feb' => 'FEB',
                             'fst' => 'FST',
                             'fikes' => 'FIKES',

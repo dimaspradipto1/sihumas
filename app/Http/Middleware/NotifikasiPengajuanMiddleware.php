@@ -31,18 +31,29 @@ class NotifikasiPengajuanMiddleware
         // structure session konsisten
         $notif = [
             'admin'    => ['pending' => 0, 'diterima' => 0, 'ditolak' => 0],
+            'humas'    => ['pending' => 0, 'diterima' => 0, 'ditolak' => 0],
             'feb'      => ['pending' => 0, 'diterima' => 0, 'ditolak' => 0],
             'fst'      => ['pending' => 0, 'diterima' => 0, 'ditolak' => 0],
             'fikes'    => ['pending' => 0, 'diterima' => 0, 'ditolak' => 0],
             'rektorat' => ['pending' => 0, 'diterima' => 0, 'ditolak' => 0],
         ];
 
-        // admin & humas global (total semua pengajuan)
-        if (!empty($user->is_admin) || !empty($user->is_humas)) {
+        // admin global (total semua pengajuan)
+        if (!empty($user->is_admin)) {
             $notif['admin'] = [
                 'pending'  => Pengajuan::where('status', 'pending')->count(),
                 'diterima' => Pengajuan::where('status', 'diterima')->count(),
                 'ditolak'  => Pengajuan::where('status', 'ditolak')->count(),
+            ];
+        }
+
+        // humas (PIC): HANYA tugas yang ditugaskan kepada dirinya
+        if (!empty($user->is_humas) && empty($user->is_admin)) {
+            $baseHumas = Pengajuan::assignedToUser($user);
+            $notif['humas'] = [
+                'pending'  => (clone $baseHumas)->where('status', 'pending')->count(),
+                'diterima' => (clone $baseHumas)->where('status', 'diterima')->count(),
+                'ditolak'  => (clone $baseHumas)->where('status', 'ditolak')->count(),
             ];
         }
 

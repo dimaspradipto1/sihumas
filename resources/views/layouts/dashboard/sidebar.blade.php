@@ -105,8 +105,10 @@
                   // Tentukan scope sesuai role login
                   $scope = null;
 
-                  if (!empty($user->is_admin) || !empty($user->is_humas)) {
+                  if (!empty($user->is_admin)) {
                       $scope = 'admin';
+                  } elseif (!empty($user->is_humas)) {
+                      $scope = null;
                   } elseif (!empty($user->is_feb)) {
                       $scope = 'feb';
                   } elseif (!empty($user->is_fst)) {

@@ -43,7 +43,13 @@ class KotakMasukPengajuanDataTable extends DataTable
 
                 return '<span class="badge bg-secondary text-white px-2 rounded-pill px-3 py-2">-</span>';
             })
-
+            ->addColumn('pengajuan.petugas_ditugaskan', function ($kotakMasukPengajuan) {
+                $pic = $kotakMasukPengajuan->pengajuan?->petugas_ditugaskan;
+                if (!empty($pic)) {
+                    return '<span class="badge bg-primary text-white px-2 py-1"><i class="fa-solid fa-user-check me-1"></i> ' . e($pic) . '</span>';
+                }
+                return '<span class="text-muted fst-italic">Belum ditugaskan</span>';
+            })
             ->addColumn('pengajuan.tgl_awal', function ($kotakMasukPengajuan) {
                 Carbon::setLocale('id');
                 return Carbon::parse($kotakMasukPengajuan->pengajuan->tgl_awal)->translatedFormat('l, d F Y');
@@ -52,35 +58,27 @@ class KotakMasukPengajuanDataTable extends DataTable
                 Carbon::setLocale('id');
                 return Carbon::parse($kotakMasukPengajuan->pengajuan->tgl_selesai)->translatedFormat('l, d F Y');
             })
-            ->addColumn('pengajuan.status', function ($kotakMasukPengajuan) {
-                if ($kotakMasukPengajuan->pengajuan->status == 'pending') {
-                    return '<span class="badge bg-warning px-2 rounded-pill px-3 py-2">Pending <i class="fa-solid fa-spinner"></i></span>';
-                } elseif ($kotakMasukPengajuan->pengajuan->status == 'diterima') {
-                    return '<span class="badge bg-success text-white px-2 rounded-pill px-3 py-2">diterima <i class="fa-solid fa-check"></i></span>';
-                } elseif ($kotakMasukPengajuan->pengajuan->status == 'ditolak') {
-                    return '<span class="badge bg-danger text-white px-2 rounded-pill px-3 py-2">ditolak <i class="fa-solid fa-xmark"></i></span>';
-                }
-                return '<span class="badge bg-danger text-white px-2 rounded-pill px-3 py-2">ditolak <i class="fa-solid fa-xmark"></i></span>';
-            })
             ->addColumn('pengajuan.user_id', function ($kotakMasukPengajuan) {
                 return $kotakMasukPengajuan->pengajuan->user->name;
             })
             ->filter(function ($query) {
                 if (request()->has('search') && request()->input('search')['value']) {
                     $search = request()->input('search')['value'];
-                    $query->whereHas('pengajuan', function ($query) use ($search) {
-                        $query->where('nama_kegiatan', 'like', "%$search%")
-                            ->orWhere('tgl_awal', 'like', "%$search%")
-                            ->orWhere('tgl_selesai', 'like', "%$search%")
-                            ->orWhere('status', 'like', "%$search%")
-                            ->orWhereHas('user', function ($query) use ($search) {
-                                $query->where('name', 'like', "%$search%");
-                            });
+                    $query->whereHas('pengajuan', function ($q) use ($search) {
+                        $q->where(function ($sub) use ($search) {
+                            $sub->where('nama_kegiatan', 'like', "%$search%")
+                                ->orWhere('tgl_awal', 'like', "%$search%")
+                                ->orWhere('tgl_selesai', 'like', "%$search%")
+                                ->orWhere('status', 'like', "%$search%")
+                                ->orWhere('petugas_ditugaskan', 'like', "%$search%")
+                                ->orWhereHas('user', function ($uq) use ($search) {
+                                    $uq->where('name', 'like', "%$search%");
+                                });
+                        });
                     });
                 }
             })
-
-            ->rawColumns(['pengajuan.nama_kegiatan', 'pengajuan.tgl_awal', 'pengajuan.tgl_selesai', 'pengajuan.status', 'pengajuan.user_id', 'pengajuan.status'])
+            ->rawColumns(['pengajuan.nama_kegiatan', 'pengajuan.tgl_awal', 'pengajuan.tgl_selesai', 'pengajuan.status', 'pengajuan.petugas_ditugaskan', 'pengajuan.user_id'])
             ->setRowId('DT_RowIndex');
     }
 
@@ -91,35 +89,23 @@ class KotakMasukPengajuanDataTable extends DataTable
      */
     public function query(KotakMasukPengajuan $model): QueryBuilder
     {
-        // $user = auth()->user();
-
-        // $status = request('status');
-
-        // $query = $model->newQuery()
-        //     ->with('user')
-        //     ->orderBy('created_at', 'desc');
-
-        // if (!$user->is_admin) {
-        //     $query->where('user_id', $user->id);
-        // }
-
-        // if (!empty($status)) {
-        //     $query->where('status', $status);
-        // }
-
-        // return $query;
-
-        // Menangani filter berdasarkan status dari URL
         $status = request('status');
+        $user = auth()->user();
 
         // Start a query to get the KotakMasukPengajuan data
         $query = $model->newQuery()
-            ->with('pengajuan')
+            ->with(['pengajuan.user'])
             ->orderBy('created_at', 'desc');
+
+        // Jika Petugas Humas (bukan Super Admin), HANYA tampilkan data pengajuan yang ditugaskan kepada dirinya sebagai PIC
+        if (!empty($user->is_humas) && empty($user->is_admin)) {
+            $query->whereHas('pengajuan', function ($q) use ($user) {
+                $q->assignedToUser($user);
+            });
+        }
 
         // Filter berdasarkan status jika ada
         if (!empty($status)) {
-            // Filter based on the status of the pengajuan
             $query->whereHas('pengajuan', function ($q) use ($status) {
                 $q->where('status', $status);
             });
@@ -192,6 +178,8 @@ class KotakMasukPengajuanDataTable extends DataTable
                 ->title('Tanggal Selesai'),
             Column::make('pengajuan.status')
                 ->title('Status Pengajuan'),
+            Column::make('pengajuan.petugas_ditugaskan')
+                ->title('Petugas / PIC'),
             Column::make('pengajuan.user_id')
                 ->title('Submit Pengguna'),
 

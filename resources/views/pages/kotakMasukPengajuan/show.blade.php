@@ -23,7 +23,7 @@
         <h1 class="h4 text-capitalize">detail pengajuan berita</h1>
       </div>
       <div>
-        <a href="{{ route('kotakmasukpengajuan.index') }}"
+        <a href="{{ route('kotak-masuk-pengajuan.index') }}"
           class="btn btn-danger text-white d-inline-flex align-items-center">
              <i class="fa-solid fa-right-from-bracket me-2"></i> BACK
         </a>
