@@ -64,13 +64,13 @@ class DashboardTest extends TestCase
         $response->assertSee('Petugas Humas');
         $response->assertSee('Rekapitulasi Kegiatan per Unit');
 
-        // Sidebar yang HARUS muncul untuk role Humas
+        // Sidebar yang HARUS muncul untuk role Humas (Dashboard, Kotak Masuk, Pelaporan Kegiatan)
         $response->assertSee(route('kotak-masuk-pengajuan.index'));
         $response->assertSee(route('publikasi.index'));
-        $response->assertSee(route('laporan-publikasi.index'));
-        $response->assertSee(route('pengajuan.index'));
 
-        // Sidebar yang HARUS TERSEMBUNYI untuk role Humas (hanya untuk Super Admin)
+        // Sidebar yang HARUS TERSEMBUNYI untuk role Humas
+        $response->assertDontSee(route('pengajuan.index'));
+        $response->assertDontSee(route('laporan-publikasi.index'));
         $response->assertDontSee(route('tahun-akademik.index'));
         $response->assertDontSee(route('unit-kegiatan.index'));
         $response->assertDontSee(route('users.index'));

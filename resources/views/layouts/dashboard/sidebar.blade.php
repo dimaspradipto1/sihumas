@@ -124,6 +124,7 @@
                   $ditolak = $scope ? data_get($notif, "$scope.ditolak", 0) : 0;
               @endphp
 
+              @if (!Auth::user()->is_humas || Auth::user()->is_admin)
               <li class="nav-item {{ request()->routeIs('pengajuan.*') ? 'active' : '' }}">
                   <a href="{{ route('pengajuan.index') }}" class="nav-link nav-with-badge">
 
@@ -201,6 +202,7 @@
 
                   </a>
               </li>
+              @endif
 
               <style>
                   /* WAJIB: ini bikin absolute nempel di area menu */
@@ -529,7 +531,7 @@
                   </li>
               @endif
 
-              @if (Auth::user()->is_admin || Auth::user()->is_humas)
+              @if (Auth::user()->is_admin)
                   <li class="nav-item {{ request()->routeIs('laporan-publikasi.index') ? 'active' : '' }}">
                       <a href="{{ route('laporan-publikasi.index') }}"
                           class="nav-link d-flex justify-content-between">

@@ -375,12 +375,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const pages = [
         { title: 'Dashboard', url: '{{ route("dashboard") }}', icon: '📊', category: 'Utama' },
+        @if(!Auth::user()->is_humas || Auth::user()->is_admin)
         { title: 'Pengajuan Kegiatan', url: '{{ route("pengajuan.index") }}', icon: '📝', category: 'Kegiatan' },
+        @endif
         @if(Auth::user()->is_admin || Auth::user()->is_humas)
         { title: 'Kotak Masuk Pengajuan', url: '{{ route("kotak-masuk-pengajuan.index") }}', icon: '📥', category: 'Kegiatan' },
         @endif
         { title: 'Pelaporan Kegiatan', url: '{{ route("publikasi.index") }}', icon: '📑', category: 'Kegiatan' },
-        @if(Auth::user()->is_admin || Auth::user()->is_humas)
+        @if(Auth::user()->is_admin)
         { title: 'Rekap Kegiatan', url: '{{ route("laporan-publikasi.index") }}', icon: '📁', category: 'Laporan' },
         @endif
         @if(Auth::user()->is_admin)
