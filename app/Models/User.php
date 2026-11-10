@@ -67,27 +67,27 @@ class User extends Authenticatable
     {
         $badges = [];
         if ($this->is_admin) {
-            $badges[] = '<span class="badge bg-danger text-white">Admin</span>';
+            $badges[] = '<span class="badge px-2 py-1 me-1 text-white" style="background-color: #dc3545 !important; color: #ffffff !important; font-size: 11px; font-weight: 600;">Admin</span>';
         }
         if ($this->is_humas) {
-            $badges[] = '<span class="badge bg-primary text-white"><i class="fa-solid fa-bullhorn me-1"></i>Humas</span>';
+            $badges[] = '<span class="badge px-2 py-1 me-1 text-white" style="background-color: #0d6efd !important; color: #ffffff !important; font-size: 11px; font-weight: 600;"><i class="fa-solid fa-bullhorn me-1"></i>Humas</span>';
         }
         if ($this->is_rektorat) {
-            $badges[] = '<span class="badge bg-secondary text-white">Rektorat</span>';
+            $badges[] = '<span class="badge px-2 py-1 me-1 text-white" style="background-color: #6f42c1 !important; color: #ffffff !important; font-size: 11px; font-weight: 600;">Rektorat</span>';
         }
         if ($this->is_fst) {
-            $badges[] = '<span class="badge bg-info text-white">FST</span>';
+            $badges[] = '<span class="badge px-2 py-1 me-1 text-white" style="background-color: #0284c7 !important; color: #ffffff !important; font-size: 11px; font-weight: 600;">FST</span>';
         }
         if ($this->is_feb) {
-            $badges[] = '<span class="badge bg-warning text-dark">FEB</span>';
+            $badges[] = '<span class="badge px-2 py-1 me-1" style="background-color: #ffc107 !important; color: #1e293b !important; font-size: 11px; font-weight: 600;">FEB</span>';
         }
         if ($this->is_fikes) {
-            $badges[] = '<span class="badge bg-success text-white">FIKES</span>';
+            $badges[] = '<span class="badge px-2 py-1 me-1 text-white" style="background-color: #10b981 !important; color: #ffffff !important; font-size: 11px; font-weight: 600;">FIKES</span>';
         }
-        if (empty($badges) || $this->is_users) {
-            if (empty($badges)) {
-                $badges[] = '<span class="badge bg-light text-dark border">Pengguna</span>';
-            }
+        if ($this->is_users && empty($badges)) {
+            $badges[] = '<span class="badge px-2 py-1 me-1 text-white" style="background-color: #4b5563 !important; color: #ffffff !important; font-size: 11px; font-weight: 600;">Pengguna</span>';
+        } elseif (empty($badges)) {
+            $badges[] = '<span class="badge px-2 py-1 me-1 text-white" style="background-color: #4b5563 !important; color: #ffffff !important; font-size: 11px; font-weight: 600;">Pengguna</span>';
         }
         return implode(' ', $badges);
     }
