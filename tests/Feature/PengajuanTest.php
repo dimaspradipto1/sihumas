@@ -151,5 +151,41 @@ class PengajuanTest extends TestCase
         $indexResponse = $this->actingAs($admin)->get(route('kotak-masuk-pengajuan.index'));
         $indexResponse->assertStatus(200);
     }
+
+    public function test_edit_pengajuan_only_displays_users_with_role_humas(): void
+    {
+        $admin = User::factory()->create([
+            'is_admin' => true,
+            'is_humas' => false,
+            'name' => 'ADMIN_NON_HUMAS_' . uniqid(),
+        ]);
+
+        $humas = User::factory()->create([
+            'is_admin' => false,
+            'is_humas' => true,
+            'name' => 'PETUGAS_HUMAS_' . uniqid(),
+            'no_wa' => '081234567890',
+        ]);
+
+        $pengajuan = Pengajuan::create([
+            'user_id' => $admin->id,
+            'nama_kegiatan' => 'Rapat Humas',
+            'tgl_awal' => now()->toDateString(),
+            'tgl_selesai' => now()->addDay()->toDateString(),
+            'jam_kegiatan' => '08:00',
+            'waktu_selesai' => '11:00',
+            'tempat_kegiatan' => 'Auditorium',
+            'unit_kegiatan' => 'FST',
+            'deskripsi_kegiatan' => 'Deskripsi rapat',
+            'status' => 'pending',
+        ]);
+
+        $response = $this->actingAs($admin)->get(route('pengajuan.edit', $pengajuan->id));
+        $response->assertStatus(200);
+
+        $petugasHumas = $response->viewData('petugasHumas');
+        $this->assertTrue($petugasHumas->contains('id', $humas->id));
+        $this->assertFalse($petugasHumas->contains('id', $admin->id));
+    }
 }
 
