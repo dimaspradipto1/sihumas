@@ -21,6 +21,8 @@ class DashboardTest extends TestCase
         $response->assertSee('Administrator');
         $response->assertSee('Jadwal Minggu Ini');
         $response->assertSee('Rekapitulasi Kegiatan per Unit');
+        $response->assertSee(route('pengajuan.index'));
+        $response->assertSee(route('laporan-publikasi.index'));
     }
 
     public function test_faculty_can_access_dashboard(): void

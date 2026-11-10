@@ -282,9 +282,11 @@
                             </h2>
                             <small class="text-muted">Aktivitas pengajuan dan pelaporan per fakultas & rektorat</small>
                         </div>
+                        @if (Auth::user()->is_admin)
                         <a href="{{ route('laporan-publikasi.index') }}" class="btn btn-outline-primary btn-sm fw-semibold">
                             Lihat Rekap
                         </a>
+                        @endif
                     </div>
                     <div class="table-responsive">
                         <table class="table align-items-center table-hover mb-0">
