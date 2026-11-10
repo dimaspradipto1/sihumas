@@ -61,7 +61,10 @@ class UsersDataTable extends DataTable
             ->editColumn('fakultas', function ($user) {
                 return $user->fakultas ? e($user->fakultas) : '<span class="text-muted">-</span>';
             })
-            ->rawColumns(['action', 'no_wa', 'fakultas'])
+            ->addColumn('role', function ($user) {
+                return $user->role_badges;
+            })
+            ->rawColumns(['action', 'no_wa', 'fakultas', 'role'])
             ->setRowId('DT_RowIndex');
     }
 
@@ -106,6 +109,7 @@ class UsersDataTable extends DataTable
             Column::make('email')->title('Email'),
             Column::make('no_wa')->title('No. WhatsApp'),
             Column::make('fakultas')->title('Unit'),
+            Column::make('role')->title('Role Akses')->orderable(false)->searchable(false),
             Column::computed('action')
                 ->title('Aksi')
                 ->exportable(false)

@@ -54,36 +54,40 @@ class UserController extends Controller
         $data['email'] = $request->email;
         $data['no_wa'] = $this->formatNoWaTo08($request->no_wa);
         $data['fakultas'] = $request->fakultas;
-        $data['is_admin'] = false;
-        $data['is_rektorat'] = false;
-        $data['is_feb'] = false;
-        $data['is_fst'] = false;
-        $data['is_fikes'] = false;
-        $data['is_users'] = false;
+        $data['is_admin'] = $request->has('is_admin');
+        $data['is_humas'] = $request->has('is_humas');
+        $data['is_rektorat'] = $request->has('is_rektorat');
+        $data['is_feb'] = $request->has('is_feb');
+        $data['is_fst'] = $request->has('is_fst');
+        $data['is_fikes'] = $request->has('is_fikes');
+        $data['is_users'] = $request->has('is_users');
         $data['password'] = bcrypt($request->password);
         $data['remember_token'] = Str::random(60);
 
-        // Set fakultas / unit status
-        switch ($request->fakultas) {
-            case 'UNIVERSITAS IBNU SINA':
-            case 'UNIVERISTAS IBNU SINA':
-                $data['is_admin'] = true;
-                break;
-            case 'FAKULTAS SAINS DAN TEKNOLOGI':
-                $data['is_fst'] = true;
-                break;
-            case 'FAKULTAS EKONOMI DAN BISNIS':
-                $data['is_feb'] = true; // Assuming Fakultas Ilmu Komputer is in FST
-                break;
-            case 'FAKULTAS ILMU KESEHATAN':
-                $data['is_fikes'] = true; // Assuming Sastra is for rectorate
-                break;
-            case 'REKTORAT':
-                $data['is_rektorat'] = true; // Assuming Hukum is for rectorate
-                break;
-            default:
-                $data['is_users'] = true; // Set to default if no match
-                break;
+        // Jika tidak ada role yang dicentang secara manual, tetapkan default berdasarkan unit
+        if (!$data['is_admin'] && !$data['is_humas'] && !$data['is_rektorat'] && !$data['is_feb'] && !$data['is_fst'] && !$data['is_fikes']) {
+            switch ($request->fakultas) {
+                case 'UNIVERSITAS IBNU SINA':
+                case 'UNIVERISTAS IBNU SINA':
+                    $data['is_admin'] = true;
+                    $data['is_humas'] = true;
+                    break;
+                case 'FAKULTAS SAINS DAN TEKNOLOGI':
+                    $data['is_fst'] = true;
+                    break;
+                case 'FAKULTAS EKONOMI DAN BISNIS':
+                    $data['is_feb'] = true; // Assuming Fakultas Ilmu Komputer is in FST
+                    break;
+                case 'FAKULTAS ILMU KESEHATAN':
+                    $data['is_fikes'] = true; // Assuming Sastra is for rectorate
+                    break;
+                case 'REKTORAT':
+                    $data['is_rektorat'] = true; // Assuming Hukum is for rectorate
+                    break;
+                default:
+                    $data['is_users'] = true; // Set to default if no match
+                    break;
+            }
         }
 
         User::create($data);
@@ -116,6 +120,7 @@ class UserController extends Controller
 
         $user->update([
             'is_admin' => $request->has('is_admin') ? 1 : 0,
+            'is_humas' => $request->has('is_humas') ? 1 : 0,
             'is_rektorat' => $request->has('is_rektorat') ? 1 : 0,
             'is_feb' => $request->has('is_feb') ? 1 : 0,
             'is_fst' => $request->has('is_fst') ? 1 : 0,

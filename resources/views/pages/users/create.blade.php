@@ -71,6 +71,60 @@
 
               </div>
             </div>
+
+            <div class="form-group row mb-4">
+              <label class="col-sm-2 col-form-label">ROLE AKSES</label>
+              <div class="col-sm-10">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="true" id="create-is-admin" name="is_admin" {{ old('is_admin') ? 'checked' : '' }}>
+                  <label class="form-check-label text-uppercase" for="create-is-admin">
+                    admin
+                  </label>
+                </div>
+
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="true" id="create-is-humas" name="is_humas" {{ old('is_humas') ? 'checked' : '' }}>
+                  <label class="form-check-label text-uppercase fw-bold text-primary" for="create-is-humas">
+                    <i class="fa-solid fa-bullhorn me-1"></i> petugas humas
+                  </label>
+                </div>
+
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="true" id="create-is-rektorat" name="is_rektorat" {{ old('is_rektorat') ? 'checked' : '' }}>
+                  <label class="form-check-label text-uppercase" for="create-is-rektorat">
+                    admin rektorat
+                  </label>
+                </div>
+
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="true" id="create-is-feb" name="is_feb" {{ old('is_feb') ? 'checked' : '' }}>
+                  <label class="form-check-label text-uppercase" for="create-is-feb">
+                    admin feb
+                  </label>
+                </div>
+
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="true" id="create-is-fst" name="is_fst" {{ old('is_fst') ? 'checked' : '' }}>
+                  <label class="form-check-label text-uppercase" for="create-is-fst">
+                    admin fst
+                  </label>
+                </div>
+
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="true" id="create-is-fikes" name="is_fikes" {{ old('is_fikes') ? 'checked' : '' }}>
+                  <label class="form-check-label text-uppercase" for="create-is-fikes">
+                    admin fikes
+                  </label>
+                </div>
+
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="true" id="create-is-users" name="is_users" {{ old('is_users') ? 'checked' : '' }}>
+                  <label class="form-check-label text-uppercase" for="create-is-users">
+                    pengguna
+                  </label>
+                </div>
+              </div>
+            </div>
             <button type="submit" class="btn btn-gray-800 d-inline-flex align-items-center me-2 aria-haspopup="true"
               aria-expanded="false">
               <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"

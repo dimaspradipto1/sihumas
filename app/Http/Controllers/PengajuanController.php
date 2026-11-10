@@ -196,7 +196,11 @@ class PengajuanController extends Controller
     public function edit(Pengajuan $pengajuan)
     {
         $tahunAkademik = TahunAkademik::all();
-        return view('pages.pengajuan.edit', compact('pengajuan', 'tahunAkademik'));
+        $petugasHumas = User::where('is_humas', true)
+            ->orWhere('is_admin', true)
+            ->orderBy('name')
+            ->get(['id', 'name', 'no_wa', 'is_humas']);
+        return view('pages.pengajuan.edit', compact('pengajuan', 'tahunAkademik', 'petugasHumas'));
     }
 
     /**

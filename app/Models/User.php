@@ -24,6 +24,7 @@ class User extends Authenticatable
         'password',
         'fakultas',
         'is_admin',
+        'is_humas',
         'is_rektorat',
         'is_feb',
         'is_fst',
@@ -49,7 +50,54 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'is_admin' => 'boolean',
+        'is_humas' => 'boolean',
+        'is_rektorat' => 'boolean',
+        'is_feb' => 'boolean',
+        'is_fst' => 'boolean',
+        'is_fikes' => 'boolean',
+        'is_users' => 'boolean',
     ];
+
+    /**
+     * Get HTML badges representing user roles.
+     */
+    public function getRoleBadgesAttribute(): string
+    {
+        $badges = [];
+        if ($this->is_admin) {
+            $badges[] = '<span class="badge bg-danger text-white">Admin</span>';
+        }
+        if ($this->is_humas) {
+            $badges[] = '<span class="badge bg-primary text-white"><i class="fa-solid fa-bullhorn me-1"></i>Humas</span>';
+        }
+        if ($this->is_rektorat) {
+            $badges[] = '<span class="badge bg-secondary text-white">Rektorat</span>';
+        }
+        if ($this->is_fst) {
+            $badges[] = '<span class="badge bg-info text-white">FST</span>';
+        }
+        if ($this->is_feb) {
+            $badges[] = '<span class="badge bg-warning text-dark">FEB</span>';
+        }
+        if ($this->is_fikes) {
+            $badges[] = '<span class="badge bg-success text-white">FIKES</span>';
+        }
+        if (empty($badges) || $this->is_users) {
+            if (empty($badges)) {
+                $badges[] = '<span class="badge bg-light text-dark border">Pengguna</span>';
+            }
+        }
+        return implode(' ', $badges);
+    }
+
+    /**
+     * Scope a query to only include Humas staff.
+     */
+    public function scopeHumas($query)
+    {
+        return $query->where('is_humas', true);
+    }
 
     public function pengajuan()
     {

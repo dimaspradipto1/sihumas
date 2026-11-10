@@ -80,12 +80,19 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-sm-2 col-form-label">STATUS</label>
+              <label class="col-sm-2 col-form-label">ROLE AKSES</label>
               <div class="col-sm-10">
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="true" id="checkbox-mahasiswa" name="is_admin" {{ $user->is_admin ? 'checked' : '' }}>
-                  <label class="form-check-label text-uppercase" >
+                  <input class="form-check-input" type="checkbox" value="true" id="checkbox-admin-utama" name="is_admin" {{ $user->is_admin ? 'checked' : '' }}>
+                  <label class="form-check-label text-uppercase" for="checkbox-admin-utama">
                     admin
+                  </label>
+                </div>
+
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="true" id="checkbox-humas" name="is_humas" {{ $user->is_humas ? 'checked' : '' }}>
+                  <label class="form-check-label text-uppercase fw-bold text-primary" for="checkbox-humas">
+                    <i class="fa-solid fa-bullhorn me-1"></i> petugas humas
                   </label>
                 </div>
 
