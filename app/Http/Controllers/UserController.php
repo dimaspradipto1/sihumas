@@ -24,7 +24,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('pages.users.create');
+        $units = \App\Models\UnitKegiatan::orderBy('unit_kegiatan')->get();
+        return view('pages.users.create', compact('units'));
     }
 
     /**
@@ -50,10 +51,16 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        $unit = null;
+        if ($request->filled('unit_kegiatan_id')) {
+            $unit = \App\Models\UnitKegiatan::find($request->unit_kegiatan_id);
+        }
+
         $data['name'] = $request->name;
         $data['email'] = $request->email;
         $data['no_wa'] = $this->formatNoWaTo08($request->no_wa);
-        $data['fakultas'] = $request->fakultas;
+        $data['unit_kegiatan_id'] = $unit?->id;
+        $data['fakultas'] = $unit?->unit_kegiatan ?? $request->fakultas ?? '';
         $data['is_admin'] = $request->has('is_admin');
         $data['is_humas'] = $request->has('is_humas');
         $data['is_rektorat'] = $request->has('is_rektorat');
@@ -66,27 +73,20 @@ class UserController extends Controller
 
         // Jika tidak ada role yang dicentang secara manual, tetapkan default berdasarkan unit
         if (!$data['is_admin'] && !$data['is_humas'] && !$data['is_rektorat'] && !$data['is_feb'] && !$data['is_fst'] && !$data['is_fikes']) {
-            switch ($request->fakultas) {
-                case 'UNIVERSITAS IBNU SINA':
-                case 'UNIVERISTAS IBNU SINA':
-                    $data['is_admin'] = true;
-                    $data['is_humas'] = true;
-                    break;
-                case 'FAKULTAS SAINS DAN TEKNOLOGI':
-                    $data['is_fst'] = true;
-                    break;
-                case 'FAKULTAS EKONOMI DAN BISNIS':
-                    $data['is_feb'] = true; // Assuming Fakultas Ilmu Komputer is in FST
-                    break;
-                case 'FAKULTAS ILMU KESEHATAN':
-                    $data['is_fikes'] = true; // Assuming Sastra is for rectorate
-                    break;
-                case 'REKTORAT':
-                    $data['is_rektorat'] = true; // Assuming Hukum is for rectorate
-                    break;
-                default:
-                    $data['is_users'] = true; // Set to default if no match
-                    break;
+            $unitNameUpper = strtoupper($data['fakultas']);
+            if (str_contains($unitNameUpper, 'IBNU SINA') || str_contains($unitNameUpper, 'HUMAS')) {
+                $data['is_admin'] = true;
+                $data['is_humas'] = true;
+            } elseif (str_contains($unitNameUpper, 'FST') || str_contains($unitNameUpper, 'SAINS')) {
+                $data['is_fst'] = true;
+            } elseif (str_contains($unitNameUpper, 'FEB') || str_contains($unitNameUpper, 'EKONOMI')) {
+                $data['is_feb'] = true;
+            } elseif (str_contains($unitNameUpper, 'FIKES') || str_contains($unitNameUpper, 'KESEHATAN')) {
+                $data['is_fikes'] = true;
+            } elseif (str_contains($unitNameUpper, 'REKTORAT')) {
+                $data['is_rektorat'] = true;
+            } else {
+                $data['is_users'] = true;
             }
         }
 
@@ -108,7 +108,8 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        return view('pages.users.edit', compact('user'));
+        $units = \App\Models\UnitKegiatan::orderBy('unit_kegiatan')->get();
+        return view('pages.users.edit', compact('user', 'units'));
     }
 
     /**
@@ -134,7 +135,13 @@ class UserController extends Controller
             'no_wa' => $this->formatNoWaTo08($request->no_wa),
         ];
 
-        if ($request->has('fakultas')) {
+        if ($request->has('unit_kegiatan_id')) {
+            $unit = \App\Models\UnitKegiatan::find($request->unit_kegiatan_id);
+            $updateData['unit_kegiatan_id'] = $unit?->id;
+            if ($unit) {
+                $updateData['fakultas'] = $unit->unit_kegiatan;
+            }
+        } elseif ($request->has('fakultas')) {
             $updateData['fakultas'] = $request->fakultas;
         }
 

@@ -14,4 +14,9 @@ class UnitKegiatan extends Model
     {
         return $this->hasMany(Pengajuan::class);
     }
+
+    public function users()
+    {
+        return $this->hasMany(User::class, 'unit_kegiatan_id');
+    }
 }

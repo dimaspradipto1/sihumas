@@ -59,7 +59,8 @@ class UsersDataTable extends DataTable
                 return '<a href="https://wa.me/' . $waUrl . '" target="_blank" class="text-success fw-bold d-inline-flex align-items-center" title="Hubungi via WhatsApp"><i class="fa-brands fa-whatsapp me-1 text-success fs-6"></i> ' . e($display) . '</a>';
             })
             ->editColumn('fakultas', function ($user) {
-                return $user->fakultas ? e($user->fakultas) : '<span class="text-muted">-</span>';
+                $unitNama = $user->unitKegiatan?->unit_kegiatan ?: $user->fakultas;
+                return $unitNama ? e($unitNama) : '<span class="text-muted">-</span>';
             })
             ->addColumn('role', function ($user) {
                 return $user->role_badges;
@@ -73,7 +74,7 @@ class UsersDataTable extends DataTable
      */
     public function query(User $model): QueryBuilder
     {
-        return $model->newQuery();
+        return $model->newQuery()->with('unitKegiatan');
     }
 
     /**

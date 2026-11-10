@@ -373,9 +373,29 @@
                                                     <div class="baris-pic border rounded p-3 bg-white shadow-sm">
                                                         <div class="row g-2 align-items-end">
                                                             <div class="col-12 col-md-6">
-                                                                <label class="form-label small text-muted fw-bold mb-1">
-                                                                    <i class="fa-solid fa-user me-1 text-primary"></i> Nama Petugas / PIC
-                                                                </label>
+                                                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                                                    <label class="form-label small text-muted fw-bold mb-0">
+                                                                        <i class="fa-solid fa-user me-1 text-primary"></i> Nama Petugas / PIC
+                                                                    </label>
+                                                                    @if(isset($petugasHumas) && count($petugasHumas) > 0)
+                                                                    <small class="text-primary fw-bold">
+                                                                        <i class="fa-solid fa-bullhorn me-1"></i>Pilih Humas
+                                                                    </small>
+                                                                    @endif
+                                                                </div>
+
+                                                                @if(isset($petugasHumas) && count($petugasHumas) > 0)
+                                                                    <select class="form-select form-select-sm mb-1 select-petugas-humas" onchange="pilihPetugasHumas(this)">
+                                                                        <option value="">-- Pilih dari Petugas Humas --</option>
+                                                                        @foreach ($petugasHumas as $ph)
+                                                                            <option value="{{ $ph->name }}" data-wa="{{ $ph->no_wa }}" {{ ($pic['nama'] ?? '') == $ph->name ? 'selected' : '' }}>
+                                                                                {{ $ph->name }} {{ $ph->no_wa ? '('.$ph->no_wa.')' : '' }}
+                                                                            </option>
+                                                                        @endforeach
+                                                                        <option value="__custom__">-- Ketik Manual --</option>
+                                                                    </select>
+                                                                @endif
+
                                                                 <input type="text" name="pic_nama[]" class="form-control input-pic-nama"
                                                                     value="{{ $pic['nama'] ?? '' }}" placeholder="Contoh: Dimas Pradipto, S.Kom">
                                                             </div>
@@ -478,18 +498,56 @@
                 }
             }
 
+            const listPetugasHumas = @json(isset($petugasHumas) ? $petugasHumas->map(fn($p) => ['name' => $p->name, 'no_wa' => $p->no_wa]) : []);
+
+            function pilihPetugasHumas(selectElem) {
+                const row = selectElem.closest('.baris-pic');
+                if (!row) return;
+                const inputNama = row.querySelector('.input-pic-nama');
+                const inputWa = row.querySelector('.input-pic-wa');
+                const selectedOption = selectElem.options[selectElem.selectedIndex];
+
+                if (selectElem.value === '__custom__') {
+                    inputNama.value = '';
+                    inputWa.value = '';
+                    inputNama.focus();
+                    return;
+                }
+
+                if (selectElem.value) {
+                    inputNama.value = selectElem.value;
+                    const wa = selectedOption.getAttribute('data-wa') || '';
+                    inputWa.value = wa;
+                }
+            }
+
             function tambahBarisPic() {
                 const kontainer = document.getElementById('kontainerPic');
                 if (!kontainer) return;
+
+                let selectHumasHtml = '';
+                if (listPetugasHumas && listPetugasHumas.length > 0) {
+                    selectHumasHtml = `
+                        <select class="form-select form-select-sm mb-1 select-petugas-humas" onchange="pilihPetugasHumas(this)">
+                            <option value="">-- Pilih dari Petugas Humas --</option>
+                            ${listPetugasHumas.map(ph => `<option value="${ph.name}" data-wa="${ph.no_wa || ''}">${ph.name} ${ph.no_wa ? '(' + ph.no_wa + ')' : ''}</option>`).join('')}
+                            <option value="__custom__">-- Ketik Manual --</option>
+                        </select>
+                    `;
+                }
 
                 const div = document.createElement('div');
                 div.className = 'baris-pic border rounded p-3 bg-white shadow-sm';
                 div.innerHTML = `
                     <div class="row g-2 align-items-end">
                         <div class="col-12 col-md-6">
-                            <label class="form-label small text-muted fw-bold mb-1">
-                                <i class="fa-solid fa-user me-1 text-primary"></i> Nama Petugas / PIC
-                            </label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label class="form-label small text-muted fw-bold mb-0">
+                                    <i class="fa-solid fa-user me-1 text-primary"></i> Nama Petugas / PIC
+                                </label>
+                                ${listPetugasHumas.length > 0 ? '<small class="text-primary fw-bold"><i class="fa-solid fa-bullhorn me-1"></i>Pilih Humas</small>' : ''}
+                            </div>
+                            ${selectHumasHtml}
                             <input type="text" name="pic_nama[]" class="form-control input-pic-nama" placeholder="Contoh: Dimas Pradipto, S.Kom">
                         </div>
                         <div class="col-8 col-md-4">
@@ -527,11 +585,13 @@
                     const item = btn.closest('.baris-pic');
                     item.querySelector('.input-pic-nama').value = '';
                     item.querySelector('.input-pic-wa').value = '';
+                    const select = item.querySelector('.select-petugas-humas');
+                    if (select) select.value = '';
                 }
             }
 
             function chatWaPic(btn) {
-                const row = btn.closest('tr');
+                const row = btn.closest('.baris-pic') || btn.closest('tr');
                 const nama = row.querySelector('.input-pic-nama').value.trim() || 'Petugas Humas';
                 const rawWa = row.querySelector('.input-pic-wa').value.trim();
 

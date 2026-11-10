@@ -23,6 +23,7 @@ class User extends Authenticatable
         'no_wa',
         'password',
         'fakultas',
+        'unit_kegiatan_id',
         'is_admin',
         'is_humas',
         'is_rektorat',
@@ -117,5 +118,10 @@ class User extends Authenticatable
     public function pegawai()
     {
         return $this->hasOne(Pegawai::class);
+    }
+
+    public function unitKegiatan()
+    {
+        return $this->belongsTo(UnitKegiatan::class, 'unit_kegiatan_id');
     }
 }

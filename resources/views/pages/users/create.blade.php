@@ -53,14 +53,22 @@
                 </div>
 
                 <div class="mb-4">
-                  <label for="fakultas" class="text-uppercase">Unit</label>
-                  <select name="fakultas" class="form-control" id="fakultas">
+                  <label for="unit_kegiatan_id" class="text-uppercase">Unit</label>
+                  <select name="unit_kegiatan_id" class="form-control" id="unit_kegiatan_id">
                     <option value="">PILIH UNIT</option>
-                    <option value="UNIVERSITAS IBNU SINA" {{ old('fakultas') == 'UNIVERSITAS IBNU SINA' ? 'selected' : '' }}>UNIVERSITAS IBNU SINA</option>
-                    <option value="REKTORAT" {{ old('fakultas') == 'REKTORAT' ? 'selected' : '' }}>REKTORAT</option>
-                    <option value="FAKULTAS EKONOMI DAN BISNIS" {{ old('fakultas') == 'FAKULTAS EKONOMI DAN BISNIS' ? 'selected' : '' }}>FAKULTAS EKONOMI DAN BISNIS</option>
-                    <option value="FAKULTAS SAINS DAN TEKNOLOGI" {{ old('fakultas') == 'FAKULTAS SAINS DAN TEKNOLOGI' ? 'selected' : '' }}>FAKULTAS SAINS DAN TEKNOLOGI</option>
-                    <option value="FAKULTAS ILMU KESEHATAN" {{ old('fakultas') == 'FAKULTAS ILMU KESEHATAN' ? 'selected' : '' }}>FAKULTAS ILMU KESEHATAN</option>
+                    @if (isset($units) && count($units) > 0)
+                      @foreach ($units as $unit)
+                        <option value="{{ $unit->id }}" {{ old('unit_kegiatan_id') == $unit->id ? 'selected' : '' }}>
+                          {{ $unit->unit_kegiatan }}
+                        </option>
+                      @endforeach
+                    @else
+                      <option value="UNIVERSITAS IBNU SINA">UNIVERSITAS IBNU SINA</option>
+                      <option value="REKTORAT">REKTORAT</option>
+                      <option value="FAKULTAS EKONOMI DAN BISNIS">FAKULTAS EKONOMI DAN BISNIS</option>
+                      <option value="FAKULTAS SAINS DAN TEKNOLOGI">FAKULTAS SAINS DAN TEKNOLOGI</option>
+                      <option value="FAKULTAS ILMU KESEHATAN">FAKULTAS ILMU KESEHATAN</option>
+                    @endif
                   </select>
                 </div>
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Pengajuan;
 use App\Models\Publikasi;
+use App\Models\User;
 use App\Models\UnitKerja;
 use App\Models\UnitKegiatan;
 use Illuminate\Http\Request;

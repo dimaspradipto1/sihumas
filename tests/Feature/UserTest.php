@@ -21,6 +21,9 @@ class UserTest extends TestCase
 
         $this->assertTrue($columns->has('fakultas'), 'Column fakultas should exist in UsersDataTable');
         $this->assertEquals('Unit', $columns->get('fakultas')->title);
+
+        $this->assertTrue($columns->has('role'), 'Column role should exist in UsersDataTable');
+        $this->assertEquals('Role Akses', $columns->get('role')->title);
     }
 
     public function test_admin_can_access_users_index(): void
@@ -151,6 +154,40 @@ class UserTest extends TestCase
             'email' => $userData['email'],
             'no_wa' => '081234567890',
         ]);
+    }
+
+    public function test_admin_can_create_user_with_unit_kegiatan_relation_and_role_humas(): void
+    {
+        $admin = User::factory()->create([
+            'fakultas' => 'UNIVERSITAS IBNU SINA',
+            'is_admin' => true,
+        ]);
+
+        $unit = \App\Models\UnitKegiatan::create([
+            'unit_kegiatan' => 'Biro Humas & Promosi',
+        ]);
+
+        $userData = [
+            'name' => 'Petugas Humas Baru',
+            'email' => 'humas_' . uniqid() . '@uis.ac.id',
+            'no_wa' => '085600001111',
+            'unit_kegiatan_id' => $unit->id,
+            'is_humas' => 'true',
+            'password' => 'password123',
+        ];
+
+        $response = $this->actingAs($admin)->post(route('users.store'), $userData);
+        $response->assertRedirect(route('users.index'));
+
+        $this->assertDatabaseHas('users', [
+            'email' => $userData['email'],
+            'unit_kegiatan_id' => $unit->id,
+            'fakultas' => 'Biro Humas & Promosi',
+            'is_humas' => 1,
+        ]);
+
+        $createdUser = User::where('email', $userData['email'])->first();
+        $this->assertEquals($unit->id, $createdUser->unitKegiatan->id);
     }
 }
 
