@@ -51,7 +51,13 @@
 
                 <div class="mb-4">
                   <label for="no_wa" class="text-uppercase">Nomor WhatsApp</label>
-                  <input type="text" name="no_wa" value="{{old('no_wa') ?? $user->no_wa}}" class="form-control" id="no_wa" placeholder="Contoh: 08123456789 atau 628123456789">
+                  @php
+                    $valNoWa = $user->no_wa ?? '';
+                    if (str_starts_with($valNoWa, '628')) {
+                        $valNoWa = '0' . substr($valNoWa, 2);
+                    }
+                  @endphp
+                  <input type="text" name="no_wa" value="{{old('no_wa', $valNoWa)}}" class="form-control" id="no_wa" placeholder="Contoh: 08123456789">
                 </div>
 
                 <div class="mb-4">

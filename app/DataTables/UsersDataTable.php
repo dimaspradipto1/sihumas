@@ -40,10 +40,23 @@ class UsersDataTable extends DataTable
                     return '<span class="text-muted">-</span>';
                 }
                 $clean = preg_replace('/[^0-9]/', '', $user->no_wa);
-                if (str_starts_with($clean, '0')) {
-                    $clean = '62' . substr($clean, 1);
+                // WhatsApp URL link requires international format (62)
+                $waUrl = $clean;
+                if (str_starts_with($waUrl, '0')) {
+                    $waUrl = '62' . substr($waUrl, 1);
+                } elseif (str_starts_with($waUrl, '8')) {
+                    $waUrl = '62' . $waUrl;
                 }
-                return '<a href="https://wa.me/' . $clean . '" target="_blank" class="text-success fw-bold d-inline-flex align-items-center" title="Hubungi via WhatsApp"><i class="fa-brands fa-whatsapp me-1 text-success fs-6"></i> ' . e($user->no_wa) . '</a>';
+
+                // Display text: always show in 08 format
+                $display = $clean;
+                if (str_starts_with($display, '628')) {
+                    $display = '0' . substr($display, 2);
+                } elseif (str_starts_with($display, '8')) {
+                    $display = '0' . $display;
+                }
+
+                return '<a href="https://wa.me/' . $waUrl . '" target="_blank" class="text-success fw-bold d-inline-flex align-items-center" title="Hubungi via WhatsApp"><i class="fa-brands fa-whatsapp me-1 text-success fs-6"></i> ' . e($display) . '</a>';
             })
             ->editColumn('fakultas', function ($user) {
                 return $user->fakultas ? e($user->fakultas) : '<span class="text-muted">-</span>';

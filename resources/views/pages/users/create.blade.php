@@ -49,7 +49,7 @@
 
                 <div class="mb-4">
                   <label for="no_wa" class="text-uppercase">Nomor WhatsApp</label>
-                  <input type="text" name="no_wa" value="{{old('no_wa')}}" class="form-control" id="no_wa" placeholder="Contoh: 08123456789 atau 628123456789">
+                  <input type="text" name="no_wa" value="{{old('no_wa')}}" class="form-control" id="no_wa" placeholder="Contoh: 08123456789">
                 </div>
 
                 <div class="mb-4">

@@ -128,4 +128,29 @@ class UserTest extends TestCase
             'is_feb' => 1,
         ]);
     }
+
+    public function test_no_wa_is_normalized_to_start_with_08(): void
+    {
+        $admin = User::factory()->create([
+            'fakultas' => 'UNIVERSITAS IBNU SINA',
+            'is_admin' => true,
+        ]);
+
+        $userData = [
+            'name' => 'Normalization Test',
+            'email' => 'normalize_' . uniqid() . '@uis.ac.id',
+            'no_wa' => '6281234567890',
+            'fakultas' => 'REKTORAT',
+            'password' => 'password123',
+        ];
+
+        $response = $this->actingAs($admin)->post(route('users.store'), $userData);
+        $response->assertRedirect(route('users.index'));
+
+        $this->assertDatabaseHas('users', [
+            'email' => $userData['email'],
+            'no_wa' => '081234567890',
+        ]);
+    }
 }
+

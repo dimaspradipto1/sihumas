@@ -28,13 +28,31 @@ class UserController extends Controller
     }
 
     /**
+     * Normalize WhatsApp number to 08 format.
+     */
+    private function formatNoWaTo08(?string $noWa): string
+    {
+        if (!$noWa) {
+            return '';
+        }
+        $clean = preg_replace('/[^0-9]/', '', $noWa);
+        if (str_starts_with($clean, '628')) {
+            return '0' . substr($clean, 2);
+        }
+        if (str_starts_with($clean, '8')) {
+            return '0' . $clean;
+        }
+        return $clean;
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
         $data['name'] = $request->name;
         $data['email'] = $request->email;
-        $data['no_wa'] = $request->no_wa;
+        $data['no_wa'] = $this->formatNoWaTo08($request->no_wa);
         $data['fakultas'] = $request->fakultas;
         $data['is_admin'] = false;
         $data['is_rektorat'] = false;
@@ -108,7 +126,7 @@ class UserController extends Controller
         $updateData = [
             'name' => $request->name ?? '',
             'email' => $request->email ?? '',
-            'no_wa' => $request->no_wa ?? '',
+            'no_wa' => $this->formatNoWaTo08($request->no_wa),
         ];
 
         if ($request->has('fakultas')) {

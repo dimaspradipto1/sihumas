@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
             [
                 'name' => 'admin humas dan publikasi',
                 'email' => 'admin@uis.ac.id',
-                'no_wa' => '6282283736481',
+                'no_wa' => '082283736481',
                 'password' => Hash::make('password'),
                 'fakultas' => 'UNIVERSITAS IBNU SINA',
                 'is_admin' => true,
@@ -63,7 +63,7 @@ class UserSeeder extends Seeder
             [
                 'name' => 'operator FST',
                 'email' => 'fst@uis.ac.id',
-                'no_wa' => '6285363572448',
+                'no_wa' => '085363572448',
                 'password' => Hash::make('password'),
                 'fakultas'=>'FAKULTAS SAINS DAN TEKNOLOGI',
                 'is_admin' => false,
