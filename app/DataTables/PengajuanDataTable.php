@@ -58,10 +58,10 @@ class PengajuanDataTable extends DataTable
                 if ($user->is_admin) {
                     $action .= '
                         <a href="' . route('pengajuan.edit', $pengajuan->id) . '" class="btn btn-sm btn-warning text-white px-3"><i class="fa-solid fa-pen-to-square"></i></a>
-                        <form action="' . route('pengajuan.destroy', $pengajuan->id) . '" method="POST" style="display:inline">
+                        <form action="' . route('pengajuan.destroy', $pengajuan->id) . '" method="POST" style="display:inline" class="form-action-delete">
                             ' . csrf_field() . '
                             ' . method_field('DELETE') . '
-                            <button type="submit" class="btn btn-sm btn-danger px-3" onclick="return confirm(\'Yakin ingin menghapus data ini?\')">
+                            <button type="submit" class="btn btn-sm btn-danger px-3" title="Hapus">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
                         </form>

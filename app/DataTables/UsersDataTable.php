@@ -28,10 +28,10 @@ class UsersDataTable extends DataTable
                 return '
                     <a href="'.route('users.updatePassword', $user->id).'" class="btn btn-sm btn-info text-white px-3" title="Ubah Password"><i class="fa-solid fa-key"></i></a>
                     <a href="'.route('users.edit', $user->id).'" class="btn btn-sm btn-warning text-white px-3" title="Edit Pengguna"><i class="fa-solid fa-pen-to-square"></i></a>
-                    <form action="'.route('users.destroy', $user->id).'" method="POST" style="display: inline">
+                    <form action="'.route('users.destroy', $user->id).'" method="POST" style="display: inline" class="form-action-delete">
                         '.csrf_field().'
                         '.method_field('DELETE').'
-                        <button type="submit" class="btn btn-sm btn-danger px-3" onclick="return confirm(\'Yakin ingin menghapus data ini?\')" title="Hapus Pengguna"><i class="fa-solid fa-trash"></i></button>
+                        <button type="submit" class="btn btn-sm btn-danger px-3" title="Hapus Pengguna"><i class="fa-solid fa-trash"></i></button>
                     </form>
                 ';
             })
