@@ -686,21 +686,7 @@
                                                 placeholder="contoh: pengguna@gmail.com">
                                         </div>
 
-                                        <!-- Alasan / Catatan Verifikasi -->
-                                        <div class="mb-3">
-                                            <label for="alasan_ditolak" class="form-label font-weight-bold">Catatan / Alasan Verifikasi</label>
-                                            <textarea class="form-control" name="alasan_ditolak" id="alasan_ditolak" rows="3"
-                                                placeholder="Tuliskan catatan verifikasi atau alasan bila status ditolak/diterima...">{{ old('alasan_ditolak', $pengajuan->alasan_ditolak) ?: '' }}</textarea>
-                                        </div>
 
-                                        <!-- Link Desain jika relevan -->
-                                        @if ($pengajuan->nama_kegiatan == 'Desain' || $pengajuan->nama_kegiatan == 'Desain dan Dokumentasi')
-                                        <div class="mb-3">
-                                            <label for="link_desain" class="form-label font-weight-bold">Link Desain</label>
-                                            <textarea class="form-control" name="link_desain" id="link_desain" rows="2"
-                                                placeholder="Masukkan link Google Drive / Figma / Canva desain...">{{ old('link_desain', $pengajuan->link_desain) }}</textarea>
-                                        </div>
-                                        @endif
 
                                         <!-- Action Buttons -->
                                         <div class="pt-3 border-top d-flex gap-2">
