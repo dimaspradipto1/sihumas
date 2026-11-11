@@ -43,12 +43,20 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
         $type = $request->input('type', 'all');
 
         if ($type === 'pengajuan' || $type === 'all') {
-            $user->update(['pengajuan_read_at' => now()]);
+            try {
+                if (\Illuminate\Support\Facades\Schema::hasColumn('users', 'pengajuan_read_at')) {
+                    $user->update(['pengajuan_read_at' => now()]);
+                }
+            } catch (\Throwable $e) {}
             session(['pengajuan_read_at' => now()]);
         }
 
         if ($type === 'kotak_masuk' || $type === 'all') {
-            $user->update(['kotak_masuk_read_at' => now()]);
+            try {
+                if (\Illuminate\Support\Facades\Schema::hasColumn('users', 'kotak_masuk_read_at')) {
+                    $user->update(['kotak_masuk_read_at' => now()]);
+                }
+            } catch (\Throwable $e) {}
             session(['kotak_masuk_read_at' => now()]);
         }
 
