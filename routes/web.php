@@ -39,6 +39,7 @@ Route::controller(LoginController::class)->group(function () {
 
 Route::middleware(['auth', 'checkrole'])->group(function () { 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::post('/publikasi/{publikasi}/validasi', [PublikasiController::class, 'validasi'])->name('publikasi.validasi');
     Route::resource('/publikasi', PublikasiController::class);
     Route::resource('/pengajuan', PengajuanController::class);
     Route::resource('kotak-masuk-pengajuan', KotakMasukPengajuanController::class);

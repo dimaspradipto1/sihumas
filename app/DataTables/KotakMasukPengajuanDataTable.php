@@ -41,7 +41,13 @@ class KotakMasukPengajuanDataTable extends DataTable
                     if ($pub) {
                         $target = !empty($pub->slug) ? $pub->slug : $pub->id;
                         $hasReport = !empty($pub->link_dokumentasi) || !empty($pub->link_publikasi) || !empty($pub->upload_laporan);
-                        if ($hasReport) {
+                        if ($pub->status_validasi === 'disetujui') {
+                            $badge .= '<br><a href="' . route('publikasi.show', $target) . '" class="badge bg-success text-white mt-1 text-decoration-none" title="Laporan Telah Divalidasi Admin"><i class="fa-solid fa-circle-check me-1"></i> Laporan Valid</a>';
+                        } elseif ($pub->status_validasi === 'perlu_revisi') {
+                            $badge .= '<br><a href="' . route('publikasi.edit', $target) . '" class="badge bg-danger text-white mt-1 text-decoration-none" title="Laporan Perlu Revisi: ' . e($pub->catatan_validasi ?? '') . '"><i class="fa-solid fa-triangle-exclamation me-1"></i> Perlu Revisi</a>';
+                        } elseif ($pub->status_validasi === 'menunggu_validasi') {
+                            $badge .= '<br><a href="' . route('publikasi.show', $target) . '" class="badge bg-warning text-dark mt-1 text-decoration-none" title="Menunggu Validasi Admin"><i class="fa-solid fa-clock me-1"></i> Menunggu Validasi</a>';
+                        } elseif ($hasReport) {
                             $badge .= '<br><a href="' . route('publikasi.show', $target) . '" class="badge bg-info text-white mt-1 text-decoration-none" title="Lihat Laporan"><i class="fa-solid fa-check-double me-1"></i> Dilaporkan</a>';
                         } else {
                             $badge .= '<br><a href="' . route('publikasi.edit', $target) . '" class="badge bg-primary text-white mt-1 text-decoration-none" title="Laporkan Kegiatan"><i class="fa-solid fa-file-pen me-1"></i> Laporkan</a>';

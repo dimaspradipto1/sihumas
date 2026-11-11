@@ -86,19 +86,33 @@ class PublikasiDataTable extends DataTable
                 return $html;
             })
 
+            ->addColumn('status_validasi', function ($publikasi) {
+                $status = $publikasi->status_validasi ?? 'belum_dilaporkan';
+                if ($status === 'disetujui') {
+                    return '<span class="badge bg-success text-white px-2 py-1"><i class="fa-solid fa-circle-check me-1"></i> Disetujui</span>';
+                } elseif ($status === 'menunggu_validasi') {
+                    return '<span class="badge bg-warning text-dark px-2 py-1"><i class="fa-solid fa-clock me-1"></i> Menunggu Validasi</span>';
+                } elseif ($status === 'perlu_revisi') {
+                    $catatan = !empty($publikasi->catatan_validasi) ? ' title="Catatan: ' . e($publikasi->catatan_validasi) . '"' : '';
+                    return '<span class="badge bg-danger text-white px-2 py-1"' . $catatan . '><i class="fa-solid fa-triangle-exclamation me-1"></i> Perlu Revisi</span>';
+                }
+                return '<span class="badge bg-secondary text-white px-2 py-1"><i class="fa-solid fa-hourglass-start me-1"></i> Belum Dilaporkan</span>';
+            })
+
             ->addColumn('action', function ($publikasi) {
                 $target = !empty($publikasi->slug) ? $publikasi->slug : $publikasi->id;
-                return '
-                     <a href="' . route('publikasi.show', $target) . '" class="btn btn-sm btn-primary text-white px-3"><i class="fa-solid fa-eye"></i></a>
-                     <a href="' . route('publikasi.edit', $target) . '" class="btn btn-sm btn-warning text-white px-3"><i class="fa-solid fa-pen-to-square"></i></a>
-                     <form action="' . route('publikasi.destroy', $target) . '" method="POST" style="display: inline">
-                         ' . csrf_field() . '
-                         ' . method_field('DELETE') . '
-                         <button type="submit" class="btn btn-sm btn-danger px-3" onclick="return confirm(\'Yakin ingin menghapus data ini?\')"><i class="fa-solid fa-trash-can"></i></button>
-                     </form>
-                 ';
+                $html = '<div class="d-flex justify-content-center gap-1">';
+                $html .= '<a href="' . route('publikasi.show', $target) . '" class="btn btn-sm btn-primary text-white px-2 py-1" title="' . (auth()->user()->is_admin ? 'Detail & Validasi' : 'Lihat Detail') . '"><i class="fa-solid fa-eye"></i></a>';
+                $html .= '<a href="' . route('publikasi.edit', $target) . '" class="btn btn-sm btn-warning text-white px-2 py-1" title="Edit / Laporkan"><i class="fa-solid fa-pen-to-square"></i></a>';
+                if (auth()->user()->is_admin) {
+                    $html .= '<form action="' . route('publikasi.destroy', $target) . '" method="POST" style="display: inline" onsubmit="return confirm(\'Yakin ingin menghapus data ini?\')">'
+                           . csrf_field() . method_field('DELETE')
+                           . '<button type="submit" class="btn btn-sm btn-danger px-2 py-1" title="Hapus"><i class="fa-solid fa-trash-can"></i></button></form>';
+                }
+                $html .= '</div>';
+                return $html;
             })
-            ->rawColumns(['action','nama_kegiatan', 'tgl_awal', 'tgl_akhir', 'upload_laporan', 'link_dokumentasi', 'link_publikasi', 'user_id', 'tahun_akademik_id', 'pengajuan_id'])
+            ->rawColumns(['action','nama_kegiatan', 'status_validasi', 'tgl_awal', 'tgl_akhir', 'upload_laporan', 'link_dokumentasi', 'link_publikasi', 'user_id', 'tahun_akademik_id', 'pengajuan_id'])
             ->setRowId('DT_RowIndex');
     }
 
@@ -202,6 +216,10 @@ class PublikasiDataTable extends DataTable
                 ->width(10),
             Column::make('pengajuan.nama_kegiatan')
                 ->title('Nama Kegiatan'),
+            Column::make('status_validasi')
+                ->name('publikasis.status_validasi')
+                ->title('Status Validasi')
+                ->width(15),
             Column::make('tgl_awal')
                 ->title('Tanggal Kegiatan')
                 ->orderable(false)

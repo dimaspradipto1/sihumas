@@ -17,6 +17,14 @@ class Publikasi extends Model
         'upload_laporan',
         'link_dokumentasi',
         'link_publikasi',
+        'status_validasi',
+        'catatan_validasi',
+        'validated_by',
+        'validated_at',
+    ];
+
+    protected $casts = [
+        'validated_at' => 'datetime',
     ];
 
     protected static function booted()
@@ -92,9 +100,34 @@ class Publikasi extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function validator()
+    {
+        return $this->belongsTo(User::class, 'validated_by');
+    }
+
     public function laporanPublikasi()
     {
         return $this->hasOne(LaporanPublikasi::class, 'publikasi_id');
+    }
+
+    public function isPendingValidation(): bool
+    {
+        return $this->status_validasi === 'menunggu_validasi';
+    }
+
+    public function isApproved(): bool
+    {
+        return $this->status_validasi === 'disetujui';
+    }
+
+    public function needsRevision(): bool
+    {
+        return $this->status_validasi === 'perlu_revisi';
+    }
+
+    public function isBelumDilaporkan(): bool
+    {
+        return empty($this->status_validasi) || $this->status_validasi === 'belum_dilaporkan';
     }
 
     /**

@@ -83,7 +83,7 @@ class PublikasiController extends Controller
      */
     public function show(Publikasi $publikasi)
     {
-        $publikasi->loadMissing(['tahunAkademik', 'pengajuan', 'user']);
+        $publikasi->loadMissing(['tahunAkademik', 'pengajuan', 'user', 'validator']);
         $tahunAkademik = TahunAkademik::all();
 
         return view('pages.publikasi.show', compact('publikasi', 'tahunAkademik'));
@@ -94,7 +94,7 @@ class PublikasiController extends Controller
      */
     public function edit(Publikasi $publikasi)
     {
-        $publikasi->loadMissing('pengajuan');
+        $publikasi->loadMissing(['pengajuan', 'validator']);
         $pengajuan = $publikasi->pengajuan;  
         return view('pages.publikasi.edit', compact('publikasi', 'pengajuan'));
     }
@@ -136,10 +136,58 @@ class PublikasiController extends Controller
             }
         }
 
+        // Pengaturan status validasi
+        if (auth()->user()->is_admin) {
+            if ($request->filled('status_validasi')) {
+                $data['status_validasi'] = $request->input('status_validasi');
+                $data['catatan_validasi'] = $request->input('catatan_validasi');
+                $data['validated_by'] = auth()->id();
+                $data['validated_at'] = now();
+            }
+        } else {
+            // Ketika PIC Humas submit laporan, status otomatis menjadi "menunggu_validasi"
+            $data['status_validasi'] = 'menunggu_validasi';
+        }
+
         $publikasi->update($data);
 
-        Alert::success('Success, Data Successfully Updated')->toToast()->autoclose(3000);
+        $toastMsg = auth()->user()->is_admin 
+            ? 'Laporan kegiatan berhasil diperbarui' 
+            : 'Laporan kegiatan berhasil dikirim dan menunggu validasi Admin';
+
+        Alert::success('Berhasil', $toastMsg)->toToast()->autoclose(3000);
         return redirect()->route('publikasi.index');
+    }
+
+    /**
+     * Validasi pelaporan kegiatan oleh Super Admin.
+     */
+    public function validasi(Request $request, Publikasi $publikasi)
+    {
+        abort_unless(auth()->user()->is_admin, 403, 'Hanya Super Admin yang berhak memvalidasi pelaporan kegiatan.');
+
+        $request->validate([
+            'status_validasi'  => 'required|in:disetujui,perlu_revisi,menunggu_validasi',
+            'catatan_validasi' => 'nullable|string|max:1000',
+        ]);
+
+        $statusValidasi = $request->input('status_validasi');
+
+        $publikasi->update([
+            'status_validasi'  => $statusValidasi,
+            'catatan_validasi' => $request->input('catatan_validasi'),
+            'validated_by'     => auth()->id(),
+            'validated_at'     => now(),
+        ]);
+
+        $statusText = match ($statusValidasi) {
+            'disetujui' => 'disetujui / valid',
+            'perlu_revisi' => 'dikembalikan untuk revisi ke PIC Humas',
+            default => 'diatur ke menunggu validasi',
+        };
+
+        Alert::success('Berhasil', "Status pelaporan kegiatan berhasil diperbarui menjadi {$statusText}.")->toToast()->autoclose(3500);
+        return back();
     }
 
     /**
