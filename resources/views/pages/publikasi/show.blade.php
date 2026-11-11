@@ -275,12 +275,9 @@
                 </div>
                 @endif
 
-                <div class="card-footer bg-white border-top py-3 d-flex justify-content-between align-items-center">
+                <div class="card-footer bg-white border-top py-3 d-flex justify-content-start align-items-center">
                     <a href="{{ route('publikasi.index') }}" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center px-3 py-2">
                         <i class="fa-solid fa-arrow-left me-2"></i> Kembali ke Daftar
-                    </a>
-                    <a href="{{ route('publikasi.edit', $publikasi->slug ?? $publikasi->id) }}" class="btn btn-sm btn-warning text-white d-inline-flex align-items-center px-3 py-2">
-                        <i class="fa-solid fa-pen-to-square me-2"></i> Edit Laporan
                     </a>
                 </div>
             </div>
