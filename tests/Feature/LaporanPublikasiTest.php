@@ -266,6 +266,7 @@ class LaporanPublikasiTest extends TestCase
         $row = $json['data'][0];
         $this->assertStringContainsString('Workshop Desain dan Dokumentasi', $row['nama_kegiatan']);
         $this->assertStringContainsString('Disetujui', $row['status_validasi']);
+        $this->assertStringContainsString('10 Nov 2026', $row['tgl_pelaksanaan']);
         $this->assertStringContainsString('Buka Drive', $row['link_dokumentasi']);
         $this->assertStringContainsString('Link', $row['link_publikasi']);
         $this->assertStringContainsString('name="status_validasi" value="disetujui"', $row['action']);

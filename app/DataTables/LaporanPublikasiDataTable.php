@@ -39,6 +39,27 @@ class LaporanPublikasiDataTable extends DataTable
                 }
                 return '<span class="badge bg-secondary text-white px-2 py-1"><i class="fa-solid fa-hourglass-start me-1"></i> Belum Dilaporkan</span>';
             })
+            ->addColumn('tgl_pelaksanaan', function ($row) {
+                Carbon::setLocale('id');
+                $tglAwal = $row->tgl_awal ?? ($row->publikasi?->tgl_awal ?? $row->publikasi?->pengajuan?->tgl_awal ?? $row->pengajuan?->tgl_awal);
+                $tglAkhir = $row->tgl_selesai ?? ($row->publikasi?->tgl_akhir ?? $row->publikasi?->pengajuan?->tgl_selesai ?? $row->pengajuan?->tgl_selesai);
+
+                if (!$tglAwal && !$tglAkhir) {
+                    return '<span class="text-muted">-</span>';
+                }
+
+                $start = $tglAwal ? Carbon::parse($tglAwal) : null;
+                $end = $tglAkhir ? Carbon::parse($tglAkhir) : null;
+
+                if ($start && $end) {
+                    if ($start->isSameDay($end)) {
+                        return '<span class="text-nowrap fw-semibold">' . $start->translatedFormat('d M Y') . '</span><br><small class="text-muted">' . $start->translatedFormat('l') . '</small>';
+                    }
+                    return '<span class="text-nowrap fw-semibold">' . $start->translatedFormat('d M Y') . '</span><br><small class="text-muted">s/d ' . $end->translatedFormat('d M Y') . '</small>';
+                }
+
+                return '<span class="text-nowrap fw-semibold">' . ($start ? $start->translatedFormat('d M Y') : $end->translatedFormat('d M Y')) . '</span>';
+            })
             ->addColumn('tgl_awal', function ($row) {
                 Carbon::setlocale('id');
                 $tgl = $row->tgl_awal ?? ($row->publikasi?->tgl_awal ?? $row->publikasi?->pengajuan?->tgl_awal ?? $row->pengajuan?->tgl_awal);
@@ -114,7 +135,7 @@ class LaporanPublikasiDataTable extends DataTable
                 $html .= '</div>';
                 return $html;
             })
-            ->rawColumns(['action', 'nama_kegiatan', 'status_validasi', 'tgl_awal', 'tgl_akhir', 'link_dokumentasi', 'link_publikasi', 'user_id'])
+            ->rawColumns(['action', 'nama_kegiatan', 'status_validasi', 'tgl_pelaksanaan', 'tgl_awal', 'tgl_akhir', 'link_dokumentasi', 'link_publikasi', 'user_id'])
             ->setRowId('id')
             ->filter(function ($query) {
                 $search = request()->get('search')['value'] ?? null;
@@ -216,8 +237,7 @@ class LaporanPublikasiDataTable extends DataTable
             Column::make('DT_RowIndex')->title('NO')->addClass('text-center')->orderable(false)->searchable(false)->width('4%'),
             Column::make('nama_kegiatan')->data('nama_kegiatan')->name('pengajuan.nama_kegiatan')->title('NAMA KEGIATAN'),
             Column::make('status_validasi')->name('publikasi.status_validasi')->title('STATUS VALIDASI')->width('12%')->addClass('text-center'),
-            Column::make('tgl_awal')->title('TANGGAL KEGIATAN')->orderable(false)->searchable(false)->width('13%'),
-            Column::make('tgl_akhir')->title('TANGGAL SELESAI')->orderable(false)->searchable(false)->width('13%'),
+            Column::make('tgl_pelaksanaan')->title('TANGGAL PELAKSANAAN')->orderable(false)->searchable(false)->width('14%'),
             Column::make('link_dokumentasi')->title('DOKUMENTASI')->orderable(false)->searchable(false)->width('9%')->addClass('text-center'),
             Column::make('link_publikasi')->title('LINK PUBLIKASI')->orderable(false)->searchable(false)->width('11%'),
             Column::make('user_id')->name('user.name')->title('SUBMIT PENGGUNA')->visible($isAdmin)->width('12%'),

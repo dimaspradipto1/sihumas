@@ -27,6 +27,24 @@ class PengajuanDataTable extends DataTable
             ->addIndexColumn()
             ->addColumn('DT_RowIndex', '')
 
+            ->addColumn('tgl_pelaksanaan', function ($pengajuan) {
+                Carbon::setLocale('id');
+                $start = $pengajuan->tgl_awal ? Carbon::parse($pengajuan->tgl_awal) : null;
+                $end = $pengajuan->tgl_selesai ? Carbon::parse($pengajuan->tgl_selesai) : null;
+
+                if (!$start && !$end) {
+                    return '<span class="text-muted">-</span>';
+                }
+
+                if ($start && $end) {
+                    if ($start->isSameDay($end)) {
+                        return '<span class="text-nowrap fw-semibold">' . $start->translatedFormat('d M Y') . '</span><br><small class="text-muted">' . $start->translatedFormat('l') . '</small>';
+                    }
+                    return '<span class="text-nowrap fw-semibold">' . $start->translatedFormat('d M Y') . '</span><br><small class="text-muted">s/d ' . $end->translatedFormat('d M Y') . '</small>';
+                }
+
+                return '<span class="text-nowrap fw-semibold">' . ($start ? $start->translatedFormat('d M Y') : $end->translatedFormat('d M Y')) . '</span>';
+            })
             ->addColumn('tgl_awal', function ($pengajuan) {
                 Carbon::setLocale('id');
                 return Carbon::parse($pengajuan->tgl_awal)->translatedFormat('l, d F Y');
@@ -67,7 +85,7 @@ class PengajuanDataTable extends DataTable
                 return $html;
             })
 
-            ->rawColumns(['action', 'tgl_awal', 'tgl_selesai', 'status', 'user_id'])
+            ->rawColumns(['action', 'tgl_pelaksanaan', 'tgl_awal', 'tgl_selesai', 'status', 'user_id'])
             ->setRowId('DT_RowIndex');
     }
 
@@ -130,8 +148,7 @@ class PengajuanDataTable extends DataTable
         $columns = [
             Column::make('DT_RowIndex')->title('NO')->addClass('text-center')->width('4%')->orderable(false)->searchable(false),
             Column::make('nama_kegiatan')->title('NAMA KEGIATAN')->addClass('text-start'),
-            Column::make('tgl_awal')->title('TANGGAL KEGIATAN')->addClass('text-start')->width('16%'),
-            Column::make('tgl_selesai')->title('TANGGAL SELESAI')->addClass('text-start')->width('16%'),
+            Column::make('tgl_pelaksanaan')->title('TANGGAL PELAKSANAAN')->addClass('text-start')->width('16%')->orderable(false)->searchable(false),
             Column::make('status')->title('STATUS PENGAJUAN')->addClass('text-center')->width('14%'),
         ];
 

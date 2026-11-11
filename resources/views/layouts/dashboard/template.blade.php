@@ -83,15 +83,22 @@
         }
 
         .card-body > .table-responsive {
-            overflow-x: auto !important;
+            overflow-x: auto;
             scrollbar-width: thin;
+        }
+
+        @media (min-width: 992px) {
+            .card-body > .table-responsive {
+                overflow-x: hidden !important;
+            }
         }
 
         /* Styling tabel presisi & compact agar pas di 1 layar tanpa overflow */
         .table-responsive .table {
             width: 100% !important;
+            max-width: 100% !important;
             font-size: 0.8125rem !important; /* ~13px */
-            table-layout: auto;
+            table-layout: auto !important;
             margin-bottom: 0 !important;
         }
 
@@ -100,7 +107,7 @@
             font-weight: 700 !important;
             text-transform: uppercase !important;
             letter-spacing: 0.04em !important;
-            padding: 0.5rem 0.4rem !important;
+            padding: 0.45rem 0.35rem !important;
             vertical-align: middle !important;
             white-space: nowrap !important;
             color: #374151 !important;
@@ -110,7 +117,7 @@
 
         .table-responsive .table td {
             font-size: 0.8125rem !important; /* ~13px */
-            padding: 0.45rem 0.4rem !important;
+            padding: 0.4rem 0.35rem !important;
             vertical-align: middle !important;
             line-height: 1.35 !important;
         }

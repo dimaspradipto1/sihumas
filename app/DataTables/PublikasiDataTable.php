@@ -37,6 +37,27 @@ class PublikasiDataTable extends DataTable
                 }
                 return '<a href="' . route('pengajuan.edit', $publikasi->pengajuan->id) . '" class="text-decoration-none text-success fw-bold">' . e($publikasi->pengajuan->nama_kegiatan) . '</a>';
             })
+            ->addColumn('tgl_pelaksanaan', function ($publikasi) {
+                Carbon::setLocale('id');
+                $tglAwal = $publikasi->tgl_awal ?? $publikasi->pengajuan?->tgl_awal;
+                $tglAkhir = $publikasi->tgl_akhir ?? $publikasi->pengajuan?->tgl_selesai;
+
+                if (!$tglAwal && !$tglAkhir) {
+                    return '<span class="text-muted">-</span>';
+                }
+
+                $start = $tglAwal ? Carbon::parse($tglAwal) : null;
+                $end = $tglAkhir ? Carbon::parse($tglAkhir) : null;
+
+                if ($start && $end) {
+                    if ($start->isSameDay($end)) {
+                        return '<span class="text-nowrap fw-semibold">' . $start->translatedFormat('d M Y') . '</span><br><small class="text-muted">' . $start->translatedFormat('l') . '</small>';
+                    }
+                    return '<span class="text-nowrap fw-semibold">' . $start->translatedFormat('d M Y') . '</span><br><small class="text-muted">s/d ' . $end->translatedFormat('d M Y') . '</small>';
+                }
+
+                return '<span class="text-nowrap fw-semibold">' . ($start ? $start->translatedFormat('d M Y') : $end->translatedFormat('d M Y')) . '</span>';
+            })
             ->addColumn('tgl_awal', function ($publikasi) {
                 Carbon::setlocale('id');
                 $tgl = $publikasi->tgl_awal ?? $publikasi->pengajuan?->tgl_awal;
@@ -141,7 +162,7 @@ class PublikasiDataTable extends DataTable
                 $html .= '</div>';
                 return $html;
             })
-            ->rawColumns(['action', 'nama_kegiatan', 'pengajuan.nama_kegiatan', 'status_validasi', 'tgl_awal', 'tgl_akhir', 'upload_laporan', 'link_dokumentasi', 'link_publikasi', 'user_id', 'tahun_akademik_id', 'pengajuan_id'])
+            ->rawColumns(['action', 'nama_kegiatan', 'pengajuan.nama_kegiatan', 'status_validasi', 'tgl_pelaksanaan', 'tgl_awal', 'tgl_akhir', 'upload_laporan', 'link_dokumentasi', 'link_publikasi', 'user_id', 'tahun_akademik_id', 'pengajuan_id'])
             ->setRowId('id');
     }
 
@@ -236,16 +257,11 @@ class PublikasiDataTable extends DataTable
                 ->title('STATUS VALIDASI')
                 ->width('12%')
                 ->addClass('text-center'),
-            Column::make('tgl_awal')
-                ->title('TANGGAL KEGIATAN')
+            Column::make('tgl_pelaksanaan')
+                ->title('TANGGAL PELAKSANAAN')
                 ->orderable(false)
                 ->searchable(false)
-                ->width('13%'),
-            Column::make('tgl_akhir')
-                ->title('TANGGAL SELESAI')
-                ->orderable(false)
-                ->searchable(false)
-                ->width('13%'),
+                ->width('14%'),
             Column::make('link_dokumentasi')
                 ->title('DOKUMENTASI')
                 ->orderable(false)

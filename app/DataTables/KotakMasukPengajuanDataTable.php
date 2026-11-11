@@ -67,6 +67,28 @@ class KotakMasukPengajuanDataTable extends DataTable
                 }
                 return '<span class="text-muted fst-italic">Belum ditugaskan</span>';
             })
+            ->addColumn('pengajuan.tgl_pelaksanaan', function ($kotakMasukPengajuan) {
+                Carbon::setLocale('id');
+                $p = $kotakMasukPengajuan->pengajuan;
+                if (!$p) {
+                    return '<span class="text-muted">-</span>';
+                }
+                $start = $p->tgl_awal ? Carbon::parse($p->tgl_awal) : null;
+                $end = $p->tgl_selesai ? Carbon::parse($p->tgl_selesai) : null;
+
+                if (!$start && !$end) {
+                    return '<span class="text-muted">-</span>';
+                }
+
+                if ($start && $end) {
+                    if ($start->isSameDay($end)) {
+                        return '<span class="text-nowrap fw-semibold">' . $start->translatedFormat('d M Y') . '</span><br><small class="text-muted">' . $start->translatedFormat('l') . '</small>';
+                    }
+                    return '<span class="text-nowrap fw-semibold">' . $start->translatedFormat('d M Y') . '</span><br><small class="text-muted">s/d ' . $end->translatedFormat('d M Y') . '</small>';
+                }
+
+                return '<span class="text-nowrap fw-semibold">' . ($start ? $start->translatedFormat('d M Y') : $end->translatedFormat('d M Y')) . '</span>';
+            })
             ->addColumn('pengajuan.tgl_awal', function ($kotakMasukPengajuan) {
                 Carbon::setLocale('id');
                 return Carbon::parse($kotakMasukPengajuan->pengajuan->tgl_awal)->translatedFormat('l, d F Y');
@@ -95,7 +117,7 @@ class KotakMasukPengajuanDataTable extends DataTable
                     });
                 }
             })
-            ->rawColumns(['pengajuan.nama_kegiatan', 'pengajuan.tgl_awal', 'pengajuan.tgl_selesai', 'pengajuan.status', 'pengajuan.petugas_ditugaskan', 'pengajuan.user_id'])
+            ->rawColumns(['pengajuan.nama_kegiatan', 'pengajuan.tgl_pelaksanaan', 'pengajuan.tgl_awal', 'pengajuan.tgl_selesai', 'pengajuan.status', 'pengajuan.petugas_ditugaskan', 'pengajuan.user_id'])
             ->setRowId('DT_RowIndex');
     }
 
@@ -174,13 +196,11 @@ class KotakMasukPengajuanDataTable extends DataTable
             Column::make('pengajuan.nama_kegiatan')
                 ->title('NAMA KEGIATAN')
                 ->addClass('text-start'),
-            Column::make('pengajuan.tgl_awal')
-                ->title('TANGGAL KEGIATAN')
+            Column::make('pengajuan.tgl_pelaksanaan')
+                ->title('TANGGAL PELAKSANAAN')
                 ->addClass('text-start')
-                ->width('15%'),
-            Column::make('pengajuan.tgl_selesai')
-                ->title('TANGGAL SELESAI')
-                ->addClass('text-start')
+                ->orderable(false)
+                ->searchable(false)
                 ->width('15%'),
             Column::make('pengajuan.status')
                 ->title('STATUS PENGAJUAN')
