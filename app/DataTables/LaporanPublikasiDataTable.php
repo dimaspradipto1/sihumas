@@ -88,15 +88,15 @@ class LaporanPublikasiDataTable extends DataTable
                 if (auth()->check() && auth()->user()->is_admin) {
                     $actionUrl = route('publikasi.validasi', $target);
 
-                    // 1. Tombol Validasi / Setujui Langsung (Tanpa Modal)
-                    $html .= '<form action="' . $actionUrl . '" method="POST" style="display: inline" onsubmit="return confirm(\'Setujui dan validasi laporan kegiatan ini?\')">'
+                    // 1. Tombol Validasi / Setujui Langsung (SweetAlert)
+                    $html .= '<form action="' . $actionUrl . '" method="POST" style="display: inline" class="form-validasi-setujui">'
                            . csrf_field()
                            . '<input type="hidden" name="status_validasi" value="disetujui">'
                            . '<button type="submit" class="btn btn-sm btn-success text-white px-2 py-1" title="Validasi / Setujui Laporan">'
                            . '<i class="fa-solid fa-clipboard-check"></i></button></form>';
 
-                    // 2. Tombol Menolak Validasi Langsung
-                    $html .= '<form action="' . $actionUrl . '" method="POST" style="display: inline" onsubmit="var c = prompt(\'Tolak validasi laporan kegiatan ini?\\nMasukkan catatan / instruksi revisi untuk PIC (opsional):\'); if (c === null) return false; this.querySelector(\'input[name=catatan_validasi]\').value = c; return true;">'
+                    // 2. Tombol Menolak Validasi Langsung (SweetAlert)
+                    $html .= '<form action="' . $actionUrl . '" method="POST" style="display: inline" class="form-validasi-tolak">'
                            . csrf_field()
                            . '<input type="hidden" name="status_validasi" value="ditolak">'
                            . '<input type="hidden" name="catatan_validasi" value="">'
@@ -107,7 +107,7 @@ class LaporanPublikasiDataTable extends DataTable
                 $html .= '<a href="' . route('publikasi.edit', $target) . '" class="btn btn-sm btn-warning text-white px-2 py-1" title="Edit / Laporkan"><i class="fa-solid fa-pen-to-square"></i></a>';
 
                 if (auth()->check() && auth()->user()->is_admin) {
-                    $html .= '<form action="' . route('publikasi.destroy', $target) . '" method="POST" style="display: inline" onsubmit="return confirm(\'Yakin ingin menghapus data ini?\')">'
+                    $html .= '<form action="' . route('publikasi.destroy', $target) . '" method="POST" style="display: inline" class="form-action-delete">'
                            . csrf_field() . method_field('DELETE')
                            . '<button type="submit" class="btn btn-sm btn-danger px-2 py-1" title="Hapus"><i class="fa-solid fa-trash-can"></i></button></form>';
                 }

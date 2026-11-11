@@ -221,20 +221,6 @@
             }
         });
     </script>
-
-    <script>
-        function confirmTolakValidasi(form) {
-            var catatan = prompt('Tolak validasi laporan kegiatan ini?\nMasukkan catatan / instruksi revisi untuk PIC (opsional):');
-            if (catatan === null) {
-                return false;
-            }
-            var inputCatatan = form.querySelector('input[name="catatan_validasi"]');
-            if (inputCatatan) {
-                inputCatatan.value = catatan;
-            }
-            return true;
-        }
-    </script>
 @endpush
 
 @push('style')

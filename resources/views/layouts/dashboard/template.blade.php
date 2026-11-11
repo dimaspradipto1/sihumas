@@ -369,6 +369,84 @@
                     }).catch(function() {});
                 }
             });
+
+            // SweetAlert konfirmasi Validasi / Setujui Pelaporan
+            $(document).on('submit', '.form-validasi-setujui', function(e) {
+                e.preventDefault();
+                const form = this;
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        title: 'Setujui Laporan Kegiatan?',
+                        text: 'Laporan kegiatan ini akan divalidasi dan disetujui.',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#10b981',
+                        cancelButtonColor: '#6b7280',
+                        confirmButtonText: '<i class="fa-solid fa-clipboard-check me-1"></i> Ya, Setujui',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            HTMLFormElement.prototype.submit.call(form);
+                        }
+                    });
+                } else {
+                    HTMLFormElement.prototype.submit.call(form);
+                }
+            });
+
+            // SweetAlert konfirmasi Tolak Validasi Pelaporan
+            $(document).on('submit', '.form-validasi-tolak', function(e) {
+                e.preventDefault();
+                const form = this;
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        title: 'Tolak Validasi Laporan?',
+                        text: 'Tuliskan catatan / instruksi perbaikan untuk PIC Humas (opsional):',
+                        input: 'textarea',
+                        inputPlaceholder: 'Tuliskan catatan perbaikan jika ada...',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#e11d48',
+                        cancelButtonColor: '#6b7280',
+                        confirmButtonText: '<i class="fa-solid fa-clipboard-xmark me-1"></i> Ya, Tolak Validasi',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            const inputCatatan = form.querySelector('input[name="catatan_validasi"]');
+                            if (inputCatatan) {
+                                inputCatatan.value = result.value || '';
+                            }
+                            HTMLFormElement.prototype.submit.call(form);
+                        }
+                    });
+                } else {
+                    HTMLFormElement.prototype.submit.call(form);
+                }
+            });
+
+            // SweetAlert konfirmasi Hapus Data
+            $(document).on('submit', '.form-action-delete', function(e) {
+                e.preventDefault();
+                const form = this;
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        title: 'Yakin Ingin Menghapus Data?',
+                        text: 'Data yang dihapus tidak dapat dikembalikan!',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#e11d48',
+                        cancelButtonColor: '#6b7280',
+                        confirmButtonText: '<i class="fa-solid fa-trash-can me-1"></i> Ya, Hapus',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            HTMLFormElement.prototype.submit.call(form);
+                        }
+                    });
+                } else {
+                    HTMLFormElement.prototype.submit.call(form);
+                }
+            });
         });
 
         document.addEventListener('DOMContentLoaded', function() {
