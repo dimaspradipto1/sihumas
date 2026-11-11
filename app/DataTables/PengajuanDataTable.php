@@ -86,8 +86,9 @@ class PengajuanDataTable extends DataTable
         $status = request('status');
 
         $query = $model->newQuery()
+            ->select('pengajuans.*')
             ->with('user')
-            ->orderBy('created_at', 'desc');
+            ->orderBy('pengajuans.created_at', 'desc');
 
         // ✅ scope data sesuai tipe user (sama seperti logic kamu sebelumnya)
         if (!$user->is_admin) {

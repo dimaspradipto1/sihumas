@@ -112,24 +112,27 @@ class PublikasiDataTable extends DataTable
         // 1. Super Admin melihat seluruh pelaporan
         if ($user && $user->is_admin) {
             return $model->newQuery()
+                ->select('publikasis.*')
                 ->with(['pengajuan.user', 'tahunAkademik', 'user'])
-                ->orderBy('created_at', 'desc');
+                ->orderBy('publikasis.created_at', 'desc');
         }
 
         // 2. Petugas Humas melihat pelaporan kegiatan yang ditugaskan kepadanya sebagai PIC
         if ($user && $user->is_humas) {
             return $model->newQuery()
+                ->select('publikasis.*')
                 ->with(['pengajuan.user', 'tahunAkademik', 'user'])
                 ->where(function ($q) use ($user) {
                     $q->whereHas('pengajuan', function ($pq) use ($user) {
                         $pq->assignedToUser($user);
                     })->orWhere('publikasis.user_id', $user->id);
                 })
-                ->orderBy('created_at', 'desc');
+                ->orderBy('publikasis.created_at', 'desc');
         }
 
         // 3. User Unit/Fakultas melihat pelaporan dari kegiatan yang diajukannya
         return $model->newQuery()
+            ->select('publikasis.*')
             ->with(['pengajuan.user', 'tahunAkademik', 'user'])
             ->where(function ($q) use ($user) {
                 $q->where('publikasis.user_id', $user->id)
@@ -137,7 +140,7 @@ class PublikasiDataTable extends DataTable
                       $pq->where('user_id', $user->id);
                   });
             })
-            ->orderBy('created_at', 'desc');
+            ->orderBy('publikasis.created_at', 'desc');
     }
 
     /**
@@ -201,9 +204,13 @@ class PublikasiDataTable extends DataTable
                 ->title('Nama Kegiatan'),
             Column::make('tgl_awal')
                 ->title('Tanggal Kegiatan')
+                ->orderable(false)
+                ->searchable(false)
                 ->width(20),
             Column::make('tgl_akhir')
                 ->title('Tanggal Selesai')
+                ->orderable(false)
+                ->searchable(false)
                 ->width(20),
             Column::make('link_dokumentasi')
                 ->title('Dokumentasi')
@@ -214,6 +221,7 @@ class PublikasiDataTable extends DataTable
                 ->orderable(false)
                 ->searchable(false),
             Column::make('user_id')
+                ->name('publikasis.user_id')
                 ->title('Submit Pengguna')
                 ->visible(auth()->user()->is_admin)
                 ->width(5),

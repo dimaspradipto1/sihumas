@@ -173,6 +173,25 @@ class PublikasiTest extends TestCase
         $response = $this->actingAs($humas)->get(route('publikasi.index'));
         $response->assertStatus(200);
 
+        // Test DataTables AJAX request with sorting on column 1 (pengajuan.nama_kegiatan)
+        $ajaxResponse = $this->actingAs($humas)->getJson(route('publikasi.index') . '?' . http_build_query([
+            'draw' => 1,
+            'columns' => [
+                0 => ['data' => 'DT_RowIndex', 'name' => 'DT_RowIndex', 'searchable' => 'true', 'orderable' => 'false'],
+                1 => ['data' => 'nama_kegiatan', 'name' => 'pengajuan.nama_kegiatan', 'searchable' => 'true', 'orderable' => 'true'],
+            ],
+            'order' => [
+                0 => ['column' => 1, 'dir' => 'asc'],
+            ],
+            'start' => 0,
+            'length' => 10,
+            'search' => ['value' => '', 'regex' => 'false'],
+        ]), [
+            'X-Requested-With' => 'XMLHttpRequest',
+        ]);
+        $ajaxResponse->assertStatus(200);
+        $ajaxResponse->assertJsonStructure(['data', 'draw', 'recordsTotal', 'recordsFiltered']);
+
         $responseEdit = $this->actingAs($humas)->get(route('publikasi.edit', $publikasi));
         $responseEdit->assertStatus(200);
         $responseEdit->assertSee('Peliputan Acara Dies Natalis');

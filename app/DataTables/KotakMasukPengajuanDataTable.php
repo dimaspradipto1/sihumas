@@ -105,8 +105,9 @@ class KotakMasukPengajuanDataTable extends DataTable
 
         // Start a query to get the KotakMasukPengajuan data
         $query = $model->newQuery()
+            ->select('kotak_masuk_pengajuans.*')
             ->with(['pengajuan.user', 'pengajuan.publikasi'])
-            ->orderBy('created_at', 'desc');
+            ->orderBy('kotak_masuk_pengajuans.created_at', 'desc');
 
         // Jika Petugas Humas (bukan Super Admin), HANYA tampilkan data pengajuan yang ditugaskan kepada dirinya sebagai PIC
         if (!empty($user->is_humas) && empty($user->is_admin)) {
