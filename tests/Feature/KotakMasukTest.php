@@ -171,4 +171,27 @@ class KotakMasukTest extends TestCase
         $notifAfter = session('pengajuan_notif', []);
         $this->assertEquals(1, data_get($notifAfter, 'humas.diterima', 0));
     }
+
+    public function test_petugas_pic_column_hidden_for_humas(): void
+    {
+        $humas = User::factory()->create([
+            'is_humas' => true,
+            'is_admin' => false,
+        ]);
+
+        $admin = User::factory()->create([
+            'is_admin' => true,
+            'is_humas' => false,
+        ]);
+
+        // Humas mengakses kotak masuk - kolom Petugas / PIC harus tersembunyi
+        $responseHumas = $this->actingAs($humas)->get(route('kotak-masuk-pengajuan.index'));
+        $responseHumas->assertStatus(200);
+        $responseHumas->assertDontSee('Petugas / PIC');
+
+        // Admin mengakses kotak masuk - kolom Petugas / PIC harus muncul
+        $responseAdmin = $this->actingAs($admin)->get(route('kotak-masuk-pengajuan.index'));
+        $responseAdmin->assertStatus(200);
+        $responseAdmin->assertSee('Petugas / PIC');
+    }
 }

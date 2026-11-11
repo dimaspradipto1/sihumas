@@ -141,31 +141,18 @@ class KotakMasukPengajuanDataTable extends DataTable
             ->setTableId('pengajuan-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
-            // ->dom('Bfrtip')
             ->orderBy(2, 'desc')
             ->selectStyleSingle()
             ->parameters([
                 'scrollX' => true,
+                'scrollCollapse' => true,
+                'autoWidth' => false,
                 'searching' => true,
                 'columnDefs' => [
                     [
                         'targets' => 1,
-                        'width' => '400px',
-                        'render' => 'function(data, type, row, meta) { return "<div style=\'word-wrap: break-word; word-break: break-word; white-space: normal; overflow-wrap: break-word;\' >" + data + "</div>"; }'
+                        'render' => 'function(data, type, row, meta) { return "<div style=\'word-wrap: break-word; word-break: break-word; white-space: normal; overflow-wrap: break-word; min-width: 250px;\' >" + data + "</div>"; }'
                     ],
-                    [
-                        'targets' => 0,
-                        'width' => '5px',
-                        'className' => 'text-start',
-                        'render' => null
-                    ],
-                    [
-                        'targets' => 4,
-                        'width' => '10px',
-                        'className' => 'text-center',
-                        'style' => 'text-align: text-left;',
-                        'render' => null
-                    ]
                 ],
             ])
             ->buttons([
@@ -183,25 +170,41 @@ class KotakMasukPengajuanDataTable extends DataTable
      */
     public function getColumns(): array
     {
-        return [
-
+        $columns = [
             Column::make('DT_RowIndex')
                 ->title('No')
-                ->addClass('text-center'),
+                ->addClass('text-center')
+                ->orderable(false)
+                ->searchable(false)
+                ->width(50),
             Column::make('pengajuan.nama_kegiatan')
-                ->title('Nama Kegiatan'),
+                ->title('Nama Kegiatan')
+                ->width(300),
             Column::make('pengajuan.tgl_awal')
-                ->title('Tanggal Kegiatan'),
+                ->title('Tanggal Kegiatan')
+                ->width(170),
             Column::make('pengajuan.tgl_selesai')
-                ->title('Tanggal Selesai'),
+                ->title('Tanggal Selesai')
+                ->width(170),
             Column::make('pengajuan.status')
-                ->title('Status Pengajuan'),
-            Column::make('pengajuan.petugas_ditugaskan')
-                ->title('Petugas / PIC'),
-            Column::make('pengajuan.user_id')
-                ->title('Submit Pengguna'),
-
+                ->title('Status Pengajuan')
+                ->addClass('text-center')
+                ->width(150),
         ];
+
+        // Hanya Super Admin yang melihat kolom Petugas / PIC (disembunyikan untuk Humas)
+        if (auth()->check() && auth()->user()->is_admin) {
+            $columns[] = Column::make('pengajuan.petugas_ditugaskan')
+                ->title('Petugas / PIC')
+                ->addClass('text-center')
+                ->width(180);
+        }
+
+        $columns[] = Column::make('pengajuan.user_id')
+            ->title('Submit Pengguna')
+            ->width(150);
+
+        return $columns;
     }
 
     /**
