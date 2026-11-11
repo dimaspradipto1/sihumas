@@ -13,18 +13,22 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('tahun_akademiks', function (Blueprint $table) {
-            $table->boolean('is_active')->default(false)->after('tahun_akademik');
+            if (!Schema::hasColumn('tahun_akademiks', 'is_active')) {
+                $table->boolean('is_active')->default(false)->after('tahun_akademik');
+            }
         });
 
         // Set tahun akademik terakhir sebagai aktif secara default
         $latestId = DB::table('tahun_akademiks')->orderByDesc('id')->value('id');
-        if ($latestId) {
+        if ($latestId && Schema::hasColumn('tahun_akademiks', 'is_active')) {
             DB::table('tahun_akademiks')->where('id', $latestId)->update(['is_active' => true]);
 
             // Backfill semua publikasi yang belum memiliki tahun_akademik_id
-            DB::table('publikasis')
-                ->whereNull('tahun_akademik_id')
-                ->update(['tahun_akademik_id' => $latestId]);
+            if (Schema::hasColumn('publikasis', 'tahun_akademik_id')) {
+                DB::table('publikasis')
+                    ->whereNull('tahun_akademik_id')
+                    ->update(['tahun_akademik_id' => $latestId]);
+            }
         }
     }
 

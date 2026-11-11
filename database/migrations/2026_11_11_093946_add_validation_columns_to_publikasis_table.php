@@ -13,23 +13,33 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('publikasis', function (Blueprint $table) {
-            $table->string('status_validasi')->default('belum_dilaporkan')->after('link_publikasi');
-            $table->text('catatan_validasi')->nullable()->after('status_validasi');
-            $table->foreignId('validated_by')->nullable()->after('catatan_validasi')->constrained('users')->nullOnDelete();
-            $table->timestamp('validated_at')->nullable()->after('validated_by');
+            if (!Schema::hasColumn('publikasis', 'status_validasi')) {
+                $table->string('status_validasi')->default('belum_dilaporkan')->after('link_publikasi');
+            }
+            if (!Schema::hasColumn('publikasis', 'catatan_validasi')) {
+                $table->text('catatan_validasi')->nullable()->after('status_validasi');
+            }
+            if (!Schema::hasColumn('publikasis', 'validated_by')) {
+                $table->foreignId('validated_by')->nullable()->after('catatan_validasi')->constrained('users')->nullOnDelete();
+            }
+            if (!Schema::hasColumn('publikasis', 'validated_at')) {
+                $table->timestamp('validated_at')->nullable()->after('validated_by');
+            }
         });
 
         // Backfill data yang sudah ada: jika sudah pernah isi laporan, set sebagai 'disetujui'
-        DB::table('publikasis')
-            ->where(function ($q) {
-                $q->whereNotNull('upload_laporan')
-                  ->orWhereNotNull('link_dokumentasi')
-                  ->orWhereNotNull('link_publikasi');
-            })
-            ->update([
-                'status_validasi' => 'disetujui',
-                'validated_at'    => now(),
-            ]);
+        if (Schema::hasColumn('publikasis', 'status_validasi')) {
+            DB::table('publikasis')
+                ->where(function ($q) {
+                    $q->whereNotNull('upload_laporan')
+                      ->orWhereNotNull('link_dokumentasi')
+                      ->orWhereNotNull('link_publikasi');
+                })
+                ->update([
+                    'status_validasi' => 'disetujui',
+                    'validated_at'    => now(),
+                ]);
+        }
     }
 
     /**

@@ -73,3 +73,4 @@ class NotificationTest extends TestCase
         $this->assertNotNull($user->pengajuan_read_at);
     }
 }
+

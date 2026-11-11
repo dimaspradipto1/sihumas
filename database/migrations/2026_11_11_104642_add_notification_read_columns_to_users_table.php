@@ -12,8 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->timestamp('pengajuan_read_at')->nullable()->after('remember_token');
-            $table->timestamp('kotak_masuk_read_at')->nullable()->after('pengajuan_read_at');
+            if (!Schema::hasColumn('users', 'pengajuan_read_at')) {
+                $table->timestamp('pengajuan_read_at')->nullable()->after('remember_token');
+            }
+            if (!Schema::hasColumn('users', 'kotak_masuk_read_at')) {
+                $table->timestamp('kotak_masuk_read_at')->nullable()->after('pengajuan_read_at');
+            }
         });
     }
 

@@ -18,7 +18,11 @@ class NotifikasiPengajuanMiddleware
 
         // Jika user sedang membuka halaman Pengajuan Kegiatan, tandai notifikasi pengajuan telah dibaca
         if ($request->routeIs('pengajuan.*')) {
-            $user->update(['pengajuan_read_at' => now()]);
+            try {
+                if (\Illuminate\Support\Facades\Schema::hasColumn('users', 'pengajuan_read_at')) {
+                    $user->update(['pengajuan_read_at' => now()]);
+                }
+            } catch (\Throwable $e) {}
             session(['pengajuan_read_at' => now()]);
         }
 

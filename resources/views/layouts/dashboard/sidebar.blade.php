@@ -373,7 +373,14 @@
                       </span>
                       @if (Auth::user()->is_admin)
                           @php
-                              $pendingPublikasiCount = \App\Models\Publikasi::where('status_validasi', 'menunggu_validasi')->count();
+                              $pendingPublikasiCount = 0;
+                              try {
+                                  if (\Illuminate\Support\Facades\Schema::hasColumn('publikasis', 'status_validasi')) {
+                                      $pendingPublikasiCount = \App\Models\Publikasi::where('status_validasi', 'menunggu_validasi')->count();
+                                  }
+                              } catch (\Throwable $e) {
+                                  $pendingPublikasiCount = 0;
+                              }
                           @endphp
                           @if ($pendingPublikasiCount > 0)
                               <span class="badge badge-sm bg-warning text-dark font-weight-bold">{{ $pendingPublikasiCount }}</span>
