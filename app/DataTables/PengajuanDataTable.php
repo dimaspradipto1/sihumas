@@ -53,22 +53,18 @@ class PengajuanDataTable extends DataTable
             })
 
             ->addColumn('action', function ($pengajuan) use ($user) {
-                $action = '<a href="' . route('pengajuan.show', $pengajuan->id) . '" class="btn btn-sm btn-primary text-white px-3"><i class="fa-solid fa-eye"></i></a>';
+                $html = '<div class="d-flex justify-content-center gap-1">';
+                $html .= '<a href="' . route('pengajuan.show', $pengajuan->id) . '" class="btn btn-sm btn-primary text-white px-2 py-1" title="Lihat"><i class="fa-solid fa-eye"></i></a>';
 
                 if ($user->is_admin) {
-                    $action .= '
-                        <a href="' . route('pengajuan.edit', $pengajuan->id) . '" class="btn btn-sm btn-warning text-white px-3"><i class="fa-solid fa-pen-to-square"></i></a>
-                        <form action="' . route('pengajuan.destroy', $pengajuan->id) . '" method="POST" style="display:inline" class="form-action-delete">
-                            ' . csrf_field() . '
-                            ' . method_field('DELETE') . '
-                            <button type="submit" class="btn btn-sm btn-danger px-3" title="Hapus">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                        </form>
-                    ';
+                    $html .= '<a href="' . route('pengajuan.edit', $pengajuan->id) . '" class="btn btn-sm btn-warning text-white px-2 py-1" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>';
+                    $html .= '<form action="' . route('pengajuan.destroy', $pengajuan->id) . '" method="POST" style="display:inline" class="form-action-delete">'
+                           . csrf_field()
+                           . method_field('DELETE')
+                           . '<button type="submit" class="btn btn-sm btn-danger px-2 py-1" title="Hapus"><i class="fa-solid fa-trash-can"></i></button></form>';
                 }
-
-                return $action;
+                $html .= '</div>';
+                return $html;
             })
 
             ->rawColumns(['action', 'tgl_awal', 'tgl_selesai', 'status', 'user_id'])
@@ -110,36 +106,12 @@ class PengajuanDataTable extends DataTable
         return $this->builder()
             ->setTableId('pengajuan-table')
             ->columns($this->getColumns())
-
-            // ->minifiedAjax([
-            //     'data' => 'function(d){ d.status = "' . e($status) . '"; }'
-            // ])
-
             ->orderBy(2, 'desc')
             ->selectStyleSingle()
             ->parameters([
-                'scrollX' => true,
-                'columnDefs' => [
-                    [
-                        'targets' => 1,
-                        'width' => '250px',
-                        'render' => 'function(data, type, row, meta) {
-                            return "<div style=\'word-wrap:break-word; word-break:break-word; white-space:normal; overflow-wrap:break-word;\'>" + data + "</div>";
-                        }'
-                    ],
-                    [
-                        'targets' => 0,
-                        'width' => '5px',
-                        'className' => 'text-start',
-                        'render' => null
-                    ],
-                    [
-                        'targets' => 4,
-                        'width' => '10px',
-                        'className' => 'text-center',
-                        'render' => null
-                    ]
-                ],
+                'scrollX' => false,
+                'autoWidth' => false,
+                'responsive' => false,
             ])
             ->buttons([
                 Button::make('excel'),
@@ -156,13 +128,13 @@ class PengajuanDataTable extends DataTable
         $isAdmin = auth()->user()->is_admin ?? false;
 
         return [
-            Column::make('DT_RowIndex')->title('No'),
-            Column::make('nama_kegiatan')->title('Nama Kegiatan')->addClass('text-start'),
-            Column::make('tgl_awal')->title('Tanggal Kegiatan')->width(20),
-            Column::make('tgl_selesai')->title('Tanggal Selesai')->width(20),
-            Column::make('status')->title('Status Pengajuan'),
-            Column::make('user_id')->title('Submit Pengguna')->visible($isAdmin)->width(5),
-            Column::computed('action')->title('Aksi')->exportable(false)->printable(false)->width(40)->addClass('text-center'),
+            Column::make('DT_RowIndex')->title('NO')->addClass('text-center')->width('50px')->orderable(false)->searchable(false),
+            Column::make('nama_kegiatan')->title('NAMA KEGIATAN')->addClass('text-start'),
+            Column::make('tgl_awal')->title('TANGGAL KEGIATAN')->addClass('text-start')->width('160px'),
+            Column::make('tgl_selesai')->title('TANGGAL SELESAI')->addClass('text-start')->width('160px'),
+            Column::make('status')->title('STATUS PENGAJUAN')->addClass('text-center')->width('130px'),
+            Column::make('user_id')->title('SUBMIT PENGGUNA')->visible($isAdmin)->width('140px'),
+            Column::computed('action')->title('AKSI')->exportable(false)->printable(false)->width('100px')->addClass('text-center'),
         ];
     }
 

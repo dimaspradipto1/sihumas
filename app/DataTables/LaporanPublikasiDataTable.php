@@ -189,19 +189,14 @@ class LaporanPublikasiDataTable extends DataTable
             ->columns($this->getColumns())
             ->minifiedAjax(route('laporan-publikasi.index'))
             ->parameters([
-                'scrollX' => true,
+                'scrollX' => false,
                 'autoWidth' => false,
+                'responsive' => false,
                 'searching' => true,
                 'searchDelay' => 500,
                 'ordering' => true,
                 'lengthMenu' => [[10, 25, 50, -1], [10, 25, 50, 'All']],
                 'order' => [[1, 'asc']],
-                'columnDefs' => [
-                    [
-                        'targets' => 1,
-                        'render' => 'function(data, type, row, meta) { return "<div style=\'word-wrap: break-word; word-break: break-word; white-space: normal; overflow-wrap: break-word; min-width: 220px;\' >" + data + "</div>"; }'
-                    ],
-                ],
             ])
             ->buttons([
                 Button::make('excel'),
@@ -218,15 +213,15 @@ class LaporanPublikasiDataTable extends DataTable
         $isAdmin = auth()->check() && auth()->user()->is_admin;
 
         return [
-            Column::make('DT_RowIndex')->title('No')->addClass('text-center')->orderable(false)->searchable(false)->width(50),
-            Column::make('nama_kegiatan')->data('nama_kegiatan')->name('pengajuan.nama_kegiatan')->title('Nama Kegiatan')->width(280),
-            Column::make('status_validasi')->name('publikasi.status_validasi')->title('Status Validasi')->width(140)->addClass('text-center'),
-            Column::make('tgl_awal')->title('Tanggal Kegiatan')->orderable(false)->searchable(false)->width(170),
-            Column::make('tgl_akhir')->title('Tanggal Selesai')->orderable(false)->searchable(false)->width(170),
-            Column::make('link_dokumentasi')->title('Dokumentasi')->orderable(false)->searchable(false)->width(120)->addClass('text-center'),
-            Column::make('link_publikasi')->title('Link Publikasi')->orderable(false)->searchable(false)->width(150),
-            Column::make('user_id')->name('user.name')->title('Submit Pengguna')->visible($isAdmin)->width(140),
-            Column::computed('action')->title('Aksi')->exportable(false)->printable(false)->width($isAdmin ? 150 : 100)->addClass('text-center'),
+            Column::make('DT_RowIndex')->title('NO')->addClass('text-center')->orderable(false)->searchable(false)->width('45px'),
+            Column::make('nama_kegiatan')->data('nama_kegiatan')->name('pengajuan.nama_kegiatan')->title('NAMA KEGIATAN'),
+            Column::make('status_validasi')->name('publikasi.status_validasi')->title('STATUS VALIDASI')->width('130px')->addClass('text-center'),
+            Column::make('tgl_awal')->title('TANGGAL KEGIATAN')->orderable(false)->searchable(false)->width('145px'),
+            Column::make('tgl_akhir')->title('TANGGAL SELESAI')->orderable(false)->searchable(false)->width('145px'),
+            Column::make('link_dokumentasi')->title('DOKUMENTASI')->orderable(false)->searchable(false)->width('105px')->addClass('text-center'),
+            Column::make('link_publikasi')->title('LINK PUBLIKASI')->orderable(false)->searchable(false)->width('130px'),
+            Column::make('user_id')->name('user.name')->title('SUBMIT PENGGUNA')->visible($isAdmin)->width('130px'),
+            Column::computed('action')->title('AKSI')->exportable(false)->printable(false)->width($isAdmin ? '135px' : '90px')->addClass('text-center'),
         ];
     }
 

@@ -155,10 +155,12 @@
 
     <div class="card border-0 shadow mb-4">
         <div class="card-body">
-            {!! $dataTable->table(
-                ['class' => 'table table-striped table-bordered', 'id' => 'laporanpublikasi-table'],
-                true,
-            ) !!}
+            <div class="table-responsive">
+                {!! $dataTable->table(
+                    ['class' => 'table table-striped table-bordered align-middle w-100', 'id' => 'laporanpublikasi-table'],
+                    true,
+                ) !!}
+            </div>
         </div>
     </div>
 

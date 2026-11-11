@@ -144,15 +144,10 @@ class KotakMasukPengajuanDataTable extends DataTable
             ->orderBy(2, 'desc')
             ->selectStyleSingle()
             ->parameters([
-                'scrollX' => true,
+                'scrollX' => false,
                 'autoWidth' => false,
+                'responsive' => false,
                 'searching' => true,
-                'columnDefs' => [
-                    [
-                        'targets' => 1,
-                        'render' => 'function(data, type, row, meta) { return "<div style=\'word-wrap: break-word; word-break: break-word; white-space: normal; overflow-wrap: break-word; min-width: 250px;\' >" + data + "</div>"; }'
-                    ],
-                ],
             ])
             ->buttons([
                 Button::make('excel'),
@@ -171,24 +166,26 @@ class KotakMasukPengajuanDataTable extends DataTable
     {
         $columns = [
             Column::make('DT_RowIndex')
-                ->title('No')
+                ->title('NO')
                 ->addClass('text-center')
                 ->orderable(false)
                 ->searchable(false)
-                ->width(50),
+                ->width('50px'),
             Column::make('pengajuan.nama_kegiatan')
-                ->title('Nama Kegiatan')
-                ->width(300),
+                ->title('NAMA KEGIATAN')
+                ->addClass('text-start'),
             Column::make('pengajuan.tgl_awal')
-                ->title('Tanggal Kegiatan')
-                ->width(170),
+                ->title('TANGGAL KEGIATAN')
+                ->addClass('text-start')
+                ->width('160px'),
             Column::make('pengajuan.tgl_selesai')
-                ->title('Tanggal Selesai')
-                ->width(170),
+                ->title('TANGGAL SELESAI')
+                ->addClass('text-start')
+                ->width('160px'),
             Column::make('pengajuan.status')
-                ->title('Status Pengajuan')
+                ->title('STATUS PENGAJUAN')
                 ->addClass('text-center')
-                ->width(150),
+                ->width('150px'),
         ];
 
         // Hanya Super Admin yang melihat kolom Petugas / PIC (disembunyikan untuk Humas)
@@ -196,12 +193,12 @@ class KotakMasukPengajuanDataTable extends DataTable
             $columns[] = Column::make('pengajuan.petugas_ditugaskan')
                 ->title('Petugas / PIC')
                 ->addClass('text-center')
-                ->width(180);
+                ->width('160px');
         }
 
         $columns[] = Column::make('pengajuan.user_id')
-            ->title('Submit Pengguna')
-            ->width(150);
+            ->title('SUBMIT PENGGUNA')
+            ->width('140px');
 
         return $columns;
     }

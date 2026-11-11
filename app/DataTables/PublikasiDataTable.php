@@ -199,14 +199,9 @@ class PublikasiDataTable extends DataTable
             ->orderBy(1)
             ->selectStyleSingle()
             ->parameters([
-                'scrollX' => true,
+                'scrollX' => false,
                 'autoWidth' => false,
-                'columnDefs' => [
-                    [
-                        'targets' => 1,
-                        'render' => 'function(data, type, row, meta) { return "<div style=\'word-wrap: break-word; word-break: break-word; white-space: normal; overflow-wrap: break-word; min-width: 220px;\' >" + data + "</div>"; }'
-                    ],
-                ],
+                'responsive' => false,
             ])
             ->buttons([
                 Button::make('excel'),
@@ -225,52 +220,51 @@ class PublikasiDataTable extends DataTable
     {
         return [
             Column::make('DT_RowIndex')
-                ->title('No')
+                ->title('NO')
                 ->addClass('text-center')
                 ->orderable(false)
                 ->searchable(false)
-                ->width(50),
+                ->width('45px'),
             Column::make('nama_kegiatan')
                 ->data('nama_kegiatan')
                 ->name('pengajuan.nama_kegiatan')
-                ->title('Nama Kegiatan')
-                ->width(280),
+                ->title('NAMA KEGIATAN'),
             Column::make('status_validasi')
                 ->name('publikasis.status_validasi')
-                ->title('Status Validasi')
-                ->width(140)
+                ->title('STATUS VALIDASI')
+                ->width('130px')
                 ->addClass('text-center'),
             Column::make('tgl_awal')
-                ->title('Tanggal Kegiatan')
+                ->title('TANGGAL KEGIATAN')
                 ->orderable(false)
                 ->searchable(false)
-                ->width(170),
+                ->width('145px'),
             Column::make('tgl_akhir')
-                ->title('Tanggal Selesai')
+                ->title('TANGGAL SELESAI')
                 ->orderable(false)
                 ->searchable(false)
-                ->width(170),
+                ->width('145px'),
             Column::make('link_dokumentasi')
-                ->title('Dokumentasi')
+                ->title('DOKUMENTASI')
                 ->orderable(false)
                 ->searchable(false)
-                ->width(120)
+                ->width('105px')
                 ->addClass('text-center'),
             Column::make('link_publikasi')
-                ->title('Link Publikasi')
+                ->title('LINK PUBLIKASI')
                 ->orderable(false)
                 ->searchable(false)
-                ->width(150),
+                ->width('130px'),
             Column::make('user_id')
                 ->name('publikasis.user_id')
-                ->title('Submit Pengguna')
+                ->title('SUBMIT PENGGUNA')
                 ->visible(auth()->user()->is_admin)
-                ->width(140),
+                ->width('130px'),
             Column::computed('action')
-                ->title('Aksi')
+                ->title('AKSI')
                 ->exportable(false)
                 ->printable(false)
-                ->width(auth()->user()->is_admin ? 150 : 100)
+                ->width(auth()->user()->is_admin ? '135px' : '90px')
                 ->addClass('text-center'),
         ];
     }

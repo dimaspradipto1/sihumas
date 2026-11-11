@@ -34,7 +34,9 @@
 
     <div class="card border-0 shadow mb-4">
         <div class="card-body">
-            {!! $dataTable->table(['class' => 'table table-striped table-bordered', 'id' => 'pengajuan-table']) !!}
+            <div class="table-responsive">
+                {!! $dataTable->table(['class' => 'table table-striped table-bordered align-middle w-100', 'id' => 'pengajuan-table']) !!}
+            </div>
         </div>
     </div>
 @endsection

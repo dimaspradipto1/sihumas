@@ -86,11 +86,12 @@ class UsersDataTable extends DataTable
             ->setTableId('users-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
-            //->dom('Bfrtip')
             ->orderBy(1)
             ->selectStyleSingle()
             ->parameters([
-                'scrollX' => true,
+                'scrollX' => false,
+                'autoWidth' => false,
+                'responsive' => false,
             ])
             ->buttons([
                 Button::make('excel'),
@@ -108,17 +109,17 @@ class UsersDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::make('DT_RowIndex')->title('No'),
-            Column::make('name')->title('Nama Pengguna'),
-            Column::make('email')->title('Email'),
-            Column::make('no_wa')->title('No. WhatsApp'),
-            Column::make('fakultas')->title('Unit'),
-            Column::make('role')->title('Role Akses')->orderable(false)->searchable(false),
+            Column::make('DT_RowIndex')->title('No')->addClass('text-center')->width('50px')->orderable(false)->searchable(false),
+            Column::make('name')->title('Nama Pengguna')->addClass('text-start'),
+            Column::make('email')->title('Email')->addClass('text-start'),
+            Column::make('no_wa')->title('No. WhatsApp')->addClass('text-start')->width('140px'),
+            Column::make('fakultas')->title('Unit')->addClass('text-start')->width('150px'),
+            Column::make('role')->title('Role Akses')->orderable(false)->searchable(false)->addClass('text-center')->width('120px'),
             Column::computed('action')
                 ->title('Aksi')
                 ->exportable(false)
                 ->printable(false)
-                ->width(120)
+                ->width('120px')
                 ->addClass('text-center'),
         ];
     }
