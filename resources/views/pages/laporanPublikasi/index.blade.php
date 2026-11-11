@@ -12,13 +12,18 @@
                         <i class="fa-solid fa-chevron-down ms-2 fs-xs"></i>
                     </button>
                     <div class="dropdown-menu dashboard-dropdown dropdown-menu-start mt-2 p-3 shadow-lg border" id="printFilterDropdown"
-                        style="min-width: 520px; max-width: 580px; width: 100%; z-index: 1050; border-radius: 0.5rem;">
+                        style="width: 520px; max-width: calc(100vw - 32px); z-index: 1050; border-radius: 0.5rem; box-sizing: border-box;">
                         
                         <div class="d-flex align-items-center justify-content-between pb-2 mb-3 border-bottom">
-                            <h6 class="mb-0 fw-bold text-gray-800">
-                                <i class="fa-solid fa-sliders text-primary me-2"></i> Opsi Cetak Laporan
-                            </h6>
-                            <span class="badge bg-light text-muted border">Rekap Kegiatan</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="bg-primary text-white rounded p-1 d-inline-flex align-items-center justify-content-center" style="width: 26px; height: 26px; font-size: 12px;">
+                                    <i class="fa-solid fa-sliders"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0 fw-bold text-gray-800" style="font-size: 14px;">Opsi Cetak Laporan</h6>
+                                    <small class="text-muted" style="font-size: 11px;">Rekap Publikasi & Kegiatan</small>
+                                </div>
+                            </div>
                         </div>
 
                         <form action="{{ route('laporan-publikasi.show') }}" method="GET" target="_blank" id="formCetakLaporan">
@@ -240,8 +245,17 @@
 
 @push('style')
     <style>
+        #printFilterDropdown {
+            width: 520px !important;
+            max-width: calc(100vw - 32px) !important;
+            box-sizing: border-box !important;
+            border-radius: 0.5rem !important;
+        }
+
         .filter-tabs {
             gap: 4px;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .filter-tabs .filter-tab-btn {
@@ -253,6 +267,9 @@
             transition: all 0.2s ease-in-out;
             min-height: 62px;
             padding: 0.35rem 0.2rem !important;
+            flex: 1 1 0;
+            min-width: 0;
+            box-sizing: border-box;
         }
 
         .filter-tabs .filter-tab-btn .tab-label {
