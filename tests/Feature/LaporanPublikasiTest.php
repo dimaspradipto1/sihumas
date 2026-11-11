@@ -38,7 +38,23 @@ class LaporanPublikasiTest extends TestCase
 
         $response = $this->actingAs($user)->get(route('laporan-publikasi.show'));
         $response->assertStatus(200);
-        $response->assertSee('LAPORAN KEGIATAN HUMAS DAN PUBLIKASI');
+        $response->assertSee('laporan kegiatan humas dan publikasi', false);
+    }
+
+    private function createPengajuan(User $user, array $overrides = []): Pengajuan
+    {
+        return Pengajuan::create(array_merge([
+            'user_id' => $user->id,
+            'nama_kegiatan' => 'Kegiatan Test',
+            'tgl_awal' => '2026-11-10',
+            'tgl_selesai' => '2026-11-11',
+            'jam_kegiatan' => '08:00',
+            'waktu_selesai' => '12:00',
+            'tempat_kegiatan' => 'Kampus UIS',
+            'unit_kegiatan' => 'Humas',
+            'deskripsi_kegiatan' => 'Deskripsi testing',
+            'status' => 'Selesai',
+        ], $overrides));
     }
 
     public function test_filter_print_by_tahun_akademik(): void
@@ -53,15 +69,12 @@ class LaporanPublikasiTest extends TestCase
             'is_active' => true,
         ]);
 
-        $pengajuan = Pengajuan::create([
-            'user_id' => $user->id,
+        $pengajuan = $this->createPengajuan($user, [
             'nama_kegiatan' => 'Kegiatan Filter TA Testing',
-            'tgl_awal' => '2026-11-10',
-            'tgl_selesai' => '2026-11-11',
-            'status' => 'Selesai',
         ]);
 
         $publikasi = Publikasi::create([
+            'user_id' => $user->id,
             'pengajuan_id' => $pengajuan->id,
             'tahun_akademik_id' => $ta->id,
             'link_publikasi' => 'https://example.com/pub-ta',
@@ -92,15 +105,14 @@ class LaporanPublikasiTest extends TestCase
             'is_admin' => true,
         ]);
 
-        $pengajuan = Pengajuan::create([
-            'user_id' => $user->id,
+        $pengajuan = $this->createPengajuan($user, [
             'nama_kegiatan' => 'Kegiatan Filter Bulan Nov 2026',
             'tgl_awal' => '2026-11-15',
             'tgl_selesai' => '2026-11-16',
-            'status' => 'Selesai',
         ]);
 
         $publikasi = Publikasi::create([
+            'user_id' => $user->id,
             'pengajuan_id' => $pengajuan->id,
             'link_publikasi' => 'https://example.com/pub-nov',
         ]);
@@ -131,15 +143,14 @@ class LaporanPublikasiTest extends TestCase
             'is_admin' => true,
         ]);
 
-        $pengajuan = Pengajuan::create([
-            'user_id' => $user->id,
+        $pengajuan = $this->createPengajuan($user, [
             'nama_kegiatan' => 'Kegiatan Khusus Tahun 2027',
             'tgl_awal' => '2027-03-01',
             'tgl_selesai' => '2027-03-02',
-            'status' => 'Selesai',
         ]);
 
         $publikasi = Publikasi::create([
+            'user_id' => $user->id,
             'pengajuan_id' => $pengajuan->id,
             'link_publikasi' => 'https://example.com/pub-2027',
         ]);
@@ -169,15 +180,14 @@ class LaporanPublikasiTest extends TestCase
             'is_admin' => true,
         ]);
 
-        $pengajuan = Pengajuan::create([
-            'user_id' => $user->id,
+        $pengajuan = $this->createPengajuan($user, [
             'nama_kegiatan' => 'Kegiatan Rentang Tanggal Spesifik',
             'tgl_awal' => '2026-12-01',
             'tgl_selesai' => '2026-12-05',
-            'status' => 'Selesai',
         ]);
 
         $publikasi = Publikasi::create([
+            'user_id' => $user->id,
             'pengajuan_id' => $pengajuan->id,
             'link_publikasi' => 'https://example.com/pub-range',
         ]);
