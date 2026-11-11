@@ -247,51 +247,58 @@
     <!-- Letter Content Section -->
     <div class="letter-header">
         <h3 class="text-uppercase">laporan kegiatan humas dan publikasi</h3>
-        {{-- <h4>periode {{ $selectedPeriode }}</h4> --}}
         <h4>universitas ibnu sina</h4>
+        @if (!empty($filterLabel))
+            <h4 style="color: #006694; font-weight: bold; margin-top: 6px; text-transform: none;">{{ $filterLabel }}</h4>
+        @endif
     </div>
 
     <div class="table-container">
         <table id="laporanPublikasi-table" class="laporan-table">
             <thead>
                 <tr>
-                    <th style="text-align: center">No</th>
-                    {{-- <th>Tahun Akademik</th> --}}
+                    <th style="text-align: center; width: 30px;">No</th>
+                    <th style="width: 100px;">Tahun Akademik</th>
                     <th>Fakultas</th>
                     <th>Nama Kegiatan</th>
                     <th>Tanggal Awal</th>
                     <th>Tanggal Selesai</th>
                     <th>Deskripsi Kegiatan</th>
-                    {{-- <th>Link Zoom</th> --}}
                     <th>Link Pelaporan</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($laporanPublikasi as $key => $laporan)
+                @forelse ($laporanPublikasi as $key => $laporan)
                     <tr>
                         <td style="text-align: center">{{ $key + 1 }}</td>
-                        {{-- <td>{{ $laporan->publikasi->tahunAkademik->tahun_akademik }}</td> --}}
-                        <td class="fakultas">{{ $laporan->user->fakultas ?? 'N/A' }}</td>
-                        <td>{{ $laporan->pengajuan->nama_kegiatan }}</td>
-                        <td>{{ \Carbon\Carbon::parse($laporan->pengajuan->tgl_awal)->locale('id')->translatedFormat('l, d F Y') }}
-                        </td>
-                        <td>{{ \Carbon\Carbon::parse($laporan->pengajuan->tgl_selesai)->locale('id')->translatedFormat('l, d F Y') }}
-                        </td>
+                        <td>{{ $laporan->publikasi?->tahunAkademik?->tahun_akademik ?? '-' }}</td>
+                        <td class="fakultas">{{ $laporan->user?->fakultas ?? ($laporan->pengajuan?->user?->fakultas ?? 'N/A') }}</td>
+                        <td>{{ $laporan->pengajuan?->nama_kegiatan ?? '-' }}</td>
+                        <td>{{ $laporan->pengajuan?->tgl_awal ? \Carbon\Carbon::parse($laporan->pengajuan->tgl_awal)->locale('id')->translatedFormat('l, d F Y') : '-' }}</td>
+                        <td>{{ $laporan->pengajuan?->tgl_selesai ? \Carbon\Carbon::parse($laporan->pengajuan->tgl_selesai)->locale('id')->translatedFormat('l, d F Y') : '-' }}</td>
                         <td>{{ trim(strip_tags($laporan->pengajuan?->deskripsi_kegiatan ?? '')) ?: '-' }}</td>
-                        {{-- <td><a href="{{ $laporan->pengajuan->link_zoom }}" target="_blank">Zoom Link</a></td> --}}
                         <td class="link-pelaporan">
-                            <a href="{{ $laporan->publikasi->upload_laporan ?? '#' }}" target="_blank">
-                                {{ $laporan->publikasi->upload_laporan ? 'Link Pelaporan' : 'No Link Available' }}
-                            </a><br>
-                            <a href="{{ $laporan->publikasi->link_dokumentasi ?? '#' }}" target="_blank">
-                                {{ $laporan->publikasi->link_dokumentasi ? 'Link Dokumentasi' : 'No Link Available' }}
-                            </a><br>
-                            <a href="{{ $laporan->publikasi->link_publikasi ?? '#' }}" target="_blank">
-                                {{ $laporan->publikasi->link_publikasi ? 'Link Publikasi' : 'No Link Available' }}
-                            </a>
+                            @if($laporan->publikasi?->upload_laporan)
+                                <a href="{{ $laporan->publikasi->upload_laporan }}" target="_blank">Link Pelaporan</a><br>
+                            @endif
+                            @if($laporan->publikasi?->link_dokumentasi)
+                                <a href="{{ $laporan->publikasi->link_dokumentasi }}" target="_blank">Link Dokumentasi</a><br>
+                            @endif
+                            @if($laporan->publikasi?->link_publikasi)
+                                <a href="{{ $laporan->publikasi->link_publikasi }}" target="_blank">Link Publikasi</a>
+                            @endif
+                            @if(!$laporan->publikasi?->upload_laporan && !$laporan->publikasi?->link_dokumentasi && !$laporan->publikasi?->link_publikasi)
+                                <span style="color: #888;">-</span>
+                            @endif
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 25px; color: #666; font-style: italic;">
+                            Tidak ada data laporan kegiatan untuk filter yang dipilih.
+                        </td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

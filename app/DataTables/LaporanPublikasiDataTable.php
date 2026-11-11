@@ -58,71 +58,97 @@ class LaporanPublikasiDataTable extends DataTable
 }
 
 
-   public function query(LaporanPublikasi $model): QueryBuilder
-{
-    return $model->newQuery()
-        ->with([ // Pastikan relasi yang diperlukan dimuat
-            'user', // Relasi dengan model User
-            'publikasi.tahunAkademik',
-            'publikasi.pengajuan',
-        ]);
-}
+    public function query(LaporanPublikasi $model): QueryBuilder
+    {
+        $query = $model->newQuery()
+            ->with([
+                'user',
+                'publikasi.tahunAkademik',
+                'publikasi.pengajuan',
+            ]);
 
+        // Filter Tahun Akademik
+        if (request()->filled('tahun_akademik')) {
+            $ta = request('tahun_akademik');
+            $query->whereHas('publikasi', function ($q) use ($ta) {
+                $q->where('tahun_akademik_id', $ta)
+                  ->orWhereHas('tahunAkademik', fn($tq) => $tq->where('tahun_akademik', $ta));
+            });
+        }
+
+        // Filter Bulan
+        if (request()->filled('bulan')) {
+            $b = request('bulan');
+            $query->where(function ($q) use ($b) {
+                $q->whereMonth('tgl_awal', $b)
+                  ->orWhereHas('pengajuan', fn($pq) => $pq->whereMonth('tgl_awal', $b));
+            });
+        }
+
+        // Filter Tahun
+        if (request()->filled('tahun') && !request()->filled('tahun_akademik')) {
+            $y = request('tahun');
+            $query->where(function ($q) use ($y) {
+                $q->whereYear('tgl_awal', $y)
+                  ->orWhereHas('pengajuan', fn($pq) => $pq->whereYear('tgl_awal', $y));
+            });
+        }
+
+        // Filter Rentang Tanggal
+        if (request()->filled('tgl_awal') && request()->filled('tgl_selesai')) {
+            $query->whereDate('tgl_awal', '>=', request('tgl_awal'))
+                  ->whereDate('tgl_selesai', '<=', request('tgl_selesai'));
+        } elseif (request()->filled('tgl_awal')) {
+            $query->whereDate('tgl_awal', '>=', request('tgl_awal'));
+        } elseif (request()->filled('tgl_selesai')) {
+            $query->whereDate('tgl_selesai', '<=', request('tgl_selesai'));
+        }
+
+        return $query;
+    }
 
     public function html(): HtmlBuilder
-{
-    return $this->builder()
-        ->setTableId('laporanpublikasi-table')
-        ->columns($this->getColumns())
-        ->minifiedAjax(route('laporan-publikasi.index'))
-        ->parameters([
-            'scrollX' => true,
-            'searching' => true, // Aktifkan pencarian di DataTables
-            'searchDelay' => 500, // Tambahkan delay pada pencarian untuk menghindari permintaan berulang
-            'ordering' => true, // Aktifkan pengurutan di tabel
-            'lengthMenu' => [[10, 25, 50, -1], [10, 25, 50, 'All']], // Pilihan panjang halaman
-            'order' => [[1, 'asc']], // Pengurutan default pada kolom tertentu
-            'columnDefs' => [
-                [
-                    'targets' => 3,
-                    'width' => '300px',
-                    'render' => 'function(data, type, row, meta) { return "<div style=\'word-wrap: break-word; word-break: break-word; white-space: normal; overflow-wrap: break-word;\' >" + data + "</div>"; }'
+    {
+        return $this->builder()
+            ->setTableId('laporanpublikasi-table')
+            ->columns($this->getColumns())
+            ->minifiedAjax(route('laporan-publikasi.index'))
+            ->parameters([
+                'scrollX' => true,
+                'scrollCollapse' => true,
+                'autoWidth' => false,
+                'searching' => true,
+                'searchDelay' => 500,
+                'ordering' => true,
+                'lengthMenu' => [[10, 25, 50, -1], [10, 25, 50, 'All']],
+                'order' => [[1, 'asc']],
+                'columnDefs' => [
+                    [
+                        'targets' => 3,
+                        'render' => 'function(data, type, row, meta) { return "<div style=\'word-wrap: break-word; word-break: break-word; white-space: normal; overflow-wrap: break-word; min-width: 220px;\' >" + data + "</div>"; }'
+                    ],
                 ],
-                [
-                    'targets' => 0,
-                    'width' => '5px',
-                    'className' => 'text-start',
-                    'render' => null
-                ],
-                [
-                    'targets' => 4,
-                    'width' => '10px',
-                    'className' => 'text-left',
-                    'style' => 'text-align: text-left;',
-                    'render' => null
-                ]
-            ],
-        ])
-        ->buttons([
-            Button::make('excel'),
-            Button::make('csv'),
-            Button::make('pdf'),
-            Button::make('print'),
-            Button::make('reset'),
-            Button::make('reload'),
-        ]);
+            ])
+            ->buttons([
+                Button::make('excel'),
+                Button::make('csv'),
+                Button::make('pdf'),
+                Button::make('print'),
+                Button::make('reset'),
+                Button::make('reload'),
+            ]);
     }
 
     public function getColumns(): array
     {
         return [
-            Column::computed('DT_RowIndex')->title('No'),
-            // Column::make('tahun_akademik')->title('Tahun Akademik'),
-            Column::make('submit_pengguna')->title('Pengguna'),
-            Column::make('nama_kegiatan')->title('Nama Kegiatan'),
-            Column::make('tgl_awal')->title('Tanggal Awal'),
-            Column::make('tgl_selesai')->title('Tanggal Selesai'),
-            Column::make('deskripsi_kegiatan')->title('Deskripsi Kegiatan'),
+            Column::computed('DT_RowIndex')->title('No')->addClass('text-center')->width(50),
+            Column::make('tahun_akademik')->title('Tahun Akademik')->width(160),
+            Column::make('submit_pengguna')->title('Pengguna')->width(150),
+            Column::make('nama_kegiatan')->title('Nama Kegiatan')->width(280),
+            Column::make('tgl_awal')->title('Tanggal Awal')->width(170),
+            Column::make('tgl_selesai')->title('Tanggal Selesai')->width(170),
+            Column::make('deskripsi_kegiatan')->title('Deskripsi Kegiatan')->width(300),
         ];
     }
 
