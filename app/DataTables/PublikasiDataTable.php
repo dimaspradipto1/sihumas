@@ -102,8 +102,27 @@ class PublikasiDataTable extends DataTable
             ->addColumn('action', function ($publikasi) {
                 $target = !empty($publikasi->slug) ? $publikasi->slug : $publikasi->id;
                 $html = '<div class="d-flex justify-content-center gap-1">';
-                $html .= '<a href="' . route('publikasi.show', $target) . '" class="btn btn-sm btn-primary text-white px-2 py-1" title="' . (auth()->user()->is_admin ? 'Detail & Validasi' : 'Lihat Detail') . '"><i class="fa-solid fa-eye"></i></a>';
+                $html .= '<a href="' . route('publikasi.show', $target) . '" class="btn btn-sm btn-primary text-white px-2 py-1" title="Lihat Detail"><i class="fa-solid fa-eye"></i></a>';
+                
+                if (auth()->user()->is_admin) {
+                    $kegiatan = e($publikasi->pengajuan?->nama_kegiatan ?? '-');
+                    $status = $publikasi->status_validasi ?? 'menunggu_validasi';
+                    $catatan = e($publikasi->catatan_validasi ?? '');
+                    $actionUrl = route('publikasi.validasi', $target);
+                    $showUrl = route('publikasi.show', $target);
+
+                    $html .= '<button type="button" class="btn btn-sm btn-success text-white px-2 py-1 btn-modal-validasi" '
+                          . 'data-url="' . $actionUrl . '" '
+                          . 'data-kegiatan="' . $kegiatan . '" '
+                          . 'data-status="' . $status . '" '
+                          . 'data-catatan="' . $catatan . '" '
+                          . 'data-show="' . $showUrl . '" '
+                          . 'title="Validasi Laporan">'
+                          . '<i class="fa-solid fa-clipboard-check"></i></button>';
+                }
+
                 $html .= '<a href="' . route('publikasi.edit', $target) . '" class="btn btn-sm btn-warning text-white px-2 py-1" title="Edit / Laporkan"><i class="fa-solid fa-pen-to-square"></i></a>';
+
                 if (auth()->user()->is_admin) {
                     $html .= '<form action="' . route('publikasi.destroy', $target) . '" method="POST" style="display: inline" onsubmit="return confirm(\'Yakin ingin menghapus data ini?\')">'
                            . csrf_field() . method_field('DELETE')
@@ -247,7 +266,7 @@ class PublikasiDataTable extends DataTable
                 ->title('Aksi')
                 ->exportable(false)
                 ->printable(false)
-                ->width(40)
+                ->width(auth()->user()->is_admin ? 60 : 40)
                 ->addClass('text-center'),
         ];
     }
