@@ -195,7 +195,6 @@ class PublikasiDataTable extends DataTable
             ->selectStyleSingle()
             ->parameters([
                 'scrollX' => true,
-                'scrollCollapse' => true,
                 'autoWidth' => false,
                 'columnDefs' => [
                     [

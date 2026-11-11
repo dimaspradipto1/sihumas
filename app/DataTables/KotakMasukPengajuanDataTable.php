@@ -145,7 +145,6 @@ class KotakMasukPengajuanDataTable extends DataTable
             ->selectStyleSingle()
             ->parameters([
                 'scrollX' => true,
-                'scrollCollapse' => true,
                 'autoWidth' => false,
                 'searching' => true,
                 'columnDefs' => [

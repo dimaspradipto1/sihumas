@@ -115,7 +115,6 @@ class LaporanPublikasiDataTable extends DataTable
             ->minifiedAjax(route('laporan-publikasi.index'))
             ->parameters([
                 'scrollX' => true,
-                'scrollCollapse' => true,
                 'autoWidth' => false,
                 'searching' => true,
                 'searchDelay' => 500,
