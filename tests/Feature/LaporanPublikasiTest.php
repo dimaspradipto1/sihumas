@@ -246,7 +246,15 @@ class LaporanPublikasiTest extends TestCase
             'tgl_selesai' => '2026-11-10',
         ]);
 
-        $response = $this->actingAs($admin)->getJson(route('laporan-publikasi.index'), [
+        $response = $this->actingAs($admin)->getJson(route('laporan-publikasi.index', [
+            'columns' => [
+                0 => ['data' => 'DT_RowIndex', 'name' => 'DT_RowIndex', 'orderable' => 'false'],
+                1 => ['data' => 'nama_kegiatan', 'name' => 'pengajuan.nama_kegiatan', 'orderable' => 'true'],
+            ],
+            'order' => [
+                0 => ['column' => 1, 'dir' => 'asc'],
+            ],
+        ]), [
             'HTTP_X-Requested-With' => 'XMLHttpRequest',
         ]);
 

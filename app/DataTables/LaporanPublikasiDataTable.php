@@ -128,6 +128,7 @@ class LaporanPublikasiDataTable extends DataTable
     public function query(LaporanPublikasi $model): QueryBuilder
     {
         $query = $model->newQuery()
+            ->select('laporan_publikasis.*')
             ->with([
                 'user',
                 'publikasi.tahunAkademik',
@@ -135,7 +136,7 @@ class LaporanPublikasiDataTable extends DataTable
                 'publikasi.user',
                 'pengajuan',
             ])
-            ->latest('id');
+            ->orderBy('laporan_publikasis.id', 'desc');
 
         // Filter Tahun Akademik
         if (request()->filled('tahun_akademik')) {
@@ -150,7 +151,7 @@ class LaporanPublikasiDataTable extends DataTable
         if (request()->filled('bulan')) {
             $b = request('bulan');
             $query->where(function ($q) use ($b) {
-                $q->whereMonth('tgl_awal', $b)
+                $q->whereMonth('laporan_publikasis.tgl_awal', $b)
                   ->orWhereHas('pengajuan', fn($pq) => $pq->whereMonth('tgl_awal', $b));
             });
         }
@@ -159,19 +160,19 @@ class LaporanPublikasiDataTable extends DataTable
         if (request()->filled('tahun') && !request()->filled('tahun_akademik')) {
             $y = request('tahun');
             $query->where(function ($q) use ($y) {
-                $q->whereYear('tgl_awal', $y)
+                $q->whereYear('laporan_publikasis.tgl_awal', $y)
                   ->orWhereHas('pengajuan', fn($pq) => $pq->whereYear('tgl_awal', $y));
             });
         }
 
         // Filter Rentang Tanggal
         if (request()->filled('tgl_awal') && request()->filled('tgl_selesai')) {
-            $query->whereDate('tgl_awal', '>=', request('tgl_awal'))
-                  ->whereDate('tgl_selesai', '<=', request('tgl_selesai'));
+            $query->whereDate('laporan_publikasis.tgl_awal', '>=', request('tgl_awal'))
+                  ->whereDate('laporan_publikasis.tgl_selesai', '<=', request('tgl_selesai'));
         } elseif (request()->filled('tgl_awal')) {
-            $query->whereDate('tgl_awal', '>=', request('tgl_awal'));
+            $query->whereDate('laporan_publikasis.tgl_awal', '>=', request('tgl_awal'));
         } elseif (request()->filled('tgl_selesai')) {
-            $query->whereDate('tgl_selesai', '<=', request('tgl_selesai'));
+            $query->whereDate('laporan_publikasis.tgl_selesai', '<=', request('tgl_selesai'));
         }
 
         return $query;
@@ -214,7 +215,7 @@ class LaporanPublikasiDataTable extends DataTable
 
         return [
             Column::make('DT_RowIndex')->title('No')->addClass('text-center')->orderable(false)->searchable(false)->width(50),
-            Column::make('nama_kegiatan')->data('nama_kegiatan')->name('publikasi.pengajuan.nama_kegiatan')->title('Nama Kegiatan')->width(280),
+            Column::make('nama_kegiatan')->data('nama_kegiatan')->name('pengajuan.nama_kegiatan')->title('Nama Kegiatan')->width(280),
             Column::make('status_validasi')->name('publikasi.status_validasi')->title('Status Validasi')->width(140)->addClass('text-center'),
             Column::make('tgl_awal')->title('Tanggal Kegiatan')->orderable(false)->searchable(false)->width(170),
             Column::make('tgl_akhir')->title('Tanggal Selesai')->orderable(false)->searchable(false)->width(170),
