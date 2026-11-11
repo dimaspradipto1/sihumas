@@ -12,7 +12,7 @@
                         <i class="fa-solid fa-chevron-down ms-2 fs-xs"></i>
                     </button>
                     <div class="dropdown-menu dashboard-dropdown dropdown-menu-start mt-2 p-3 shadow-lg border" id="printFilterDropdown"
-                        style="min-width: 480px; max-width: 620px; width: 100%; z-index: 1050; border-radius: 0.5rem;">
+                        style="min-width: 520px; max-width: 580px; width: 100%; z-index: 1050; border-radius: 0.5rem;">
                         
                         <div class="d-flex align-items-center justify-content-between pb-2 mb-3 border-bottom">
                             <h6 class="mb-0 fw-bold text-gray-800">
@@ -35,7 +35,7 @@
                                     <input type="radio" class="btn-check" name="filter_type" id="filter_ta" value="tahun_akademik" autocomplete="off">
                                     <label class="btn filter-tab-btn flex-fill d-flex flex-column align-items-center justify-content-center text-center py-2 px-1 mb-0" for="filter_ta">
                                         <i class="fa-solid fa-graduation-cap mb-1 fs-6"></i>
-                                        <span class="tab-label">Thn Akademik</span>
+                                        <span class="tab-label">Tahun<br>Akademik</span>
                                     </label>
 
                                     <input type="radio" class="btn-check" name="filter_type" id="filter_bulan" value="bulan" autocomplete="off">
@@ -251,14 +251,17 @@
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.2s ease-in-out;
-            min-height: 56px;
+            min-height: 62px;
+            padding: 0.35rem 0.2rem !important;
         }
 
         .filter-tabs .filter-tab-btn .tab-label {
             font-size: 11px;
             font-weight: 600;
-            line-height: 1.2;
-            white-space: nowrap;
+            line-height: 1.15;
+            text-align: center;
+            display: block;
+            word-break: normal;
         }
 
         .filter-tabs .filter-tab-btn:hover {
@@ -282,6 +285,19 @@
 
         .filter-tabs .btn-check:checked + .filter-tab-btn .tab-label {
             color: #ffffff !important;
+        }
+
+        @media (max-width: 576px) {
+            #printFilterDropdown {
+                min-width: 100% !important;
+                width: 100% !important;
+            }
+            .filter-tabs {
+                flex-wrap: wrap;
+            }
+            .filter-tabs .filter-tab-btn {
+                flex: 1 1 calc(33.333% - 4px);
+            }
         }
 
         @media (max-width: 767px) {
