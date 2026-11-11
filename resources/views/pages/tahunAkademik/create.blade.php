@@ -40,7 +40,17 @@
                                     <div class="mb-4">
                                         <label for="nama_mahasiswa" class="text-capitalize">tahun akademik</label>
                                         <input type="text" name="tahun_akademik" value="{{ old('tahun_akademik') }}"
-                                            class="form-control" id="nama_kegiatan">
+                                            class="form-control" id="nama_kegiatan" placeholder="Contoh: 2026-2027 Gasal" required>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" name="is_active" id="is_active" value="1" {{ old('is_active') ? 'checked' : '' }}>
+                                            <label class="form-check-label fw-bold text-dark" for="is_active">
+                                                Jadikan Tahun Akademik Aktif (Default)
+                                            </label>
+                                        </div>
+                                        <small class="text-muted">Tahun akademik aktif akan otomatis terinput pada setiap pengajuan &amp; pelaporan kegiatan baru.</small>
                                     </div>
 
                                    

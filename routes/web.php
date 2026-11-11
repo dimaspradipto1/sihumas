@@ -46,6 +46,7 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
     Route::resource('/users', UserController::class);
     Route::get('/laporan-publikasi', [LaporanPublikasiController::class, 'index'])->name('laporan-publikasi.index');
     Route::get('/laporan-publikasi/show', [LaporanPublikasiController::class, 'show'])->name('laporan-publikasi.show');
+    Route::post('/tahun-akademik/{tahunAkademik}/set-active', [TahunAkademikController::class, 'setActive'])->name('tahun-akademik.set-active');
     Route::resource('/tahun-akademik', TahunAkademikController::class);
     Route::get('/user/{id}/update-password',[UserController::class, 'showUpdatePasswordForm'])->name('users.showUpdatePasswordForm');
     Route::put('/user/{id}/update-password', [UserController::class, 'updatePassword'])->name('users.updatePassword');

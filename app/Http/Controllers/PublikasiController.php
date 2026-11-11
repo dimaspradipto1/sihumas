@@ -35,7 +35,7 @@ class PublikasiController extends Controller
     public function store(Request $request)
     {
         // Data untuk tabel pengajuan
-        $data['tahun_akademik_id'] = $request->tahun_akademik_id;
+        $data['tahun_akademik_id'] = $request->input('tahun_akademik_id') ?: (\App\Models\TahunAkademik::getActive()?->id);
         $data['user_id'] = auth()->user()->id;
         $data['pengajuan_id'] = $request->pengajuan_id;
 
@@ -107,6 +107,9 @@ class PublikasiController extends Controller
         $data = $request->only([
             'tahun_akademik_id',
         ]);
+
+        $data['tahun_akademik_id'] = $request->input('tahun_akademik_id') 
+            ?: ($publikasi->tahun_akademik_id ?: \App\Models\TahunAkademik::getActive()?->id);
 
         // Bersihkan tag HTML dari laporan (TinyMCE)
         if ($request->has('upload_laporan')) {

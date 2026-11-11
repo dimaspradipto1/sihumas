@@ -282,4 +282,48 @@ class PublikasiTest extends TestCase
         $this->assertEquals('disetujui', $publikasi->status_validasi);
         $this->assertEquals('Laporan sudah lengkap dan dokumentasi memadai.', $publikasi->catatan_validasi);
     }
+
+    public function test_active_tahun_akademik_is_automatically_assigned_to_publikasi(): void
+    {
+        $admin = User::factory()->create(['is_admin' => 1]);
+
+        $activeYear = \App\Models\TahunAkademik::create([
+            'tahun_akademik' => '2026-2027 Gasal TEST',
+            'is_active' => true,
+        ]);
+
+        $pengajuan = Pengajuan::create([
+            'user_id' => $admin->id,
+            'nama_kegiatan' => 'Kuliah Umum Artificial Intelligence',
+            'unit_kegiatan' => 'FST',
+            'tempat_kegiatan' => 'Lab Komputer',
+            'tgl_awal' => '2026-11-30',
+            'tgl_selesai' => '2026-11-30',
+            'jam_kegiatan' => '10:00',
+            'waktu_selesai' => '12:00',
+            'status' => 'diterima',
+        ]);
+
+        $publikasi = Publikasi::create([
+            'user_id' => $admin->id,
+            'pengajuan_id' => $pengajuan->id,
+        ]);
+
+        // Verifikasi tahun_akademik_id terisi otomatis dari activeYear
+        $this->assertEquals($activeYear->id, $publikasi->tahun_akademik_id);
+
+        $showResponse = $this->actingAs($admin)->get(route('publikasi.show', $publikasi));
+        $showResponse->assertStatus(200);
+        $showResponse->assertSee('2026-2027 Gasal TEST');
+
+        // Test toggle / set active
+        $newYear = \App\Models\TahunAkademik::create([
+            'tahun_akademik' => '2026-2027 Genap TEST',
+            'is_active' => false,
+        ]);
+
+        $this->actingAs($admin)->post(route('tahun-akademik.set-active', $newYear));
+        $this->assertTrue($newYear->fresh()->is_active);
+        $this->assertFalse($activeYear->fresh()->is_active);
+    }
 }

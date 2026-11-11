@@ -127,6 +127,7 @@ class PengajuanController extends Controller
         // Buat Publikasi terkait pengajuan yang baru
         $pengajuan->publikasi()->create([
             'user_id'           => auth()->id(),
+            'tahun_akademik_id' => \App\Models\TahunAkademik::getActive()?->id,
             'upload_laporan'    => null,
             'link_dokumentasi'  => null,
             'link_publikasi'    => null,

@@ -30,6 +30,10 @@ class Publikasi extends Model
     protected static function booted()
     {
         static::creating(function ($publikasi) {
+            if (empty($publikasi->tahun_akademik_id)) {
+                $publikasi->tahun_akademik_id = TahunAkademik::getActive()?->id;
+            }
+
             if (empty($publikasi->slug)) {
                 $title = $publikasi->pengajuan?->nama_kegiatan;
                 if (!$title && $publikasi->pengajuan_id) {
@@ -40,6 +44,10 @@ class Publikasi extends Model
         });
 
         static::updating(function ($publikasi) {
+            if (empty($publikasi->tahun_akademik_id)) {
+                $publikasi->tahun_akademik_id = TahunAkademik::getActive()?->id;
+            }
+
             if (empty($publikasi->slug)) {
                 $title = $publikasi->pengajuan?->nama_kegiatan;
                 if (!$title && $publikasi->pengajuan_id) {

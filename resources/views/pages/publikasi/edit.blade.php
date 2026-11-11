@@ -67,6 +67,21 @@
 
                             <div class="row mb-4">
                                 <div class="col-12">
+                                    <!-- Tahun Akademik (Otomatis Aktif) -->
+                                    <div class="mb-4">
+                                        @php
+                                            $activeTahun = $publikasi->tahunAkademik ?? \App\Models\TahunAkademik::getActive();
+                                        @endphp
+                                        <label for="tahun_akademik_display" class="form-label text-uppercase fw-bold d-flex justify-content-between align-items-center">
+                                            <span><i class="fa-solid fa-calendar-check me-1 text-primary"></i> Tahun Akademik</span>
+                                            <span class="badge bg-success text-white"><i class="fa-solid fa-check me-1"></i> Terpilih Otomatis (Aktif)</span>
+                                        </label>
+                                        <input type="text" id="tahun_akademik_display" class="form-control bg-light text-dark fw-bold"
+                                            value="{{ $activeTahun?->tahun_akademik ?? '-' }}" readonly>
+                                        <input type="hidden" name="tahun_akademik_id" value="{{ $activeTahun?->id ?? '' }}">
+                                        <small class="text-muted"><i class="fa-solid fa-circle-info me-1"></i> Tahun akademik terinput otomatis dari tahun akademik yang berstatus aktif di sistem.</small>
+                                    </div>
+
                                     <!-- Nama Kegiatan -->
                                     <div class="mb-4">
                                         <label for="nama_kegiatan" class="text-uppercase">Nama Kegiatan</label>

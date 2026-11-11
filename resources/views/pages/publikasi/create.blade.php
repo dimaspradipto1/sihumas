@@ -39,14 +39,17 @@
                                 <div class="col-12">
 
                                     <div class="mb-4">
-                                        <label for="tahun_akademik" class="text-capitalize">Tahun Akademik</label>
-                                         {{-- <input type="text" name="tahun_akademik_id" value="{{ old('tahun_akademik') }}"
-                                            class="form-control" id="tahun_akademik"> --}}
-                                        <select name="tahun_akademik_id" id="tahun_akademik" class="form-control">
-                                            <option value="">Pilih Tahun Akademik</option>
+                                        @php
+                                            $defaultTahunId = old('tahun_akademik_id', \App\Models\TahunAkademik::getActive()?->id);
+                                        @endphp
+                                        <label for="tahun_akademik" class="form-label text-uppercase fw-bold d-flex justify-content-between align-items-center">
+                                            <span><i class="fa-solid fa-calendar-check me-1 text-primary"></i> Tahun Akademik</span>
+                                            <span class="badge bg-success text-white"><i class="fa-solid fa-check me-1"></i> Terpilih Otomatis (Aktif)</span>
+                                        </label>
+                                        <select name="tahun_akademik_id" id="tahun_akademik" class="form-select">
                                             @foreach($tahunAkademik as $tahun)
-                                                <option value="{{ $tahun->id }}" {{ old('tahun_akademik_id') == $tahun->id ? 'selected' : '' }}>
-                                                    {{ $tahun->tahun_akademik }}
+                                                <option value="{{ $tahun->id }}" {{ $defaultTahunId == $tahun->id ? 'selected' : '' }}>
+                                                    {{ $tahun->tahun_akademik }} {{ $tahun->is_active ? ' (Aktif)' : '' }}
                                                 </option>
                                             @endforeach
                                         </select>

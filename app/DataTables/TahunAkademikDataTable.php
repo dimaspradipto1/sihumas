@@ -24,17 +24,30 @@ class TahunAkademikDataTable extends DataTable
         return (new EloquentDataTable($query))
             ->addIndexColumn()
             ->addColumn('DT_RowIndex', '')
+            ->addColumn('is_active', function($item) {
+                if ($item->is_active) {
+                    return '<span class="badge bg-success text-white px-3 py-2"><i class="fa-solid fa-circle-check me-1"></i> Aktif (Default)</span>';
+                }
+                return '
+                    <form action="'.route('tahun-akademik.set-active', $item->id).'" method="POST" style="display: inline">
+                        '.csrf_field().'
+                        <button type="submit" class="btn btn-xs btn-outline-primary" title="Jadikan Tahun Akademik Aktif">
+                            <i class="fa-solid fa-toggle-off me-1"></i> Jadikan Aktif
+                        </button>
+                    </form>
+                ';
+            })
             ->addColumn('action', function($item){
                 return '
                      <a href="'.route('tahun-akademik.edit', $item->id).'" class="btn btn-sm btn-warning text-white px-3" ><i class="fa-solid fa-pen-to-square"></i></a>
                     <form action="'.route('tahun-akademik.destroy', $item->id).'" method="POST" style="display: inline">
                         '.csrf_field().'
                         '.method_field('DELETE').'
-                        <button type="submit" class="btn btn-sm btn-danger px-3" onclick="return confrm(\'Yakin ingin menghapus data ini?\')"><i class="fa-solid fa-trash-can"></i></button>
+                        <button type="submit" class="btn btn-sm btn-danger px-3" onclick="return confirm(\'Yakin ingin menghapus data ini?\')"><i class="fa-solid fa-trash-can"></i></button>
                     </form>
                 ';
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['action', 'is_active'])
             ->setRowId('DT_RowIndex');
     }
 
@@ -79,6 +92,7 @@ class TahunAkademikDataTable extends DataTable
         return [
             Column::make('DT_RowIndex')->title('No')->addClass('text-start')->width(20),
             Column::make('tahun_akademik')->title('Tahun Akademik'),
+            Column::make('is_active')->title('Status Aktif')->addClass('text-center')->width(25),
             Column::computed('action')
                   ->exportable(false)
                   ->printable(false)
