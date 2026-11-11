@@ -210,6 +210,58 @@ class LaporanPublikasiTest extends TestCase
         $response->assertSee('Periode 01 Des 2026 s/d 05 Des 2026');
         $response->assertSee('Kegiatan Rentang Tanggal Spesifik');
     }
+
+    public function test_laporan_publikasi_datatable_matches_pelaporan_structure(): void
+    {
+        $admin = User::factory()->create([
+            'fakultas' => 'UNIVERSITAS IBNU SINA',
+            'is_admin' => true,
+        ]);
+
+        $ta = TahunAkademik::create([
+            'tahun_akademik' => '2026/2027 Ganjil',
+            'is_active' => true,
+        ]);
+
+        $pengajuan = $this->createPengajuan($admin, [
+            'nama_kegiatan' => 'Workshop Desain dan Dokumentasi',
+            'tgl_awal' => '2026-11-10',
+            'tgl_selesai' => '2026-11-10',
+        ]);
+
+        $publikasi = Publikasi::create([
+            'user_id' => $admin->id,
+            'pengajuan_id' => $pengajuan->id,
+            'tahun_akademik_id' => $ta->id,
+            'status_validasi' => 'disetujui',
+            'link_dokumentasi' => 'https://drive.google.com/test-folder',
+            'link_publikasi' => 'https://example.com/test-link',
+        ]);
+
+        LaporanPublikasi::create([
+            'pengajuan_id' => $pengajuan->id,
+            'user_id' => $admin->id,
+            'publikasi_id' => $publikasi->id,
+            'tgl_awal' => '2026-11-10',
+            'tgl_selesai' => '2026-11-10',
+        ]);
+
+        $response = $this->actingAs($admin)->getJson(route('laporan-publikasi.index'), [
+            'HTTP_X-Requested-With' => 'XMLHttpRequest',
+        ]);
+
+        $response->assertStatus(200);
+        $json = $response->json();
+        $this->assertArrayHasKey('data', $json);
+        $this->assertNotEmpty($json['data']);
+
+        $row = $json['data'][0];
+        $this->assertStringContainsString('Workshop Desain dan Dokumentasi', $row['nama_kegiatan']);
+        $this->assertStringContainsString('Disetujui', $row['status_validasi']);
+        $this->assertStringContainsString('Buka Drive', $row['link_dokumentasi']);
+        $this->assertStringContainsString('Link', $row['link_publikasi']);
+        $this->assertStringContainsString('btn-modal-validasi', $row['action']);
+    }
 }
 
 

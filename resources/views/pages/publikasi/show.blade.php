@@ -141,7 +141,7 @@
                                     <td class="text-uppercase text-dark text-xxs font-weight-bolder opacity-7">Tahun Akademik</td>
                                     <td class="text-dark text-xxs font-weight-bolder opacity-7 px-1">:</td>
                                     <td class="text-uppercase text-dark text-xxs font-weight-bolder opacity-7 text-capitalize">
-                                        {{ $publikasi->tahunAkademik?->tahun_akademik ?? '-' }}
+                                        {{ $publikasi->tahunAkademik?->tahun_akademik ?? (\App\Models\TahunAkademik::getActive()?->tahun_akademik ?? '-') }}
                                     </td>
                                 </tr>
 
