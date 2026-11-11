@@ -31,6 +31,12 @@ class PengajuanController extends Controller
 {
     $user = auth()->user();
 
+    // Tandai seluruh notifikasi pengajuan telah dibaca saat membuka halaman ini
+    if ($user) {
+        $user->update(['pengajuan_read_at' => now()]);
+        session(['pengajuan_read_at' => now()]);
+    }
+
     // Inisialisasi variabel untuk menyimpan jumlah pengajuan berdasarkan status dan fakultas pengguna
     $pendingPengajuanFST = $pendingPengajuanFEB = $pendingPengajuanFIKES = $pendingPengajuanRektorat = 0;
     $diterimaPengajuanFST = $diterimaPengajuanFEB = $diterimaPengajuanFIKES = $diterimaPengajuanRektorat = 0;

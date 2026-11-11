@@ -15,6 +15,12 @@ class KotakMasukPengajuanController extends Controller
     public function index(KotakMasukPengajuanDataTable $dataTable)
     {
         $user = auth()->user();
+        if ($user) {
+            $user->update(['kotak_masuk_read_at' => now()]);
+            session(['kotak_masuk_read_at' => now()]);
+            session()->forget('notifikasi_pengajuan_admin');
+        }
+
         $isHumasOnly = !empty($user->is_humas) && empty($user->is_admin);
 
         if ($isHumasOnly) {

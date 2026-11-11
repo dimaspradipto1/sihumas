@@ -20,14 +20,30 @@ class SharePengajuanNotif
 
         if (auth()->check()) {
             $user = auth()->user();
+
+            // Jika sedang membuka halaman Kotak Masuk, tandai telah dibaca
+            if ($request->routeIs('kotak-masuk-pengajuan.*')) {
+                $user->update(['kotak_masuk_read_at' => now()]);
+                session(['kotak_masuk_read_at' => now()]);
+            }
+
+            $kotakMasukReadAt = $user->kotak_masuk_read_at ?? session('kotak_masuk_read_at');
+
             if (!empty($user->is_admin)) {
-                // Admin: jumlah pengajuan pending yang menunggu verifikasi
-                $pendingPengajuan = Pengajuan::where('status', 'pending')->count();
+                // Admin: jumlah pengajuan pending yang menunggu verifikasi yang belum dibaca
+                $query = Pengajuan::where('status', 'pending');
+                if ($kotakMasukReadAt) {
+                    $query->where('updated_at', '>', $kotakMasukReadAt);
+                }
+                $pendingPengajuan = $query->count();
             } elseif (!empty($user->is_humas)) {
-                // Petugas Humas: HANYA jumlah tugas yang ditugaskan kepada dirinya sebagai PIC
-                $pendingPengajuan = Pengajuan::assignedToUser($user)
-                    ->whereIn('status', ['pending', 'diterima'])
-                    ->count();
+                // Petugas Humas: HANYA jumlah tugas yang ditugaskan kepada dirinya sebagai PIC yang belum dibaca
+                $query = Pengajuan::assignedToUser($user)
+                    ->whereIn('status', ['pending', 'diterima']);
+                if ($kotakMasukReadAt) {
+                    $query->where('updated_at', '>', $kotakMasukReadAt);
+                }
+                $pendingPengajuan = $query->count();
             }
         }
 

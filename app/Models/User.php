@@ -30,7 +30,9 @@ class User extends Authenticatable
         'is_feb',
         'is_fst',
         'is_fikes',
-        'is_users'
+        'is_users',
+        'pengajuan_read_at',
+        'kotak_masuk_read_at'
     ];
 
     /**
@@ -50,6 +52,8 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'pengajuan_read_at' => 'datetime',
+        'kotak_masuk_read_at' => 'datetime',
         'password' => 'hashed',
         'is_admin' => 'boolean',
         'is_humas' => 'boolean',

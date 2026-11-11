@@ -16,15 +16,24 @@ class NotifikasiPengajuanMiddleware
 
         $user = auth()->user();
 
-        // helper: count status by user flag
-        $countByFlag = function (string $flag) {
+        // Jika user sedang membuka halaman Pengajuan Kegiatan, tandai notifikasi pengajuan telah dibaca
+        if ($request->routeIs('pengajuan.*')) {
+            $user->update(['pengajuan_read_at' => now()]);
+            session(['pengajuan_read_at' => now()]);
+        }
+
+        $pengajuanReadAt = $user->pengajuan_read_at ?? session('pengajuan_read_at');
+
+        // helper: count status by user flag yang belum dibaca
+        $countByFlag = function (string $flag) use ($pengajuanReadAt) {
+            $base = Pengajuan::whereHas('user', fn($q) => $q->where($flag, true));
+            if ($pengajuanReadAt) {
+                $base->where('updated_at', '>', $pengajuanReadAt);
+            }
             return [
-                'pending'  => Pengajuan::where('status', 'pending')
-                    ->whereHas('user', fn($q) => $q->where($flag, true))->count(),
-                'diterima' => Pengajuan::where('status', 'diterima')
-                    ->whereHas('user', fn($q) => $q->where($flag, true))->count(),
-                'ditolak'  => Pengajuan::where('status', 'ditolak')
-                    ->whereHas('user', fn($q) => $q->where($flag, true))->count(),
+                'pending'  => (clone $base)->where('status', 'pending')->count(),
+                'diterima' => (clone $base)->where('status', 'diterima')->count(),
+                'ditolak'  => (clone $base)->where('status', 'ditolak')->count(),
             ];
         };
 
@@ -38,18 +47,25 @@ class NotifikasiPengajuanMiddleware
             'rektorat' => ['pending' => 0, 'diterima' => 0, 'ditolak' => 0],
         ];
 
-        // admin global (total semua pengajuan)
+        // admin global (total semua pengajuan yang belum dibaca)
         if (!empty($user->is_admin)) {
+            $baseAdmin = Pengajuan::query();
+            if ($pengajuanReadAt) {
+                $baseAdmin->where('updated_at', '>', $pengajuanReadAt);
+            }
             $notif['admin'] = [
-                'pending'  => Pengajuan::where('status', 'pending')->count(),
-                'diterima' => Pengajuan::where('status', 'diterima')->count(),
-                'ditolak'  => Pengajuan::where('status', 'ditolak')->count(),
+                'pending'  => (clone $baseAdmin)->where('status', 'pending')->count(),
+                'diterima' => (clone $baseAdmin)->where('status', 'diterima')->count(),
+                'ditolak'  => (clone $baseAdmin)->where('status', 'ditolak')->count(),
             ];
         }
 
         // humas (PIC): HANYA tugas yang ditugaskan kepada dirinya
         if (!empty($user->is_humas) && empty($user->is_admin)) {
             $baseHumas = Pengajuan::assignedToUser($user);
+            if ($pengajuanReadAt) {
+                $baseHumas->where('updated_at', '>', $pengajuanReadAt);
+            }
             $notif['humas'] = [
                 'pending'  => (clone $baseHumas)->where('status', 'pending')->count(),
                 'diterima' => (clone $baseHumas)->where('status', 'diterima')->count(),

@@ -38,6 +38,23 @@ Route::controller(LoginController::class)->group(function () {
 
 
 Route::middleware(['auth', 'checkrole'])->group(function () { 
+    Route::post('/notifications/mark-as-read', function (\Illuminate\Http\Request $request) {
+        $user = auth()->user();
+        $type = $request->input('type', 'all');
+
+        if ($type === 'pengajuan' || $type === 'all') {
+            $user->update(['pengajuan_read_at' => now()]);
+            session(['pengajuan_read_at' => now()]);
+        }
+
+        if ($type === 'kotak_masuk' || $type === 'all') {
+            $user->update(['kotak_masuk_read_at' => now()]);
+            session(['kotak_masuk_read_at' => now()]);
+        }
+
+        return response()->json(['success' => true]);
+    })->name('notifications.mark-as-read');
+
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/publikasi/{publikasi}/validasi', [PublikasiController::class, 'validasi'])->name('publikasi.validasi');
     Route::resource('/publikasi', PublikasiController::class);

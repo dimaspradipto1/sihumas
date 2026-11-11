@@ -184,7 +184,7 @@
                       <span class="sidebar-text text-capitalize">Pengajuan Kegiatan</span>
 
                       {{-- BADGE: pojok kanan atas --}}
-                      @if ($pending > 0 || $diterima > 0 || $ditolak > 0)
+                      @if (!request()->routeIs('pengajuan.*') && ($pending > 0 || $diterima > 0 || $ditolak > 0))
                           <div class="badge-group">
                               @if ($pending > 0)
                                   <span class="badge-dot badge-pending" title="Pending">{{ $pending }}</span>
@@ -292,8 +292,9 @@
                               style="display:block; text-align:start; margin-left:35px;">
                               Pengajuan kegiatan
 
-                              @if (($notifikasi_pengajuan_admin ?? 0) > 0)
+                              @if (!request()->routeIs('kotak-masuk-pengajuan.*') && ($notifikasi_pengajuan_admin ?? 0) > 0)
                                   <span
+                                      class="badge-kotak-masuk"
                                       style="
                         position:absolute;
                         top: -45px;

@@ -3,6 +3,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Primary Meta Tags -->
     <title>Dashboard - SIHUMAS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -281,6 +282,37 @@
             $(window).on('resize', function() {
                 if (window.$ && $.fn.dataTable) {
                     $($.fn.dataTable.tables(true)).DataTable().columns.adjust();
+                }
+            });
+
+            // Hilangkan badge notifikasi saat menu diklik secara instan
+            $(document).on('click', 'a.nav-with-badge, a[href*="pengajuan"]', function() {
+                var $badges = $(this).find('.badge-group, .badge-dot, .badge');
+                $badges.fadeOut(150);
+                if (window.fetch) {
+                    fetch('{{ route("notifications.mark-as-read") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        body: JSON.stringify({ type: 'pengajuan' })
+                    }).catch(function() {});
+                }
+            });
+
+            $(document).on('click', 'a[href*="kotak-masuk-pengajuan"]', function() {
+                var $badges = $(this).find('.badge-kotak-masuk, [style*="position:absolute"], .badge');
+                $badges.fadeOut(150);
+                if (window.fetch) {
+                    fetch('{{ route("notifications.mark-as-read") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        body: JSON.stringify({ type: 'kotak_masuk' })
+                    }).catch(function() {});
                 }
             });
         });
