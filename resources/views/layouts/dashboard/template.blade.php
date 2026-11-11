@@ -48,11 +48,35 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css">
 
     <style>
-        /* Pastikan scroll horizontal DataTables berada tepat di bawah tabel (di atas info & pagination) */
+        /* Pastikan scroll horizontal DataTables selalu sinkron antara header dan body */
+        .dataTables_wrapper .dataTables_scrollHead,
+        .dt-container .dt-scroll-head {
+            overflow: hidden !important;
+            position: relative !important;
+            border: 0 !important;
+            width: 100% !important;
+        }
+
         .dataTables_wrapper .dataTables_scrollBody,
         .dt-container .dt-scroll-body {
             overflow-x: auto !important;
             margin-bottom: 0.5rem;
+            width: 100% !important;
+        }
+
+        /* Hilangkan pembatasan lebar 100% dari Bootstrap pada DataTables scrollX agar kolom selaras */
+        .dt-container .dt-scroll-head table,
+        .dt-container .dt-scroll-body table,
+        .dataTables_wrapper .dataTables_scrollHead table,
+        .dataTables_wrapper .dataTables_scrollBody table {
+            width: max-content !important;
+            min-width: 100% !important;
+            margin-bottom: 0 !important;
+        }
+
+        .dt-container .dt-scroll-headInner,
+        .dataTables_wrapper .dataTables_scrollHeadInner {
+            box-sizing: content-box !important;
         }
 
         /* Hindari container pembungkus card membuat scrollbar di bawah pagination */
@@ -227,8 +251,37 @@
     @stack('style')
     <script>
         $(document).ready(function() {
-            $('#yourTableId').DataTable({
-                "scrollX": true, // Mengaktifkan scroll horizontal
+            // Sinkronisasi horizontal scroll antara tbody dan thead pada DataTables
+            $(document).on('scroll', '.dataTables_scrollBody, .dt-scroll-body', function() {
+                var scrollLeft = $(this).scrollLeft();
+                var head = $(this).closest('.dataTables_scroll, .dt-scroll')
+                                  .find('.dataTables_scrollHead, .dt-scroll-head');
+                head.scrollLeft(scrollLeft);
+            });
+
+            // Sinkronisasi jika scrolling digerakkan dari area thead
+            $(document).on('scroll', '.dataTables_scrollHead, .dt-scroll-head', function() {
+                var scrollLeft = $(this).scrollLeft();
+                var body = $(this).closest('.dataTables_scroll, .dt-scroll')
+                                  .find('.dataTables_scrollBody, .dt-scroll-body');
+                body.scrollLeft(scrollLeft);
+            });
+
+            // Otomatis sesuaikan ukuran kolom saat DataTables selesai di-draw atau init
+            $(document).on('init.dt draw.dt', function(e, settings) {
+                if (window.$ && $.fn.dataTable) {
+                    setTimeout(function() {
+                        var api = new $.fn.dataTable.Api(settings);
+                        api.columns.adjust();
+                    }, 50);
+                }
+            });
+
+            // Sesuaikan kolom saat resize browser
+            $(window).on('resize', function() {
+                if (window.$ && $.fn.dataTable) {
+                    $($.fn.dataTable.tables(true)).DataTable().columns.adjust();
+                }
             });
         });
 

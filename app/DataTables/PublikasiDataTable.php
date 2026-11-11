@@ -25,12 +25,17 @@ class PublikasiDataTable extends DataTable
     {
         return (new EloquentDataTable($query))
             ->addIndexColumn()
-            ->addColumn('DT_RowIndex', '')
             ->addColumn('nama_kegiatan', function ($publikasi) {
                 if (!$publikasi->pengajuan) {
                     return '-';
                 }
-                return '<a href="' . route('pengajuan.edit', $publikasi->pengajuan->id) . '" class="text-decoration-none text-success">' . e($publikasi->pengajuan->nama_kegiatan) . '</a>';
+                return '<a href="' . route('pengajuan.edit', $publikasi->pengajuan->id) . '" class="text-decoration-none text-success fw-bold">' . e($publikasi->pengajuan->nama_kegiatan) . '</a>';
+            })
+            ->addColumn('pengajuan.nama_kegiatan', function ($publikasi) {
+                if (!$publikasi->pengajuan) {
+                    return '-';
+                }
+                return '<a href="' . route('pengajuan.edit', $publikasi->pengajuan->id) . '" class="text-decoration-none text-success fw-bold">' . e($publikasi->pengajuan->nama_kegiatan) . '</a>';
             })
             ->addColumn('tgl_awal', function ($publikasi) {
                 Carbon::setlocale('id');
@@ -131,8 +136,8 @@ class PublikasiDataTable extends DataTable
                 $html .= '</div>';
                 return $html;
             })
-            ->rawColumns(['action','nama_kegiatan', 'status_validasi', 'tgl_awal', 'tgl_akhir', 'upload_laporan', 'link_dokumentasi', 'link_publikasi', 'user_id', 'tahun_akademik_id', 'pengajuan_id'])
-            ->setRowId('DT_RowIndex');
+            ->rawColumns(['action', 'nama_kegiatan', 'pengajuan.nama_kegiatan', 'status_validasi', 'tgl_awal', 'tgl_akhir', 'upload_laporan', 'link_dokumentasi', 'link_publikasi', 'user_id', 'tahun_akademik_id', 'pengajuan_id'])
+            ->setRowId('id');
     }
 
     /**
@@ -186,30 +191,17 @@ class PublikasiDataTable extends DataTable
             ->setTableId('publikasi-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
-            //->dom('Bfrtip')
             ->orderBy(1)
             ->selectStyleSingle()
             ->parameters([
                 'scrollX' => true,
+                'scrollCollapse' => true,
+                'autoWidth' => false,
                 'columnDefs' => [
                     [
                         'targets' => 1,
-                        'width' => '300px',
-                        'render' => 'function(data, type, row, meta) { return "<div style=\'word-wrap: break-word; word-break: break-word; white-space: normal; overflow-wrap: break-word;\' >" + data + "</div>"; }'
+                        'render' => 'function(data, type, row, meta) { return "<div style=\'word-wrap: break-word; word-break: break-word; white-space: normal; overflow-wrap: break-word; min-width: 220px;\' >" + data + "</div>"; }'
                     ],
-                    [
-                        'targets' => 0,
-                        'width' => '5px',
-                        'className' => 'text-start',
-                        'render' => null
-                    ],
-                    [
-                        'targets' => 4,
-                        'width' => '10px',
-                        'className' => 'text-center',
-                        'style' => 'text-align: text-left;',
-                        'render' => null
-                    ]
                 ],
             ])
             ->buttons([
@@ -228,45 +220,53 @@ class PublikasiDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-
             Column::make('DT_RowIndex')
                 ->title('No')
-                ->addClass('text-start')
-                ->width(10),
-            Column::make('pengajuan.nama_kegiatan')
-                ->title('Nama Kegiatan'),
+                ->addClass('text-center')
+                ->orderable(false)
+                ->searchable(false)
+                ->width(50),
+            Column::make('nama_kegiatan')
+                ->data('nama_kegiatan')
+                ->name('pengajuan.nama_kegiatan')
+                ->title('Nama Kegiatan')
+                ->width(280),
             Column::make('status_validasi')
                 ->name('publikasis.status_validasi')
                 ->title('Status Validasi')
-                ->width(15),
+                ->width(140)
+                ->addClass('text-center'),
             Column::make('tgl_awal')
                 ->title('Tanggal Kegiatan')
                 ->orderable(false)
                 ->searchable(false)
-                ->width(20),
+                ->width(170),
             Column::make('tgl_akhir')
                 ->title('Tanggal Selesai')
                 ->orderable(false)
                 ->searchable(false)
-                ->width(20),
+                ->width(170),
             Column::make('link_dokumentasi')
                 ->title('Dokumentasi')
                 ->orderable(false)
-                ->searchable(false),
+                ->searchable(false)
+                ->width(120)
+                ->addClass('text-center'),
             Column::make('link_publikasi')
                 ->title('Link Publikasi')
                 ->orderable(false)
-                ->searchable(false),
+                ->searchable(false)
+                ->width(150),
             Column::make('user_id')
                 ->name('publikasis.user_id')
                 ->title('Submit Pengguna')
                 ->visible(auth()->user()->is_admin)
-                ->width(5),
+                ->width(140),
             Column::computed('action')
                 ->title('Aksi')
                 ->exportable(false)
                 ->printable(false)
-                ->width(auth()->user()->is_admin ? 60 : 40)
+                ->width(auth()->user()->is_admin ? 150 : 100)
                 ->addClass('text-center'),
         ];
     }

@@ -28,7 +28,7 @@
 
     <div class="card border-0 shadow mb-4">
         <div class="card-body">
-            {!! $dataTable->table(['class' => 'table table-striped table-bordered w-100', 'id' => 'publikasi-table']) !!}
+            {!! $dataTable->table(['class' => 'table table-striped table-bordered', 'id' => 'publikasi-table']) !!}
         </div>
     </div>
 
