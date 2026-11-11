@@ -5,13 +5,13 @@
         <div class="card-body">
             <div class="card-block table-border-style">
                 <div class="dropdown d-inline-block">
-                    <button class="btn btn-gray-800 d-inline-flex align-items-center dropdown-toggle shadow-sm px-3 py-2" data-bs-toggle="dropdown"
+                    <button class="btn btn-gray-800 d-inline-flex align-items-center dropdown-toggle shadow-sm px-3 py-2" data-bs-toggle="dropdown" data-bs-auto-close="outside"
                         aria-haspopup="true" aria-expanded="false">
                         <i class="fa-solid fa-print me-2 text-warning"></i>
                         <span class="fw-bold">Cetak Rekap Laporan</span>
                         <i class="fa-solid fa-chevron-down ms-2 fs-xs"></i>
                     </button>
-                    <div class="dropdown-menu dashboard-dropdown dropdown-menu-start mt-2 p-3 shadow-lg border"
+                    <div class="dropdown-menu dashboard-dropdown dropdown-menu-start mt-2 p-3 shadow-lg border" id="printFilterDropdown"
                         style="min-width: 480px; max-width: 620px; width: 100%; z-index: 1050; border-radius: 0.5rem;">
                         
                         <div class="d-flex align-items-center justify-content-between pb-2 mb-3 border-bottom">
@@ -25,30 +25,35 @@
                             <!-- Tombol Pilihan Metode Filter -->
                             <div class="mb-3">
                                 <label class="form-label small fw-bold text-uppercase text-gray-600 mb-1">Pilih Filter Cetak:</label>
-                                <div class="btn-group w-100 p-1 bg-light border rounded" role="group">
+                                <div class="d-flex w-100 p-1 bg-light border rounded filter-tabs" role="group">
                                     <input type="radio" class="btn-check" name="filter_type" id="filter_all" value="all" checked autocomplete="off">
-                                    <label class="btn btn-sm btn-outline-secondary flex-fill mb-0" for="filter_all">
-                                        <i class="fa-solid fa-layer-group me-1"></i> Semua
+                                    <label class="btn filter-tab-btn flex-fill d-flex flex-column align-items-center justify-content-center text-center py-2 px-1 mb-0" for="filter_all">
+                                        <i class="fa-solid fa-layer-group mb-1 fs-6"></i>
+                                        <span class="tab-label">Semua</span>
                                     </label>
 
                                     <input type="radio" class="btn-check" name="filter_type" id="filter_ta" value="tahun_akademik" autocomplete="off">
-                                    <label class="btn btn-sm btn-outline-primary flex-fill mb-0" for="filter_ta">
-                                        <i class="fa-solid fa-graduation-cap me-1"></i> Thn Akademik
+                                    <label class="btn filter-tab-btn flex-fill d-flex flex-column align-items-center justify-content-center text-center py-2 px-1 mb-0" for="filter_ta">
+                                        <i class="fa-solid fa-graduation-cap mb-1 fs-6"></i>
+                                        <span class="tab-label">Thn Akademik</span>
                                     </label>
 
                                     <input type="radio" class="btn-check" name="filter_type" id="filter_bulan" value="bulan" autocomplete="off">
-                                    <label class="btn btn-sm btn-outline-info flex-fill mb-0" for="filter_bulan">
-                                        <i class="fa-solid fa-calendar-days me-1"></i> Bulan
+                                    <label class="btn filter-tab-btn flex-fill d-flex flex-column align-items-center justify-content-center text-center py-2 px-1 mb-0" for="filter_bulan">
+                                        <i class="fa-solid fa-calendar-days mb-1 fs-6"></i>
+                                        <span class="tab-label">Bulan</span>
                                     </label>
 
                                     <input type="radio" class="btn-check" name="filter_type" id="filter_tahun" value="tahun" autocomplete="off">
-                                    <label class="btn btn-sm btn-outline-warning flex-fill mb-0" for="filter_tahun">
-                                        <i class="fa-solid fa-calendar me-1"></i> Tahun
+                                    <label class="btn filter-tab-btn flex-fill d-flex flex-column align-items-center justify-content-center text-center py-2 px-1 mb-0" for="filter_tahun">
+                                        <i class="fa-solid fa-calendar mb-1 fs-6"></i>
+                                        <span class="tab-label">Tahun</span>
                                     </label>
 
                                     <input type="radio" class="btn-check" name="filter_type" id="filter_tanggal" value="tanggal" autocomplete="off">
-                                    <label class="btn btn-sm btn-outline-success flex-fill mb-0" for="filter_tanggal">
-                                        <i class="fa-solid fa-calendar-week me-1"></i> Tanggal
+                                    <label class="btn filter-tab-btn flex-fill d-flex flex-column align-items-center justify-content-center text-center py-2 px-1 mb-0" for="filter_tanggal">
+                                        <i class="fa-solid fa-calendar-week mb-1 fs-6"></i>
+                                        <span class="tab-label">Tanggal</span>
                                     </label>
                                 </div>
                             </div>
@@ -216,15 +221,67 @@
             const dropdownMenu = document.getElementById('printFilterDropdown');
             if (dropdownMenu) {
                 dropdownMenu.addEventListener('click', function (e) {
-                    e.stopPropagation();
+                    if (!e.target.closest('button[type="submit"]')) {
+                        e.stopPropagation();
+                    }
                 });
             }
+
+            $(document).on('click', '#printFilterDropdown', function (e) {
+                if (!$(e.target).closest('button[type="submit"]').length) {
+                    e.stopPropagation();
+                }
+            });
         });
     </script>
 @endpush
 
 @push('style')
     <style>
+        .filter-tabs {
+            gap: 4px;
+        }
+
+        .filter-tabs .filter-tab-btn {
+            border: 1px solid #e5e7eb;
+            background-color: #ffffff;
+            color: #4b5563;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            min-height: 56px;
+        }
+
+        .filter-tabs .filter-tab-btn .tab-label {
+            font-size: 11px;
+            font-weight: 600;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+
+        .filter-tabs .filter-tab-btn:hover {
+            background-color: #f3f4f6;
+            color: #1f2937;
+            border-color: #d1d5db;
+        }
+
+        .filter-tabs .btn-check:checked + .filter-tab-btn {
+            background-color: #1f2937 !important;
+            border-color: #1f2937 !important;
+            color: #ffffff !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+        }
+
+        .filter-tabs .btn-check:checked + .filter-tab-btn i {
+            color: #fbbf24 !important;
+            transform: scale(1.1);
+            transition: transform 0.2s ease;
+        }
+
+        .filter-tabs .btn-check:checked + .filter-tab-btn .tab-label {
+            color: #ffffff !important;
+        }
+
         @media (max-width: 767px) {
 
             .col-md-5,
