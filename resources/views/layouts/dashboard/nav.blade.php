@@ -1,6 +1,6 @@
-<nav class="navbar navbar-top navbar-expand navbar-dashboard navbar-dark p-0 mb-4">
-    <div class="card border-0 shadow-sm w-100 bg-white" style="border-radius: 0.75rem;">
-        <div class="card-body py-2 px-3 px-md-4">
+<nav class="navbar navbar-top navbar-expand navbar-dashboard navbar-dark p-0 mb-4" style="overflow: visible !important;">
+    <div class="card border-0 shadow-sm w-100 bg-white" style="border-radius: 0.75rem; overflow: visible !important;">
+        <div class="card-body py-2 px-3 px-md-4" style="overflow: visible !important;">
             <div class="d-flex justify-content-between align-items-center w-100" id="navbarSupportedContent">
                 <!-- Left Side: Hamburger & Search Halaman -->
                 <div class="d-flex align-items-center">
@@ -283,6 +283,18 @@
 </nav>
 
 <style>
+    /* Pastikan navbar dan seluruh dropdown-nya tidak terpotong */
+    .navbar-dashboard,
+    .navbar-dashboard .card,
+    .navbar-dashboard .card-body,
+    .navbar-dashboard .nav-item.dropdown {
+        overflow: visible !important;
+    }
+
+    .navbar-dashboard .dropdown-menu {
+        z-index: 1060 !important;
+    }
+
     /* Hilangkan panah default ::after pada dropdown di header */
     .notification-bell-btn.dropdown-toggle::after,
     .user-profile-pill.dropdown-toggle::after {

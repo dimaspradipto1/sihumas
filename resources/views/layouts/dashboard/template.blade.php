@@ -76,10 +76,18 @@
             height: 0 !important;
         }
 
-        /* Scroll horizontal hanya diizinkan di body tabel (di bawah baris data) */
-        /* Pastikan card tidak pernah bocor / overflow */
-        .card {
+        /* Card yang memuat tabel tidak boleh overflow horizontal */
+        .card:has(.table-responsive) {
             overflow: hidden;
+        }
+
+        /* Navbar dan dropdown menu di dalamnya harus selalu terlihat (tidak terpotong) */
+        .navbar,
+        .navbar .card,
+        .navbar .card-body,
+        .navbar .dropdown,
+        .navbar .dropdown-menu {
+            overflow: visible !important;
         }
 
         .card-body > .table-responsive {
