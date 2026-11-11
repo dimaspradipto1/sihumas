@@ -76,18 +76,11 @@ class KotakMasukPengajuanDataTable extends DataTable
                 $start = $p->tgl_awal ? Carbon::parse($p->tgl_awal) : null;
                 $end = $p->tgl_selesai ? Carbon::parse($p->tgl_selesai) : null;
 
-                if (!$start && !$end) {
-                    return '<span class="text-muted">-</span>';
-                }
+                $startStr = $start ? $start->translatedFormat('d M Y') : '-';
+                $endStr = $end ? $end->translatedFormat('d M Y') : '-';
 
-                if ($start && $end) {
-                    if ($start->isSameDay($end)) {
-                        return '<span class="text-nowrap fw-semibold">' . $start->translatedFormat('d M Y') . '</span><br><small class="text-muted">' . $start->translatedFormat('l') . '</small>';
-                    }
-                    return '<span class="text-nowrap fw-semibold">' . $start->translatedFormat('d M Y') . '</span><br><small class="text-muted">s/d ' . $end->translatedFormat('d M Y') . '</small>';
-                }
-
-                return '<span class="text-nowrap fw-semibold">' . ($start ? $start->translatedFormat('d M Y') : $end->translatedFormat('d M Y')) . '</span>';
+                return '<div class="text-nowrap"><span class="text-muted small">Pelaksanaan:</span> <span class="fw-semibold">' . $startStr . '</span></div>'
+                     . '<div class="text-nowrap"><span class="text-muted small">Selesai:</span> <span class="fw-semibold">' . $endStr . '</span></div>';
             })
             ->addColumn('pengajuan.tgl_awal', function ($kotakMasukPengajuan) {
                 Carbon::setLocale('id');
@@ -197,11 +190,11 @@ class KotakMasukPengajuanDataTable extends DataTable
                 ->title('NAMA KEGIATAN')
                 ->addClass('text-start'),
             Column::make('pengajuan.tgl_pelaksanaan')
-                ->title('TANGGAL PELAKSANAAN')
+                ->title('TANGGAL')
                 ->addClass('text-start')
                 ->orderable(false)
                 ->searchable(false)
-                ->width('15%'),
+                ->width('16%'),
             Column::make('pengajuan.status')
                 ->title('STATUS PENGAJUAN')
                 ->addClass('text-center')

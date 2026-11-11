@@ -93,13 +93,19 @@
             }
         }
 
-        /* Styling tabel presisi & compact agar pas di 1 layar tanpa overflow */
-        .table-responsive .table {
+        /* Styling tabel presisi & compact agar pas di 1 layar tanpa overflow dan memenuhi lebar (fillwidth) */
+        .table-responsive .table,
+        table.dataTable {
             width: 100% !important;
             max-width: 100% !important;
             font-size: 0.8125rem !important; /* ~13px */
             table-layout: auto !important;
             margin-bottom: 0 !important;
+        }
+
+        .dataTables_wrapper,
+        .dataTables_wrapper table.dataTable {
+            width: 100% !important;
         }
 
         .table-responsive .table th {

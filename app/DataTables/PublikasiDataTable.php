@@ -42,21 +42,14 @@ class PublikasiDataTable extends DataTable
                 $tglAwal = $publikasi->tgl_awal ?? $publikasi->pengajuan?->tgl_awal;
                 $tglAkhir = $publikasi->tgl_akhir ?? $publikasi->pengajuan?->tgl_selesai;
 
-                if (!$tglAwal && !$tglAkhir) {
-                    return '<span class="text-muted">-</span>';
-                }
-
                 $start = $tglAwal ? Carbon::parse($tglAwal) : null;
                 $end = $tglAkhir ? Carbon::parse($tglAkhir) : null;
 
-                if ($start && $end) {
-                    if ($start->isSameDay($end)) {
-                        return '<span class="text-nowrap fw-semibold">' . $start->translatedFormat('d M Y') . '</span><br><small class="text-muted">' . $start->translatedFormat('l') . '</small>';
-                    }
-                    return '<span class="text-nowrap fw-semibold">' . $start->translatedFormat('d M Y') . '</span><br><small class="text-muted">s/d ' . $end->translatedFormat('d M Y') . '</small>';
-                }
+                $startStr = $start ? $start->translatedFormat('d M Y') : '-';
+                $endStr = $end ? $end->translatedFormat('d M Y') : '-';
 
-                return '<span class="text-nowrap fw-semibold">' . ($start ? $start->translatedFormat('d M Y') : $end->translatedFormat('d M Y')) . '</span>';
+                return '<div class="text-nowrap"><span class="text-muted small">Pelaksanaan:</span> <span class="fw-semibold">' . $startStr . '</span></div>'
+                     . '<div class="text-nowrap"><span class="text-muted small">Selesai:</span> <span class="fw-semibold">' . $endStr . '</span></div>';
             })
             ->addColumn('tgl_awal', function ($publikasi) {
                 Carbon::setlocale('id');
@@ -258,10 +251,10 @@ class PublikasiDataTable extends DataTable
                 ->width('12%')
                 ->addClass('text-center'),
             Column::make('tgl_pelaksanaan')
-                ->title('TANGGAL PELAKSANAAN')
+                ->title('TANGGAL')
                 ->orderable(false)
                 ->searchable(false)
-                ->width('14%'),
+                ->width('16%'),
             Column::make('link_dokumentasi')
                 ->title('DOKUMENTASI')
                 ->orderable(false)
