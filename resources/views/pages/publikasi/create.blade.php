@@ -237,3 +237,33 @@
         });
     </script>
     @endpush
+
+    @push('style')
+        <style>
+            .link-publikasi-row {
+                display: flex !important;
+                align-items: stretch !important;
+            }
+            .link-publikasi-row .input-group-text,
+            .link-publikasi-row .form-control,
+            .link-publikasi-row .btn {
+                height: 42px !important;
+                min-height: 42px !important;
+                max-height: 42px !important;
+                box-sizing: border-box !important;
+                margin-top: 0 !important;
+                margin-bottom: 0 !important;
+                font-size: 0.875rem !important;
+                line-height: 1.5 !important;
+            }
+            .link-publikasi-row .btn {
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                padding-top: 0 !important;
+                padding-bottom: 0 !important;
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+        </style>
+    @endpush
