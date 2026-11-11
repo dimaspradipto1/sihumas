@@ -259,21 +259,36 @@ class PublikasiTest extends TestCase
         $showAdmin->assertStatus(200);
         $showAdmin->assertSee('Form Validasi Pelaporan Kegiatan (Super Admin)');
 
-        // Admin melihat modal validasi dan button validasi di halaman index / tabel
+        // Admin melihat tombol aksi validasi langsung (Setujui dan Tolak Validasi) di tabel
         $indexAdmin = $this->actingAs($admin)->get(route('publikasi.index'));
         $indexAdmin->assertStatus(200);
-        $indexAdmin->assertSee('modalValidasiPublikasi');
 
         $adminAjax = $this->actingAs($admin)->getJson(route('publikasi.index'), ['X-Requested-With' => 'XMLHttpRequest']);
         $adminAjax->assertStatus(200);
-        $this->assertStringContainsString('btn-modal-validasi', json_encode($adminAjax->json()));
+        $actionHtml = $adminAjax->json()['data'][0]['action'];
+        $this->assertStringContainsString('name="status_validasi" value="disetujui"', $actionHtml);
+        $this->assertStringContainsString('name="status_validasi" value="ditolak"', $actionHtml);
+        $this->assertStringContainsString('title="Tolak Validasi"', $actionHtml);
 
-        // PIC Humas tidak memiliki akses modal validasi
+        // PIC Humas tidak memiliki tombol validasi langsung
         $indexHumas = $this->actingAs($humas)->get(route('publikasi.index'));
         $indexHumas->assertStatus(200);
-        $indexHumas->assertDontSee('modalValidasiPublikasi');
+        $humasAjax = $this->actingAs($humas)->getJson(route('publikasi.index'), ['X-Requested-With' => 'XMLHttpRequest']);
+        $humasAjax->assertStatus(200);
+        $humasActionHtml = $humasAjax->json()['data'][0]['action'];
+        $this->assertStringNotContainsString('title="Tolak Validasi"', $humasActionHtml);
 
-        // 5. Admin memvalidasi dengan revisi
+        // 5. Admin menolak validasi
+        $tolakResponse = $this->actingAs($admin)->post(route('publikasi.validasi', $publikasi), [
+            'status_validasi' => 'ditolak',
+            'catatan_validasi' => 'Dokumentasi belum lengkap, tolong perbaiki.',
+        ]);
+        $tolakResponse->assertSessionHasNoErrors();
+
+        $publikasi->refresh();
+        $this->assertEquals('ditolak', $publikasi->status_validasi);
+        $this->assertEquals('Dokumentasi belum lengkap, tolong perbaiki.', $publikasi->catatan_validasi);
+        $this->assertEquals($admin->id, $publikasi->validated_by);
         $revisiResponse = $this->actingAs($admin)->post(route('publikasi.validasi', $publikasi), [
             'status_validasi' => 'perlu_revisi',
             'catatan_validasi' => 'Mohon sertakan link foto beresolusi tinggi di folder Drive.',

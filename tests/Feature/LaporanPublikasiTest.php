@@ -268,7 +268,8 @@ class LaporanPublikasiTest extends TestCase
         $this->assertStringContainsString('Disetujui', $row['status_validasi']);
         $this->assertStringContainsString('Buka Drive', $row['link_dokumentasi']);
         $this->assertStringContainsString('Link', $row['link_publikasi']);
-        $this->assertStringContainsString('btn-modal-validasi', $row['action']);
+        $this->assertStringContainsString('name="status_validasi" value="disetujui"', $row['action']);
+        $this->assertStringContainsString('title="Tolak Validasi"', $row['action']);
     }
 }
 
