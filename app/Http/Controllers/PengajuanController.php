@@ -33,7 +33,11 @@ class PengajuanController extends Controller
 
     // Tandai seluruh notifikasi pengajuan telah dibaca saat membuka halaman ini
     if ($user) {
-        $user->update(['pengajuan_read_at' => now()]);
+        try {
+            if (\Illuminate\Support\Facades\Schema::hasColumn('users', 'pengajuan_read_at')) {
+                $user->update(['pengajuan_read_at' => now()]);
+            }
+        } catch (\Throwable $e) {}
         session(['pengajuan_read_at' => now()]);
     }
 

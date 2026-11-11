@@ -16,7 +16,11 @@ class KotakMasukPengajuanController extends Controller
     {
         $user = auth()->user();
         if ($user) {
-            $user->update(['kotak_masuk_read_at' => now()]);
+            try {
+                if (\Illuminate\Support\Facades\Schema::hasColumn('users', 'kotak_masuk_read_at')) {
+                    $user->update(['kotak_masuk_read_at' => now()]);
+                }
+            } catch (\Throwable $e) {}
             session(['kotak_masuk_read_at' => now()]);
             session()->forget('notifikasi_pengajuan_admin');
         }
