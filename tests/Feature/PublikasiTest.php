@@ -196,4 +196,90 @@ class PublikasiTest extends TestCase
         $responseEdit->assertStatus(200);
         $responseEdit->assertSee('Peliputan Acara Dies Natalis');
     }
+
+    public function test_pic_reports_activity_and_admin_validates_it(): void
+    {
+        $admin = User::factory()->create([
+            'is_admin' => 1,
+            'name' => 'Super Administrator',
+        ]);
+
+        $humas = User::factory()->create([
+            'is_admin' => 0,
+            'is_humas' => 1,
+            'name' => 'Rian Humas',
+        ]);
+
+        $pengajuan = Pengajuan::create([
+            'user_id' => $admin->id,
+            'nama_kegiatan' => 'Wisuda Periode Genap UIS',
+            'unit_kegiatan' => 'Rektorat UIS',
+            'tempat_kegiatan' => 'Hotel Aston Batam',
+            'tgl_awal' => '2026-11-25',
+            'tgl_selesai' => '2026-11-25',
+            'jam_kegiatan' => '07:30',
+            'waktu_selesai' => '13:00',
+            'petugas_ditugaskan' => 'Rian Humas',
+            'status' => 'diterima',
+        ]);
+
+        $publikasi = Publikasi::create([
+            'user_id' => $humas->id,
+            'pengajuan_id' => $pengajuan->id,
+            'status_validasi' => 'belum_dilaporkan',
+        ]);
+
+        // 1. PIC Humas mengisi dan mengirim laporan kegiatan
+        $responseHumas = $this->actingAs($humas)->put(route('publikasi.update', $publikasi), [
+            'upload_laporan' => '<p>Acara wisuda berjalan lancar dan khidmat.</p>',
+            'link_dokumentasi' => 'https://drive.google.com/drive/folders/wisuda-genap',
+            'link_publikasi' => ['https://uis.ac.id/wisuda-sukses'],
+        ]);
+        $responseHumas->assertRedirect(route('publikasi.index'));
+
+        $publikasi->refresh();
+        // Status otomatis menjadi menunggu_validasi
+        $this->assertEquals('menunggu_validasi', $publikasi->status_validasi);
+        $this->assertEquals('Acara wisuda berjalan lancar dan khidmat.', $publikasi->upload_laporan);
+
+        // 2. PIC Humas membuka show: melihat banner menunggu validasi
+        $showHumas = $this->actingAs($humas)->get(route('publikasi.show', $publikasi));
+        $showHumas->assertStatus(200);
+        $showHumas->assertSee('Menunggu Validasi');
+        $showHumas->assertDontSee('Form Validasi Pelaporan Kegiatan (Super Admin)');
+
+        // 3. User non-admin tidak boleh memvalidasi
+        $unauthorized = $this->actingAs($humas)->post(route('publikasi.validasi', $publikasi), [
+            'status_validasi' => 'disetujui',
+        ]);
+        $unauthorized->assertStatus(403);
+
+        // 4. Admin membuka show: melihat form validasi Super Admin
+        $showAdmin = $this->actingAs($admin)->get(route('publikasi.show', $publikasi));
+        $showAdmin->assertStatus(200);
+        $showAdmin->assertSee('Form Validasi Pelaporan Kegiatan (Super Admin)');
+
+        // 5. Admin memvalidasi dengan revisi
+        $revisiResponse = $this->actingAs($admin)->post(route('publikasi.validasi', $publikasi), [
+            'status_validasi' => 'perlu_revisi',
+            'catatan_validasi' => 'Mohon sertakan link foto beresolusi tinggi di folder Drive.',
+        ]);
+        $revisiResponse->assertSessionHasNoErrors();
+
+        $publikasi->refresh();
+        $this->assertEquals('perlu_revisi', $publikasi->status_validasi);
+        $this->assertEquals('Mohon sertakan link foto beresolusi tinggi di folder Drive.', $publikasi->catatan_validasi);
+        $this->assertEquals($admin->id, $publikasi->validated_by);
+
+        // 6. Admin akhirnya menyetujui / validasi sukses
+        $approveResponse = $this->actingAs($admin)->post(route('publikasi.validasi', $publikasi), [
+            'status_validasi' => 'disetujui',
+            'catatan_validasi' => 'Laporan sudah lengkap dan dokumentasi memadai.',
+        ]);
+        $approveResponse->assertSessionHasNoErrors();
+
+        $publikasi->refresh();
+        $this->assertEquals('disetujui', $publikasi->status_validasi);
+        $this->assertEquals('Laporan sudah lengkap dan dokumentasi memadai.', $publikasi->catatan_validasi);
+    }
 }

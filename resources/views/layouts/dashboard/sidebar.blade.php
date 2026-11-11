@@ -370,6 +370,14 @@
                           </span>
                           <span class="sidebar-text text-capitalize">pelaporan kegiatan</span>
                       </span>
+                      @if (Auth::user()->is_admin)
+                          @php
+                              $pendingPublikasiCount = \App\Models\Publikasi::where('status_validasi', 'menunggu_validasi')->count();
+                          @endphp
+                          @if ($pendingPublikasiCount > 0)
+                              <span class="badge badge-sm bg-warning text-dark font-weight-bold">{{ $pendingPublikasiCount }}</span>
+                          @endif
+                      @endif
                   </a>
               </li>
 

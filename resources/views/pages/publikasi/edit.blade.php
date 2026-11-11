@@ -30,6 +30,34 @@
 
         <div class="row">
             <div class="col-12 mb-4">
+                @if ($publikasi->status_validasi === 'perlu_revisi')
+                    <div class="alert alert-danger d-flex align-items-center shadow-sm mb-4" role="alert">
+                        <i class="fa-solid fa-triangle-exclamation fa-2x me-3 text-danger"></i>
+                        <div>
+                            <h6 class="alert-heading fw-bold mb-1">Catatan Revisi dari Super Admin:</h6>
+                            <p class="mb-0 text-danger fw-semibold">
+                                {{ $publikasi->catatan_validasi ?? 'Mohon periksa dan perbaiki kelengkapan dokumentasi atau rilis laporan kegiatan Anda.' }}
+                            </p>
+                        </div>
+                    </div>
+                @elseif ($publikasi->status_validasi === 'menunggu_validasi')
+                    <div class="alert alert-warning d-flex align-items-center shadow-sm mb-4" role="alert">
+                        <i class="fa-solid fa-clock fa-2x me-3 text-warning"></i>
+                        <div>
+                            <h6 class="alert-heading fw-bold mb-1">Status: Menunggu Validasi Admin</h6>
+                            <p class="mb-0">Laporan kegiatan ini sedang dalam antrean validasi oleh Super Admin.</p>
+                        </div>
+                    </div>
+                @elseif ($publikasi->status_validasi === 'disetujui')
+                    <div class="alert alert-success d-flex align-items-center shadow-sm mb-4" role="alert">
+                        <i class="fa-solid fa-circle-check fa-2x me-3 text-success"></i>
+                        <div>
+                            <h6 class="alert-heading fw-bold mb-1">Status: Laporan Telah Tervalidasi &amp; Disetujui</h6>
+                            <p class="mb-0">Laporan kegiatan ini telah disetujui oleh Super Admin.</p>
+                        </div>
+                    </div>
+                @endif
+
                 <div class="card border-0 shadow components-section">
                     <form action="{{ route('publikasi.update', $publikasi) }}" method="POST">
                         @csrf
@@ -156,6 +184,45 @@
                                             <i class="fa-solid fa-circle-plus me-1"></i> Tambah Link Publikasi
                                         </button>
                                     </div>
+                                    @if (Auth::user()->is_admin)
+                                    <!-- Validasi Pelaporan (Super Admin) -->
+                                    <div class="card border border-light shadow-sm mb-4 bg-gray-50">
+                                        <div class="card-header bg-gray-100 py-2">
+                                            <h6 class="mb-0 text-gray-800 fw-bold">
+                                                <i class="fa-solid fa-clipboard-check me-2 text-success"></i> Validasi Pelaporan (Super Admin)
+                                            </h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-5 mb-3">
+                                                    <label for="status_validasi" class="form-label fw-bold">Status Validasi</label>
+                                                    <select name="status_validasi" id="status_validasi" class="form-select">
+                                                        <option value="disetujui" {{ old('status_validasi', $publikasi->status_validasi) == 'disetujui' ? 'selected' : '' }}>
+                                                            ✅ Disetujui / Valid
+                                                        </option>
+                                                        <option value="perlu_revisi" {{ old('status_validasi', $publikasi->status_validasi) == 'perlu_revisi' ? 'selected' : '' }}>
+                                                            ⚠️ Perlu Revisi (Kembalikan ke PIC)
+                                                        </option>
+                                                        <option value="menunggu_validasi" {{ old('status_validasi', $publikasi->status_validasi) == 'menunggu_validasi' ? 'selected' : '' }}>
+                                                            ⏳ Menunggu Validasi
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-7 mb-3">
+                                                    <label for="catatan_validasi" class="form-label fw-bold">Catatan / Alasan Validasi</label>
+                                                    <textarea name="catatan_validasi" id="catatan_validasi" class="form-control" rows="2" placeholder="Tuliskan catatan perbaikan jika perlu revisi...">{{ old('catatan_validasi', $publikasi->catatan_validasi) }}</textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @else
+                                    <div class="alert alert-info py-2 px-3 mb-4 d-flex align-items-center" role="alert">
+                                        <i class="fa-solid fa-circle-info me-2 text-primary"></i>
+                                        <small class="mb-0">
+                                            Setelah Anda menekan tombol <strong>SUBMIT / UPDATE LAPORAN</strong>, status laporan ini otomatis menjadi <strong>Menunggu Validasi</strong> untuk diverifikasi oleh Super Admin.
+                                        </small>
+                                    </div>
+                                    @endif
                                 </div>
                             </div>
 
