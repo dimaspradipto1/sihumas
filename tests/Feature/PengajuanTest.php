@@ -187,5 +187,44 @@ class PengajuanTest extends TestCase
         $this->assertTrue($petugasHumas->contains('id', $humas->id));
         $this->assertFalse($petugasHumas->contains('id', $admin->id));
     }
+
+    public function test_humas_role_does_not_see_verifikasi_dan_penugasan_card(): void
+    {
+        $humas = User::factory()->create([
+            'is_admin' => false,
+            'is_humas' => true,
+            'name' => 'PETUGAS_HUMAS_' . uniqid(),
+        ]);
+
+        $admin = User::factory()->create([
+            'is_admin' => true,
+        ]);
+
+        $pengajuan = Pengajuan::create([
+            'user_id' => $admin->id,
+            'nama_kegiatan' => 'Dies Natalis UIS ke-20',
+            'tgl_awal' => now()->toDateString(),
+            'tgl_selesai' => now()->addDay()->toDateString(),
+            'jam_kegiatan' => '08:00',
+            'waktu_selesai' => '12:00',
+            'tempat_kegiatan' => 'Auditorium UIS',
+            'unit_kegiatan' => 'Rektorat',
+            'deskripsi_kegiatan' => 'Rangkaian dies natalis',
+            'status' => 'diterima',
+            'petugas_ditugaskan' => $humas->name,
+        ]);
+
+        // Verifikasi untuk Admin: kartu "Verifikasi & Penugasan" HARUS muncul
+        $adminResponse = $this->actingAs($admin)->get(route('pengajuan.edit', $pengajuan->id));
+        $adminResponse->assertStatus(200);
+        $adminResponse->assertSee('Verifikasi & Penugasan', false);
+
+        // Verifikasi untuk Humas: kartu "Verifikasi & Penugasan" HARUS TERSEMBUNYI
+        $humasResponse = $this->actingAs($humas)->get(route('pengajuan.edit', $pengajuan->id));
+        $humasResponse->assertStatus(200);
+        $humasResponse->assertDontSee('Verifikasi & Penugasan', false);
+        $humasResponse->assertSee('Detail Pengajuan (Review)');
+        $humasResponse->assertSee('Kembali ke Kotak Masuk');
+    }
 }
 

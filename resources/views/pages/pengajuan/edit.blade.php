@@ -21,7 +21,9 @@
     </nav>
     <div class="d-flex justify-content-between w-100 flex-wrap">
         <div class="mb-3 mb-lg-0">
-            <h1 class="h4 text-capitalize">form edit pengajuan berita</h1>
+            <h1 class="h4 text-capitalize">
+                {{ Auth::user()->is_admin ? 'form edit pengajuan berita' : 'detail pengajuan tugas kegiatan' }}
+            </h1>
             <div>
             </div>
         </div>
@@ -209,12 +211,17 @@
                     <div class="card-body p-4">
                         <div class="row">
                             <!-- Kolom Kiri: Detail Pengajuan / Review -->
-                            <div class="col-12 col-lg-6 mb-4">
+                            <div class="col-12 {{ Auth::user()->is_admin ? 'col-lg-6' : 'col-lg-12' }} mb-4">
                                 <div class="card border border-light shadow-sm h-100">
-                                    <div class="card-header bg-gray-100 py-3">
+                                    <div class="card-header bg-gray-100 py-3 d-flex justify-content-between align-items-center">
                                         <h5 class="card-title mb-0 text-gray-800">
                                             <i class="fa-solid fa-file-lines me-2 text-primary"></i> Detail Pengajuan (Review)
                                         </h5>
+                                        @if (!Auth::user()->is_admin && Auth::user()->is_humas && $pengajuan->status == 'diterima' && $pengajuan->publikasi)
+                                            <a href="{{ route('publikasi.edit', $pengajuan->publikasi->slug ?? $pengajuan->publikasi->id) }}" class="btn btn-sm btn-success text-white d-inline-flex align-items-center">
+                                                <i class="fa-solid fa-file-pen me-1"></i> Laporkan Kegiatan
+                                            </a>
+                                        @endif
                                     </div>
                                     <div class="card-body p-0">
                                         <div class="table-responsive">
@@ -239,16 +246,25 @@
                                                     <tr>
                                                         <th class="ps-3">Tanggal Kegiatan</th>
                                                         <td>
-                                                            <div class="row g-2">
-                                                                <div class="col-6">
-                                                                    <small class="text-muted d-block">Mulai:</small>
-                                                                    <input type="date" name="tgl_awal" id="tgl_awal" class="form-control form-control-sm" value="{{ $pengajuan->tgl_awal }}">
+                                                            @if (Auth::user()->is_admin)
+                                                                <div class="row g-2">
+                                                                    <div class="col-6">
+                                                                        <small class="text-muted d-block">Mulai:</small>
+                                                                        <input type="date" name="tgl_awal" id="tgl_awal" class="form-control form-control-sm" value="{{ $pengajuan->tgl_awal }}">
+                                                                    </div>
+                                                                    <div class="col-6">
+                                                                        <small class="text-muted d-block">Selesai:</small>
+                                                                        <input type="date" name="tgl_selesai" id="tgl_selesai" class="form-control form-control-sm" value="{{ $pengajuan->tgl_selesai }}">
+                                                                    </div>
                                                                 </div>
-                                                                <div class="col-6">
-                                                                    <small class="text-muted d-block">Selesai:</small>
-                                                                    <input type="date" name="tgl_selesai" id="tgl_selesai" class="form-control form-control-sm" value="{{ $pengajuan->tgl_selesai }}">
-                                                                </div>
-                                                            </div>
+                                                            @else
+                                                                <span class="fw-semibold text-gray-800">
+                                                                    {{ $pengajuan->tgl_awal ? \Carbon\Carbon::parse($pengajuan->tgl_awal)->locale('id')->translatedFormat('l, d F Y') : '-' }}
+                                                                    @if($pengajuan->tgl_selesai && $pengajuan->tgl_selesai !== $pengajuan->tgl_awal)
+                                                                        <br><small class="text-muted">s/d {{ \Carbon\Carbon::parse($pengajuan->tgl_selesai)->locale('id')->translatedFormat('l, d F Y') }}</small>
+                                                                    @endif
+                                                                </span>
+                                                            @endif
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -312,14 +328,73 @@
                                                             @endif
                                                         </td>
                                                     </tr>
+                                                    @if (!Auth::user()->is_admin)
+                                                    <tr>
+                                                        <th class="ps-3">Status Pengajuan</th>
+                                                        <td>
+                                                            @if ($pengajuan->status === 'diterima')
+                                                                <span class="badge bg-success text-white px-2 py-1"><i class="fa-solid fa-check me-1"></i> Diterima</span>
+                                                            @elseif ($pengajuan->status === 'ditolak')
+                                                                <span class="badge bg-danger text-white px-2 py-1"><i class="fa-solid fa-xmark me-1"></i> Ditolak</span>
+                                                            @else
+                                                                <span class="badge bg-warning text-dark px-2 py-1"><i class="fa-solid fa-clock me-1"></i> Pending</span>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="ps-3">PIC yang Ditugaskan</th>
+                                                        <td>
+                                                            @if (!empty($pengajuan->petugas_ditugaskan))
+                                                                <span class="badge bg-primary text-white px-2 py-1">
+                                                                    <i class="fa-solid fa-user-check me-1"></i> {{ $pengajuan->petugas_ditugaskan }}
+                                                                </span>
+                                                            @else
+                                                                <span class="text-muted fst-italic">Belum ada PIC yang ditugaskan</span>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                    @if (!empty($pengajuan->alasan_ditolak))
+                                                    <tr>
+                                                        <th class="ps-3">Catatan Verifikasi</th>
+                                                        <td class="text-muted">{{ $pengajuan->alasan_ditolak }}</td>
+                                                    </tr>
+                                                    @endif
+                                                    @if (!empty($pengajuan->link_desain))
+                                                    <tr>
+                                                        <th class="ps-3">Link Desain</th>
+                                                        <td>
+                                                            <a href="{{ $pengajuan->link_desain }}" target="_blank" class="text-primary text-decoration-underline">
+                                                                <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> {{ $pengajuan->link_desain }}
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    @endif
+                                                    @endif
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
+                                    @if (!Auth::user()->is_admin)
+                                    <div class="card-footer bg-white border-top py-3 d-flex flex-wrap gap-2 justify-content-between align-items-center">
+                                        <div>
+                                            <a href="{{ route('kotak-masuk-pengajuan.index') }}" class="btn btn-outline-secondary d-inline-flex align-items-center">
+                                                <i class="fa-solid fa-arrow-left me-2"></i> Kembali ke Kotak Masuk
+                                            </a>
+                                        </div>
+                                        <div>
+                                            @if ($pengajuan->status == 'diterima' && $pengajuan->publikasi)
+                                                <a href="{{ route('publikasi.edit', $pengajuan->publikasi->slug ?? $pengajuan->publikasi->id) }}" class="btn btn-success text-white d-inline-flex align-items-center">
+                                                    <i class="fa-solid fa-file-pen me-2"></i> Laporkan Kegiatan
+                                                </a>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    @endif
                                 </div>
                             </div>
 
-                            <!-- Kolom Kanan: Verifikasi & Penugasan -->
+                            @if (Auth::user()->is_admin)
+                            <!-- Kolom Kanan: Verifikasi & Penugasan (Khusus Super Admin) -->
                             <div class="col-12 col-lg-6 mb-4">
                                 <div class="card border border-light shadow-sm">
                                     <div class="card-header bg-gray-100 py-3">
@@ -479,6 +554,7 @@
                                     </div>
                                 </div>
                             </div>
+                            @endif
                         </div>
                     </div>
                     @endif
