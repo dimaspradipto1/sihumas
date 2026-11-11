@@ -71,26 +71,69 @@
                                             class="form-control" id="tgl_akhir">
                                     </div>
 
+                                    <!-- Laporan Kegiatan (Textarea TinyMCE) -->
                                     <div class="mb-4">
-                                        <label for="laporan" class="text-capitalize">link laporan</label>
-                                        <textarea class="form-control" name="upload_laporan" id="" rows="3">{{ old('upload_laporan') }}</textarea>
+                                        <label for="upload_laporan" class="form-label text-uppercase fw-bold">
+                                            <i class="fa-solid fa-file-lines me-1 text-primary"></i> Laporan Kegiatan / Ringkasan Liputan
+                                        </label>
+                                        <textarea class="form-control" name="upload_laporan" id="upload_laporan" rows="6"
+                                            placeholder="Tuliskan ringkasan hasil kegiatan, rilis berita, atau laporan peliputan...">{{ old('upload_laporan') }}</textarea>
+                                        <small class="text-muted"><i class="fa-solid fa-circle-info me-1"></i> Format teks didukung, sistem akan otomatis membersihkan tag HTML agar data tersimpan rapi.</small>
                                     </div>
 
+                                    <!-- Link Dokumentasi -->
                                     <div class="mb-4">
-                                        <label for="laporan" class="text-capitalize">link dokumentasi</label>
-                                        <textarea class="form-control" name="link_dokumentasi" id="" rows="3">{{ old('link_dokumentasi') }}</textarea>
+                                        <label for="link_dokumentasi" class="form-label text-uppercase fw-bold">
+                                            <i class="fa-solid fa-folder-open me-1 text-primary"></i> Link Dokumentasi (Google Drive / Foto / Video)
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-white text-primary">
+                                                <i class="fa-solid fa-link"></i>
+                                            </span>
+                                            <input type="url" class="form-control" name="link_dokumentasi" id="link_dokumentasi"
+                                                value="{{ old('link_dokumentasi') }}" placeholder="https://drive.google.com/drive/folders/...">
+                                        </div>
                                     </div>
 
+                                    <!-- Link Publikasi (Bisa Tambah Lebih Dari 1 Link) -->
                                     <div class="mb-4">
-                                        <label for="laporan" class="text-capitalize">link publikasi</label>
-                                        <textarea class="form-control" name="link_publikasi" id="" rows="3">{{ old('link_publikasi') }}</textarea>
+                                        <label class="form-label text-uppercase fw-bold d-flex justify-content-between align-items-center">
+                                            <span><i class="fa-solid fa-globe me-1 text-success"></i> Link Publikasi (Media Online / Website / Sosmed)</span>
+                                            <small class="text-muted fw-normal">Bisa lebih dari 1 link</small>
+                                        </label>
+
+                                        @php
+                                            $linksOld = old('link_publikasi', ['']);
+                                            if (!is_array($linksOld)) {
+                                                $linksOld = [$linksOld];
+                                            }
+                                        @endphp
+
+                                        <div id="linkPublikasiContainer">
+                                            @foreach($linksOld as $link)
+                                                <div class="input-group mb-2 link-publikasi-row">
+                                                    <span class="input-group-text bg-white text-success">
+                                                        <i class="fa-solid fa-link"></i>
+                                                    </span>
+                                                    <input type="url" name="link_publikasi[]" class="form-control"
+                                                        value="{{ $link }}" placeholder="https://... (link berita website atau media sosial)">
+                                                    <button type="button" class="btn btn-outline-danger btn-remove-link d-inline-flex align-items-center px-3"
+                                                        title="Hapus Link" {{ count($linksOld) <= 1 ? 'style=display:none;' : '' }}>
+                                                        <i class="fa-solid fa-trash-can"></i>
+                                                    </button>
+                                                </div>
+                                            @endforeach
+                                        </div>
+
+                                        <button type="button" class="btn btn-sm btn-outline-success mt-1 d-inline-flex align-items-center" id="btnAddLinkPublikasi">
+                                            <i class="fa-solid fa-circle-plus me-1"></i> Tambah Link Publikasi
+                                        </button>
                                     </div>
 
                                 </div>
                             </div>
 
-                            <button class="btn btn-gray-800 d-inline-flex align-items-center me-2 aria-haspopup="true"
-                                aria-expanded="false">
+                            <button type="submit" class="btn btn-gray-800 d-inline-flex align-items-center me-2">
                                 <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -108,3 +151,86 @@
             </div>
         </div>
     @endsection
+
+    @push('scripts')
+    <!-- TinyMCE CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.3/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.tinymce) {
+                tinymce.init({
+                    selector: '#upload_laporan',
+                    menubar: false,
+                    plugins: 'lists link wordcount',
+                    toolbar: 'undo redo | bold italic underline | bullist numlist | removeformat',
+                    branding: false,
+                    promotion: false,
+                    height: 250,
+                    placeholder: 'Tuliskan rincian atau ringkasan laporan kegiatan hasil peliputan di sini...',
+                    setup: function(editor) {
+                        editor.on('change keyup', function() {
+                            editor.save();
+                        });
+                    }
+                });
+            }
+
+            const form = document.querySelector('form[action*="publikasi"]');
+            if (form) {
+                form.addEventListener('submit', function() {
+                    if (window.tinymce) {
+                        tinymce.triggerSave();
+                    }
+                });
+            }
+
+            const container = document.getElementById('linkPublikasiContainer');
+            const btnAdd = document.getElementById('btnAddLinkPublikasi');
+
+            function updateRemoveButtons() {
+                if (!container) return;
+                const rows = container.querySelectorAll('.link-publikasi-row');
+                rows.forEach(function(row) {
+                    const btn = row.querySelector('.btn-remove-link');
+                    if (btn) {
+                        btn.style.display = rows.length > 1 ? 'inline-flex' : 'none';
+                    }
+                });
+            }
+
+            if (btnAdd && container) {
+                btnAdd.addEventListener('click', function () {
+                    const newRow = document.createElement('div');
+                    newRow.className = 'input-group mb-2 link-publikasi-row';
+                    newRow.innerHTML = `
+                        <span class="input-group-text bg-white text-success">
+                            <i class="fa-solid fa-link"></i>
+                        </span>
+                        <input type="url" name="link_publikasi[]" class="form-control"
+                            placeholder="https://... (link berita website atau media sosial)">
+                        <button type="button" class="btn btn-outline-danger btn-remove-link d-inline-flex align-items-center px-3" title="Hapus Link">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    `;
+                    container.appendChild(newRow);
+                    updateRemoveButtons();
+                    const input = newRow.querySelector('input');
+                    if (input) input.focus();
+                });
+
+                container.addEventListener('click', function (e) {
+                    const btn = e.target.closest('.btn-remove-link');
+                    if (btn) {
+                        const row = btn.closest('.link-publikasi-row');
+                        if (row && container.querySelectorAll('.link-publikasi-row').length > 1) {
+                            row.remove();
+                            updateRemoveButtons();
+                        }
+                    }
+                });
+
+                updateRemoveButtons();
+            }
+        });
+    </script>
+    @endpush

@@ -75,14 +75,18 @@
                                         <tr>
                                             <td
                                                 class="text-uppercase text-dark text-xxs font-weight-bolder opacity-7 text-capitalize">
-                                                link laporan</td>
+                                                Laporan Kegiatan</td>
                                             <td class="text-uppercase text-dark text-xxs font-weight-bolder opacity-7 px-1">
                                                 :</td>
-                                            <td class="text-lowercase text-dark text-xxs font-weight-bolder opacity-7">
+                                            <td class="text-dark text-xxs font-weight-bolder opacity-7">
                                                 @if ($publikasi->upload_laporan)
-                                                    <a href="{{ $publikasi->upload_laporan }}" target="_blank"
-                                                        class="text-success px-3 me-1 text-capitalize"><i
-                                                            class="fa-solid fa-eye"></i> Lihat Laporan</a>
+                                                    @if (filter_var(trim(strip_tags($publikasi->upload_laporan)), FILTER_VALIDATE_URL))
+                                                        <a href="{{ trim(strip_tags($publikasi->upload_laporan)) }}" target="_blank"
+                                                            class="text-success text-capitalize"><i
+                                                                class="fa-solid fa-arrow-up-right-from-square me-1"></i> Buka Link Laporan</a>
+                                                    @else
+                                                        <div class="p-3 bg-gray-50 rounded border text-gray-800" style="white-space: pre-wrap; font-size: 0.85rem; line-height: 1.6;">{!! nl2br(e(strip_tags($publikasi->upload_laporan))) !!}</div>
+                                                    @endif
                                                 @else
                                                     -
                                                 @endif
@@ -97,8 +101,8 @@
                                             <td class="text-lowercase text-dark text-xxs font-weight-bolder opacity-7">
                                                 @if ($publikasi->link_dokumentasi)
                                                     <a href="{{ $publikasi->link_dokumentasi }}" target="_blank"
-                                                        class="text-success px-3 me-1 text-capitalize"><i
-                                                            class="fa-solid fa-eye"></i> Lihat Dokumentasi</a>
+                                                        class="btn btn-sm btn-outline-primary d-inline-flex align-items-center py-1 px-3 text-capitalize"><i
+                                                            class="fa-solid fa-folder-open me-2"></i> Buka Google Drive Dokumentasi</a>
                                                 @else
                                                     -
                                                 @endif
@@ -110,11 +114,22 @@
                                                 link publikasi</td>
                                             <td class="text-uppercase text-dark text-xxs font-weight-bolder opacity-7 px-1">
                                                 :</td>
-                                            <td class="text-lowercase text-dark text-xxs font-weight-bolder opacity-7">
-                                                @if ($publikasi->link_publikasi)
-                                                    <a href="{{ $publikasi->link_publikasi }}" target="_blank"
-                                                        class="text-success px-3 me-1 text-capitalize"><i
-                                                            class="fa-solid fa-eye"></i> Lihat Publikasi</a>
+                                            <td class="text-dark text-xxs font-weight-bolder opacity-7">
+                                                @php
+                                                    $links = $publikasi->link_publikasi_array;
+                                                @endphp
+                                                @if (!empty($links))
+                                                    <div class="d-flex flex-column gap-2">
+                                                        @foreach ($links as $idx => $link)
+                                                            <div class="d-flex align-items-center flex-wrap gap-2">
+                                                                <a href="{{ $link }}" target="_blank"
+                                                                    class="btn btn-sm btn-outline-success d-inline-flex align-items-center py-1 px-3 text-capitalize">
+                                                                    <i class="fa-solid fa-arrow-up-right-from-square me-2"></i> Buka Publikasi {{ count($links) > 1 ? '#' . ($idx + 1) : '' }}
+                                                                </a>
+                                                                <small class="text-muted text-break">({{ $link }})</small>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
                                                 @else
                                                     -
                                                 @endif

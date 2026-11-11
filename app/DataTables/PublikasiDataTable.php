@@ -23,15 +23,6 @@ class PublikasiDataTable extends DataTable
 
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
-        if (auth()->user()->is_admin) {
-            // When the user is an admin, ensure the query properly joins relations
-            $query = Publikasi::with(['pengajuan', 'tahunAkademik', 'user']);
-        } else {
-            // For non-admin users, filter the results based on the current user's ID
-            $query = Publikasi::with(['pengajuan', 'tahunAkademik', 'user'])
-                ->where('publikasis.user_id', auth()->user()->id);
-        }
-
         return (new EloquentDataTable($query))
             ->addIndexColumn()
             ->addColumn('DT_RowIndex', '')
@@ -56,7 +47,14 @@ class PublikasiDataTable extends DataTable
                 return $publikasi->pengajuan ? $publikasi->pengajuan->nama_kegiatan : '-';
             })
             ->editColumn('upload_laporan', function ($publikasi) {
-                return $publikasi->upload_laporan ? '<a href="' . $publikasi->upload_laporan . '" target="_blank" class="text-success px-3 me-1"><i class="fa-solid fa-eye"></i> Lihat Laporan</a>' : '-';
+                if (empty($publikasi->upload_laporan)) {
+                    return '<span class="text-muted small">-</span>';
+                }
+                $clean = strip_tags($publikasi->upload_laporan);
+                if (filter_var($clean, FILTER_VALIDATE_URL)) {
+                    return '<a href="' . e($clean) . '" target="_blank" class="text-success"><i class="fa-solid fa-eye me-1"></i> Buka Laporan</a>';
+                }
+                return '<span title="' . e($clean) . '">' . e(\Illuminate\Support\Str::limit($clean, 35)) . '</span>';
             })
             ->editColumn('tahun_akademik_id', function ($item) {
                 return $item->tahunAkademik ? $item->tahunAkademik->tahun_akademik : '-';
@@ -68,10 +66,24 @@ class PublikasiDataTable extends DataTable
                 return '';
             })
             ->editColumn('link_dokumentasi', function ($publikasi) {
-                return $publikasi->link_dokumentasi ? '<a href="' . $publikasi->link_dokumentasi . '" target="_blank" class="text-secondary px-3 me-1"><i class="fa-solid fa-eye"></i> Lihat Dokumentasi</a>' : '-';
+                if (empty($publikasi->link_dokumentasi)) {
+                    return '<span class="text-muted small">-</span>';
+                }
+                return '<a href="' . e($publikasi->link_dokumentasi) . '" target="_blank" class="btn btn-xs btn-outline-primary d-inline-flex align-items-center py-1 px-2" style="font-size: 11px;"><i class="fa-solid fa-folder-open me-1"></i> Buka Drive</a>';
             })
             ->editColumn('link_publikasi', function ($publikasi) {
-                return $publikasi->link_publikasi ? '<a href="' . $publikasi->link_publikasi . '" target="_blank" class="text-success px-3 me-1"><i class="fa-solid fa-eye"></i> Lihat Publikasi</a>' : '-';
+                $links = $publikasi->link_publikasi_array;
+                if (empty($links)) {
+                    return '<span class="text-muted small">-</span>';
+                }
+                $html = '<div class="d-flex flex-wrap gap-1">';
+                foreach ($links as $idx => $link) {
+                    $num = count($links) > 1 ? ' #' . ($idx + 1) : '';
+                    $html .= '<a href="' . e($link) . '" target="_blank" class="btn btn-xs btn-outline-success d-inline-flex align-items-center py-1 px-2" style="font-size: 11px;" title="' . e($link) . '">'
+                          . '<i class="fa-solid fa-arrow-up-right-from-square me-1"></i> Link' . $num . '</a>';
+                }
+                $html .= '</div>';
+                return $html;
             })
 
             ->addColumn('action', function ($publikasi) {
@@ -95,7 +107,37 @@ class PublikasiDataTable extends DataTable
      */
     public function query(Publikasi $model): QueryBuilder
     {
-        return $model->newQuery();
+        $user = auth()->user();
+
+        // 1. Super Admin melihat seluruh pelaporan
+        if ($user && $user->is_admin) {
+            return $model->newQuery()
+                ->with(['pengajuan.user', 'tahunAkademik', 'user'])
+                ->orderBy('created_at', 'desc');
+        }
+
+        // 2. Petugas Humas melihat pelaporan kegiatan yang ditugaskan kepadanya sebagai PIC
+        if ($user && $user->is_humas) {
+            return $model->newQuery()
+                ->with(['pengajuan.user', 'tahunAkademik', 'user'])
+                ->where(function ($q) use ($user) {
+                    $q->whereHas('pengajuan', function ($pq) use ($user) {
+                        $pq->assignedToUser($user);
+                    })->orWhere('publikasis.user_id', $user->id);
+                })
+                ->orderBy('created_at', 'desc');
+        }
+
+        // 3. User Unit/Fakultas melihat pelaporan dari kegiatan yang diajukannya
+        return $model->newQuery()
+            ->with(['pengajuan.user', 'tahunAkademik', 'user'])
+            ->where(function ($q) use ($user) {
+                $q->where('publikasis.user_id', $user->id)
+                  ->orWhereHas('pengajuan', function ($pq) use ($user) {
+                      $pq->where('user_id', $user->id);
+                  });
+            })
+            ->orderBy('created_at', 'desc');
     }
 
     /**
@@ -163,6 +205,14 @@ class PublikasiDataTable extends DataTable
             Column::make('tgl_akhir')
                 ->title('Tanggal Selesai')
                 ->width(20),
+            Column::make('link_dokumentasi')
+                ->title('Dokumentasi')
+                ->orderable(false)
+                ->searchable(false),
+            Column::make('link_publikasi')
+                ->title('Link Publikasi')
+                ->orderable(false)
+                ->searchable(false),
             Column::make('user_id')
                 ->title('Submit Pengguna')
                 ->visible(auth()->user()->is_admin)

@@ -96,4 +96,28 @@ class Publikasi extends Model
     {
         return $this->hasOne(LaporanPublikasi::class, 'publikasi_id');
     }
+
+    /**
+     * Mengambil daftar link publikasi dalam bentuk array (mendukung JSON atau string)
+     */
+    public function getLinkPublikasiArrayAttribute(): array
+    {
+        if (empty($this->link_publikasi)) {
+            return [];
+        }
+
+        $val = trim($this->link_publikasi);
+
+        if (str_starts_with($val, '[') && str_ends_with($val, ']')) {
+            $decoded = json_decode($val, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                return array_values(array_filter(array_map('trim', $decoded)));
+            }
+        }
+
+        $lines = preg_split('/[\r\n,]+/', $val);
+        $lines = array_values(array_filter(array_map('trim', $lines)));
+
+        return !empty($lines) ? $lines : [$val];
+    }
 }

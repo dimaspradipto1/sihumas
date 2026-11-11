@@ -36,7 +36,18 @@ class KotakMasukPengajuanDataTable extends DataTable
                 if ($status === 'pending') {
                     return '<span class="badge bg-warning px-2 rounded-pill px-3 py-2">Pending <i class="fa-solid fa-spinner"></i></span>';
                 } elseif ($status === 'diterima') {
-                    return '<span class="badge bg-success text-white px-2 rounded-pill px-3 py-2">Diterima <i class="fa-solid fa-check"></i></span>';
+                    $badge = '<span class="badge bg-success text-white px-2 rounded-pill px-3 py-2">Diterima <i class="fa-solid fa-check"></i></span>';
+                    $pub = $kotakMasukPengajuan->pengajuan?->publikasi;
+                    if ($pub) {
+                        $target = !empty($pub->slug) ? $pub->slug : $pub->id;
+                        $hasReport = !empty($pub->link_dokumentasi) || !empty($pub->link_publikasi) || !empty($pub->upload_laporan);
+                        if ($hasReport) {
+                            $badge .= '<br><a href="' . route('publikasi.show', $target) . '" class="badge bg-info text-white mt-1 text-decoration-none" title="Lihat Laporan"><i class="fa-solid fa-check-double me-1"></i> Dilaporkan</a>';
+                        } else {
+                            $badge .= '<br><a href="' . route('publikasi.edit', $target) . '" class="badge bg-primary text-white mt-1 text-decoration-none" title="Laporkan Kegiatan"><i class="fa-solid fa-file-pen me-1"></i> Laporkan</a>';
+                        }
+                    }
+                    return $badge;
                 } elseif ($status === 'ditolak') {
                     return '<span class="badge bg-danger text-white px-2 rounded-pill px-3 py-2">Ditolak <i class="fa-solid fa-xmark"></i></span>';
                 }
@@ -94,7 +105,7 @@ class KotakMasukPengajuanDataTable extends DataTable
 
         // Start a query to get the KotakMasukPengajuan data
         $query = $model->newQuery()
-            ->with(['pengajuan.user'])
+            ->with(['pengajuan.user', 'pengajuan.publikasi'])
             ->orderBy('created_at', 'desc');
 
         // Jika Petugas Humas (bukan Super Admin), HANYA tampilkan data pengajuan yang ditugaskan kepada dirinya sebagai PIC

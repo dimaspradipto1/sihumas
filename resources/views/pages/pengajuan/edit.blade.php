@@ -465,6 +465,13 @@
                                                 </svg>
                                                 UPDATE
                                             </button>
+
+                                            @if ($pengajuan->status == 'diterima' && $pengajuan->publikasi)
+                                                <a href="{{ route('publikasi.edit', $pengajuan->publikasi->slug ?? $pengajuan->publikasi->id) }}" class="btn btn-success text-white d-inline-flex align-items-center">
+                                                    <i class="fa-solid fa-file-pen me-2"></i> Laporkan Kegiatan
+                                                </a>
+                                            @endif
+
                                             <a href="{{ route('pengajuan.index') }}" class="btn btn-danger d-inline-flex align-items-center">
                                                 <i class="fa-solid fa-right-from-bracket me-2"></i> BACK
                                             </a>

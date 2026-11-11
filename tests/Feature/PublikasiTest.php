@@ -80,4 +80,92 @@ class PublikasiTest extends TestCase
         $urlEdit = route('publikasi.edit', $publikasi);
         $this->assertEquals(url('/publikasi/999/edit'), $urlEdit);
     }
+
+    public function test_publikasi_update_strips_html_tags_and_handles_multiple_links(): void
+    {
+        $admin = User::factory()->create(['is_admin' => 1]);
+
+        $pengajuan = Pengajuan::create([
+            'user_id' => $admin->id,
+            'nama_kegiatan' => 'Seminar Nasional Publikasi',
+            'unit_kegiatan' => 'Fakultas Sains dan Teknologi',
+            'tempat_kegiatan' => 'Auditorium UIS',
+            'tgl_awal' => '2026-11-15',
+            'tgl_selesai' => '2026-11-15',
+            'jam_kegiatan' => '08:00',
+            'waktu_selesai' => '12:00',
+            'status' => 'diterima',
+        ]);
+
+        $publikasi = Publikasi::create([
+            'user_id' => $admin->id,
+            'pengajuan_id' => $pengajuan->id,
+        ]);
+
+        $response = $this->actingAs($admin)->put(route('publikasi.update', $publikasi), [
+            'upload_laporan' => '<p>Kegiatan seminar <strong>berjalan sukses</strong> dan dihadiri 100 peserta.<br>Terima kasih.</p>',
+            'link_dokumentasi' => 'https://drive.google.com/drive/folders/test12345',
+            'link_publikasi' => [
+                'https://uis.ac.id/berita/seminar-nasional',
+                'https://instagram.com/p/seminar-uis',
+            ],
+        ]);
+
+        $response->assertRedirect(route('publikasi.index'));
+
+        $publikasi->refresh();
+
+        // Verifikasi tag HTML dihapus bersih
+        $this->assertStringNotContainsString('<p>', $publikasi->upload_laporan);
+        $this->assertStringNotContainsString('<strong>', $publikasi->upload_laporan);
+        $this->assertStringContainsString('Kegiatan seminar berjalan sukses dan dihadiri 100 peserta.', $publikasi->upload_laporan);
+
+        // Verifikasi link publikasi tersimpan dalam array / JSON
+        $this->assertCount(2, $publikasi->link_publikasi_array);
+        $this->assertEquals('https://uis.ac.id/berita/seminar-nasional', $publikasi->link_publikasi_array[0]);
+        $this->assertEquals('https://instagram.com/p/seminar-uis', $publikasi->link_publikasi_array[1]);
+
+        // Verifikasi tampilan show menampilkan link-link tersebut
+        $responseShow = $this->actingAs($admin)->get(route('publikasi.show', $publikasi));
+        $responseShow->assertStatus(200);
+        $responseShow->assertSee('https://uis.ac.id/berita/seminar-nasional');
+        $responseShow->assertSee('https://instagram.com/p/seminar-uis');
+    }
+
+    public function test_humas_can_access_pelaporan_for_assigned_pengajuan(): void
+    {
+        $humas = User::factory()->create([
+            'is_admin' => 0,
+            'is_humas' => 1,
+            'name' => 'Ferry Humas',
+            'no_wa' => '081234567890',
+        ]);
+
+        $pengajuan = Pengajuan::create([
+            'user_id' => $humas->id,
+            'nama_kegiatan' => 'Peliputan Acara Dies Natalis',
+            'unit_kegiatan' => 'Humas Universitas',
+            'tempat_kegiatan' => 'Gedung Rektorat UIS',
+            'tgl_awal' => '2026-11-20',
+            'tgl_selesai' => '2026-11-20',
+            'jam_kegiatan' => '08:00',
+            'waktu_selesai' => '14:00',
+            'petugas_ditugaskan' => 'Ferry Humas',
+            'no_wa_tujuan' => '081234567890',
+            'pic_petugas' => json_encode([['name' => 'Ferry Humas', 'no_wa' => '081234567890']]),
+            'status' => 'diterima',
+        ]);
+
+        $publikasi = Publikasi::create([
+            'user_id' => $humas->id,
+            'pengajuan_id' => $pengajuan->id,
+        ]);
+
+        $response = $this->actingAs($humas)->get(route('publikasi.index'));
+        $response->assertStatus(200);
+
+        $responseEdit = $this->actingAs($humas)->get(route('publikasi.edit', $publikasi));
+        $responseEdit->assertStatus(200);
+        $responseEdit->assertSee('Peliputan Acara Dies Natalis');
+    }
 }

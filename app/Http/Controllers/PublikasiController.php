@@ -38,9 +38,28 @@ class PublikasiController extends Controller
         $data['tahun_akademik_id'] = $request->tahun_akademik_id;
         $data['user_id'] = auth()->user()->id;
         $data['pengajuan_id'] = $request->pengajuan_id;
-        $data['upload_laporan'] = $request->upload_laporan;
-        $data['link_dokumentasi'] = $request->link_dokumentasi;
-        $data['link_publikasi'] = $request->link_publikasi;
+
+        // Bersihkan tag HTML dari laporan (TinyMCE)
+        $rawLaporan = (string) $request->input('upload_laporan', '');
+        $cleanLaporan = preg_replace('/<br\s*\/?>/i', "\n", $rawLaporan);
+        $cleanLaporan = preg_replace('/<\/(p|div|h[1-6]|li)>/i', "\n", $cleanLaporan);
+        $cleanLaporan = html_entity_decode(strip_tags($cleanLaporan), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $cleanLaporan = preg_replace("/[\r\n]{3,}/", "\n\n", $cleanLaporan);
+        $data['upload_laporan'] = trim($cleanLaporan) !== '' ? trim($cleanLaporan) : null;
+
+        $data['link_dokumentasi'] = !empty(trim($request->input('link_dokumentasi', ''))) ? trim($request->input('link_dokumentasi')) : null;
+
+        // Simpan multiple link publikasi sebagai JSON
+        $links = $request->input('link_publikasi');
+        if (is_array($links)) {
+            $filteredLinks = array_values(array_filter(array_map('trim', $links)));
+            $data['link_publikasi'] = !empty($filteredLinks) ? json_encode($filteredLinks) : null;
+        } elseif (is_string($links)) {
+            $trimmed = trim($links);
+            $data['link_publikasi'] = $trimmed !== '' ? $trimmed : null;
+        } else {
+            $data['link_publikasi'] = null;
+        }
 
         // Membuat Publikasi terlebih dahulu
         $publikasi = Publikasi::create($data);
@@ -48,9 +67,9 @@ class PublikasiController extends Controller
         // Kemudian buat LaporanPublikasi dengan menggunakan ID dari Publikasi yang sudah dibuat
         LaporanPublikasi::create([
             'publikasi_id' => $publikasi->id,
-            'user_id' => auth()->user()->id,  // Mendapatkan ID user yang login
+            'user_id' => auth()->user()->id,
             'nama_kegiatan' => $request->nama_kegiatan,
-            'link_dokumentasi' => $request->link_dokumentasi,
+            'link_dokumentasi' => $data['link_dokumentasi'],
         ]);
 
         Alert::success('Success, Data Successfully added')->toToast()->autoclose();
@@ -85,12 +104,45 @@ class PublikasiController extends Controller
     {
         $data = $request->only([
             'tahun_akademik_id',
-            'upload_laporan',
-            'link_dokumentasi',
-            'link_publikasi',
         ]);
 
+        // Bersihkan tag HTML dari laporan (TinyMCE)
+        if ($request->has('upload_laporan')) {
+            $rawLaporan = (string) $request->input('upload_laporan', '');
+            $cleanLaporan = preg_replace('/<br\s*\/?>/i', "\n", $rawLaporan);
+            $cleanLaporan = preg_replace('/<\/(p|div|h[1-6]|li)>/i', "\n", $cleanLaporan);
+            $cleanLaporan = html_entity_decode(strip_tags($cleanLaporan), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            $cleanLaporan = preg_replace("/[\r\n]{3,}/", "\n\n", $cleanLaporan);
+            $data['upload_laporan'] = trim($cleanLaporan) !== '' ? trim($cleanLaporan) : null;
+        }
+
+        if ($request->has('link_dokumentasi')) {
+            $data['link_dokumentasi'] = !empty(trim($request->input('link_dokumentasi', ''))) ? trim($request->input('link_dokumentasi')) : null;
+        }
+
+        // Simpan multiple link publikasi sebagai JSON
+        if ($request->has('link_publikasi')) {
+            $links = $request->input('link_publikasi');
+            if (is_array($links)) {
+                $filteredLinks = array_values(array_filter(array_map('trim', $links)));
+                $data['link_publikasi'] = !empty($filteredLinks) ? json_encode($filteredLinks) : null;
+            } elseif (is_string($links)) {
+                $trimmed = trim($links);
+                $data['link_publikasi'] = $trimmed !== '' ? $trimmed : null;
+            } else {
+                $data['link_publikasi'] = null;
+            }
+        }
+
         $publikasi->update($data);
+
+        // Update link dokumentasi di LaporanPublikasi jika ada
+        if (isset($data['link_dokumentasi']) && $publikasi->laporanPublikasi) {
+            $publikasi->laporanPublikasi->update([
+                'link_dokumentasi' => $data['link_dokumentasi'],
+            ]);
+        }
+
         Alert::success('Success, Data Successfully Updated')->toToast()->autoclose(3000);
         return redirect()->route('publikasi.index');
     }
