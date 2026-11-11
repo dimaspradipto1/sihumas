@@ -130,7 +130,12 @@ class Publikasi extends Model
 
     public function needsRevision(): bool
     {
-        return $this->status_validasi === 'perlu_revisi';
+        return $this->status_validasi === 'perlu_revisi' || $this->status_validasi === 'ditolak';
+    }
+
+    public function isDitolak(): bool
+    {
+        return $this->status_validasi === 'ditolak';
     }
 
     public function isBelumDilaporkan(): bool

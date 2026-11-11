@@ -33,6 +33,9 @@ class LaporanPublikasiDataTable extends DataTable
                 } elseif ($status === 'perlu_revisi') {
                     $catatan = !empty($row->publikasi?->catatan_validasi) ? ' title="Catatan: ' . e($row->publikasi->catatan_validasi) . '"' : '';
                     return '<span class="badge bg-danger text-white px-2 py-1"' . $catatan . '><i class="fa-solid fa-triangle-exclamation me-1"></i> Perlu Revisi</span>';
+                } elseif ($status === 'ditolak') {
+                    $catatan = !empty($row->publikasi?->catatan_validasi) ? ' title="Catatan: ' . e($row->publikasi->catatan_validasi) . '"' : '';
+                    return '<span class="badge bg-danger text-white px-2 py-1"' . $catatan . '><i class="fa-solid fa-circle-xmark me-1"></i> Ditolak</span>';
                 }
                 return '<span class="badge bg-secondary text-white px-2 py-1"><i class="fa-solid fa-hourglass-start me-1"></i> Belum Dilaporkan</span>';
             })
@@ -83,21 +86,22 @@ class LaporanPublikasiDataTable extends DataTable
                 $html .= '<a href="' . route('publikasi.show', $target) . '" class="btn btn-sm btn-primary text-white px-2 py-1" title="Lihat Detail"><i class="fa-solid fa-eye"></i></a>';
 
                 if (auth()->check() && auth()->user()->is_admin) {
-                    $pengajuan = $pub->pengajuan ?? $row->pengajuan;
-                    $kegiatan = e($pengajuan?->nama_kegiatan ?? '-');
-                    $status = $pub->status_validasi ?? 'menunggu_validasi';
-                    $catatan = e($pub->catatan_validasi ?? '');
                     $actionUrl = route('publikasi.validasi', $target);
-                    $showUrl = route('publikasi.show', $target);
 
-                    $html .= '<button type="button" class="btn btn-sm btn-success text-white px-2 py-1 btn-modal-validasi" '
-                          . 'data-url="' . $actionUrl . '" '
-                          . 'data-kegiatan="' . $kegiatan . '" '
-                          . 'data-status="' . $status . '" '
-                          . 'data-catatan="' . $catatan . '" '
-                          . 'data-show="' . $showUrl . '" '
-                          . 'title="Validasi Laporan">'
-                          . '<i class="fa-solid fa-clipboard-check"></i></button>';
+                    // 1. Tombol Validasi / Setujui Langsung (Tanpa Modal)
+                    $html .= '<form action="' . $actionUrl . '" method="POST" style="display: inline" onsubmit="return confirm(\'Setujui dan validasi laporan kegiatan ini?\')">'
+                           . csrf_field()
+                           . '<input type="hidden" name="status_validasi" value="disetujui">'
+                           . '<button type="submit" class="btn btn-sm btn-success text-white px-2 py-1" title="Validasi / Setujui Laporan">'
+                           . '<i class="fa-solid fa-clipboard-check"></i></button></form>';
+
+                    // 2. Tombol Menolak Validasi Langsung
+                    $html .= '<form action="' . $actionUrl . '" method="POST" style="display: inline" onsubmit="var c = prompt(\'Tolak validasi laporan kegiatan ini?\\nMasukkan catatan / instruksi revisi untuk PIC (opsional):\'); if (c === null) return false; this.querySelector(\'input[name=catatan_validasi]\').value = c; return true;">'
+                           . csrf_field()
+                           . '<input type="hidden" name="status_validasi" value="ditolak">'
+                           . '<input type="hidden" name="catatan_validasi" value="">'
+                           . '<button type="submit" class="btn btn-sm btn-danger text-white px-2 py-1" title="Tolak Validasi">'
+                           . '<i class="fa-solid fa-clipboard-xmark"></i></button></form>';
                 }
 
                 $html .= '<a href="' . route('publikasi.edit', $target) . '" class="btn btn-sm btn-warning text-white px-2 py-1" title="Edit / Laporkan"><i class="fa-solid fa-pen-to-square"></i></a>';

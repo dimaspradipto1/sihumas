@@ -30,11 +30,11 @@
 
         <div class="row">
             <div class="col-12 mb-4">
-                @if ($publikasi->status_validasi === 'perlu_revisi')
+                @if ($publikasi->status_validasi === 'perlu_revisi' || $publikasi->status_validasi === 'ditolak')
                     <div class="alert alert-danger d-flex align-items-center shadow-sm mb-4" role="alert">
                         <i class="fa-solid fa-triangle-exclamation fa-2x me-3 text-danger"></i>
                         <div>
-                            <h6 class="alert-heading fw-bold mb-1">Catatan Revisi dari Super Admin:</h6>
+                            <h6 class="alert-heading fw-bold mb-1">{{ $publikasi->status_validasi === 'ditolak' ? 'Catatan Penolakan dari Super Admin:' : 'Catatan Revisi dari Super Admin:' }}</h6>
                             <p class="mb-0 text-danger fw-semibold">
                                 {{ $publikasi->catatan_validasi ?? 'Mohon periksa dan perbaiki kelengkapan dokumentasi atau rilis laporan kegiatan Anda.' }}
                             </p>
@@ -214,6 +214,9 @@
                                                     <select name="status_validasi" id="status_validasi" class="form-select">
                                                         <option value="disetujui" {{ old('status_validasi', $publikasi->status_validasi) == 'disetujui' ? 'selected' : '' }}>
                                                             ✅ Disetujui / Valid
+                                                        </option>
+                                                        <option value="ditolak" {{ old('status_validasi', $publikasi->status_validasi) == 'ditolak' ? 'selected' : '' }}>
+                                                            ❌ Ditolak (Kembalikan ke PIC)
                                                         </option>
                                                         <option value="perlu_revisi" {{ old('status_validasi', $publikasi->status_validasi) == 'perlu_revisi' ? 'selected' : '' }}>
                                                             ⚠️ Perlu Revisi (Kembalikan ke PIC)

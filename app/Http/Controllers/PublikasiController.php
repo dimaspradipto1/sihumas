@@ -170,7 +170,7 @@ class PublikasiController extends Controller
         abort_unless(auth()->user()->is_admin, 403, 'Hanya Super Admin yang berhak memvalidasi pelaporan kegiatan.');
 
         $request->validate([
-            'status_validasi'  => 'required|in:disetujui,perlu_revisi,menunggu_validasi',
+            'status_validasi'  => 'required|in:disetujui,perlu_revisi,ditolak,menunggu_validasi',
             'catatan_validasi' => 'nullable|string|max:1000',
         ]);
 
@@ -185,6 +185,7 @@ class PublikasiController extends Controller
 
         $statusText = match ($statusValidasi) {
             'disetujui' => 'disetujui / valid',
+            'ditolak' => 'ditolak',
             'perlu_revisi' => 'dikembalikan untuk revisi ke PIC Humas',
             default => 'diatur ke menunggu validasi',
         };

@@ -32,11 +32,11 @@
     </div>
 
     <!-- Banner Status Validasi -->
-    @if ($publikasi->status_validasi === 'perlu_revisi')
+    @if ($publikasi->status_validasi === 'perlu_revisi' || $publikasi->status_validasi === 'ditolak')
         <div class="alert alert-danger d-flex align-items-center shadow-sm mb-4" role="alert">
             <i class="fa-solid fa-triangle-exclamation fa-2x me-3 text-danger"></i>
             <div class="flex-grow-1">
-                <h6 class="alert-heading fw-bold mb-1">Perlu Revisi dari Admin</h6>
+                <h6 class="alert-heading fw-bold mb-1">{{ $publikasi->status_validasi === 'ditolak' ? 'Laporan Ditolak oleh Admin' : 'Perlu Revisi dari Admin' }}</h6>
                 <p class="mb-0 text-danger fw-semibold">
                     {{ $publikasi->catatan_validasi ?? 'Mohon periksa dan perbaiki kelengkapan dokumentasi atau rilis laporan kegiatan.' }}
                 </p>
@@ -83,6 +83,8 @@
                             <span class="badge bg-success text-white px-3 py-2"><i class="fa-solid fa-circle-check me-1"></i> Disetujui</span>
                         @elseif ($publikasi->status_validasi === 'menunggu_validasi')
                             <span class="badge bg-warning text-dark px-3 py-2"><i class="fa-solid fa-clock me-1"></i> Menunggu Validasi</span>
+                        @elseif ($publikasi->status_validasi === 'ditolak')
+                            <span class="badge bg-danger text-white px-3 py-2"><i class="fa-solid fa-circle-xmark me-1"></i> Ditolak</span>
                         @elseif ($publikasi->status_validasi === 'perlu_revisi')
                             <span class="badge bg-danger text-white px-3 py-2"><i class="fa-solid fa-triangle-exclamation me-1"></i> Perlu Revisi</span>
                         @else
@@ -246,6 +248,9 @@
                                 <select name="status_validasi" id="status_validasi_select" class="form-select" required>
                                     <option value="disetujui" {{ old('status_validasi', $publikasi->status_validasi) == 'disetujui' ? 'selected' : '' }}>
                                         Disetujui / Valid
+                                    </option>
+                                    <option value="ditolak" {{ old('status_validasi', $publikasi->status_validasi) == 'ditolak' ? 'selected' : '' }}>
+                                        Ditolak (Kembalikan ke PIC)
                                     </option>
                                     <option value="perlu_revisi" {{ old('status_validasi', $publikasi->status_validasi) == 'perlu_revisi' ? 'selected' : '' }}>
                                         Perlu Revisi (Kembalikan ke PIC)
