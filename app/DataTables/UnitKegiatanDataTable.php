@@ -82,7 +82,7 @@ class UnitKegiatanDataTable extends DataTable
         return [
              Column::make('DT_RowIndex')
                 ->title('NO')
-                ->width('60px')
+                ->width('6%')
                 ->addClass('text-center')
                 ->orderable(false)
                 ->searchable(false),
@@ -93,7 +93,7 @@ class UnitKegiatanDataTable extends DataTable
                   ->title('ACTION')
                   ->exportable(false)
                   ->printable(false)
-                  ->width('110px')
+                  ->width('12%')
                   ->addClass('text-center'),
         ];
     }

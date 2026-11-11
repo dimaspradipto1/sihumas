@@ -170,22 +170,22 @@ class KotakMasukPengajuanDataTable extends DataTable
                 ->addClass('text-center')
                 ->orderable(false)
                 ->searchable(false)
-                ->width('50px'),
+                ->width('4%'),
             Column::make('pengajuan.nama_kegiatan')
                 ->title('NAMA KEGIATAN')
                 ->addClass('text-start'),
             Column::make('pengajuan.tgl_awal')
                 ->title('TANGGAL KEGIATAN')
                 ->addClass('text-start')
-                ->width('160px'),
+                ->width('15%'),
             Column::make('pengajuan.tgl_selesai')
                 ->title('TANGGAL SELESAI')
                 ->addClass('text-start')
-                ->width('160px'),
+                ->width('15%'),
             Column::make('pengajuan.status')
                 ->title('STATUS PENGAJUAN')
                 ->addClass('text-center')
-                ->width('150px'),
+                ->width('14%'),
         ];
 
         // Hanya Super Admin yang melihat kolom Petugas / PIC (disembunyikan untuk Humas)
@@ -193,12 +193,13 @@ class KotakMasukPengajuanDataTable extends DataTable
             $columns[] = Column::make('pengajuan.petugas_ditugaskan')
                 ->title('Petugas / PIC')
                 ->addClass('text-center')
-                ->width('160px');
+                ->width('14%');
         }
 
         $columns[] = Column::make('pengajuan.user_id')
             ->title('SUBMIT PENGGUNA')
-            ->width('140px');
+            ->addClass('text-start')
+            ->width('13%');
 
         return $columns;
     }

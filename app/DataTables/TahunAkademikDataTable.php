@@ -93,14 +93,14 @@ class TahunAkademikDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::make('DT_RowIndex')->title('NO')->addClass('text-center')->width('60px')->orderable(false)->searchable(false),
+            Column::make('DT_RowIndex')->title('NO')->addClass('text-center')->width('6%')->orderable(false)->searchable(false),
             Column::make('tahun_akademik')->title('TAHUN AKADEMIK')->addClass('text-start'),
-            Column::make('is_active')->title('STATUS AKTIF')->addClass('text-center')->width('180px'),
+            Column::make('is_active')->title('STATUS AKTIF')->addClass('text-center')->width('18%'),
             Column::computed('action')
                   ->title('ACTION')
                   ->exportable(false)
                   ->printable(false)
-                  ->width('110px')
+                  ->width('12%')
                   ->addClass('text-center'),
         ];
     }

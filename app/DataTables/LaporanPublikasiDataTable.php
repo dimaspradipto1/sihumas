@@ -213,15 +213,15 @@ class LaporanPublikasiDataTable extends DataTable
         $isAdmin = auth()->check() && auth()->user()->is_admin;
 
         return [
-            Column::make('DT_RowIndex')->title('NO')->addClass('text-center')->orderable(false)->searchable(false)->width('45px'),
+            Column::make('DT_RowIndex')->title('NO')->addClass('text-center')->orderable(false)->searchable(false)->width('4%'),
             Column::make('nama_kegiatan')->data('nama_kegiatan')->name('pengajuan.nama_kegiatan')->title('NAMA KEGIATAN'),
-            Column::make('status_validasi')->name('publikasi.status_validasi')->title('STATUS VALIDASI')->width('130px')->addClass('text-center'),
-            Column::make('tgl_awal')->title('TANGGAL KEGIATAN')->orderable(false)->searchable(false)->width('145px'),
-            Column::make('tgl_akhir')->title('TANGGAL SELESAI')->orderable(false)->searchable(false)->width('145px'),
-            Column::make('link_dokumentasi')->title('DOKUMENTASI')->orderable(false)->searchable(false)->width('105px')->addClass('text-center'),
-            Column::make('link_publikasi')->title('LINK PUBLIKASI')->orderable(false)->searchable(false)->width('130px'),
-            Column::make('user_id')->name('user.name')->title('SUBMIT PENGGUNA')->visible($isAdmin)->width('130px'),
-            Column::computed('action')->title('AKSI')->exportable(false)->printable(false)->width($isAdmin ? '135px' : '90px')->addClass('text-center'),
+            Column::make('status_validasi')->name('publikasi.status_validasi')->title('STATUS VALIDASI')->width('12%')->addClass('text-center'),
+            Column::make('tgl_awal')->title('TANGGAL KEGIATAN')->orderable(false)->searchable(false)->width('13%'),
+            Column::make('tgl_akhir')->title('TANGGAL SELESAI')->orderable(false)->searchable(false)->width('13%'),
+            Column::make('link_dokumentasi')->title('DOKUMENTASI')->orderable(false)->searchable(false)->width('9%')->addClass('text-center'),
+            Column::make('link_publikasi')->title('LINK PUBLIKASI')->orderable(false)->searchable(false)->width('11%'),
+            Column::make('user_id')->name('user.name')->title('SUBMIT PENGGUNA')->visible($isAdmin)->width('12%'),
+            Column::computed('action')->title('AKSI')->exportable(false)->printable(false)->width($isAdmin ? '12%' : '8%')->addClass('text-center'),
         ];
     }
 

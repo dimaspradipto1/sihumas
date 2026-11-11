@@ -218,13 +218,15 @@ class PublikasiDataTable extends DataTable
      */
     public function getColumns(): array
     {
+        $isAdmin = auth()->check() && auth()->user()->is_admin;
+
         return [
             Column::make('DT_RowIndex')
                 ->title('NO')
                 ->addClass('text-center')
                 ->orderable(false)
                 ->searchable(false)
-                ->width('45px'),
+                ->width('4%'),
             Column::make('nama_kegiatan')
                 ->data('nama_kegiatan')
                 ->name('pengajuan.nama_kegiatan')
@@ -232,39 +234,39 @@ class PublikasiDataTable extends DataTable
             Column::make('status_validasi')
                 ->name('publikasis.status_validasi')
                 ->title('STATUS VALIDASI')
-                ->width('130px')
+                ->width('12%')
                 ->addClass('text-center'),
             Column::make('tgl_awal')
                 ->title('TANGGAL KEGIATAN')
                 ->orderable(false)
                 ->searchable(false)
-                ->width('145px'),
+                ->width('13%'),
             Column::make('tgl_akhir')
                 ->title('TANGGAL SELESAI')
                 ->orderable(false)
                 ->searchable(false)
-                ->width('145px'),
+                ->width('13%'),
             Column::make('link_dokumentasi')
                 ->title('DOKUMENTASI')
                 ->orderable(false)
                 ->searchable(false)
-                ->width('105px')
+                ->width('9%')
                 ->addClass('text-center'),
             Column::make('link_publikasi')
                 ->title('LINK PUBLIKASI')
                 ->orderable(false)
                 ->searchable(false)
-                ->width('130px'),
+                ->width('11%'),
             Column::make('user_id')
                 ->name('publikasis.user_id')
                 ->title('SUBMIT PENGGUNA')
-                ->visible(auth()->user()->is_admin)
-                ->width('130px'),
+                ->visible($isAdmin)
+                ->width('12%'),
             Column::computed('action')
                 ->title('AKSI')
                 ->exportable(false)
                 ->printable(false)
-                ->width(auth()->user()->is_admin ? '135px' : '90px')
+                ->width($isAdmin ? '12%' : '8%')
                 ->addClass('text-center'),
         ];
     }

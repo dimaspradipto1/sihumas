@@ -109,17 +109,17 @@ class UsersDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::make('DT_RowIndex')->title('No')->addClass('text-center')->width('50px')->orderable(false)->searchable(false),
+            Column::make('DT_RowIndex')->title('No')->addClass('text-center')->width('5%')->orderable(false)->searchable(false),
             Column::make('name')->title('Nama Pengguna')->addClass('text-start'),
-            Column::make('email')->title('Email')->addClass('text-start'),
-            Column::make('no_wa')->title('No. WhatsApp')->addClass('text-start')->width('140px'),
-            Column::make('fakultas')->title('Unit')->addClass('text-start')->width('150px'),
-            Column::make('role')->title('Role Akses')->orderable(false)->searchable(false)->addClass('text-center')->width('120px'),
+            Column::make('email')->title('Email')->addClass('text-start')->width('20%'),
+            Column::make('no_wa')->title('No. WhatsApp')->addClass('text-start')->width('13%'),
+            Column::make('fakultas')->title('Unit')->addClass('text-start')->width('14%'),
+            Column::make('role')->title('Role Akses')->orderable(false)->searchable(false)->addClass('text-center')->width('12%'),
             Column::computed('action')
                 ->title('Aksi')
                 ->exportable(false)
                 ->printable(false)
-                ->width('120px')
+                ->width('11%')
                 ->addClass('text-center'),
         ];
     }

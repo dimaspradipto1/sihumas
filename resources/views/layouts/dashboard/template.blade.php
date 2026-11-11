@@ -77,33 +77,61 @@
         }
 
         /* Scroll horizontal hanya diizinkan di body tabel (di bawah baris data) */
-        div.dataTables_scrollBody,
-        div.dt-scroll-body,
-        .dataTables_wrapper .dataTables_scrollBody,
-        .dt-container .dt-scroll-body {
-            overflow-x: auto !important;
-            overflow-y: visible !important;
-            margin-bottom: 0.5rem;
-            width: 100% !important;
+        /* Pastikan card tidak pernah bocor / overflow */
+        .card {
+            overflow: hidden;
         }
 
-        /* Hilangkan pembatasan lebar 100% dari Bootstrap pada DataTables scrollX agar kolom selaras */
-        .dt-container .dt-scroll-head table,
-        .dt-container .dt-scroll-body table,
-        .dataTables_wrapper .dataTables_scrollHead table,
-        .dataTables_wrapper .dataTables_scrollBody table {
-            min-width: 100% !important;
+        .card-body > .table-responsive {
+            overflow-x: auto !important;
+            scrollbar-width: thin;
+        }
+
+        /* Styling tabel presisi & compact agar pas di 1 layar tanpa overflow */
+        .table-responsive .table {
+            width: 100% !important;
+            font-size: 0.8125rem !important; /* ~13px */
+            table-layout: auto;
             margin-bottom: 0 !important;
         }
 
-        .dt-container .dt-scroll-headInner,
-        .dataTables_wrapper .dataTables_scrollHeadInner {
-            box-sizing: content-box !important;
+        .table-responsive .table th {
+            font-size: 0.725rem !important; /* ~11.5px */
+            font-weight: 700 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.04em !important;
+            padding: 0.5rem 0.4rem !important;
+            vertical-align: middle !important;
+            white-space: nowrap !important;
+            color: #374151 !important;
+            background-color: #f9fafb !important;
+            border-bottom: 2px solid #e5e7eb !important;
         }
 
-        /* Hindari container pembungkus card membuat scrollbar di bawah pagination */
-        .card-body > .table-responsive {
-            overflow-x: visible !important;
+        .table-responsive .table td {
+            font-size: 0.8125rem !important; /* ~13px */
+            padding: 0.45rem 0.4rem !important;
+            vertical-align: middle !important;
+            line-height: 1.35 !important;
+        }
+
+        /* Compact badges di dalam tabel */
+        .table-responsive .table .badge {
+            font-size: 0.72rem !important;
+            padding: 0.25rem 0.5rem !important;
+            font-weight: 600 !important;
+            letter-spacing: 0.02em !important;
+            line-height: 1.2 !important;
+        }
+
+        /* Compact action buttons di dalam tabel */
+        .table-responsive .table .btn-sm,
+        .table-responsive .table .btn-xs,
+        .table-responsive .table .btn {
+            font-size: 0.75rem !important;
+            padding: 0.2rem 0.45rem !important;
+            line-height: 1.2 !important;
+            border-radius: 0.375rem !important;
         }
 
         /* Styling Select2 agar serasi dengan tema Volt Dashboard */
