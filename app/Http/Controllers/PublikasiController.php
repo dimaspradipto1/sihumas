@@ -65,11 +65,13 @@ class PublikasiController extends Controller
         $publikasi = Publikasi::create($data);
 
         // Kemudian buat LaporanPublikasi dengan menggunakan ID dari Publikasi yang sudah dibuat
+        $pengajuan = Pengajuan::find($request->pengajuan_id);
         LaporanPublikasi::create([
             'publikasi_id' => $publikasi->id,
             'user_id' => auth()->user()->id,
-            'nama_kegiatan' => $request->nama_kegiatan,
-            'link_dokumentasi' => $data['link_dokumentasi'],
+            'pengajuan_id' => $request->pengajuan_id,
+            'tgl_awal' => $pengajuan?->tgl_awal,
+            'tgl_selesai' => $pengajuan?->tgl_selesai,
         ]);
 
         Alert::success('Success, Data Successfully added')->toToast()->autoclose();
@@ -135,13 +137,6 @@ class PublikasiController extends Controller
         }
 
         $publikasi->update($data);
-
-        // Update link dokumentasi di LaporanPublikasi jika ada
-        if (isset($data['link_dokumentasi']) && $publikasi->laporanPublikasi) {
-            $publikasi->laporanPublikasi->update([
-                'link_dokumentasi' => $data['link_dokumentasi'],
-            ]);
-        }
 
         Alert::success('Success, Data Successfully Updated')->toToast()->autoclose(3000);
         return redirect()->route('publikasi.index');

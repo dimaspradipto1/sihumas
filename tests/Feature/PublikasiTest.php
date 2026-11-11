@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\LaporanPublikasi;
 use App\Models\Pengajuan;
 use App\Models\Publikasi;
 use App\Models\User;
@@ -100,6 +101,14 @@ class PublikasiTest extends TestCase
         $publikasi = Publikasi::create([
             'user_id' => $admin->id,
             'pengajuan_id' => $pengajuan->id,
+        ]);
+
+        LaporanPublikasi::create([
+            'user_id' => $admin->id,
+            'publikasi_id' => $publikasi->id,
+            'pengajuan_id' => $pengajuan->id,
+            'tgl_awal' => $pengajuan->tgl_awal,
+            'tgl_selesai' => $pengajuan->tgl_selesai,
         ]);
 
         $response = $this->actingAs($admin)->put(route('publikasi.update', $publikasi), [
