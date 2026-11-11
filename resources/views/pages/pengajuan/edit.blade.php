@@ -121,13 +121,13 @@
                                 </div>
 
                                 <div class="row mb-4">
-                                    <!-- Upload File Dokumen -->
+                                    <!-- Upload Dokumen Pendukung -->
                                     <div class="col-md-6 mb-3 mb-md-0">
-                                        <label for="upload_file" class="text-capitalize fw-bold">Upload File / Berkas Lampiran <span
+                                        <label for="upload_file" class="text-capitalize fw-bold">Upload Dokumen Pendukung <span
                                                 class="text-muted small fw-normal">(PDF, DOC, DOCX, XLS, ZIP - Maks. 10MB)</span></label>
                                         @if ($pengajuan->upload_file)
                                             <div class="mb-2 p-2 bg-light rounded border d-flex align-items-center justify-content-between">
-                                                <span class="small text-truncate me-2"><i class="fa-solid fa-file-lines text-primary me-1"></i> File saat ini: <strong>{{ basename($pengajuan->upload_file) }}</strong></span>
+                                                <span class="small text-truncate me-2"><i class="fa-solid fa-file-lines text-primary me-1"></i> File saat ini: <strong>Dokumen Pendukung</strong></span>
                                                 <a href="{{ asset('storage/' . $pengajuan->upload_file) }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2">
                                                     <i class="fa-solid fa-download"></i> Unduh
                                                 </a>
@@ -138,19 +138,19 @@
                                             <input type="file" name="upload_file" id="upload_file" class="form-control"
                                                 accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar">
                                         </div>
-                                        <small class="text-muted">Biarkan kosong jika tidak ingin mengubah file lampiran.</small>
+                                        <small class="text-muted">Biarkan kosong jika tidak ingin mengubah dokumen pendukung.</small>
                                     </div>
 
-                                    <!-- Upload Gambar / PNG -->
+                                    <!-- Upload Bahan Materi -->
                                     <div class="col-md-6">
-                                        <label for="upload_png" class="text-capitalize fw-bold">Upload Gambar / Desain <span
+                                        <label for="upload_png" class="text-capitalize fw-bold">Upload Bahan Materi <span
                                                 class="text-muted small fw-normal">(Format PNG, JPG, JPEG, WEBP - Maks. 5MB)</span></label>
                                         @if ($pengajuan->upload_png)
                                             <div class="mb-2">
-                                                <p class="text-xs text-muted mb-1">Gambar saat ini:</p>
+                                                <p class="text-xs text-muted mb-1">Bahan materi saat ini:</p>
                                                 <div class="border rounded p-1 bg-light d-inline-block shadow-sm">
                                                     <a href="{{ asset('storage/' . $pengajuan->upload_png) }}" target="_blank">
-                                                        <img src="{{ asset('storage/' . $pengajuan->upload_png) }}" alt="Current Image"
+                                                        <img src="{{ asset('storage/' . $pengajuan->upload_png) }}" alt="Bahan Materi"
                                                             class="img-fluid rounded" style="max-height: 120px; object-fit: contain;">
                                                     </a>
                                                 </div>
@@ -161,9 +161,9 @@
                                             <input type="file" name="upload_png" id="upload_png" class="form-control"
                                                 accept=".png,.jpg,.jpeg,.webp" onchange="previewImageEdit(this)">
                                         </div>
-                                        <small class="text-muted">Biarkan kosong jika tidak ingin mengubah gambar/desain.</small>
+                                        <small class="text-muted">Biarkan kosong jika tidak ingin mengubah bahan materi.</small>
                                         <div id="imagePreviewContainerEdit" class="mt-3 d-none">
-                                            <p class="text-xs text-muted mb-1 fw-bold">Pratinjau Gambar Baru:</p>
+                                            <p class="text-xs text-muted mb-1 fw-bold">Pratinjau Bahan Materi Baru:</p>
                                             <div class="border rounded p-2 bg-light d-inline-block shadow-sm">
                                                 <img id="imagePreviewEdit" src="#" alt="Preview"
                                                     class="img-fluid rounded" style="max-height: 200px; object-fit: contain;">
@@ -247,14 +247,20 @@
                                                         <th class="ps-3">Tanggal Kegiatan</th>
                                                         <td>
                                                             @if (Auth::user()->is_admin)
-                                                                <div class="row g-2">
-                                                                    <div class="col-6">
-                                                                        <small class="text-muted d-block">Mulai:</small>
-                                                                        <input type="date" name="tgl_awal" id="tgl_awal" class="form-control form-control-sm" value="{{ $pengajuan->tgl_awal }}">
-                                                                    </div>
-                                                                    <div class="col-6">
-                                                                        <small class="text-muted d-block">Selesai:</small>
-                                                                        <input type="date" name="tgl_selesai" id="tgl_selesai" class="form-control form-control-sm" value="{{ $pengajuan->tgl_selesai }}">
+                                                                <div class="p-2 bg-light border rounded">
+                                                                    <div class="row g-2">
+                                                                        <div class="col-12 col-sm-6">
+                                                                            <label for="tgl_awal" class="form-label small text-muted mb-1 fw-bold">
+                                                                                <i class="fa-regular fa-calendar-check me-1 text-primary"></i> Mulai
+                                                                            </label>
+                                                                            <input type="date" name="tgl_awal" id="tgl_awal" class="form-control form-control-sm" value="{{ $pengajuan->tgl_awal }}">
+                                                                        </div>
+                                                                        <div class="col-12 col-sm-6">
+                                                                            <label for="tgl_selesai" class="form-label small text-muted mb-1 fw-bold">
+                                                                                <i class="fa-regular fa-calendar-check me-1 text-success"></i> Selesai
+                                                                            </label>
+                                                                            <input type="date" name="tgl_selesai" id="tgl_selesai" class="form-control form-control-sm" value="{{ $pengajuan->tgl_selesai }}">
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             @else
@@ -295,36 +301,91 @@
                                                     </tr>
                                                     <tr>
                                                         <th class="ps-3">Kebutuhan Perlengkapan</th>
-                                                        <td class="text-break">{{ trim(strip_tags($pengajuan->perlengkapan ?? '')) ?: '-' }}</td>
+                                                        <td class="text-break">{{ trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags($pengajuan->perlengkapan ?? ''), ENT_QUOTES | ENT_HTML5, 'UTF-8'))) ?: '-' }}</td>
                                                     </tr>
                                                     <tr>
-                                                        <th class="ps-3">File Lampiran</th>
+                                                        <th class="ps-3">Dokumen Pendukung</th>
                                                         <td>
                                                             @if ($pengajuan->upload_file)
-                                                                <a href="{{ asset('storage/' . $pengajuan->upload_file) }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                                                    <i class="fa-solid fa-file-arrow-down me-1"></i> Unduh File ({{ basename($pengajuan->upload_file) }})
+                                                                @php
+                                                                    $ext = strtoupper(pathinfo($pengajuan->upload_file, PATHINFO_EXTENSION));
+                                                                @endphp
+                                                                <a href="{{ asset('storage/' . $pengajuan->upload_file) }}" target="_blank" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center">
+                                                                    <i class="fa-solid fa-file-arrow-down me-2"></i> Unduh Dokumen Pendukung @if($ext)({{ $ext }})@endif
                                                                 </a>
                                                             @else
-                                                                <span class="text-muted">Tidak ada file</span>
+                                                                <span class="text-muted fst-italic">Tidak ada dokumen pendukung</span>
                                                             @endif
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <th class="ps-3">Gambar / Desain (PNG)</th>
+                                                        <th class="ps-3">Bahan Materi</th>
                                                         <td>
                                                             @if ($pengajuan->upload_png)
-                                                                <div>
-                                                                    <a href="{{ asset('storage/' . $pengajuan->upload_png) }}" target="_blank">
-                                                                        <img src="{{ asset('storage/' . $pengajuan->upload_png) }}" alt="Desain" class="img-thumbnail" style="max-height: 140px;">
+                                                                <div class="d-inline-block p-2 bg-light border rounded">
+                                                                    <a href="{{ asset('storage/' . $pengajuan->upload_png) }}" target="_blank" class="d-block mb-2">
+                                                                        <img src="{{ asset('storage/' . $pengajuan->upload_png) }}" alt="Bahan Materi" class="img-fluid rounded border shadow-sm" style="max-height: 150px; object-fit: contain;">
                                                                     </a>
-                                                                    <div class="mt-1">
-                                                                        <a href="{{ asset('storage/' . $pengajuan->upload_png) }}" target="_blank" class="btn btn-xs btn-outline-success">
-                                                                            <i class="fa-solid fa-eye me-1"></i> Lihat Gambar Penuh
+                                                                    <div>
+                                                                        <a href="{{ asset('storage/' . $pengajuan->upload_png) }}" target="_blank" class="btn btn-xs btn-outline-success d-inline-flex align-items-center">
+                                                                            <i class="fa-solid fa-eye me-1"></i> Buka Bahan Materi
                                                                         </a>
                                                                     </div>
                                                                 </div>
                                                             @else
-                                                                <span class="text-muted">Tidak ada gambar</span>
+                                                                <span class="text-muted fst-italic">Tidak ada bahan materi</span>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="ps-3">PIC yang Ditugaskan</th>
+                                                        <td>
+                                                            @php
+                                                                $picList = $pengajuan->pic_petugas ?? [];
+                                                                $picDesain = array_values(array_filter($picList, fn($p) => ($p['peran'] ?? 'desain') === 'desain'));
+                                                                $picDokumentasi = array_values(array_filter($picList, fn($p) => ($p['peran'] ?? '') === 'dokumentasi'));
+                                                            @endphp
+
+                                                            @if(!empty($picDesain) || !empty($picDokumentasi))
+                                                                @if(!empty($picDesain))
+                                                                    <div class="mb-2">
+                                                                        <span class="badge bg-primary text-white mb-1"><i class="fa-solid fa-palette me-1"></i> PIC Desain:</span>
+                                                                        <div class="d-flex flex-column gap-1 ms-1">
+                                                                            @foreach($picDesain as $pd)
+                                                                                @if(!empty($pd['nama']) || !empty($pd['no_wa']))
+                                                                                <div class="small text-gray-800">
+                                                                                    <strong>{{ $pd['nama'] ?: '-' }}</strong>
+                                                                                    @if(!empty($pd['no_wa'])) <small class="text-success ms-1"><i class="fa-brands fa-whatsapp"></i> {{ $pd['no_wa'] }}</small> @endif
+                                                                                    @if(!empty($pd['catatan'])) <div class="text-muted fst-italic ps-2 border-start border-2 border-primary mt-1"><i class="fa-solid fa-comment-dots me-1 text-primary"></i>Catatan: {{ $pd['catatan'] }}</div> @endif
+                                                                                </div>
+                                                                                @endif
+                                                                            @endforeach
+                                                                        </div>
+                                                                    </div>
+                                                                @endif
+
+                                                                @if(!empty($picDokumentasi))
+                                                                    <div>
+                                                                        <span class="badge bg-info text-white mb-1"><i class="fa-solid fa-camera me-1"></i> PIC Dokumentasi:</span>
+                                                                        <div class="d-flex flex-column gap-1 ms-1">
+                                                                            @foreach($picDokumentasi as $pdk)
+                                                                                @if(!empty($pdk['nama']) || !empty($pdk['no_wa']))
+                                                                                <div class="small text-gray-800">
+                                                                                    <strong>{{ $pdk['nama'] ?: '-' }}</strong>
+                                                                                    @if(!empty($pdk['no_wa'])) <small class="text-success ms-1"><i class="fa-brands fa-whatsapp"></i> {{ $pdk['no_wa'] }}</small> @endif
+                                                                                    @if(!empty($pdk['catatan'])) <div class="text-muted fst-italic ps-2 border-start border-2 border-info mt-1"><i class="fa-solid fa-comment-dots me-1 text-info"></i>Catatan: {{ $pdk['catatan'] }}</div> @endif
+                                                                                </div>
+                                                                                @endif
+                                                                            @endforeach
+                                                                        </div>
+                                                                    </div>
+                                                                @endif
+                                                            @elseif (!empty($pengajuan->petugas_ditugaskan))
+                                                                <span class="badge bg-primary text-white px-2 py-1">
+                                                                    <i class="fa-solid fa-user-check me-1"></i> {{ $pengajuan->petugas_ditugaskan }}
+                                                                </span>
+                                                            @else
+                                                                <span class="text-muted fst-italic">Belum ada PIC yang ditugaskan</span>
                                                             @endif
                                                         </td>
                                                     </tr>
@@ -338,18 +399,6 @@
                                                                 <span class="badge bg-danger text-white px-2 py-1"><i class="fa-solid fa-xmark me-1"></i> Ditolak</span>
                                                             @else
                                                                 <span class="badge bg-warning text-dark px-2 py-1"><i class="fa-solid fa-clock me-1"></i> Pending</span>
-                                                            @endif
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th class="ps-3">PIC yang Ditugaskan</th>
-                                                        <td>
-                                                            @if (!empty($pengajuan->petugas_ditugaskan))
-                                                                <span class="badge bg-primary text-white px-2 py-1">
-                                                                    <i class="fa-solid fa-user-check me-1"></i> {{ $pengajuan->petugas_ditugaskan }}
-                                                                </span>
-                                                            @else
-                                                                <span class="text-muted fst-italic">Belum ada PIC yang ditugaskan</span>
                                                             @endif
                                                         </td>
                                                     </tr>
@@ -413,95 +462,219 @@
                                             </select>
                                         </div>
 
-                                        <!-- Petugas / PIC yang Ditugaskan (Multiple Card Repeater) -->
+                                        <!-- Petugas / PIC yang Ditugaskan (Dibagi 2 Bagian: PIC Desain & PIC Dokumentasi dengan Catatan Tugas) -->
                                         <div class="mb-4">
-                                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                                <label class="form-label font-weight-bold mb-0 text-dark">
-                                                    <i class="fa-solid fa-users text-primary me-1"></i> Petugas / PIC yang Ditugaskan
+                                            <div class="mb-3 border-bottom pb-2">
+                                                <label class="form-label font-weight-bold mb-0 text-dark fs-6">
+                                                    <i class="fa-solid fa-users text-primary me-1"></i> Penugasan Petugas / PIC Kegiatan
                                                 </label>
-                                                <button type="button" class="btn btn-sm btn-primary d-inline-flex align-items-center" onclick="tambahBarisPic()">
-                                                    <i class="fa-solid fa-plus me-1"></i> Tambah PIC
-                                                </button>
+                                                <small class="text-muted d-block mt-1">
+                                                    <i class="fa-solid fa-circle-info me-1"></i> Pisahkan penugasan untuk tim <strong>Desain</strong> dan tim <strong>Dokumentasi</strong>, serta berikan instruksi/catatan tugas spesifik.
+                                                </small>
                                             </div>
 
                                             @php
                                                 $daftarPic = old('pic_nama') !== null
-                                                    ? array_map(function($nama, $noWa) { return ['nama' => $nama, 'no_wa' => $noWa]; }, old('pic_nama', []), old('pic_no_wa', []))
+                                                    ? array_map(function($nama, $noWa, $peran, $catatan) {
+                                                        return [
+                                                            'nama' => $nama,
+                                                            'no_wa' => $noWa,
+                                                            'peran' => $peran,
+                                                            'catatan' => $catatan
+                                                        ];
+                                                    }, old('pic_nama', []), old('pic_no_wa', []), old('pic_peran', []), old('pic_catatan', []))
                                                     : ($pengajuan->pic_petugas ?? []);
 
                                                 if (empty($daftarPic) && !empty($pengajuan->petugas_ditugaskan)) {
                                                     $arrNama = array_map('trim', explode(',', $pengajuan->petugas_ditugaskan));
                                                     $arrWa = array_map('trim', explode(',', $pengajuan->no_wa_tujuan ?? ''));
                                                     foreach ($arrNama as $idx => $nama) {
-                                                        $daftarPic[] = ['nama' => $nama, 'no_wa' => $arrWa[$idx] ?? ''];
+                                                        $daftarPic[] = [
+                                                            'nama' => $nama,
+                                                            'no_wa' => $arrWa[$idx] ?? '',
+                                                            'peran' => $idx === 0 ? 'desain' : 'dokumentasi',
+                                                            'catatan' => ''
+                                                        ];
                                                     }
                                                 }
 
-                                                if (empty($daftarPic)) {
-                                                    $daftarPic = [['nama' => '', 'no_wa' => '']];
+                                                $daftarPicDesain = array_values(array_filter($daftarPic, fn($p) => ($p['peran'] ?? 'desain') === 'desain'));
+                                                $daftarPicDokumentasi = array_values(array_filter($daftarPic, fn($p) => ($p['peran'] ?? '') === 'dokumentasi'));
+
+                                                if (empty($daftarPicDesain)) {
+                                                    $daftarPicDesain = [['nama' => '', 'no_wa' => '', 'peran' => 'desain', 'catatan' => '']];
+                                                }
+                                                if (empty($daftarPicDokumentasi)) {
+                                                    $daftarPicDokumentasi = [['nama' => '', 'no_wa' => '', 'peran' => 'dokumentasi', 'catatan' => '']];
                                                 }
                                             @endphp
 
-                                            <div id="kontainerPic" class="d-flex flex-column gap-2 mb-2">
-                                                @foreach ($daftarPic as $index => $pic)
-                                                    <div class="baris-pic border rounded p-3 bg-white shadow-sm mb-2">
-                                                        <!-- Baris 1: Nama Petugas / PIC (Full Width) -->
-                                                        <div class="mb-2">
-                                                            <label class="form-label small text-muted fw-bold mb-1">
-                                                                <i class="fa-solid fa-user me-1 text-primary"></i> Nama Petugas / PIC
-                                                            </label>
-                                                            <select name="pic_nama[]" class="form-select select-petugas-humas" style="width: 100%;">
-                                                                <option value="">-- Cari & Pilih Petugas Humas --</option>
-                                                                @php
-                                                                    $selectedName = $pic['nama'] ?? '';
-                                                                    $matched = false;
-                                                                @endphp
-                                                                @if(isset($petugasHumas))
-                                                                    @foreach ($petugasHumas as $ph)
-                                                                        @php
-                                                                            $isSelected = ($selectedName === $ph->name);
-                                                                            if ($isSelected) $matched = true;
-                                                                        @endphp
-                                                                        <option value="{{ $ph->name }}" data-wa="{{ $ph->no_wa }}" {{ $isSelected ? 'selected' : '' }}>
-                                                                            {{ $ph->name }}
-                                                                        </option>
-                                                                    @endforeach
-                                                                @endif
-                                                                @if(!empty($selectedName) && !$matched)
-                                                                    <option value="{{ $selectedName }}" data-wa="{{ $pic['no_wa'] ?? '' }}" selected>
-                                                                        {{ $selectedName }}
-                                                                    </option>
-                                                                @endif
-                                                            </select>
-                                                        </div>
+                                            <!-- BAGIAN 1: PIC DESAIN -->
+                                            <div class="card border border-primary border-opacity-25 mb-3 shadow-xs">
+                                                <div class="card-header bg-primary bg-opacity-10 py-2 px-3 d-flex justify-content-between align-items-center">
+                                                    <span class="fw-bold text-primary small text-uppercase">
+                                                        <i class="fa-solid fa-palette me-1"></i> 1. Petugas / PIC Desain
+                                                    </span>
+                                                    <button type="button" class="btn btn-xs btn-primary d-inline-flex align-items-center" onclick="tambahBarisPic('desain')">
+                                                        <i class="fa-solid fa-plus me-1"></i> Tambah PIC Desain
+                                                    </button>
+                                                </div>
+                                                <div class="card-body p-3">
+                                                    <div id="kontainerPicDesain" class="d-flex flex-column gap-3">
+                                                        @foreach ($daftarPicDesain as $index => $pic)
+                                                            <div class="baris-pic border rounded p-3 bg-white shadow-sm" data-peran="desain">
+                                                                <input type="hidden" name="pic_peran[]" value="desain">
+                                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                                    <span class="badge bg-primary text-white small">
+                                                                        <i class="fa-solid fa-palette me-1"></i> PIC Desain
+                                                                    </span>
+                                                                    <button type="button" class="btn btn-xs btn-outline-danger" title="Hapus PIC Desain ini" onclick="hapusBarisPic(this)">
+                                                                        <i class="fa-solid fa-trash me-1"></i> Hapus
+                                                                    </button>
+                                                                </div>
 
-                                                        <!-- Baris 2: No. WhatsApp & Tombol Aksi (Tersambung Rapi dalam 1 Input Group) -->
-                                                        <div>
-                                                            <label class="form-label small text-muted fw-bold mb-1">
-                                                                <i class="fa-brands fa-whatsapp me-1 text-success"></i> No. WhatsApp PIC
-                                                            </label>
-                                                            <div class="input-group">
-                                                                <span class="input-group-text bg-success text-white">
-                                                                    <i class="fa-brands fa-whatsapp"></i>
-                                                                </span>
-                                                                <input type="text" name="pic_no_wa[]" class="form-control input-pic-wa"
-                                                                    value="{{ $pic['no_wa'] ?? '' }}" placeholder="082283736181">
-                                                                <button type="button" class="btn btn-outline-success d-inline-flex align-items-center px-3" title="Chat WhatsApp PIC" onclick="chatWaPic(this)">
-                                                                    <i class="fa-brands fa-whatsapp"></i>
-                                                                    <span class="d-none d-sm-inline ms-1">Chat</span>
-                                                                </button>
-                                                                <button type="button" class="btn btn-outline-danger d-inline-flex align-items-center px-3" title="Hapus PIC" onclick="hapusBarisPic(this)">
-                                                                    <i class="fa-solid fa-trash"></i>
-                                                                    <span class="d-none d-sm-inline ms-1">Hapus</span>
-                                                                </button>
+                                                                <div class="mb-2">
+                                                                    <label class="form-label small text-muted fw-bold mb-1">
+                                                                        <i class="fa-solid fa-user me-1 text-primary"></i> Nama Petugas / PIC
+                                                                    </label>
+                                                                    <select name="pic_nama[]" class="form-select select-petugas-humas" style="width: 100%;">
+                                                                        <option value="">-- Cari & Pilih Petugas Humas --</option>
+                                                                        @php
+                                                                            $selectedName = $pic['nama'] ?? '';
+                                                                            $matched = false;
+                                                                        @endphp
+                                                                        @if(isset($petugasHumas))
+                                                                            @foreach ($petugasHumas as $ph)
+                                                                                @php
+                                                                                    $isSelected = ($selectedName === $ph->name);
+                                                                                    if ($isSelected) $matched = true;
+                                                                                @endphp
+                                                                                <option value="{{ $ph->name }}" data-wa="{{ $ph->no_wa }}" {{ $isSelected ? 'selected' : '' }}>
+                                                                                    {{ $ph->name }}
+                                                                                </option>
+                                                                            @endforeach
+                                                                        @endif
+                                                                        @if(!empty($selectedName) && !$matched)
+                                                                            <option value="{{ $selectedName }}" data-wa="{{ $pic['no_wa'] ?? '' }}" selected>
+                                                                                {{ $selectedName }}
+                                                                            </option>
+                                                                        @endif
+                                                                    </select>
+                                                                </div>
+
+                                                                <div class="mb-2">
+                                                                    <label class="form-label small text-muted fw-bold mb-1">
+                                                                        <i class="fa-brands fa-whatsapp me-1 text-success"></i> No. WhatsApp PIC
+                                                                    </label>
+                                                                    <div class="input-group">
+                                                                        <span class="input-group-text bg-success text-white">
+                                                                            <i class="fa-brands fa-whatsapp"></i>
+                                                                        </span>
+                                                                        <input type="text" name="pic_no_wa[]" class="form-control input-pic-wa"
+                                                                            value="{{ $pic['no_wa'] ?? '' }}" placeholder="082283736181">
+                                                                        <button type="button" class="btn btn-outline-success d-inline-flex align-items-center px-3" title="Chat WhatsApp PIC" onclick="chatWaPic(this)">
+                                                                            <i class="fa-brands fa-whatsapp me-1"></i> Chat
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div>
+                                                                    <label class="form-label small text-muted fw-bold mb-1">
+                                                                        <i class="fa-solid fa-note-sticky me-1 text-warning"></i> Catatan / Instruksi Tugas Desain
+                                                                    </label>
+                                                                    <textarea name="pic_catatan[]" class="form-control form-control-sm input-pic-catatan" rows="2"
+                                                                        placeholder="Contoh: Buat banner ukuran 3x1m & flyer IG, gunakan tema biru...">{{ $pic['catatan'] ?? '' }}</textarea>
+                                                                </div>
                                                             </div>
-                                                        </div>
+                                                        @endforeach
                                                     </div>
-                                                @endforeach
+                                                </div>
+                                            </div>
+
+                                            <!-- BAGIAN 2: PIC DOKUMENTASI -->
+                                            <div class="card border border-info border-opacity-25 mb-3 shadow-xs">
+                                                <div class="card-header bg-info bg-opacity-10 py-2 px-3 d-flex justify-content-between align-items-center">
+                                                    <span class="fw-bold text-info small text-uppercase">
+                                                        <i class="fa-solid fa-camera me-1"></i> 2. Petugas / PIC Dokumentasi
+                                                    </span>
+                                                    <button type="button" class="btn btn-xs btn-info text-white d-inline-flex align-items-center" onclick="tambahBarisPic('dokumentasi')">
+                                                        <i class="fa-solid fa-plus me-1"></i> Tambah PIC Dokumentasi
+                                                    </button>
+                                                </div>
+                                                <div class="card-body p-3">
+                                                    <div id="kontainerPicDokumentasi" class="d-flex flex-column gap-3">
+                                                        @foreach ($daftarPicDokumentasi as $index => $pic)
+                                                            <div class="baris-pic border rounded p-3 bg-white shadow-sm" data-peran="dokumentasi">
+                                                                <input type="hidden" name="pic_peran[]" value="dokumentasi">
+                                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                                    <span class="badge bg-info text-white small">
+                                                                        <i class="fa-solid fa-camera me-1"></i> PIC Dokumentasi
+                                                                    </span>
+                                                                    <button type="button" class="btn btn-xs btn-outline-danger" title="Hapus PIC Dokumentasi ini" onclick="hapusBarisPic(this)">
+                                                                        <i class="fa-solid fa-trash me-1"></i> Hapus
+                                                                    </button>
+                                                                </div>
+
+                                                                <div class="mb-2">
+                                                                    <label class="form-label small text-muted fw-bold mb-1">
+                                                                        <i class="fa-solid fa-user me-1 text-primary"></i> Nama Petugas / PIC
+                                                                    </label>
+                                                                    <select name="pic_nama[]" class="form-select select-petugas-humas" style="width: 100%;">
+                                                                        <option value="">-- Cari & Pilih Petugas Humas --</option>
+                                                                        @php
+                                                                            $selectedName = $pic['nama'] ?? '';
+                                                                            $matched = false;
+                                                                        @endphp
+                                                                        @if(isset($petugasHumas))
+                                                                            @foreach ($petugasHumas as $ph)
+                                                                                @php
+                                                                                    $isSelected = ($selectedName === $ph->name);
+                                                                                    if ($isSelected) $matched = true;
+                                                                                @endphp
+                                                                                <option value="{{ $ph->name }}" data-wa="{{ $ph->no_wa }}" {{ $isSelected ? 'selected' : '' }}>
+                                                                                    {{ $ph->name }}
+                                                                                </option>
+                                                                            @endforeach
+                                                                        @endif
+                                                                        @if(!empty($selectedName) && !$matched)
+                                                                            <option value="{{ $selectedName }}" data-wa="{{ $pic['no_wa'] ?? '' }}" selected>
+                                                                                {{ $selectedName }}
+                                                                            </option>
+                                                                        @endif
+                                                                    </select>
+                                                                </div>
+
+                                                                <div class="mb-2">
+                                                                    <label class="form-label small text-muted fw-bold mb-1">
+                                                                        <i class="fa-brands fa-whatsapp me-1 text-success"></i> No. WhatsApp PIC
+                                                                    </label>
+                                                                    <div class="input-group">
+                                                                        <span class="input-group-text bg-success text-white">
+                                                                            <i class="fa-brands fa-whatsapp"></i>
+                                                                        </span>
+                                                                        <input type="text" name="pic_no_wa[]" class="form-control input-pic-wa"
+                                                                            value="{{ $pic['no_wa'] ?? '' }}" placeholder="082283736181">
+                                                                        <button type="button" class="btn btn-outline-success d-inline-flex align-items-center px-3" title="Chat WhatsApp PIC" onclick="chatWaPic(this)">
+                                                                            <i class="fa-brands fa-whatsapp me-1"></i> Chat
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div>
+                                                                    <label class="form-label small text-muted fw-bold mb-1">
+                                                                        <i class="fa-solid fa-note-sticky me-1 text-warning"></i> Catatan / Instruksi Tugas Dokumentasi
+                                                                    </label>
+                                                                    <textarea name="pic_catatan[]" class="form-control form-control-sm input-pic-catatan" rows="2"
+                                                                        placeholder="Contoh: Foto saat pembukaan, sesi pemateri, dan foto bersama peserta...">{{ $pic['catatan'] ?? '' }}</textarea>
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
                                             </div>
 
                                             <div class="mt-1">
-                                                <small class="text-muted"><i class="fa-solid fa-circle-info me-1"></i> Notifikasi WhatsApp penugasan otomatis disiapkan untuk setiap PIC saat UPDATE.</small>
+                                                <small class="text-muted"><i class="fa-solid fa-circle-info me-1"></i> Notifikasi WhatsApp penugasan otomatis disiapkan untuk setiap PIC Desain dan Dokumentasi saat UPDATE.</small>
                                             </div>
                                         </div>
 
@@ -650,9 +823,19 @@
                 }
             }
 
-            function tambahBarisPic() {
-                const kontainer = document.getElementById('kontainerPic');
+            function tambahBarisPic(peran) {
+                peran = peran || 'desain';
+                const kontainerId = peran === 'dokumentasi' ? 'kontainerPicDokumentasi' : 'kontainerPicDesain';
+                const kontainer = document.getElementById(kontainerId);
                 if (!kontainer) return;
+
+                const isDesain = (peran === 'desain');
+                const badgeClass = isDesain ? 'bg-primary' : 'bg-info text-white';
+                const badgeIcon = isDesain ? 'fa-palette' : 'fa-camera';
+                const badgeTitle = isDesain ? 'PIC Desain' : 'PIC Dokumentasi';
+                const placeholderCatatan = isDesain
+                    ? 'Contoh: Buat banner ukuran 3x1m & flyer IG, gunakan tema biru...'
+                    : 'Contoh: Foto saat pembukaan, sesi pemateri, dan foto bersama peserta...';
 
                 let optionsHtml = '<option value="">-- Cari & Pilih Petugas Humas --</option>';
                 if (listPetugasHumas && listPetugasHumas.length > 0) {
@@ -660,8 +843,19 @@
                 }
 
                 const div = document.createElement('div');
-                div.className = 'baris-pic border rounded p-3 bg-white shadow-sm mb-2';
+                div.className = 'baris-pic border rounded p-3 bg-white shadow-sm';
+                div.setAttribute('data-peran', peran);
                 div.innerHTML = `
+                    <input type="hidden" name="pic_peran[]" value="${peran}">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge ${badgeClass} small">
+                            <i class="fa-solid ${badgeIcon} me-1"></i> ${badgeTitle}
+                        </span>
+                        <button type="button" class="btn btn-xs btn-outline-danger" title="Hapus PIC ini" onclick="hapusBarisPic(this)">
+                            <i class="fa-solid fa-trash me-1"></i> Hapus
+                        </button>
+                    </div>
+
                     <div class="mb-2">
                         <label class="form-label small text-muted fw-bold mb-1">
                             <i class="fa-solid fa-user me-1 text-primary"></i> Nama Petugas / PIC
@@ -670,7 +864,8 @@
                             ${optionsHtml}
                         </select>
                     </div>
-                    <div>
+
+                    <div class="mb-2">
                         <label class="form-label small text-muted fw-bold mb-1">
                             <i class="fa-brands fa-whatsapp me-1 text-success"></i> No. WhatsApp PIC
                         </label>
@@ -680,14 +875,17 @@
                             </span>
                             <input type="text" name="pic_no_wa[]" class="form-control input-pic-wa" placeholder="082283736181">
                             <button type="button" class="btn btn-outline-success d-inline-flex align-items-center px-3" title="Chat WhatsApp PIC" onclick="chatWaPic(this)">
-                                <i class="fa-brands fa-whatsapp"></i>
-                                <span class="d-none d-sm-inline ms-1">Chat</span>
-                            </button>
-                            <button type="button" class="btn btn-outline-danger d-inline-flex align-items-center px-3" title="Hapus PIC" onclick="hapusBarisPic(this)">
-                                <i class="fa-solid fa-trash"></i>
-                                <span class="d-none d-sm-inline ms-1">Hapus</span>
+                                <i class="fa-brands fa-whatsapp me-1"></i> Chat
                             </button>
                         </div>
+                    </div>
+
+                    <div>
+                        <label class="form-label small text-muted fw-bold mb-1">
+                            <i class="fa-solid fa-note-sticky me-1 text-warning"></i> Catatan / Instruksi Tugas (${isDesain ? 'Desain' : 'Dokumentasi'})
+                        </label>
+                        <textarea name="pic_catatan[]" class="form-control form-control-sm input-pic-catatan" rows="2"
+                            placeholder="${placeholderCatatan}"></textarea>
                     </div>
                 `;
                 kontainer.appendChild(div);
@@ -702,20 +900,23 @@
             }
 
             function hapusBarisPic(btn) {
-                const kontainer = document.getElementById('kontainerPic');
-                const items = kontainer.querySelectorAll('.baris-pic');
+                const row = btn.closest('.baris-pic');
+                if (!row) return;
+                const kontainer = row.parentElement;
+                const items = kontainer ? kontainer.querySelectorAll('.baris-pic') : [];
+
                 if (items.length > 1) {
-                    const row = btn.closest('.baris-pic');
                     const select = row.querySelector('.select-petugas-humas');
                     if (window.$ && select && $(select).hasClass('select2-hidden-accessible')) {
                         $(select).select2('destroy');
                     }
                     row.remove();
                 } else {
-                    const item = btn.closest('.baris-pic');
-                    const inputWa = item.querySelector('.input-pic-wa');
+                    const inputWa = row.querySelector('.input-pic-wa');
                     if (inputWa) inputWa.value = '';
-                    const select = item.querySelector('.select-petugas-humas');
+                    const inputCatatan = row.querySelector('.input-pic-catatan');
+                    if (inputCatatan) inputCatatan.value = '';
+                    const select = row.querySelector('.select-petugas-humas');
                     if (select) {
                         if (window.$ && $(select).hasClass('select2-hidden-accessible')) {
                             $(select).val('').trigger('change');
@@ -735,7 +936,7 @@
 
                 if (!rawWa) {
                     alert('Silakan masukkan nomor WhatsApp PIC ini terlebih dahulu.');
-                    row.querySelector('.input-pic-wa').focus();
+                    if (inputWa) inputWa.focus();
                     return;
                 }
 
@@ -746,21 +947,39 @@
                     phone = '62' + phone;
                 }
 
+                const peranInput = row.querySelector('input[name="pic_peran[]"]');
+                const peranVal = (peranInput && peranInput.value === 'dokumentasi') ? 'PIC Dokumentasi' : 'PIC Desain';
+                const inputCatatan = row.querySelector('.input-pic-catatan');
+                const catatanKhusus = inputCatatan && inputCatatan.value.trim() ? inputCatatan.value.trim() : '';
+
                 const kegiatan = @json($pengajuan->nama_kegiatan);
                 const unit = @json($pengajuan->unit_kegiatan);
+                const tglAwal = @json($pengajuan->tgl_awal ? \Carbon\Carbon::parse($pengajuan->tgl_awal)->locale('id')->isoFormat('dddd, D MMMM Y') : '-');
+                const tglSelesai = @json($pengajuan->tgl_selesai ? \Carbon\Carbon::parse($pengajuan->tgl_selesai)->locale('id')->isoFormat('dddd, D MMMM Y') : '-');
+                const waktu = @json("{$pengajuan->jam_kegiatan} - {$pengajuan->waktu_selesai} WIB");
+                const tempat = @json($pengajuan->tempat_kegiatan ?? '-');
+                const pemohon = @json($pengajuan->user?->name ?? '-');
+                const pemohonWa = @json($pengajuan->user?->no_wa ?? '-');
+
                 const statusSelect = document.getElementById('status');
-                const statusText = statusSelect ? statusSelect.options[statusSelect.selectedIndex].text.toUpperCase() : '';
-                const catatanInput = document.getElementById('alasan_ditolak');
-                const catatan = (catatanInput && catatanInput.value.trim()) ? catatanInput.value.trim() : '-';
+                const statusText = statusSelect ? statusSelect.options[statusSelect.selectedIndex].text.toUpperCase() : 'DITERIMA';
+                const catatanAdminInput = document.getElementById('alasan_ditolak');
+                const catatanAdmin = (catatanAdminInput && catatanAdminInput.value.trim()) ? catatanAdminInput.value.trim() : '';
 
                 let message = `*PENUGASAN KEGIATAN HUMAS*\n\n` +
                     `Halo *${nama}*,\n` +
-                    `Anda ditugaskan untuk kegiatan berikut:\n\n` +
+                    `Anda telah ditugaskan untuk kegiatan berikut:\n\n` +
+                    `- *Peran Penugasan:* ${peranVal}\n` +
                     `- *Nama Kegiatan:* ${kegiatan}\n` +
                     `- *Unit:* ${unit}\n` +
-                    `- *Status:* ${statusText}\n` +
-                    `- *Catatan:* ${catatan}\n\n` +
-                    `Mohon untuk dipersiapkan. Terima kasih.\n_SIHUMAS_`;
+                    `- *Tanggal:* ${tglAwal} s/d ${tglSelesai}\n` +
+                    `- *Waktu:* ${waktu}\n` +
+                    `- *Tempat:* ${tempat}\n` +
+                    `- *Pemohon:* ${pemohon} (${pemohonWa})\n` +
+                    (catatanKhusus ? `- *Catatan Tugas:* ${catatanKhusus}\n` : '') +
+                    `- *Status Pengajuan:* ${statusText}\n` +
+                    (catatanAdmin ? `- *Catatan Tambahan:* ${catatanAdmin}\n` : '') +
+                    `\nMohon dikoordinasikan dan dipersiapkan dengan baik. Terima kasih.\n_SIHUMAS_`;
 
                 window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
             }

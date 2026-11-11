@@ -136,11 +136,11 @@
                         </tr>
                     @endif
                     <tr>
-                        <th>File Lampiran</th>
+                        <th>Dokumen Pendukung</th>
                         <td>
                             @if ($pengajuan->upload_file)
-                                <a href="{{ asset('storage/' . $pengajuan->upload_file) }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                    <i class="fa-solid fa-file-arrow-down me-1"></i> Unduh File ({{ basename($pengajuan->upload_file) }})
+                                <a href="{{ asset('storage/' . $pengajuan->upload_file) }}" target="_blank" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center">
+                                    <i class="fa-solid fa-file-arrow-down me-2"></i> Unduh Dokumen Pendukung
                                 </a>
                             @else
                                 <span class="text-muted">-</span>
@@ -148,16 +148,16 @@
                         </td>
                     </tr>
                     <tr>
-                        <th>Gambar / Desain (PNG)</th>
+                        <th>Bahan Materi</th>
                         <td>
                             @if ($pengajuan->upload_png)
                                 <div class="d-inline-block">
                                     <a href="{{ asset('storage/' . $pengajuan->upload_png) }}" target="_blank">
-                                        <img src="{{ asset('storage/' . $pengajuan->upload_png) }}" alt="Desain / Gambar" class="img-thumbnail rounded shadow-sm" style="max-height: 200px;">
+                                        <img src="{{ asset('storage/' . $pengajuan->upload_png) }}" alt="Bahan Materi" class="img-thumbnail rounded shadow-sm" style="max-height: 200px;">
                                     </a>
                                     <div class="mt-1">
-                                        <a href="{{ asset('storage/' . $pengajuan->upload_png) }}" target="_blank" class="btn btn-xs btn-outline-success">
-                                            <i class="fa-solid fa-eye me-1"></i> Buka Gambar Penuh
+                                        <a href="{{ asset('storage/' . $pengajuan->upload_png) }}" target="_blank" class="btn btn-xs btn-outline-success d-inline-flex align-items-center">
+                                            <i class="fa-solid fa-eye me-1"></i> Buka Bahan Materi
                                         </a>
                                     </div>
                                 </div>

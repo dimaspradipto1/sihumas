@@ -83,8 +83,8 @@ class PengajuanTest extends TestCase
         // Verify show page displays file and image links
         $showResponse = $this->actingAs($user)->get(route('pengajuan.show', $pengajuan->id));
         $showResponse->assertStatus(200);
-        $showResponse->assertSee('File Lampiran');
-        $showResponse->assertSee('Gambar / Desain (PNG)');
+        $showResponse->assertSee('Dokumen Pendukung');
+        $showResponse->assertSee('Bahan Materi');
         $showResponse->assertSee(basename($pengajuan->upload_file));
     }
 
@@ -121,6 +121,8 @@ class PengajuanTest extends TestCase
             'status' => 'diterima',
             'pic_nama' => ['Habib', 'Ujang'],
             'pic_no_wa' => ['081298765432', '085298765432'],
+            'pic_peran' => ['desain', 'dokumentasi'],
+            'pic_catatan' => ['Buat banner horizontal', 'Foto opening dan penutupan'],
             'alasan_ditolak' => 'Pengajuan diterima dan petugas telah ditugaskan.',
             'tgl_awal' => $pengajuan->tgl_awal,
             'tgl_selesai' => $pengajuan->tgl_selesai,
@@ -139,7 +141,11 @@ class PengajuanTest extends TestCase
         $pengajuanFresh = $pengajuan->fresh();
         $this->assertCount(2, $pengajuanFresh->pic_petugas);
         $this->assertEquals('Habib', $pengajuanFresh->pic_petugas[0]['nama']);
+        $this->assertEquals('desain', $pengajuanFresh->pic_petugas[0]['peran']);
+        $this->assertEquals('Buat banner horizontal', $pengajuanFresh->pic_petugas[0]['catatan']);
         $this->assertEquals('Ujang', $pengajuanFresh->pic_petugas[1]['nama']);
+        $this->assertEquals('dokumentasi', $pengajuanFresh->pic_petugas[1]['peran']);
+        $this->assertEquals('Foto opening dan penutupan', $pengajuanFresh->pic_petugas[1]['catatan']);
 
         $showResponse = $this->actingAs($admin)->get(route('pengajuan.show', $pengajuan->id));
         $showResponse->assertStatus(200);
