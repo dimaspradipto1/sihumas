@@ -371,7 +371,7 @@
                                                         <th class="ps-3">PIC yang Ditugaskan</th>
                                                         <td>
                                                             @php
-                                                                $picList = $pengajuan->pic_petugas ?? [];
+                                                                $picList = $pengajuan->getVisiblePicPetugas(Auth::user());
                                                                 $picDesain = array_values(array_filter($picList, fn($p) => ($p['peran'] ?? 'desain') === 'desain'));
                                                                 $picDokumentasi = array_values(array_filter($picList, fn($p) => ($p['peran'] ?? '') === 'dokumentasi'));
                                                             @endphp

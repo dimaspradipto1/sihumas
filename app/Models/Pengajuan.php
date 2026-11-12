@@ -87,4 +87,46 @@ class Pengajuan extends Model
             }
         });
     }
+
+    /**
+     * Ambil daftar PIC yang boleh dilihat oleh user saat ini.
+     * Jika user adalah Staff Humas (bukan Super Admin), hanya tampilkan penugasan milik user tersebut.
+     */
+    public function getVisiblePicPetugas($user = null): array
+    {
+        $picList = is_array($this->pic_petugas) ? $this->pic_petugas : [];
+        if (empty($picList)) {
+            return [];
+        }
+
+        $user = $user ?? auth()->user();
+        if (!$user || $user->is_admin || !$user->is_humas) {
+            return $picList;
+        }
+
+        $userName = strtolower(trim($user->name ?? ''));
+        $userWaDigits = preg_replace('/[^0-9]/', '', $user->no_wa ?? '');
+        $userWaSuffix = strlen($userWaDigits) >= 8 ? substr($userWaDigits, -8) : '';
+
+        $filtered = array_values(array_filter($picList, function ($pic) use ($userName, $userWaDigits, $userWaSuffix) {
+            $picName = strtolower(trim($pic['nama'] ?? ''));
+            $picWaDigits = preg_replace('/[^0-9]/', '', $pic['no_wa'] ?? '');
+
+            if (!empty($userName) && !empty($picName) && ($picName === $userName || str_contains($picName, $userName) || str_contains($userName, $picName))) {
+                return true;
+            }
+
+            if (!empty($userWaDigits) && !empty($picWaDigits) && $picWaDigits === $userWaDigits) {
+                return true;
+            }
+
+            if (!empty($userWaSuffix) && !empty($picWaDigits) && str_ends_with($picWaDigits, $userWaSuffix)) {
+                return true;
+            }
+
+            return false;
+        }));
+
+        return !empty($filtered) ? $filtered : $picList;
+    }
 }

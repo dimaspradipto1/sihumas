@@ -100,9 +100,12 @@
           <tr>
             <th>Petugas Ditugaskan (PIC)</th>
             <td>
-                @if (!empty($pengajuan->pic_petugas) && is_array($pengajuan->pic_petugas))
+                @php
+                    $visiblePics = $pengajuan->getVisiblePicPetugas(Auth::user());
+                @endphp
+                @if (!empty($visiblePics))
                     <div class="d-flex flex-wrap gap-2">
-                        @foreach ($pengajuan->pic_petugas as $pic)
+                        @foreach ($visiblePics as $pic)
                             <div class="border rounded p-2 bg-light d-inline-flex align-items-center gap-2">
                                 <span class="badge bg-primary"><i class="fa-solid fa-user me-1"></i> {{ $pic['nama'] ?: '-' }}</span>
                                 @if (!empty($pic['no_wa']))
