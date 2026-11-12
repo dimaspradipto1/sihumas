@@ -22,7 +22,6 @@ class User extends Authenticatable
         'email',
         'no_wa',
         'password',
-        'fakultas',
         'unit_kegiatan_id',
         'is_admin',
         'is_humas',
@@ -127,5 +126,10 @@ class User extends Authenticatable
     public function unitKegiatan()
     {
         return $this->belongsTo(UnitKegiatan::class, 'unit_kegiatan_id');
+    }
+
+    public function getFakultasAttribute(): string
+    {
+        return $this->unitKegiatan?->unit_kegiatan ?? '';
     }
 }

@@ -60,7 +60,6 @@ class UserController extends Controller
         $data['email'] = $request->email;
         $data['no_wa'] = $this->formatNoWaTo08($request->no_wa);
         $data['unit_kegiatan_id'] = $unit?->id;
-        $data['fakultas'] = $unit?->unit_kegiatan ?? $request->fakultas ?? '';
         $data['is_admin'] = $request->has('is_admin');
         $data['is_humas'] = $request->has('is_humas');
         $data['is_rektorat'] = $request->has('is_rektorat');
@@ -73,7 +72,7 @@ class UserController extends Controller
 
         // Jika tidak ada role yang dicentang secara manual, tetapkan default berdasarkan unit
         if (!$data['is_admin'] && !$data['is_humas'] && !$data['is_rektorat'] && !$data['is_feb'] && !$data['is_fst'] && !$data['is_fikes']) {
-            $unitNameUpper = strtoupper($data['fakultas']);
+            $unitNameUpper = strtoupper($unit?->unit_kegiatan ?? '');
             if (str_contains($unitNameUpper, 'IBNU SINA') || str_contains($unitNameUpper, 'HUMAS')) {
                 $data['is_admin'] = true;
                 $data['is_humas'] = true;
@@ -138,11 +137,6 @@ class UserController extends Controller
         if ($request->has('unit_kegiatan_id')) {
             $unit = \App\Models\UnitKegiatan::find($request->unit_kegiatan_id);
             $updateData['unit_kegiatan_id'] = $unit?->id;
-            if ($unit) {
-                $updateData['fakultas'] = $unit->unit_kegiatan;
-            }
-        } elseif ($request->has('fakultas')) {
-            $updateData['fakultas'] = $request->fakultas;
         }
 
         if ($request->has('password') && !empty($request->password)) {

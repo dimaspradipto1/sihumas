@@ -62,12 +62,6 @@
                           {{ $unit->unit_kegiatan }}
                         </option>
                       @endforeach
-                    @else
-                      <option value="UNIVERSITAS IBNU SINA">UNIVERSITAS IBNU SINA</option>
-                      <option value="REKTORAT">REKTORAT</option>
-                      <option value="FAKULTAS EKONOMI DAN BISNIS">FAKULTAS EKONOMI DAN BISNIS</option>
-                      <option value="FAKULTAS SAINS DAN TEKNOLOGI">FAKULTAS SAINS DAN TEKNOLOGI</option>
-                      <option value="FAKULTAS ILMU KESEHATAN">FAKULTAS ILMU KESEHATAN</option>
                     @endif
                   </select>
                 </div>
