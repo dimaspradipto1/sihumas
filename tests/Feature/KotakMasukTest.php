@@ -6,11 +6,12 @@ use App\Models\User;
 use App\Models\Pengajuan;
 use App\Models\KotakMasukPengajuan;
 use App\Models\TahunAkademik;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class KotakMasukTest extends TestCase
 {
+    use DatabaseTransactions;
     public function test_humas_only_sees_assigned_pengajuan_in_kotak_masuk(): void
     {
         $ujangName = 'UJANG_' . uniqid();

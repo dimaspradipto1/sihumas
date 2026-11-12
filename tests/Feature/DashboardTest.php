@@ -4,11 +4,12 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use App\Models\Pengajuan;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class DashboardTest extends TestCase
 {
+    use DatabaseTransactions;
     public function test_admin_can_access_dashboard(): void
     {
         $admin = User::factory()->create([
