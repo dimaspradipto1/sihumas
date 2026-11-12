@@ -35,8 +35,16 @@ class PengajuanDataTable extends DataTable
                 $startStr = $start ? $start->translatedFormat('d M Y') : '-';
                 $endStr = $end ? $end->translatedFormat('d M Y') : '-';
 
+                $waktu = '-';
+                if (!empty($pengajuan->jam_kegiatan)) {
+                    $jamMulai = substr($pengajuan->jam_kegiatan, 0, 5);
+                    $jamSelesai = !empty($pengajuan->waktu_selesai) ? substr($pengajuan->waktu_selesai, 0, 5) : null;
+                    $waktu = $jamSelesai ? "{$jamMulai} - {$jamSelesai} WIB" : "{$jamMulai} WIB";
+                }
+
                 return '<div class="text-nowrap"><span class="text-muted small">Pelaksanaan:</span> <span class="fw-semibold">' . $startStr . '</span></div>'
-                     . '<div class="text-nowrap"><span class="text-muted small">Selesai:</span> <span class="fw-semibold">' . $endStr . '</span></div>';
+                     . '<div class="text-nowrap"><span class="text-muted small">Selesai:</span> <span class="fw-semibold">' . $endStr . '</span></div>'
+                     . '<div class="text-nowrap text-secondary small"><i class="fa-regular fa-clock me-1 text-primary"></i><span>' . $waktu . '</span></div>';
             })
             ->addColumn('tgl_awal', function ($pengajuan) {
                 Carbon::setLocale('id');

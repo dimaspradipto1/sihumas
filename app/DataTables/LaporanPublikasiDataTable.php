@@ -41,8 +41,9 @@ class LaporanPublikasiDataTable extends DataTable
             })
             ->addColumn('tgl_pelaksanaan', function ($row) {
                 Carbon::setLocale('id');
-                $tglAwal = $row->tgl_awal ?? ($row->publikasi?->tgl_awal ?? $row->publikasi?->pengajuan?->tgl_awal ?? $row->pengajuan?->tgl_awal);
-                $tglAkhir = $row->tgl_selesai ?? ($row->publikasi?->tgl_akhir ?? $row->publikasi?->pengajuan?->tgl_selesai ?? $row->pengajuan?->tgl_selesai);
+                $p = $row->publikasi?->pengajuan ?? $row->pengajuan;
+                $tglAwal = $row->tgl_awal ?? ($row->publikasi?->tgl_awal ?? $p?->tgl_awal);
+                $tglAkhir = $row->tgl_selesai ?? ($row->publikasi?->tgl_akhir ?? $p?->tgl_selesai);
 
                 $start = $tglAwal ? Carbon::parse($tglAwal) : null;
                 $end = $tglAkhir ? Carbon::parse($tglAkhir) : null;
@@ -50,8 +51,19 @@ class LaporanPublikasiDataTable extends DataTable
                 $startStr = $start ? $start->translatedFormat('d M Y') : '-';
                 $endStr = $end ? $end->translatedFormat('d M Y') : '-';
 
-                return '<div class="text-nowrap"><span class="text-muted small">Pelaksanaan:</span> <span class="fw-semibold">' . $startStr . '</span></div>'
-                     . '<div class="text-nowrap"><span class="text-muted small">Selesai:</span> <span class="fw-semibold">' . $endStr . '</span></div>';
+                $waktu = '-';
+                if (!empty($p?->jam_kegiatan)) {
+                    $jamMulai = substr($p->jam_kegiatan, 0, 5);
+                    $jamSelesai = !empty($p->waktu_selesai) ? substr($p->waktu_selesai, 0, 5) : null;
+                    $waktu = $jamSelesai ? "{$jamMulai} - {$jamSelesai} WIB" : "{$jamMulai} WIB";
+                }
+
+                $html = '<div class="text-nowrap"><span class="text-muted small">Pelaksanaan:</span> <span class="fw-semibold">' . $startStr . '</span></div>'
+                      . '<div class="text-nowrap"><span class="text-muted small">Selesai:</span> <span class="fw-semibold">' . $endStr . '</span></div>';
+                if ($waktu !== '-') {
+                    $html .= '<div class="text-nowrap text-secondary small"><i class="fa-regular fa-clock me-1 text-primary"></i><span>' . $waktu . '</span></div>';
+                }
+                return $html;
             })
             ->addColumn('tgl_awal', function ($row) {
                 Carbon::setlocale('id');

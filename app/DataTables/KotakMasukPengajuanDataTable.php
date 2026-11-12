@@ -79,8 +79,16 @@ class KotakMasukPengajuanDataTable extends DataTable
                 $startStr = $start ? $start->translatedFormat('d M Y') : '-';
                 $endStr = $end ? $end->translatedFormat('d M Y') : '-';
 
+                $waktu = '-';
+                if (!empty($p->jam_kegiatan)) {
+                    $jamMulai = substr($p->jam_kegiatan, 0, 5);
+                    $jamSelesai = !empty($p->waktu_selesai) ? substr($p->waktu_selesai, 0, 5) : null;
+                    $waktu = $jamSelesai ? "{$jamMulai} - {$jamSelesai} WIB" : "{$jamMulai} WIB";
+                }
+
                 return '<div class="text-nowrap"><span class="text-muted small">Pelaksanaan:</span> <span class="fw-semibold">' . $startStr . '</span></div>'
-                     . '<div class="text-nowrap"><span class="text-muted small">Selesai:</span> <span class="fw-semibold">' . $endStr . '</span></div>';
+                     . '<div class="text-nowrap"><span class="text-muted small">Selesai:</span> <span class="fw-semibold">' . $endStr . '</span></div>'
+                     . '<div class="text-nowrap text-secondary small"><i class="fa-regular fa-clock me-1 text-primary"></i><span>' . $waktu . '</span></div>';
             })
             ->addColumn('pengajuan.tgl_awal', function ($kotakMasukPengajuan) {
                 Carbon::setLocale('id');

@@ -39,8 +39,9 @@ class PublikasiDataTable extends DataTable
             })
             ->addColumn('tgl_pelaksanaan', function ($publikasi) {
                 Carbon::setLocale('id');
-                $tglAwal = $publikasi->tgl_awal ?? $publikasi->pengajuan?->tgl_awal;
-                $tglAkhir = $publikasi->tgl_akhir ?? $publikasi->pengajuan?->tgl_selesai;
+                $p = $publikasi->pengajuan;
+                $tglAwal = $publikasi->tgl_awal ?? $p?->tgl_awal;
+                $tglAkhir = $publikasi->tgl_akhir ?? $p?->tgl_selesai;
 
                 $start = $tglAwal ? Carbon::parse($tglAwal) : null;
                 $end = $tglAkhir ? Carbon::parse($tglAkhir) : null;
@@ -48,8 +49,19 @@ class PublikasiDataTable extends DataTable
                 $startStr = $start ? $start->translatedFormat('d M Y') : '-';
                 $endStr = $end ? $end->translatedFormat('d M Y') : '-';
 
-                return '<div class="text-nowrap"><span class="text-muted small">Pelaksanaan:</span> <span class="fw-semibold">' . $startStr . '</span></div>'
-                     . '<div class="text-nowrap"><span class="text-muted small">Selesai:</span> <span class="fw-semibold">' . $endStr . '</span></div>';
+                $waktu = '-';
+                if (!empty($p?->jam_kegiatan)) {
+                    $jamMulai = substr($p->jam_kegiatan, 0, 5);
+                    $jamSelesai = !empty($p->waktu_selesai) ? substr($p->waktu_selesai, 0, 5) : null;
+                    $waktu = $jamSelesai ? "{$jamMulai} - {$jamSelesai} WIB" : "{$jamMulai} WIB";
+                }
+
+                $html = '<div class="text-nowrap"><span class="text-muted small">Pelaksanaan:</span> <span class="fw-semibold">' . $startStr . '</span></div>'
+                      . '<div class="text-nowrap"><span class="text-muted small">Selesai:</span> <span class="fw-semibold">' . $endStr . '</span></div>';
+                if ($waktu !== '-') {
+                    $html .= '<div class="text-nowrap text-secondary small"><i class="fa-regular fa-clock me-1 text-primary"></i><span>' . $waktu . '</span></div>';
+                }
+                return $html;
             })
             ->addColumn('tgl_awal', function ($publikasi) {
                 Carbon::setlocale('id');
