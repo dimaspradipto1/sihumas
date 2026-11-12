@@ -115,6 +115,11 @@ class PengajuanController extends Controller
             $uploadPngPath = $request->file('upload_png')->store('pengajuan/images', 'public');
         }
 
+        $user = auth()->user();
+        $unitKegiatanVal = !empty($data['unit_kegiatan'])
+            ? $data['unit_kegiatan']
+            : ($user?->unitKegiatan?->unit_kegiatan ?? ($user?->fakultas ?? '-'));
+
         $pengajuan = Pengajuan::create([
             'user_id'           => auth()->id(),
             'nama_kegiatan'     => $data['nama_kegiatan'],
@@ -125,7 +130,7 @@ class PengajuanController extends Controller
             'deskripsi_kegiatan' => isset($data['deskripsi_kegiatan']) ? trim(strip_tags($data['deskripsi_kegiatan'])) : null,
             'perlengkapan'      => isset($data['perlengkapan']) ? trim(strip_tags($data['perlengkapan'])) : null,
             'link_zoom'         => $data['link_zoom'] ?? null,
-            'unit_kegiatan'     => $data['unit_kegiatan'],
+            'unit_kegiatan'     => $unitKegiatanVal,
             'tempat_kegiatan'   => $data['tempat_kegiatan'],
             'alasan_ditolak'    => $data['alasan_ditolak'] ?? null,
             'email_tujuan'      => $data['email_tujuan'] ?? null,

@@ -32,7 +32,7 @@ class PengajuanRequest extends FormRequest
             'deskripsi_kegiatan' => 'nullable|string',
             'perlengkapan' => 'nullable|string',
             'link_zoom' => 'nullable|string',
-            'unit_kegiatan' => 'required|string|max:255',
+            'unit_kegiatan' => 'nullable|string|max:255',
             'tempat_kegiatan' => 'required|string|max:255',
             'alasan_ditolak' => 'nullable|string',
             'petugas_ditugaskan' => 'nullable|string|max:255',
