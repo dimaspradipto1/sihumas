@@ -24,8 +24,16 @@
                 <h1 class="h4 text-capitalize">Detail Pelaporan Kegiatan</h1>
             </div>
             <div>
-                <a href="{{ route('publikasi.edit', $publikasi->slug ?? $publikasi->id) }}" class="btn btn-sm btn-warning text-white d-inline-flex align-items-center">
-                    <i class="fa-solid fa-pen-to-square me-1"></i> Edit Laporan
+                @php
+                    $canEditLaporan = Auth::user()->is_admin || Auth::user()->is_humas;
+                @endphp
+                @if ($canEditLaporan)
+                    <a href="{{ route('publikasi.edit', $publikasi->slug ?? $publikasi->id) }}" class="btn btn-sm btn-warning text-white d-inline-flex align-items-center me-2">
+                        <i class="fa-solid fa-pen-to-square me-1"></i> Edit Laporan
+                    </a>
+                @endif
+                <a href="{{ url()->previous() != url()->current() ? url()->previous() : route('publikasi.index') }}" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Kembali
                 </a>
             </div>
         </div>
@@ -41,11 +49,13 @@
                     {{ $publikasi->catatan_validasi ?? 'Mohon periksa dan perbaiki kelengkapan dokumentasi atau rilis laporan kegiatan.' }}
                 </p>
             </div>
+            @if ($canEditLaporan)
             <div class="ms-3">
                 <a href="{{ route('publikasi.edit', $publikasi->slug ?? $publikasi->id) }}" class="btn btn-sm btn-danger text-white">
                     <i class="fa-solid fa-pen-to-square me-1"></i> Perbaiki Sekarang
                 </a>
             </div>
+            @endif
         </div>
     @elseif ($publikasi->status_validasi === 'menunggu_validasi')
         <div class="alert alert-warning d-flex align-items-center shadow-sm mb-4" role="alert">

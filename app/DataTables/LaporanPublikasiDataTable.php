@@ -130,7 +130,10 @@ class LaporanPublikasiDataTable extends DataTable
                            . '<i class="fa-solid fa-clipboard-xmark"></i></button></form>';
                 }
 
-                $html .= '<a href="' . route('publikasi.edit', $target) . '" class="btn btn-sm btn-warning text-white px-2 py-1" title="Edit / Laporkan"><i class="fa-solid fa-pen-to-square"></i></a>';
+                // Hanya Admin & Humas yang bisa mengedit / mengisi laporan kegiatan
+                if (auth()->check() && (auth()->user()->is_admin || auth()->user()->is_humas)) {
+                    $html .= '<a href="' . route('publikasi.edit', $target) . '" class="btn btn-sm btn-warning text-white px-2 py-1" title="Edit / Laporkan"><i class="fa-solid fa-pen-to-square"></i></a>';
+                }
 
                 if (auth()->check() && auth()->user()->is_admin) {
                     $html .= '<form action="' . route('publikasi.destroy', $target) . '" method="POST" style="display: inline" class="form-action-delete">'
