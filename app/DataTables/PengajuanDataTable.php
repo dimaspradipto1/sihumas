@@ -138,20 +138,24 @@ class PengajuanDataTable extends DataTable
     {
         $isAdmin = auth()->user()->is_admin ?? false;
 
-        $columns = [
-            Column::make('DT_RowIndex')->title('NO')->addClass('text-center')->width('4%')->orderable(false)->searchable(false),
-            Column::make('nama_kegiatan')->title('NAMA KEGIATAN')->addClass('text-start'),
-            Column::make('tgl_pelaksanaan')->title('TANGGAL')->addClass('text-start')->width('16%')->orderable(false)->searchable(false),
-            Column::make('status')->title('STATUS PENGAJUAN')->addClass('text-center')->width('14%'),
-        ];
-
         if ($isAdmin) {
-            $columns[] = Column::make('user_id')->title('SUBMIT PENGGUNA')->addClass('text-start')->width('14%');
+            return [
+                Column::make('DT_RowIndex')->title('NO')->addClass('text-center')->width('4%')->orderable(false)->searchable(false),
+                Column::make('nama_kegiatan')->title('NAMA KEGIATAN')->addClass('text-start')->width('35%'),
+                Column::make('tgl_pelaksanaan')->title('TANGGAL')->addClass('text-start')->width('22%')->orderable(false)->searchable(false),
+                Column::make('status')->title('STATUS PENGAJUAN')->addClass('text-center')->width('14%'),
+                Column::make('user_id')->title('SUBMIT PENGGUNA')->addClass('text-start')->width('14%'),
+                Column::computed('action')->title('AKSI')->exportable(false)->printable(false)->width('11%')->addClass('text-center'),
+            ];
         }
 
-        $columns[] = Column::computed('action')->title('AKSI')->exportable(false)->printable(false)->width($isAdmin ? '11%' : '7%')->addClass('text-center');
-
-        return $columns;
+        return [
+            Column::make('DT_RowIndex')->title('NO')->addClass('text-center')->width('5%')->orderable(false)->searchable(false),
+            Column::make('nama_kegiatan')->title('NAMA KEGIATAN')->addClass('text-start')->width('40%'),
+            Column::make('tgl_pelaksanaan')->title('TANGGAL')->addClass('text-start')->width('28%')->orderable(false)->searchable(false),
+            Column::make('status')->title('STATUS PENGAJUAN')->addClass('text-center')->width('17%'),
+            Column::computed('action')->title('AKSI')->exportable(false)->printable(false)->width('10%')->addClass('text-center'),
+        ];
     }
 
     protected function filename(): string

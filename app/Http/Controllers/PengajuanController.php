@@ -362,6 +362,8 @@ class PengajuanController extends Controller
                     "- *Pemohon:* {$pemohon} ({$pemohonWa})\n" .
                     "- *Catatan Tugas:* {$catatanKhusus}\n" .
                     "- *Status / Catatan Verifikasi:* {$status} (" . ($catatan !== '-' ? $catatan : 'Telah diverifikasi') . ")\n\n" .
+                    "Silakan login ke SIHUMAS:\n" .
+                    "https://sihumas.uisbatam.com/\n\n" .
                     "Mohon untuk dikoordinasikan dan dipersiapkan dengan baik. Terima kasih.\n\n" .
                     "_Sistem Informasi Humas (SIHUMAS)_";
 

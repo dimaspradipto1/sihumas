@@ -1000,7 +1000,8 @@
                     (catatanKhusus ? `- *Catatan Tugas:* ${catatanKhusus}\n` : '') +
                     `- *Status Pengajuan:* ${statusText}\n` +
                     (catatanAdmin ? `- *Catatan Tambahan:* ${catatanAdmin}\n` : '') +
-                    `\nMohon dikoordinasikan dan dipersiapkan dengan baik. Terima kasih.\n_SIHUMAS_`;
+                    `\nSilakan login ke SIHUMAS:\nhttps://sihumas.uisbatam.com/\n\n` +
+                    `Mohon dikoordinasikan dan dipersiapkan dengan baik. Terima kasih.\n_SIHUMAS_`;
 
                 window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
             }
