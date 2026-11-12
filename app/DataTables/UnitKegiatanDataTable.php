@@ -36,7 +36,10 @@ class UnitKegiatanDataTable extends DataTable
                 </div>
                 ';
             })
-            ->rawColumns(['action'])
+            ->editColumn('kategori', function($item) {
+                return $item->kategori ? '<span class="badge bg-secondary text-dark fw-bold px-2 py-1">' . e($item->kategori) . '</span>' : '<span class="text-muted">-</span>';
+            })
+            ->rawColumns(['action', 'kategori'])
             ->setRowId('DT_RowIndex');
     }
 
@@ -86,8 +89,12 @@ class UnitKegiatanDataTable extends DataTable
                 ->addClass('text-center')
                 ->orderable(false)
                 ->searchable(false),
+            Column::make('kategori')
+                ->title('KATEGORI / INDUK')
+                ->width('25%')
+                ->addClass('text-start'),
             Column::make('unit_kegiatan')
-                ->title('UNIT KERJA')
+                ->title('NAMA UNIT KERJA')
                 ->addClass('text-start'),
             Column::computed('action')
                   ->title('ACTION')

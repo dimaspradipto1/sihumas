@@ -14,12 +14,19 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        $unitHumas = \App\Models\UnitKegiatan::where('unit_kegiatan', 'like', '%Humas%')->first();
+        $unitRektorat = \App\Models\UnitKegiatan::where('unit_kegiatan', 'Rektorat')->first();
+        $unitFeb = \App\Models\UnitKegiatan::where('unit_kegiatan', 'like', '%Ekonomi%')->first();
+        $unitFst = \App\Models\UnitKegiatan::where('unit_kegiatan', 'like', '%Sains%')->first();
+        $unitFikes = \App\Models\UnitKegiatan::where('unit_kegiatan', 'like', '%Kesehatan%')->first();
+
         $users = [
             [
                 'name' => 'admin humas dan publikasi',
                 'email' => 'admin@uis.ac.id',
                 'no_wa' => '082283736481',
                 'password' => Hash::make('password'),
+                'unit_kegiatan_id' => $unitHumas?->id,
                 'is_admin' => true,
                 'is_humas' => true,
                 'is_rektorat' => false,
@@ -35,6 +42,7 @@ class UserSeeder extends Seeder
                 'email' => 'nanda@uis.ac.id',
                 'no_wa' => '085668494033',
                 'password' => Hash::make('password'),
+                'unit_kegiatan_id' => $unitHumas?->id,
                 'is_admin' => false,
                 'is_humas' => true,
                 'is_rektorat' => false,
@@ -50,6 +58,7 @@ class UserSeeder extends Seeder
                 'email' => 'ujang@uis.ac.id',
                 'no_wa' => '087701514453',
                 'password' => Hash::make('password'),
+                'unit_kegiatan_id' => $unitRektorat?->id,
                 'is_admin' => false,
                 'is_humas' => false,
                 'is_rektorat' => true,
@@ -65,6 +74,7 @@ class UserSeeder extends Seeder
                 'email' => 'feb@uis.ac.id',
                 'no_wa' => '',
                 'password' => Hash::make('password'),
+                'unit_kegiatan_id' => $unitFeb?->id,
                 'is_admin' => false,
                 'is_humas' => false,
                 'is_rektorat' => false,
@@ -80,6 +90,7 @@ class UserSeeder extends Seeder
                 'email' => 'fst@uis.ac.id',
                 'no_wa' => '085363572448',
                 'password' => Hash::make('password'),
+                'unit_kegiatan_id' => $unitFst?->id,
                 'is_admin' => false,
                 'is_humas' => false,
                 'is_rektorat' => false,
@@ -95,6 +106,7 @@ class UserSeeder extends Seeder
                 'email' => 'fikes@uis.ac.id',
                 'no_wa' => '',
                 'password' => Hash::make('password'),
+                'unit_kegiatan_id' => $unitFikes?->id,
                 'is_admin' => false,
                 'is_humas' => false,
                 'is_rektorat' => false,
@@ -110,6 +122,7 @@ class UserSeeder extends Seeder
                 'email' => 'dimas@uis.ac.id',
                 'no_wa' => '',
                 'password' => Hash::make('password'),
+                'unit_kegiatan_id' => $unitFst?->id,
                 'is_admin' => false,
                 'is_humas' => false,
                 'is_rektorat' => false,
@@ -123,7 +136,7 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($users as $user) {
-            DB::table('users')->insert($user);
+            DB::table('users')->updateOrInsert(['email' => $user['email']], $user);
         }
     }
 }

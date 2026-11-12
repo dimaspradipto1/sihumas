@@ -31,7 +31,8 @@ class UnitKegiatanController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'unit_kegiatan' => 'required',
+            'kategori' => 'nullable|string|max:255',
+            'unit_kegiatan' => 'required|string|max:255',
         ]);
 
         UnitKegiatan::create($validated);
@@ -60,7 +61,8 @@ class UnitKegiatanController extends Controller
     public function update(Request $request, UnitKegiatan $unitKegiatan)
     {
         $validated = $request->validate([
-            'unit_kegiatan' => 'required',
+            'kategori' => 'nullable|string|max:255',
+            'unit_kegiatan' => 'required|string|max:255',
         ]);
 
         $unitKegiatan->update($validated);

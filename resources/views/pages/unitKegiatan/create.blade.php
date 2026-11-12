@@ -36,11 +36,27 @@
                         <div class="card-body">
                             <div class="row mb-4">
                                 <div class="col-12">
+                                    <div class="mb-4">
+                                        <label for="kategori" class="text-capitalize fw-bold">Kategori / Induk Unit</label>
+                                        <input list="kategori_list" name="kategori" value="{{ old('kategori') }}"
+                                            class="form-control" id="kategori" placeholder="Pilih atau ketik nama induk (Contoh: BAAK, BAUK, BKAK, dll)">
+                                        <datalist id="kategori_list">
+                                            <option value="BAAK">
+                                            <option value="Perpustakaan">
+                                            <option value="BAUK">
+                                            <option value="BKAK">
+                                            <option value="LPTI">
+                                            <option value="Ka.LPMM">
+                                            <option value="Ka.LPMI">
+                                            <option value="Fakultas & Rektorat">
+                                        </datalist>
+                                        <small class="text-muted">Pilih induk unit dari daftar atau ketik baru jika ada kategori baru.</small>
+                                    </div>
 
                                     <div class="mb-4">
-                                        <label for="unit_kegiatan" class="text-capitalize">nama unit</label>
+                                        <label for="unit_kegiatan" class="text-capitalize fw-bold">Nama Unit Kerja</label>
                                         <input type="text" name="unit_kegiatan" value="{{ old('unit_kegiatan') }}"
-                                            class="form-control" id="unit_kegiatan" placeholder="masukkan nama unit yang melaksanakan kegiatan">
+                                            class="form-control" id="unit_kegiatan" placeholder="Contoh: BAAK - Kabid Akademik atau Kepala Perpustakaan" required>
                                     </div>
                                 </div>
                             </div>

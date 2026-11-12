@@ -19,4 +19,12 @@ class UnitKegiatan extends Model
     {
         return $this->hasMany(User::class, 'unit_kegiatan_id');
     }
+
+    public function getNamaSubAttribute(): string
+    {
+        if ($this->kategori && str_starts_with($this->unit_kegiatan, $this->kategori . ' - ')) {
+            return substr($this->unit_kegiatan, strlen($this->kategori . ' - '));
+        }
+        return $this->unit_kegiatan;
+    }
 }

@@ -61,14 +61,27 @@
                 </div>
 
                 <div class="mb-4">
-                  <label for="unit_kegiatan_id" class="text-uppercase">Unit</label>
-                  <select name="unit_kegiatan_id" class="form-control" id="unit_kegiatan_id">
-                    <option value="">PILIH UNIT</option>
+                  <label for="unit_kegiatan_id" class="text-uppercase fw-bold">Unit Kegiatan</label>
+                  <select name="unit_kegiatan_id" class="form-select" id="unit_kegiatan_id">
+                    <option value="">-- PILIH UNIT KEGIATAN --</option>
                     @if (isset($units) && count($units) > 0)
-                      @foreach ($units as $unit)
-                        <option value="{{ $unit->id }}" {{ old('unit_kegiatan_id', $user->unit_kegiatan_id) == $unit->id ? 'selected' : '' }}>
-                          {{ $unit->unit_kegiatan }}
-                        </option>
+                      @php
+                        $order = ['BAAK', 'Perpustakaan', 'BAUK', 'BKAK', 'LPTI', 'Ka.LPMM', 'Ka.LPMI', 'Fakultas & Rektorat'];
+                        $groupedUnits = $units->groupBy(function($item) {
+                            return $item->kategori ?: 'Lainnya';
+                        })->sortBy(function($items, $key) use ($order) {
+                            $idx = array_search($key, $order);
+                            return $idx === false ? 999 : $idx;
+                        });
+                      @endphp
+                      @foreach ($groupedUnits as $kategori => $items)
+                        <optgroup label="🏢 {{ $kategori }}">
+                          @foreach ($items as $unit)
+                            <option value="{{ $unit->id }}" title="{{ $unit->unit_kegiatan }}" {{ old('unit_kegiatan_id', $user->unit_kegiatan_id) == $unit->id ? 'selected' : '' }}>
+                              {{ $unit->nama_sub }}
+                            </option>
+                          @endforeach
+                        </optgroup>
                       @endforeach
                     @endif
                   </select>

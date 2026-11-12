@@ -93,7 +93,7 @@ class PengajuanController extends Controller
      */
     public function create()
     {
-        $unitKegiatan = UnitKegiatan::all();
+        $unitKegiatan = UnitKegiatan::orderBy('kategori')->orderBy('unit_kegiatan')->get();
         $tahunAkademik = TahunAkademik::orderBy('tahun_akademik', 'desc')->get();
         return view('pages.pengajuan.create', compact('tahunAkademik', 'unitKegiatan'));
     }

@@ -141,13 +141,27 @@
                                     </div>
 
                                     <div class="mb-4">
-                                        <label for="unit_kegiatan" class="text-capitalize">unit kegiatan</label>
+                                        <label for="unit_kegiatan" class="text-capitalize fw-bold">Unit Kegiatan</label>
                                         <select name="unit_kegiatan" id="unit_kegiatan" class="form-select single">
-                                            <option>Pilih Unit Kegiatan</option>
-                                            @foreach ($unitKegiatan as $unit)
-                                                <option value="{{ $unit->unit_kegiatan }}"
-                                                    {{ request('unit_kegiatan') == $unit->unit_kegiatan ? 'selected' : '' }}>
-                                                    {{ $unit->unit_kegiatan }}</option>
+                                            <option value="">-- Pilih Unit Kegiatan --</option>
+                                            @php
+                                                $order = ['BAAK', 'Perpustakaan', 'BAUK', 'BKAK', 'LPTI', 'Ka.LPMM', 'Ka.LPMI', 'Fakultas & Rektorat'];
+                                                $groupedUnits = $unitKegiatan->groupBy(function($item) {
+                                                    return $item->kategori ?: 'Lainnya';
+                                                })->sortBy(function($items, $key) use ($order) {
+                                                    $idx = array_search($key, $order);
+                                                    return $idx === false ? 999 : $idx;
+                                                });
+                                            @endphp
+                                            @foreach ($groupedUnits as $kategori => $items)
+                                                <optgroup label="🏢 {{ $kategori }}">
+                                                    @foreach ($items as $unit)
+                                                        <option value="{{ $unit->unit_kegiatan }}"
+                                                            {{ old('unit_kegiatan', request('unit_kegiatan')) == $unit->unit_kegiatan ? 'selected' : '' }}>
+                                                            {{ $unit->nama_sub }}
+                                                        </option>
+                                                    @endforeach
+                                                </optgroup>
                                             @endforeach
                                         </select>
                                     </div>
