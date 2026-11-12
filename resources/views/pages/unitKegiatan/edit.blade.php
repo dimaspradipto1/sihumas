@@ -49,7 +49,10 @@
                                             <option value="LPTI">
                                             <option value="Ka.LPMM">
                                             <option value="Ka.LPMI">
-                                            <option value="Fakultas & Rektorat">
+                                            <option value="Rektorat">
+                                            <option value="FAKULTAS EKONOMI DAN BISNIS (FEB)">
+                                            <option value="FAKULTAS SAINS DAN TEKNOLOGI (FST)">
+                                            <option value="FAKULTAS ILMU KESEHATAN (FIKes)">
                                         </datalist>
                                         <small class="text-muted">Pilih induk unit dari daftar atau ketik baru jika ada kategori baru.</small>
                                     </div>

@@ -60,7 +60,19 @@
                       @php
                         $hasKategori = $units->contains(fn($u) => !empty($u->kategori));
                         if ($hasKategori) {
-                            $order = ['BAAK', 'Perpustakaan', 'BAUK', 'BKAK', 'LPTI', 'Ka.LPMM', 'Ka.LPMI', 'Fakultas & Rektorat'];
+                            $order = [
+                                'BAAK',
+                                'Perpustakaan',
+                                'BAUK',
+                                'BKAK',
+                                'LPTI',
+                                'Ka.LPMM',
+                                'Ka.LPMI',
+                                'Rektorat',
+                                'FAKULTAS EKONOMI DAN BISNIS (FEB)',
+                                'FAKULTAS SAINS DAN TEKNOLOGI (FST)',
+                                'FAKULTAS ILMU KESEHATAN (FIKes)',
+                            ];
                             $groupedUnits = $units->groupBy(function($item) {
                                 return $item->kategori ?: 'Lainnya';
                             })->sortBy(function($items, $key) use ($order) {

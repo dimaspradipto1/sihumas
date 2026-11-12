@@ -22,15 +22,7 @@ class UnitKegiatan extends Model
 
     public static function getOrderedList()
     {
-        $query = static::query();
-        try {
-            if (\Illuminate\Support\Facades\Schema::hasColumn('unit_kegiatans', 'kategori')) {
-                $query->orderBy('kategori');
-            }
-        } catch (\Throwable $e) {
-            // Fallback jika terjadi kendala pada schema check
-        }
-        return $query->orderBy('unit_kegiatan')->get();
+        return static::query()->orderBy('id')->get();
     }
 
     public function getNamaSubAttribute(): string

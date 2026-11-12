@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Support\Facades\Schema;
 
 class UnitKegiatan extends Seeder
 {
@@ -52,29 +52,76 @@ class UnitKegiatan extends Seeder
             ['kategori' => 'Ka.LPMI', 'unit_kegiatan' => 'Ka.LPMI - Kabid Audit Mutu Internal'],
             ['kategori' => 'Ka.LPMI', 'unit_kegiatan' => 'Ka.LPMI - Kabid Monitoring dan Evaluasi'],
 
-            // Fakultas & Rektorat
-            ['kategori' => 'Fakultas & Rektorat', 'unit_kegiatan' => 'Rektorat'],
-            ['kategori' => 'Fakultas & Rektorat', 'unit_kegiatan' => 'Fakultas Ekonomi dan Bisnis (FEB)'],
-            ['kategori' => 'Fakultas & Rektorat', 'unit_kegiatan' => 'FEB - S1 Manajemen'],
-            ['kategori' => 'Fakultas & Rektorat', 'unit_kegiatan' => 'FEB - S2 Manajemen'],
-            ['kategori' => 'Fakultas & Rektorat', 'unit_kegiatan' => 'FEB - S1 Akuntansi'],
-            ['kategori' => 'Fakultas & Rektorat', 'unit_kegiatan' => 'Fakultas Sains dan Teknologi (FST)'],
-            ['kategori' => 'Fakultas & Rektorat', 'unit_kegiatan' => 'FST - Teknik Industri'],
-            ['kategori' => 'Fakultas & Rektorat', 'unit_kegiatan' => 'FST - Teknik Informatika'],
-            ['kategori' => 'Fakultas & Rektorat', 'unit_kegiatan' => 'FST - Teknik Perkapalan'],
-            ['kategori' => 'Fakultas & Rektorat', 'unit_kegiatan' => 'FST - Teknik Logistik'],
-            ['kategori' => 'Fakultas & Rektorat', 'unit_kegiatan' => 'FST - Sistem Informasi'],
-            ['kategori' => 'Fakultas & Rektorat', 'unit_kegiatan' => 'Fakultas Ilmu Kesehatan (FIKES)'],
-            ['kategori' => 'Fakultas & Rektorat', 'unit_kegiatan' => 'FIKES - S1 K3'],
-            ['kategori' => 'Fakultas & Rektorat', 'unit_kegiatan' => 'FIKES - S2 Kesmas'],
-            ['kategori' => 'Fakultas & Rektorat', 'unit_kegiatan' => 'FIKES - S1 Kesling'],
+            // Rektorat
+            ['kategori' => 'Rektorat', 'unit_kegiatan' => 'Rektorat'],
+
+            // FAKULTAS EKONOMI DAN BISNIS (FEB)
+            ['kategori' => 'FAKULTAS EKONOMI DAN BISNIS (FEB)', 'unit_kegiatan' => 'S2-MAGISTER MANAJEMEN'],
+            ['kategori' => 'FAKULTAS EKONOMI DAN BISNIS (FEB)', 'unit_kegiatan' => 'S1-MANAJEMEN'],
+            ['kategori' => 'FAKULTAS EKONOMI DAN BISNIS (FEB)', 'unit_kegiatan' => 'S1-AKUNTANSI'],
+
+            // FAKULTAS SAINS DAN TEKNOLOGI (FST)
+            ['kategori' => 'FAKULTAS SAINS DAN TEKNOLOGI (FST)', 'unit_kegiatan' => 'S1-TEKNIK INDUSTRI'],
+            ['kategori' => 'FAKULTAS SAINS DAN TEKNOLOGI (FST)', 'unit_kegiatan' => 'S1-TEKNIK INFORMATIKA'],
+            ['kategori' => 'FAKULTAS SAINS DAN TEKNOLOGI (FST)', 'unit_kegiatan' => 'S1-TEKNIK LOGISTIK'],
+            ['kategori' => 'FAKULTAS SAINS DAN TEKNOLOGI (FST)', 'unit_kegiatan' => 'S1-SISTEM INFORMASI'],
+            ['kategori' => 'FAKULTAS SAINS DAN TEKNOLOGI (FST)', 'unit_kegiatan' => 'S1-TEKNIK PERKAPALAN'],
+
+            // FAKULTAS ILMU KESEHATAN (FIKes)
+            ['kategori' => 'FAKULTAS ILMU KESEHATAN (FIKes)', 'unit_kegiatan' => 'S2-KESEHATAN MASYARAKAT'],
+            ['kategori' => 'FAKULTAS ILMU KESEHATAN (FIKes)', 'unit_kegiatan' => 'S1-KESEHATAN DAN KESELAMATAN KERJA'],
+            ['kategori' => 'FAKULTAS ILMU KESEHATAN (FIKes)', 'unit_kegiatan' => 'S1-KESEHATAN LINGKUNGAN'],
         ];
 
+        $createdMap = [];
         foreach ($units as $item) {
-            \App\Models\UnitKegiatan::updateOrCreate(
+            $unit = \App\Models\UnitKegiatan::updateOrCreate(
                 ['unit_kegiatan' => $item['unit_kegiatan']],
                 ['kategori' => $item['kategori']]
             );
+            $createdMap[$item['unit_kegiatan']] = $unit->id;
+        }
+
+        // Migrasi relasi user dari nama unit lama ke nama unit baru sebelum menghapus unit lama
+        $legacyMap = [
+            'Prodi Feb' => 'S1-MANAJEMEN',
+            'Feb' => 'S1-MANAJEMEN',
+            'Fakultas Ekonomi dan Bisnis (FEB)' => 'S1-MANAJEMEN',
+            'FEB - S1 Manajemen' => 'S1-MANAJEMEN',
+            'FEB - S2 Manajemen' => 'S2-MAGISTER MANAJEMEN',
+            'FEB - S1 Akuntansi' => 'S1-AKUNTANSI',
+            'Prodi Fst' => 'S1-TEKNIK INFORMATIKA',
+            'Fst' => 'S1-TEKNIK INFORMATIKA',
+            'Fakultas Sains dan Teknologi (FST)' => 'S1-TEKNIK INFORMATIKA',
+            'FST - Teknik Industri' => 'S1-TEKNIK INDUSTRI',
+            'FST - Teknik Informatika' => 'S1-TEKNIK INFORMATIKA',
+            'FST - Teknik Perkapalan' => 'S1-TEKNIK PERKAPALAN',
+            'FST - Teknik Logistik' => 'S1-TEKNIK LOGISTIK',
+            'FST - Sistem Informasi' => 'S1-SISTEM INFORMASI',
+            'Prodi Fikes' => 'S1-KESEHATAN DAN KESELAMATAN KERJA',
+            'Fikes' => 'S1-KESEHATAN DAN KESELAMATAN KERJA',
+            'Fakultas Ilmu Kesehatan (FIKES)' => 'S1-KESEHATAN DAN KESELAMATAN KERJA',
+            'FIKES - S1 K3' => 'S1-KESEHATAN DAN KESELAMATAN KERJA',
+            'FIKES - S2 Kesmas' => 'S2-KESEHATAN MASYARAKAT',
+            'FIKES - S1 Kesling' => 'S1-KESEHATAN LINGKUNGAN',
+            'HUMAS' => 'BKAK - Kabid Humas & Publikasi',
+            'BKAK' => 'BKAK - Kabid Humas & Publikasi',
+            'LPTI' => 'Ka.LPTI',
+            'Universitas Ibnu Sina' => 'Rektorat',
+        ];
+
+        foreach ($legacyMap as $oldName => $newName) {
+            $oldUnits = \App\Models\UnitKegiatan::whereRaw('LOWER(unit_kegiatan) = ?', [strtolower($oldName)])->get();
+            foreach ($oldUnits as $oldUnit) {
+                if (isset($createdMap[$newName]) && $oldUnit->id !== $createdMap[$newName]) {
+                    if (Schema::hasTable('users') && Schema::hasColumn('users', 'unit_kegiatan_id')) {
+                        DB::table('users')
+                            ->where('unit_kegiatan_id', $oldUnit->id)
+                            ->update(['unit_kegiatan_id' => $createdMap[$newName]]);
+                    }
+                    $oldUnit->delete();
+                }
+            }
         }
     }
 }

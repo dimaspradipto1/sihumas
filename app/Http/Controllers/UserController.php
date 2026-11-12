@@ -90,8 +90,8 @@ class UserController extends Controller
         $data['is_humas'] = $isHumas;
         $data['is_users'] = $isUsers;
 
-        // Sinkronisasi otomatis flag fakultas/rektorat sesuai nama unit kegiatan
-        $unitNameUpper = strtoupper($unit?->unit_kegiatan ?? '');
+        // Sinkronisasi otomatis flag fakultas/rektorat sesuai kategori & nama unit kegiatan
+        $unitNameUpper = strtoupper(($unit?->kategori ?? '') . ' ' . ($unit?->unit_kegiatan ?? ''));
         $data['is_rektorat'] = $request->has('is_rektorat') || str_contains($unitNameUpper, 'REKTORAT');
         $data['is_feb'] = $request->has('is_feb') || str_contains($unitNameUpper, 'FEB') || str_contains($unitNameUpper, 'EKONOMI') || str_contains($unitNameUpper, 'MANAJEMEN') || str_contains($unitNameUpper, 'AKUNTANSI');
         $data['is_fst'] = $request->has('is_fst') || str_contains($unitNameUpper, 'FST') || str_contains($unitNameUpper, 'SAINS') || str_contains($unitNameUpper, 'INDUSTRI') || str_contains($unitNameUpper, 'INFORMATIKA') || str_contains($unitNameUpper, 'PERKAPALAN') || str_contains($unitNameUpper, 'LOGISTIK') || str_contains($unitNameUpper, 'SISTEM INFORMASI');
@@ -152,7 +152,7 @@ class UserController extends Controller
             $isUsers = $user->is_users;
         }
 
-        $unitNameUpper = strtoupper($unit?->unit_kegiatan ?? '');
+        $unitNameUpper = strtoupper(($unit?->kategori ?? '') . ' ' . ($unit?->unit_kegiatan ?? ''));
         $isRektorat = $request->has('is_rektorat') || str_contains($unitNameUpper, 'REKTORAT');
         $isFeb = $request->has('is_feb') || str_contains($unitNameUpper, 'FEB') || str_contains($unitNameUpper, 'EKONOMI') || str_contains($unitNameUpper, 'MANAJEMEN') || str_contains($unitNameUpper, 'AKUNTANSI');
         $isFst = $request->has('is_fst') || str_contains($unitNameUpper, 'FST') || str_contains($unitNameUpper, 'SAINS') || str_contains($unitNameUpper, 'INDUSTRI') || str_contains($unitNameUpper, 'INFORMATIKA') || str_contains($unitNameUpper, 'PERKAPALAN') || str_contains($unitNameUpper, 'LOGISTIK') || str_contains($unitNameUpper, 'SISTEM INFORMASI');

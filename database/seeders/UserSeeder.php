@@ -16,9 +16,15 @@ class UserSeeder extends Seeder
     {
         $unitHumas = \App\Models\UnitKegiatan::where('unit_kegiatan', 'like', '%Humas%')->first();
         $unitRektorat = \App\Models\UnitKegiatan::where('unit_kegiatan', 'Rektorat')->first();
-        $unitFeb = \App\Models\UnitKegiatan::where('unit_kegiatan', 'like', '%Ekonomi%')->first();
-        $unitFst = \App\Models\UnitKegiatan::where('unit_kegiatan', 'like', '%Sains%')->first();
-        $unitFikes = \App\Models\UnitKegiatan::where('unit_kegiatan', 'like', '%Kesehatan%')->first();
+        $unitFeb = \App\Models\UnitKegiatan::where('kategori', 'like', '%FEB%')
+            ->orWhere('unit_kegiatan', 'like', '%MANAJEMEN%')
+            ->first();
+        $unitFst = \App\Models\UnitKegiatan::where('kategori', 'like', '%FST%')
+            ->orWhere('unit_kegiatan', 'like', '%TEKNIK%')
+            ->first();
+        $unitFikes = \App\Models\UnitKegiatan::where('kategori', 'like', '%FIKes%')
+            ->orWhere('unit_kegiatan', 'like', '%KESEHATAN%')
+            ->first();
 
         $users = [
             [
