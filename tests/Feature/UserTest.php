@@ -19,8 +19,8 @@ class UserTest extends TestCase
         $this->assertTrue($columns->has('no_wa'), 'Column no_wa should exist in UsersDataTable');
         $this->assertEquals('No. WhatsApp', $columns->get('no_wa')->title);
 
-        $this->assertTrue($columns->has('fakultas'), 'Column fakultas should exist in UsersDataTable');
-        $this->assertEquals('Unit', $columns->get('fakultas')->title);
+        $this->assertTrue($columns->has('unit_kegiatan'), 'Column unit_kegiatan should exist in UsersDataTable');
+        $this->assertEquals('Unit', $columns->get('unit_kegiatan')->title);
 
         $this->assertTrue($columns->has('role'), 'Column role should exist in UsersDataTable');
         $this->assertEquals('Role Akses', $columns->get('role')->title);
@@ -29,7 +29,6 @@ class UserTest extends TestCase
     public function test_admin_can_access_users_index(): void
     {
         $admin = User::factory()->create([
-            'fakultas' => 'UNIVERSITAS IBNU SINA',
             'is_admin' => true,
         ]);
 
@@ -41,7 +40,6 @@ class UserTest extends TestCase
     public function test_admin_can_view_create_user_page(): void
     {
         $admin = User::factory()->create([
-            'fakultas' => 'UNIVERSITAS IBNU SINA',
             'is_admin' => true,
         ]);
 
@@ -56,15 +54,16 @@ class UserTest extends TestCase
     public function test_admin_can_create_user_with_no_wa_and_unit(): void
     {
         $admin = User::factory()->create([
-            'fakultas' => 'UNIVERSITAS IBNU SINA',
             'is_admin' => true,
         ]);
+
+        $unit = \App\Models\UnitKegiatan::firstOrCreate(['unit_kegiatan' => 'FAKULTAS SAINS DAN TEKNOLOGI']);
 
         $userData = [
             'name' => 'Test User Unit',
             'email' => 'test_unit_' . uniqid() . '@uis.ac.id',
             'no_wa' => '081299887766',
-            'fakultas' => 'FAKULTAS SAINS DAN TEKNOLOGI',
+            'unit_kegiatan_id' => $unit->id,
             'password' => 'password123',
         ];
 
@@ -74,7 +73,7 @@ class UserTest extends TestCase
         $this->assertDatabaseHas('users', [
             'email' => $userData['email'],
             'no_wa' => '081299887766',
-            'fakultas' => 'FAKULTAS SAINS DAN TEKNOLOGI',
+            'unit_kegiatan_id' => $unit->id,
             'is_fst' => 1,
         ]);
     }
@@ -82,7 +81,6 @@ class UserTest extends TestCase
     public function test_admin_can_view_edit_user_page(): void
     {
         $admin = User::factory()->create([
-            'fakultas' => 'UNIVERSITAS IBNU SINA',
             'is_admin' => true,
         ]);
 
@@ -90,7 +88,6 @@ class UserTest extends TestCase
             'name' => 'Existing User',
             'email' => 'existing_' . uniqid() . '@uis.ac.id',
             'no_wa' => '081234567890',
-            'fakultas' => 'REKTORAT',
         ]);
 
         $response = $this->actingAs($admin)->get(route('users.edit', $user->id));
@@ -103,7 +100,6 @@ class UserTest extends TestCase
     public function test_admin_can_update_user_no_wa_and_unit(): void
     {
         $admin = User::factory()->create([
-            'fakultas' => 'UNIVERSITAS IBNU SINA',
             'is_admin' => true,
         ]);
 
@@ -111,14 +107,15 @@ class UserTest extends TestCase
             'name' => 'User To Update',
             'email' => 'update_' . uniqid() . '@uis.ac.id',
             'no_wa' => '081111111111',
-            'fakultas' => 'REKTORAT',
         ]);
+
+        $unit = \App\Models\UnitKegiatan::firstOrCreate(['unit_kegiatan' => 'FAKULTAS EKONOMI DAN BISNIS']);
 
         $updateData = [
             'name' => 'User Updated Name',
             'email' => $user->email,
             'no_wa' => '082299998888',
-            'fakultas' => 'FAKULTAS EKONOMI DAN BISNIS',
+            'unit_kegiatan_id' => $unit->id,
             'is_feb' => 'true',
         ];
 
@@ -129,7 +126,7 @@ class UserTest extends TestCase
             'id' => $user->id,
             'name' => 'User Updated Name',
             'no_wa' => '082299998888',
-            'fakultas' => 'FAKULTAS EKONOMI DAN BISNIS',
+            'unit_kegiatan_id' => $unit->id,
             'is_feb' => 1,
         ]);
     }
@@ -137,7 +134,6 @@ class UserTest extends TestCase
     public function test_no_wa_is_normalized_to_start_with_08(): void
     {
         $admin = User::factory()->create([
-            'fakultas' => 'UNIVERSITAS IBNU SINA',
             'is_admin' => true,
         ]);
 
@@ -145,7 +141,6 @@ class UserTest extends TestCase
             'name' => 'Normalization Test',
             'email' => 'normalize_' . uniqid() . '@uis.ac.id',
             'no_wa' => '6281234567890',
-            'fakultas' => 'REKTORAT',
             'password' => 'password123',
         ];
 
@@ -161,7 +156,6 @@ class UserTest extends TestCase
     public function test_admin_can_create_user_with_unit_kegiatan_relation_and_role_humas(): void
     {
         $admin = User::factory()->create([
-            'fakultas' => 'UNIVERSITAS IBNU SINA',
             'is_admin' => true,
         ]);
 
@@ -184,18 +178,17 @@ class UserTest extends TestCase
         $this->assertDatabaseHas('users', [
             'email' => $userData['email'],
             'unit_kegiatan_id' => $unit->id,
-            'fakultas' => 'Biro Humas & Promosi',
             'is_humas' => 1,
         ]);
 
         $createdUser = User::where('email', $userData['email'])->first();
         $this->assertEquals($unit->id, $createdUser->unitKegiatan->id);
+        $this->assertEquals('Biro Humas & Promosi', $createdUser->fakultas);
     }
 
     public function test_create_user_defaults_to_password_if_omitted(): void
     {
         $admin = User::factory()->create([
-            'fakultas' => 'UNIVERSITAS IBNU SINA',
             'is_admin' => true,
         ]);
 
@@ -203,7 +196,6 @@ class UserTest extends TestCase
         $userData = [
             'name' => 'Default Pass User',
             'email' => $email,
-            'fakultas' => 'REKTORAT',
             // password field left empty
         ];
 
