@@ -90,10 +90,45 @@
                                         value="{{ old('jam_kegiatan', $pengajuan->jam_kegiatan) }}">
                                 </div>
 
+                                @php
+                                    $daftarTempat = [
+                                        'Ruang Rapat Rektorat',
+                                        'Ruang Rapat FEB',
+                                        'Ruang Rapat FST',
+                                        'Ruang Rapat FIKES',
+                                        'Ruang Rapat Gedung B LT 4',
+                                        'Ruang Rapat Gedung E LT 5',
+                                    ];
+                                    $valTempat = old('tempat_kegiatan', $pengajuan->tempat_kegiatan ?? '');
+                                    $isCustomTempat = !empty($valTempat) && !in_array($valTempat, $daftarTempat);
+                                @endphp
+
                                 <div class="mb-4">
-                                    <label for="tempat_kegiatan" class="text-capitalize">tempat kegiatan</label>
-                                    <input type="text" name="tempat_kegiatan" class="form-control"
-                                        value="{{ old('tempat_kegiatan', $pengajuan->tempat_kegiatan) }}">
+                                    <label for="tempat_kegiatan_select" class="form-label text-capitalize fw-bold">Tempat Kegiatan</label>
+                                    <select id="tempat_kegiatan_select" class="form-select select2-tempat" name="{{ $isCustomTempat ? '' : 'tempat_kegiatan' }}" {{ $isCustomTempat ? '' : 'required' }}>
+                                        <option value="">-- Pilih Tempat Kegiatan atau Ketik Custom --</option>
+                                        @foreach ($daftarTempat as $tempat)
+                                            <option value="{{ $tempat }}" {{ $valTempat === $tempat ? 'selected' : '' }}>
+                                                {{ $tempat }}
+                                            </option>
+                                        @endforeach
+                                        @if ($isCustomTempat)
+                                            <option value="{{ $valTempat }}" selected>{{ $valTempat }}</option>
+                                        @endif
+                                        <option value="__custom__" {{ $isCustomTempat ? 'selected' : '' }}>➕ Lainnya (Ketik Manual)...</option>
+                                    </select>
+
+                                    <div id="wrapper_custom_tempat" class="mt-2 {{ $isCustomTempat ? '' : 'd-none' }}">
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light text-primary"><i class="fa-solid fa-location-dot"></i></span>
+                                            <input type="text" id="input_custom_tempat" class="form-control"
+                                                name="{{ $isCustomTempat ? 'tempat_kegiatan' : '' }}"
+                                                value="{{ $isCustomTempat ? $valTempat : '' }}"
+                                                placeholder="Tuliskan nama tempat kegiatan custom / lainnya..."
+                                                {{ $isCustomTempat ? 'required' : 'disabled' }}>
+                                        </div>
+                                        <small class="text-muted"><i class="fa-solid fa-circle-info me-1"></i>Pilih opsi di atas atau ketik langsung nama tempat baru.</small>
+                                    </div>
                                 </div>
 
                                 <div class="mb-4">
@@ -1010,6 +1045,52 @@
                     }
                 });
             }
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const $select = $('#tempat_kegiatan_select');
+                const $customWrapper = $('#wrapper_custom_tempat');
+                const $customInput = $('#input_custom_tempat');
+
+                if ($select.length) {
+                    if (window.$ && $.fn.select2) {
+                        $select.select2({
+                            theme: 'bootstrap-5',
+                            width: '100%',
+                            tags: true,
+                            placeholder: '-- Pilih Tempat Kegiatan atau Ketik Custom --',
+                            allowClear: true,
+                            createTag: function (params) {
+                                const term = $.trim(params.term);
+                                if (term === '' || term.toLowerCase() === 'lainnya') {
+                                    return null;
+                                }
+                                return {
+                                    id: term,
+                                    text: term,
+                                    newTag: true
+                                };
+                            }
+                        });
+                    }
+
+                    function handleTempatChange() {
+                        const val = $select.val();
+                        if (val === '__custom__') {
+                            $customWrapper.removeClass('d-none');
+                            $customInput.prop('disabled', false).attr('name', 'tempat_kegiatan').attr('required', true).focus();
+                            $select.removeAttr('name').removeAttr('required');
+                        } else {
+                            $customWrapper.addClass('d-none');
+                            $customInput.prop('disabled', true).removeAttr('name').removeAttr('required');
+                            $select.attr('name', 'tempat_kegiatan').attr('required', true);
+                        }
+                    }
+
+                    $select.on('change', handleTempatChange);
+                    handleTempatChange();
+                }
+            });
         </script>
     @endpush
 
