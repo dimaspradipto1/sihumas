@@ -17,7 +17,6 @@ class LaporanPublikasiTest extends TestCase
     public function test_authenticated_user_can_access_laporan_publikasi_index(): void
     {
         $user = User::factory()->create([
-            'fakultas' => 'UNIVERSITAS IBNU SINA',
             'is_admin' => true,
         ]);
 
@@ -32,7 +31,6 @@ class LaporanPublikasiTest extends TestCase
     public function test_authenticated_user_can_access_laporan_publikasi_show(): void
     {
         $user = User::factory()->create([
-            'fakultas' => 'UNIVERSITAS IBNU SINA',
             'is_admin' => true,
         ]);
 
@@ -60,7 +58,6 @@ class LaporanPublikasiTest extends TestCase
     public function test_filter_print_by_tahun_akademik(): void
     {
         $user = User::factory()->create([
-            'fakultas' => 'UNIVERSITAS IBNU SINA',
             'is_admin' => true,
         ]);
 
@@ -101,7 +98,6 @@ class LaporanPublikasiTest extends TestCase
     public function test_filter_print_by_bulan_dan_tahun(): void
     {
         $user = User::factory()->create([
-            'fakultas' => 'UNIVERSITAS IBNU SINA',
             'is_admin' => true,
         ]);
 
@@ -139,7 +135,6 @@ class LaporanPublikasiTest extends TestCase
     public function test_filter_print_by_tahun_kalender(): void
     {
         $user = User::factory()->create([
-            'fakultas' => 'UNIVERSITAS IBNU SINA',
             'is_admin' => true,
         ]);
 
@@ -176,7 +171,6 @@ class LaporanPublikasiTest extends TestCase
     public function test_filter_print_by_rentang_tanggal(): void
     {
         $user = User::factory()->create([
-            'fakultas' => 'UNIVERSITAS IBNU SINA',
             'is_admin' => true,
         ]);
 
@@ -214,7 +208,6 @@ class LaporanPublikasiTest extends TestCase
     public function test_laporan_publikasi_datatable_matches_pelaporan_structure(): void
     {
         $admin = User::factory()->create([
-            'fakultas' => 'UNIVERSITAS IBNU SINA',
             'is_admin' => true,
         ]);
 

@@ -141,7 +141,7 @@
                                     class="avatar-xl rounded-circle mx-auto mt-n7 mb-4" alt="Foto Profil"
                                     id="preview-foto-top" />
                                 <h5 class="h3">{{ Auth::user()->name }}</h5>
-                                <p class="fw-normal">{{ Auth::user()->fakultas }}</p>
+                                <p class="fw-normal">{{ Auth::user()->unitKegiatan?->unit_kegiatan ?? 'Universitas Ibnu Sina' }}</p>
                             </div>
                         </div>
                     </div>

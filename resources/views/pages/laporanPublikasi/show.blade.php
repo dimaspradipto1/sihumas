@@ -272,7 +272,7 @@
                     <tr>
                         <td style="text-align: center">{{ $key + 1 }}</td>
                         <td>{{ $laporan->publikasi?->tahunAkademik?->tahun_akademik ?? '-' }}</td>
-                        <td class="fakultas">{{ $laporan->user?->fakultas ?? ($laporan->pengajuan?->user?->fakultas ?? 'N/A') }}</td>
+                        <td class="fakultas">{{ $laporan->user?->unitKegiatan?->unit_kegiatan ?? ($laporan->pengajuan?->user?->unitKegiatan?->unit_kegiatan ?? 'N/A') }}</td>
                         <td>{{ $laporan->pengajuan?->nama_kegiatan ?? '-' }}</td>
                         <td>{{ $laporan->pengajuan?->tgl_awal ? \Carbon\Carbon::parse($laporan->pengajuan->tgl_awal)->locale('id')->translatedFormat('l, d F Y') : '-' }}</td>
                         <td>{{ $laporan->pengajuan?->tgl_selesai ? \Carbon\Carbon::parse($laporan->pengajuan->tgl_selesai)->locale('id')->translatedFormat('l, d F Y') : '-' }}</td>

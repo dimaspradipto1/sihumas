@@ -13,7 +13,6 @@ class BackupTest extends TestCase
     public function test_non_admin_cannot_access_backup_page(): void
     {
         $user = User::factory()->create([
-            'fakultas' => 'UNIVERSITAS IBNU SINA',
             'is_admin' => false,
         ]);
 
@@ -24,7 +23,6 @@ class BackupTest extends TestCase
     public function test_admin_can_access_backup_page(): void
     {
         $admin = User::factory()->create([
-            'fakultas' => 'UNIVERSITAS IBNU SINA',
             'is_admin' => true,
         ]);
 
@@ -38,7 +36,6 @@ class BackupTest extends TestCase
     public function test_admin_can_download_database(): void
     {
         $admin = User::factory()->create([
-            'fakultas' => 'UNIVERSITAS IBNU SINA',
             'is_admin' => true,
         ]);
 
@@ -50,7 +47,6 @@ class BackupTest extends TestCase
     public function test_admin_can_download_storage(): void
     {
         $admin = User::factory()->create([
-            'fakultas' => 'UNIVERSITAS IBNU SINA',
             'is_admin' => true,
         ]);
 

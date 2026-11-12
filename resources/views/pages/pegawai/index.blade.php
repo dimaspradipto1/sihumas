@@ -130,7 +130,7 @@
                             <img src="{{ $pegawai->foto ? asset('storage/' . $pegawai->foto) : asset('volt/assets/img/team/avatar-grey.png') }}"
                                 class="avatar-xl rounded-circle mx-auto mt-n7 mb-4" alt="Neil Portrait" />
                             <h5 class="h3">{{ Auth::user()->name }}</h5>
-                            <p class="fw-normal">{{ Auth::user()->fakultas }}</p>
+                            <p class="fw-normal">{{ Auth::user()->unitKegiatan?->unit_kegiatan ?? 'Universitas Ibnu Sina' }}</p>
                         </div>
                     </div>
                 </div>

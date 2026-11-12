@@ -58,14 +58,24 @@ class UsersDataTable extends DataTable
 
                 return '<a href="https://wa.me/' . $waUrl . '" target="_blank" class="text-success fw-bold d-inline-flex align-items-center" title="Hubungi via WhatsApp"><i class="fa-brands fa-whatsapp me-1 text-success fs-6"></i> ' . e($display) . '</a>';
             })
-            ->editColumn('fakultas', function ($user) {
-                $unitNama = $user->unitKegiatan?->unit_kegiatan ?: $user->fakultas;
+            ->addColumn('unit_kegiatan', function ($user) {
+                $unitNama = $user->unitKegiatan?->unit_kegiatan;
                 return $unitNama ? e($unitNama) : '<span class="text-muted">-</span>';
+            })
+            ->filterColumn('unit_kegiatan', function ($query, $keyword) {
+                $query->whereHas('unitKegiatan', function ($q) use ($keyword) {
+                    $q->where('unit_kegiatan', 'like', "%{$keyword}%");
+                });
+            })
+            ->orderColumn('unit_kegiatan', function ($query, $order) {
+                $query->leftJoin('unit_kegiatans', 'users.unit_kegiatan_id', '=', 'unit_kegiatans.id')
+                    ->orderBy('unit_kegiatans.unit_kegiatan', $order)
+                    ->select('users.*');
             })
             ->addColumn('role', function ($user) {
                 return $user->role_badges;
             })
-            ->rawColumns(['action', 'no_wa', 'fakultas', 'role'])
+            ->rawColumns(['action', 'no_wa', 'unit_kegiatan', 'role'])
             ->setRowId('DT_RowIndex');
     }
 
@@ -113,7 +123,7 @@ class UsersDataTable extends DataTable
             Column::make('name')->title('Nama Pengguna')->addClass('text-start'),
             Column::make('email')->title('Email')->addClass('text-start')->width('20%'),
             Column::make('no_wa')->title('No. WhatsApp')->addClass('text-start')->width('13%'),
-            Column::make('fakultas')->title('Unit')->addClass('text-start')->width('14%'),
+            Column::make('unit_kegiatan')->name('unit_kegiatan')->data('unit_kegiatan')->title('Unit')->addClass('text-start')->width('14%'),
             Column::make('role')->title('Role Akses')->orderable(false)->searchable(false)->addClass('text-center')->width('12%'),
             Column::computed('action')
                 ->title('Aksi')
