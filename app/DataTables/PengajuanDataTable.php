@@ -26,6 +26,9 @@ class PengajuanDataTable extends DataTable
         return (new EloquentDataTable($query))
             ->addIndexColumn()
             ->addColumn('DT_RowIndex', '')
+            ->addColumn('nama_kegiatan', function ($pengajuan) {
+                return '<span class="fw-semibold text-gray-800">' . e($pengajuan->nama_kegiatan) . '</span>';
+            })
 
             ->addColumn('tgl_pelaksanaan', function ($pengajuan) {
                 Carbon::setLocale('id');
@@ -86,7 +89,7 @@ class PengajuanDataTable extends DataTable
                 return $html;
             })
 
-            ->rawColumns(['action', 'tgl_pelaksanaan', 'tgl_awal', 'tgl_selesai', 'status', 'user_id'])
+            ->rawColumns(['nama_kegiatan', 'action', 'tgl_pelaksanaan', 'tgl_awal', 'tgl_selesai', 'status', 'user_id'])
             ->setRowId('DT_RowIndex');
     }
 

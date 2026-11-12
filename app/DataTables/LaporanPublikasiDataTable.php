@@ -22,7 +22,10 @@ class LaporanPublikasiDataTable extends DataTable
                 if (!$pengajuan) {
                     return '-';
                 }
-                return '<a href="' . route('pengajuan.edit', $pengajuan->id) . '" class="text-decoration-none text-success fw-bold">' . e($pengajuan->nama_kegiatan) . '</a>';
+                if (auth()->check() && (auth()->user()->is_admin || auth()->user()->is_humas)) {
+                    return '<a href="' . route('pengajuan.edit', $pengajuan->id) . '" class="text-decoration-none text-success fw-bold">' . e($pengajuan->nama_kegiatan) . '</a>';
+                }
+                return '<span class="fw-semibold text-gray-800">' . e($pengajuan->nama_kegiatan) . '</span>';
             })
             ->addColumn('status_validasi', function ($row) {
                 $status = $row->publikasi?->status_validasi ?? 'belum_dilaporkan';

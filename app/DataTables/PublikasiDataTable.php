@@ -29,13 +29,19 @@ class PublikasiDataTable extends DataTable
                 if (!$publikasi->pengajuan) {
                     return '-';
                 }
-                return '<a href="' . route('pengajuan.edit', $publikasi->pengajuan->id) . '" class="text-decoration-none text-success fw-bold">' . e($publikasi->pengajuan->nama_kegiatan) . '</a>';
+                if (auth()->check() && (auth()->user()->is_admin || auth()->user()->is_humas)) {
+                    return '<a href="' . route('pengajuan.edit', $publikasi->pengajuan->id) . '" class="text-decoration-none text-success fw-bold">' . e($publikasi->pengajuan->nama_kegiatan) . '</a>';
+                }
+                return '<span class="fw-semibold text-gray-800">' . e($publikasi->pengajuan->nama_kegiatan) . '</span>';
             })
             ->addColumn('pengajuan.nama_kegiatan', function ($publikasi) {
                 if (!$publikasi->pengajuan) {
                     return '-';
                 }
-                return '<a href="' . route('pengajuan.edit', $publikasi->pengajuan->id) . '" class="text-decoration-none text-success fw-bold">' . e($publikasi->pengajuan->nama_kegiatan) . '</a>';
+                if (auth()->check() && (auth()->user()->is_admin || auth()->user()->is_humas)) {
+                    return '<a href="' . route('pengajuan.edit', $publikasi->pengajuan->id) . '" class="text-decoration-none text-success fw-bold">' . e($publikasi->pengajuan->nama_kegiatan) . '</a>';
+                }
+                return '<span class="fw-semibold text-gray-800">' . e($publikasi->pengajuan->nama_kegiatan) . '</span>';
             })
             ->addColumn('tgl_pelaksanaan', function ($publikasi) {
                 Carbon::setLocale('id');
