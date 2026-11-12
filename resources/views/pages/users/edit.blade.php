@@ -66,23 +66,35 @@
                     <option value="">-- PILIH UNIT KEGIATAN --</option>
                     @if (isset($units) && count($units) > 0)
                       @php
-                        $order = ['BAAK', 'Perpustakaan', 'BAUK', 'BKAK', 'LPTI', 'Ka.LPMM', 'Ka.LPMI', 'Fakultas & Rektorat'];
-                        $groupedUnits = $units->groupBy(function($item) {
-                            return $item->kategori ?: 'Lainnya';
-                        })->sortBy(function($items, $key) use ($order) {
-                            $idx = array_search($key, $order);
-                            return $idx === false ? 999 : $idx;
-                        });
+                        $hasKategori = $units->contains(fn($u) => !empty($u->kategori));
+                        if ($hasKategori) {
+                            $order = ['BAAK', 'Perpustakaan', 'BAUK', 'BKAK', 'LPTI', 'Ka.LPMM', 'Ka.LPMI', 'Fakultas & Rektorat'];
+                            $groupedUnits = $units->groupBy(function($item) {
+                                return $item->kategori ?: 'Lainnya';
+                            })->sortBy(function($items, $key) use ($order) {
+                                $idx = array_search($key, $order);
+                                return $idx === false ? 999 : $idx;
+                            });
+                        }
                       @endphp
-                      @foreach ($groupedUnits as $kategori => $items)
-                        <optgroup label="🏢 {{ $kategori }}">
-                          @foreach ($items as $unit)
-                            <option value="{{ $unit->id }}" title="{{ $unit->unit_kegiatan }}" {{ old('unit_kegiatan_id', $user->unit_kegiatan_id) == $unit->id ? 'selected' : '' }}>
-                              {{ $unit->nama_sub }}
-                            </option>
-                          @endforeach
-                        </optgroup>
-                      @endforeach
+
+                      @if ($hasKategori)
+                        @foreach ($groupedUnits as $kategori => $items)
+                          <optgroup label="🏢 {{ $kategori }}">
+                            @foreach ($items as $unit)
+                              <option value="{{ $unit->id }}" title="{{ $unit->unit_kegiatan }}" {{ old('unit_kegiatan_id', $user->unit_kegiatan_id) == $unit->id ? 'selected' : '' }}>
+                                {{ $unit->nama_sub }}
+                              </option>
+                            @endforeach
+                          </optgroup>
+                        @endforeach
+                      @else
+                        @foreach ($units as $unit)
+                          <option value="{{ $unit->id }}" {{ old('unit_kegiatan_id', $user->unit_kegiatan_id) == $unit->id ? 'selected' : '' }}>
+                            {{ $unit->unit_kegiatan }}
+                          </option>
+                        @endforeach
+                      @endif
                     @endif
                   </select>
                 </div>

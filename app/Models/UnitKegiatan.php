@@ -20,10 +20,24 @@ class UnitKegiatan extends Model
         return $this->hasMany(User::class, 'unit_kegiatan_id');
     }
 
+    public static function getOrderedList()
+    {
+        $query = static::query();
+        try {
+            if (\Illuminate\Support\Facades\Schema::hasColumn('unit_kegiatans', 'kategori')) {
+                $query->orderBy('kategori');
+            }
+        } catch (\Throwable $e) {
+            // Fallback jika terjadi kendala pada schema check
+        }
+        return $query->orderBy('unit_kegiatan')->get();
+    }
+
     public function getNamaSubAttribute(): string
     {
-        if ($this->kategori && str_starts_with($this->unit_kegiatan, $this->kategori . ' - ')) {
-            return substr($this->unit_kegiatan, strlen($this->kategori . ' - '));
+        $kategori = $this->kategori ?? null;
+        if ($kategori && str_starts_with($this->unit_kegiatan, $kategori . ' - ')) {
+            return substr($this->unit_kegiatan, strlen($kategori . ' - '));
         }
         return $this->unit_kegiatan;
     }

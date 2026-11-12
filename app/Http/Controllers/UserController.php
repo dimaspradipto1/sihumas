@@ -24,7 +24,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        $units = \App\Models\UnitKegiatan::orderBy('kategori')->orderBy('unit_kegiatan')->get();
+        $units = \App\Models\UnitKegiatan::getOrderedList();
         return view('pages.users.create', compact('units'));
     }
 
@@ -107,7 +107,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $units = \App\Models\UnitKegiatan::orderBy('kategori')->orderBy('unit_kegiatan')->get();
+        $units = \App\Models\UnitKegiatan::getOrderedList();
         return view('pages.users.edit', compact('user', 'units'));
     }
 

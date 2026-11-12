@@ -82,27 +82,39 @@ class UnitKegiatanDataTable extends DataTable
      */
     public function getColumns(): array
     {
-        return [
+        $hasKategori = false;
+        try {
+            $hasKategori = \Illuminate\Support\Facades\Schema::hasColumn('unit_kegiatans', 'kategori');
+        } catch (\Throwable $e) {}
+
+        $columns = [
              Column::make('DT_RowIndex')
                 ->title('NO')
                 ->width('6%')
                 ->addClass('text-center')
                 ->orderable(false)
                 ->searchable(false),
-            Column::make('kategori')
+        ];
+
+        if ($hasKategori) {
+            $columns[] = Column::make('kategori')
                 ->title('KATEGORI / INDUK')
                 ->width('25%')
-                ->addClass('text-start'),
-            Column::make('unit_kegiatan')
-                ->title('NAMA UNIT KERJA')
-                ->addClass('text-start'),
-            Column::computed('action')
-                  ->title('ACTION')
-                  ->exportable(false)
-                  ->printable(false)
-                  ->width('12%')
-                  ->addClass('text-center'),
-        ];
+                ->addClass('text-start');
+        }
+
+        $columns[] = Column::make('unit_kegiatan')
+            ->title('NAMA UNIT KERJA')
+            ->addClass('text-start');
+
+        $columns[] = Column::computed('action')
+              ->title('ACTION')
+              ->exportable(false)
+              ->printable(false)
+              ->width('12%')
+              ->addClass('text-center');
+
+        return $columns;
     }
 
     /**

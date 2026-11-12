@@ -145,24 +145,37 @@
                                         <select name="unit_kegiatan" id="unit_kegiatan" class="form-select single">
                                             <option value="">-- Pilih Unit Kegiatan --</option>
                                             @php
-                                                $order = ['BAAK', 'Perpustakaan', 'BAUK', 'BKAK', 'LPTI', 'Ka.LPMM', 'Ka.LPMI', 'Fakultas & Rektorat'];
-                                                $groupedUnits = $unitKegiatan->groupBy(function($item) {
-                                                    return $item->kategori ?: 'Lainnya';
-                                                })->sortBy(function($items, $key) use ($order) {
-                                                    $idx = array_search($key, $order);
-                                                    return $idx === false ? 999 : $idx;
-                                                });
+                                                $hasKategori = $unitKegiatan->contains(fn($u) => !empty($u->kategori));
+                                                if ($hasKategori) {
+                                                    $order = ['BAAK', 'Perpustakaan', 'BAUK', 'BKAK', 'LPTI', 'Ka.LPMM', 'Ka.LPMI', 'Fakultas & Rektorat'];
+                                                    $groupedUnits = $unitKegiatan->groupBy(function($item) {
+                                                        return $item->kategori ?: 'Lainnya';
+                                                    })->sortBy(function($items, $key) use ($order) {
+                                                        $idx = array_search($key, $order);
+                                                        return $idx === false ? 999 : $idx;
+                                                    });
+                                                }
                                             @endphp
-                                            @foreach ($groupedUnits as $kategori => $items)
-                                                <optgroup label="🏢 {{ $kategori }}">
-                                                    @foreach ($items as $unit)
-                                                        <option value="{{ $unit->unit_kegiatan }}"
-                                                            {{ old('unit_kegiatan', request('unit_kegiatan')) == $unit->unit_kegiatan ? 'selected' : '' }}>
-                                                            {{ $unit->nama_sub }}
-                                                        </option>
-                                                    @endforeach
-                                                </optgroup>
-                                            @endforeach
+
+                                            @if ($hasKategori)
+                                                @foreach ($groupedUnits as $kategori => $items)
+                                                    <optgroup label="🏢 {{ $kategori }}">
+                                                        @foreach ($items as $unit)
+                                                            <option value="{{ $unit->unit_kegiatan }}"
+                                                                {{ old('unit_kegiatan', request('unit_kegiatan')) == $unit->unit_kegiatan ? 'selected' : '' }}>
+                                                                {{ $unit->nama_sub }}
+                                                            </option>
+                                                        @endforeach
+                                                    </optgroup>
+                                                @endforeach
+                                            @else
+                                                @foreach ($unitKegiatan as $unit)
+                                                    <option value="{{ $unit->unit_kegiatan }}"
+                                                        {{ old('unit_kegiatan', request('unit_kegiatan')) == $unit->unit_kegiatan ? 'selected' : '' }}>
+                                                        {{ $unit->unit_kegiatan }}
+                                                    </option>
+                                                @endforeach
+                                            @endif
                                         </select>
                                     </div>
 
