@@ -93,9 +93,9 @@ class UserController extends Controller
         // Sinkronisasi otomatis flag fakultas/rektorat sesuai nama unit kegiatan
         $unitNameUpper = strtoupper($unit?->unit_kegiatan ?? '');
         $data['is_rektorat'] = $request->has('is_rektorat') || str_contains($unitNameUpper, 'REKTORAT');
-        $data['is_feb'] = $request->has('is_feb') || str_contains($unitNameUpper, 'FEB') || str_contains($unitNameUpper, 'EKONOMI');
-        $data['is_fst'] = $request->has('is_fst') || str_contains($unitNameUpper, 'FST') || str_contains($unitNameUpper, 'SAINS');
-        $data['is_fikes'] = $request->has('is_fikes') || str_contains($unitNameUpper, 'FIKES') || str_contains($unitNameUpper, 'KESEHATAN');
+        $data['is_feb'] = $request->has('is_feb') || str_contains($unitNameUpper, 'FEB') || str_contains($unitNameUpper, 'EKONOMI') || str_contains($unitNameUpper, 'MANAJEMEN') || str_contains($unitNameUpper, 'AKUNTANSI');
+        $data['is_fst'] = $request->has('is_fst') || str_contains($unitNameUpper, 'FST') || str_contains($unitNameUpper, 'SAINS') || str_contains($unitNameUpper, 'INDUSTRI') || str_contains($unitNameUpper, 'INFORMATIKA') || str_contains($unitNameUpper, 'PERKAPALAN') || str_contains($unitNameUpper, 'LOGISTIK') || str_contains($unitNameUpper, 'SISTEM INFORMASI');
+        $data['is_fikes'] = $request->has('is_fikes') || str_contains($unitNameUpper, 'FIKES') || str_contains($unitNameUpper, 'KESEHATAN') || str_contains($unitNameUpper, 'K3') || str_contains($unitNameUpper, 'KESMAS') || str_contains($unitNameUpper, 'KESLING');
 
         User::create($data);
         Alert::success('success', 'data created successfully')->autoclose(2000)->toToast();
@@ -154,9 +154,9 @@ class UserController extends Controller
 
         $unitNameUpper = strtoupper($unit?->unit_kegiatan ?? '');
         $isRektorat = $request->has('is_rektorat') || str_contains($unitNameUpper, 'REKTORAT');
-        $isFeb = $request->has('is_feb') || str_contains($unitNameUpper, 'FEB') || str_contains($unitNameUpper, 'EKONOMI');
-        $isFst = $request->has('is_fst') || str_contains($unitNameUpper, 'FST') || str_contains($unitNameUpper, 'SAINS');
-        $isFikes = $request->has('is_fikes') || str_contains($unitNameUpper, 'FIKES') || str_contains($unitNameUpper, 'KESEHATAN');
+        $isFeb = $request->has('is_feb') || str_contains($unitNameUpper, 'FEB') || str_contains($unitNameUpper, 'EKONOMI') || str_contains($unitNameUpper, 'MANAJEMEN') || str_contains($unitNameUpper, 'AKUNTANSI');
+        $isFst = $request->has('is_fst') || str_contains($unitNameUpper, 'FST') || str_contains($unitNameUpper, 'SAINS') || str_contains($unitNameUpper, 'INDUSTRI') || str_contains($unitNameUpper, 'INFORMATIKA') || str_contains($unitNameUpper, 'PERKAPALAN') || str_contains($unitNameUpper, 'LOGISTIK') || str_contains($unitNameUpper, 'SISTEM INFORMASI');
+        $isFikes = $request->has('is_fikes') || str_contains($unitNameUpper, 'FIKES') || str_contains($unitNameUpper, 'KESEHATAN') || str_contains($unitNameUpper, 'K3') || str_contains($unitNameUpper, 'KESMAS') || str_contains($unitNameUpper, 'KESLING');
 
         $user->update([
             'is_admin' => $isAdmin ? 1 : 0,

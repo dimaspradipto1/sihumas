@@ -55,8 +55,19 @@ class UnitKegiatan extends Seeder
             // Fakultas & Rektorat
             ['kategori' => 'Fakultas & Rektorat', 'unit_kegiatan' => 'Rektorat'],
             ['kategori' => 'Fakultas & Rektorat', 'unit_kegiatan' => 'Fakultas Ekonomi dan Bisnis (FEB)'],
+            ['kategori' => 'Fakultas & Rektorat', 'unit_kegiatan' => 'FEB - S1 Manajemen'],
+            ['kategori' => 'Fakultas & Rektorat', 'unit_kegiatan' => 'FEB - S2 Manajemen'],
+            ['kategori' => 'Fakultas & Rektorat', 'unit_kegiatan' => 'FEB - S1 Akuntansi'],
             ['kategori' => 'Fakultas & Rektorat', 'unit_kegiatan' => 'Fakultas Sains dan Teknologi (FST)'],
+            ['kategori' => 'Fakultas & Rektorat', 'unit_kegiatan' => 'FST - Teknik Industri'],
+            ['kategori' => 'Fakultas & Rektorat', 'unit_kegiatan' => 'FST - Teknik Informatika'],
+            ['kategori' => 'Fakultas & Rektorat', 'unit_kegiatan' => 'FST - Teknik Perkapalan'],
+            ['kategori' => 'Fakultas & Rektorat', 'unit_kegiatan' => 'FST - Teknik Logistik'],
+            ['kategori' => 'Fakultas & Rektorat', 'unit_kegiatan' => 'FST - Sistem Informasi'],
             ['kategori' => 'Fakultas & Rektorat', 'unit_kegiatan' => 'Fakultas Ilmu Kesehatan (FIKES)'],
+            ['kategori' => 'Fakultas & Rektorat', 'unit_kegiatan' => 'FIKES - S1 K3'],
+            ['kategori' => 'Fakultas & Rektorat', 'unit_kegiatan' => 'FIKES - S2 Kesmas'],
+            ['kategori' => 'Fakultas & Rektorat', 'unit_kegiatan' => 'FIKES - S1 Kesling'],
         ];
 
         foreach ($units as $item) {

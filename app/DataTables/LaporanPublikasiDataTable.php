@@ -57,13 +57,13 @@ class LaporanPublikasiDataTable extends DataTable
                 $jamMulai = !empty($p?->jam_kegiatan) ? substr($p->jam_kegiatan, 0, 5) . ' WIB' : '';
                 $jamSelesai = !empty($p?->waktu_selesai) ? substr($p->waktu_selesai, 0, 5) . ' WIB' : '';
 
-                return '<div class="w-100 d-flex flex-column gap-1">'
-                     . '  <div class="d-flex justify-content-between align-items-baseline">'
-                     . '    <span><span class="text-muted small">Pelaksanaan:</span> <span class="fw-semibold">' . $startStr . '</span></span>'
+                return '<div class="d-flex flex-column gap-1">'
+                     . '  <div class="d-inline-flex align-items-center">'
+                     . '    <span class="text-nowrap"><span class="text-muted small">Pelaksanaan:</span> <span class="fw-semibold">' . $startStr . '</span></span>'
                      . ($jamMulai ? '    <span class="badge bg-light text-primary border small ms-2"><i class="fa-regular fa-clock me-1"></i>' . $jamMulai . '</span>' : '')
                      . '  </div>'
-                     . '  <div class="d-flex justify-content-between align-items-baseline">'
-                     . '    <span><span class="text-muted small">Selesai:</span> <span class="fw-semibold">' . $endStr . '</span></span>'
+                     . '  <div class="d-inline-flex align-items-center">'
+                     . '    <span class="text-nowrap"><span class="text-muted small">Selesai:</span> <span class="fw-semibold">' . $endStr . '</span></span>'
                      . ($jamSelesai ? '    <span class="badge bg-light text-success border small ms-2"><i class="fa-regular fa-clock me-1"></i>' . $jamSelesai . '</span>' : '')
                      . '  </div>'
                      . '</div>';
