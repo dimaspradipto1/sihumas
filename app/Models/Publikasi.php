@@ -16,6 +16,7 @@ class Publikasi extends Model
         'pengajuan_id',
         'upload_laporan',
         'link_dokumentasi',
+        'dokumentasi_files',
         'link_publikasi',
         'status_validasi',
         'catatan_validasi',
@@ -25,6 +26,7 @@ class Publikasi extends Model
 
     protected $casts = [
         'validated_at' => 'datetime',
+        'dokumentasi_files' => 'array',
     ];
 
     protected static function booted()
@@ -165,5 +167,23 @@ class Publikasi extends Model
         $lines = array_values(array_filter(array_map('trim', $lines)));
 
         return !empty($lines) ? $lines : [$val];
+    }
+
+    /**
+     * Mengambil daftar file dokumentasi dalam bentuk array
+     */
+    public function getDokumentasiFilesArrayAttribute(): array
+    {
+        $val = $this->dokumentasi_files;
+        if (is_array($val)) {
+            return $val;
+        }
+        if (is_string($val) && !empty(trim($val))) {
+            $decoded = json_decode($val, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                return $decoded;
+            }
+        }
+        return [];
     }
 }

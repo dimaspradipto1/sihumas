@@ -197,10 +197,58 @@
                                         @if ($publikasi->link_dokumentasi)
                                             <a href="{{ $publikasi->link_dokumentasi }}" target="_blank"
                                                 class="btn btn-sm btn-outline-primary d-inline-flex align-items-center py-1 px-3 text-capitalize">
-                                                <i class="fa-solid fa-folder-open me-2"></i> Buka Google Drive Dokumentasi
+                                                <i class="fa-solid fa-folder-open me-2"></i> Buka Link Dokumentasi
                                             </a>
                                         @else
                                             <span class="text-muted fst-italic">Belum ada link dokumentasi</span>
+                                        @endif
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="text-uppercase text-dark text-xxs font-weight-bolder opacity-7">File / Foto Dokumentasi</td>
+                                    <td class="text-dark text-xxs font-weight-bolder opacity-7 px-1">:</td>
+                                    <td class="text-dark text-xxs font-weight-bolder opacity-7">
+                                        @php
+                                            $files = $publikasi->dokumentasi_files_array ?? [];
+                                        @endphp
+                                        @if (!empty($files))
+                                            <div class="row g-2">
+                                                @foreach ($files as $f)
+                                                    @php
+                                                        $filePath = is_array($f) ? ($f['path'] ?? '') : (string) $f;
+                                                        $fileName = is_array($f) ? ($f['original_name'] ?? basename($filePath)) : basename($filePath);
+                                                        $ext = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+                                                        $isImage = in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+                                                    @endphp
+                                                    <div class="col-md-4 col-sm-6">
+                                                        <div class="card h-100 border p-2 shadow-none bg-white">
+                                                            @if ($isImage)
+                                                                <a href="{{ asset('storage/' . $filePath) }}" target="_blank" class="d-block text-center mb-1">
+                                                                    <img src="{{ asset('storage/' . $filePath) }}" alt="{{ $fileName }}"
+                                                                        class="rounded img-fluid" style="height: 120px; width: 100%; object-fit: cover;">
+                                                                </a>
+                                                            @else
+                                                                <div class="text-center py-3 bg-light rounded mb-1">
+                                                                    <i class="fa-solid fa-file-lines fa-2x text-primary"></i>
+                                                                </div>
+                                                            @endif
+                                                            <div class="d-flex justify-content-between align-items-center mt-auto pt-1">
+                                                                <a href="{{ asset('storage/' . $filePath) }}" target="_blank"
+                                                                    class="small text-truncate text-decoration-none fw-semibold text-primary" title="{{ $fileName }}">
+                                                                    {{ $fileName }}
+                                                                </a>
+                                                                <a href="{{ asset('storage/' . $filePath) }}" download="{{ $fileName }}"
+                                                                    class="btn btn-xs btn-outline-secondary py-0 px-2 ms-1" title="Download">
+                                                                    <i class="fa-solid fa-download"></i>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <span class="text-muted fst-italic">Tidak ada file/foto dokumentasi yang diunggah</span>
                                         @endif
                                     </td>
                                 </tr>

@@ -8,6 +8,7 @@ use App\Models\TahunAkademik;
 use App\Models\LaporanPublikasi;
 use App\DataTables\PublikasiDataTable;
 use App\Models\Pengajuan;
+use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class PublikasiController extends Controller
@@ -59,6 +60,24 @@ class PublikasiController extends Controller
             $data['link_publikasi'] = $trimmed !== '' ? $trimmed : null;
         } else {
             $data['link_publikasi'] = null;
+        }
+
+        // Upload multi file / gambar dokumentasi (optional)
+        if ($request->hasFile('dokumentasi_files')) {
+            $uploadedFiles = [];
+            foreach ($request->file('dokumentasi_files') as $file) {
+                if ($file && $file->isValid()) {
+                    $uploadedFiles[] = [
+                        'path' => $file->store('publikasi/dokumentasi', 'public'),
+                        'original_name' => $file->getClientOriginalName(),
+                        'mime' => $file->getClientMimeType(),
+                        'size' => $file->getSize(),
+                    ];
+                }
+            }
+            if (!empty($uploadedFiles)) {
+                $data['dokumentasi_files'] = $uploadedFiles;
+            }
         }
 
         // Membuat Publikasi terlebih dahulu
@@ -138,6 +157,40 @@ class PublikasiController extends Controller
                 $data['link_publikasi'] = null;
             }
         }
+
+        // Upload multi file / gambar dokumentasi (optional)
+        $currentFiles = $publikasi->dokumentasi_files_array;
+        
+        // Hapus file terpilih jika ada instruksi delete
+        if ($request->has('delete_dokumentasi_files') && is_array($request->input('delete_dokumentasi_files'))) {
+            $deletePaths = $request->input('delete_dokumentasi_files');
+            $retainedFiles = [];
+            foreach ($currentFiles as $item) {
+                $p = is_array($item) ? ($item['path'] ?? '') : (string) $item;
+                if (in_array($p, $deletePaths)) {
+                    if (Storage::disk('public')->exists($p)) {
+                        Storage::disk('public')->delete($p);
+                    }
+                } else {
+                    $retainedFiles[] = $item;
+                }
+            }
+            $currentFiles = $retainedFiles;
+        }
+
+        if ($request->hasFile('dokumentasi_files')) {
+            foreach ($request->file('dokumentasi_files') as $file) {
+                if ($file && $file->isValid()) {
+                    $currentFiles[] = [
+                        'path' => $file->store('publikasi/dokumentasi', 'public'),
+                        'original_name' => $file->getClientOriginalName(),
+                        'mime' => $file->getClientMimeType(),
+                        'size' => $file->getSize(),
+                    ];
+                }
+            }
+        }
+        $data['dokumentasi_files'] = !empty($currentFiles) ? $currentFiles : null;
 
         // Pengaturan status validasi
         if (auth()->user()->is_admin) {

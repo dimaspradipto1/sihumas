@@ -7,6 +7,8 @@ use App\Models\Pengajuan;
 use App\Models\Publikasi;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class PublikasiTest extends TestCase
@@ -354,5 +356,56 @@ class PublikasiTest extends TestCase
         $this->actingAs($admin)->post(route('tahun-akademik.set-active', $newYear));
         $this->assertTrue($newYear->fresh()->is_active);
         $this->assertFalse($activeYear->fresh()->is_active);
+    }
+
+    public function test_publikasi_supports_optional_multi_file_dokumentasi_upload(): void
+    {
+        Storage::fake('public');
+
+        $admin = User::factory()->create([
+            'is_admin' => true,
+        ]);
+
+        $pengajuan = Pengajuan::create([
+            'user_id' => $admin->id,
+            'nama_kegiatan' => 'Workshop UI/UX Design',
+            'unit_kegiatan' => 'FST',
+            'tempat_kegiatan' => 'Lab Multimedia',
+            'tgl_awal' => '2026-12-01',
+            'tgl_selesai' => '2026-12-01',
+            'jam_kegiatan' => '09:00',
+            'waktu_selesai' => '13:00',
+            'status' => 'diterima',
+        ]);
+
+        $publikasi = Publikasi::create([
+            'user_id' => $admin->id,
+            'pengajuan_id' => $pengajuan->id,
+        ]);
+
+        $file1 = UploadedFile::fake()->image('foto_kegiatan1.jpg', 600, 400);
+        $file2 = UploadedFile::fake()->create('dokumen_rundown.pdf', 500, 'application/pdf');
+
+        $response = $this->actingAs($admin)->put(route('publikasi.update', $publikasi), [
+            'upload_laporan' => 'Laporan workshop UI/UX telah selesai dilaksanakan.',
+            'link_dokumentasi' => 'https://drive.google.com/test',
+            'dokumentasi_files' => [$file1, $file2],
+        ]);
+
+        $response->assertRedirect(route('publikasi.index'));
+
+        $publikasi->refresh();
+        $files = $publikasi->dokumentasi_files_array;
+        $this->assertCount(2, $files);
+        $this->assertEquals('foto_kegiatan1.jpg', $files[0]['original_name']);
+        $this->assertEquals('dokumen_rundown.pdf', $files[1]['original_name']);
+
+        Storage::disk('public')->assertExists($files[0]['path']);
+        Storage::disk('public')->assertExists($files[1]['path']);
+
+        $showResponse = $this->actingAs($admin)->get(route('publikasi.show', $publikasi));
+        $showResponse->assertStatus(200);
+        $showResponse->assertSee('foto_kegiatan1.jpg');
+        $showResponse->assertSee('dokumen_rundown.pdf');
     }
 }

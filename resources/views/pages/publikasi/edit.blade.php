@@ -59,7 +59,7 @@
                 @endif
 
                 <div class="card border-0 shadow components-section">
-                    <form action="{{ route('publikasi.update', $publikasi) }}" method="POST">
+                    <form action="{{ route('publikasi.update', $publikasi) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
 
@@ -143,7 +143,7 @@
                                     <!-- Link Dokumentasi -->
                                     <div class="mb-4">
                                         <label for="link_dokumentasi" class="form-label text-uppercase fw-bold">
-                                            <i class="fa-solid fa-folder-open me-1 text-primary"></i> Link Dokumentasi (Google Drive / Foto / Video)
+                                            <i class="fa-solid fa-folder-open me-1 text-primary"></i> Link Dokumentasi
                                         </label>
                                         <div class="input-group">
                                             <span class="input-group-text bg-white text-primary">
@@ -158,6 +158,69 @@
                                                 </a>
                                             @endif
                                         </div>
+                                    </div>
+
+                                    <!-- Upload File / Gambar Dokumentasi (Multi, Optional) -->
+                                    <div class="mb-4">
+                                        <label for="dokumentasi_files" class="form-label text-uppercase fw-bold d-flex justify-content-between align-items-center">
+                                            <span><i class="fa-solid fa-images me-1 text-info"></i> Upload File / Foto Dokumentasi</span>
+                                            <span class="badge bg-secondary text-white fw-normal">Opsional</span>
+                                        </label>
+                                        <input type="file" name="dokumentasi_files[]" id="dokumentasi_files" class="form-control" multiple
+                                            accept="image/*,.pdf,.doc,.docx,.zip,.rar">
+                                        <small class="text-muted d-block mt-1">
+                                            <i class="fa-solid fa-circle-info me-1"></i> Anda dapat memilih beberapa file atau gambar sekaligus (format: JPG, PNG, PDF, DOCX, ZIP/RAR, maks 10MB per file).
+                                        </small>
+
+                                        @php
+                                            $existingFiles = $publikasi->dokumentasi_files_array ?? [];
+                                        @endphp
+                                        @if (!empty($existingFiles))
+                                            <div class="mt-3 p-3 bg-gray-50 border rounded">
+                                                <span class="small fw-bold text-gray-700 d-block mb-2">
+                                                    <i class="fa-solid fa-paperclip me-1"></i> File / Foto Dokumentasi yang Sudah Diunggah:
+                                                </span>
+                                                <div class="row g-2">
+                                                    @foreach ($existingFiles as $f)
+                                                        @php
+                                                            $filePath = is_array($f) ? ($f['path'] ?? '') : (string) $f;
+                                                            $fileName = is_array($f) ? ($f['original_name'] ?? basename($filePath)) : basename($filePath);
+                                                            $ext = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+                                                            $isImage = in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+                                                        @endphp
+                                                        <div class="col-md-4 col-sm-6">
+                                                            <div class="card h-100 border p-2 shadow-none position-relative bg-white">
+                                                                @if ($isImage)
+                                                                    <a href="{{ asset('storage/' . $filePath) }}" target="_blank" class="d-block text-center mb-1">
+                                                                        <img src="{{ asset('storage/' . $filePath) }}" alt="{{ $fileName }}"
+                                                                            class="rounded img-fluid" style="height: 100px; width: 100%; object-fit: cover;">
+                                                                    </a>
+                                                                @else
+                                                                    <div class="text-center py-3 bg-light rounded mb-1">
+                                                                        <i class="fa-solid fa-file-lines fa-2x text-primary"></i>
+                                                                    </div>
+                                                                @endif
+                                                                <div class="d-flex justify-content-between align-items-center mt-auto">
+                                                                    <a href="{{ asset('storage/' . $filePath) }}" target="_blank"
+                                                                        class="small text-truncate text-decoration-none fw-semibold text-primary" style="max-width: 75%;" title="{{ $fileName }}">
+                                                                        {{ $fileName }}
+                                                                    </a>
+                                                                    <div class="form-check m-0" title="Centang untuk menghapus file ini">
+                                                                        <input class="form-check-input text-danger" type="checkbox" name="delete_dokumentasi_files[]" value="{{ $filePath }}" id="del_{{ md5($filePath) }}">
+                                                                        <label class="form-check-label small text-danger" for="del_{{ md5($filePath) }}" style="font-size: 11px;">
+                                                                            <i class="fa-solid fa-trash-can"></i>
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                                <small class="text-danger d-block mt-2" style="font-size: 11px;">
+                                                    * Centang ikon tempat sampah pada file lalu simpan perubahan jika ingin menghapus file tersebut.
+                                                </small>
+                                            </div>
+                                        @endif
                                     </div>
 
                                     <!-- Link Publikasi (Bisa Tambah Lebih Dari 1 Link) -->

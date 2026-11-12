@@ -31,7 +31,7 @@
         <div class="row">
             <div class="col-12 mb-4">
                 <div class="card border-0 shadow components-section">
-                    <form action="{{ route('publikasi.store') }}" method="POST">
+                    <form action="{{ route('publikasi.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
                         <div class="card-body">
@@ -87,7 +87,7 @@
                                     <!-- Link Dokumentasi -->
                                     <div class="mb-4">
                                         <label for="link_dokumentasi" class="form-label text-uppercase fw-bold">
-                                            <i class="fa-solid fa-folder-open me-1 text-primary"></i> Link Dokumentasi (Google Drive / Foto / Video)
+                                            <i class="fa-solid fa-folder-open me-1 text-primary"></i> Link Dokumentasi
                                         </label>
                                         <div class="input-group">
                                             <span class="input-group-text bg-white text-primary">
@@ -96,6 +96,19 @@
                                             <input type="url" class="form-control" name="link_dokumentasi" id="link_dokumentasi"
                                                 value="{{ old('link_dokumentasi') }}" placeholder="https://drive.google.com/drive/folders/...">
                                         </div>
+                                    </div>
+
+                                    <!-- Upload File / Gambar Dokumentasi (Multi, Optional) -->
+                                    <div class="mb-4">
+                                        <label for="dokumentasi_files" class="form-label text-uppercase fw-bold d-flex justify-content-between align-items-center">
+                                            <span><i class="fa-solid fa-images me-1 text-info"></i> Upload File / Foto Dokumentasi</span>
+                                            <span class="badge bg-secondary text-white fw-normal">Opsional</span>
+                                        </label>
+                                        <input type="file" name="dokumentasi_files[]" id="dokumentasi_files" class="form-control" multiple
+                                            accept="image/*,.pdf,.doc,.docx,.zip,.rar">
+                                        <small class="text-muted d-block mt-1">
+                                            <i class="fa-solid fa-circle-info me-1"></i> Anda dapat memilih beberapa file atau foto sekaligus (format: JPG, PNG, PDF, DOCX, ZIP/RAR, maks 10MB per file).
+                                        </small>
                                     </div>
 
                                     <!-- Link Publikasi (Bisa Tambah Lebih Dari 1 Link) -->
