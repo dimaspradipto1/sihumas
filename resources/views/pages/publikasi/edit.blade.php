@@ -160,10 +160,10 @@
                                         </div>
                                     </div>
 
-                                    <!-- Upload File / Gambar Dokumentasi (Multi, Optional) -->
+                                    <!-- Upload Desain atau Flayer (Multi, Optional) -->
                                     <div class="mb-4">
                                         <label for="dokumentasi_files" class="form-label text-uppercase fw-bold d-flex justify-content-between align-items-center">
-                                            <span><i class="fa-solid fa-images me-1 text-info"></i> Upload File / Foto Dokumentasi</span>
+                                            <span><i class="fa-solid fa-images me-1 text-info"></i> Upload Desain atau Flayer</span>
                                             <span class="badge bg-secondary text-white fw-normal">Opsional</span>
                                         </label>
                                         <input type="file" name="dokumentasi_files[]" id="dokumentasi_files" class="form-control" multiple
@@ -178,7 +178,7 @@
                                         @if (!empty($existingFiles))
                                             <div class="mt-3 p-3 bg-gray-50 border rounded">
                                                 <span class="small fw-bold text-gray-700 d-block mb-2">
-                                                    <i class="fa-solid fa-paperclip me-1"></i> File / Foto Dokumentasi yang Sudah Diunggah:
+                                                    <i class="fa-solid fa-paperclip me-1"></i> Desain / Flayer yang Sudah Diunggah:
                                                 </span>
                                                 <div class="row g-2">
                                                     @foreach ($existingFiles as $f)

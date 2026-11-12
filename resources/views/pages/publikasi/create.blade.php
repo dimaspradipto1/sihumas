@@ -98,10 +98,10 @@
                                         </div>
                                     </div>
 
-                                    <!-- Upload File / Gambar Dokumentasi (Multi, Optional) -->
+                                    <!-- Upload Desain atau Flayer (Multi, Optional) -->
                                     <div class="mb-4">
                                         <label for="dokumentasi_files" class="form-label text-uppercase fw-bold d-flex justify-content-between align-items-center">
-                                            <span><i class="fa-solid fa-images me-1 text-info"></i> Upload File / Foto Dokumentasi</span>
+                                            <span><i class="fa-solid fa-images me-1 text-info"></i> Upload Desain atau Flayer</span>
                                             <span class="badge bg-secondary text-white fw-normal">Opsional</span>
                                         </label>
                                         <input type="file" name="dokumentasi_files[]" id="dokumentasi_files" class="form-control" multiple

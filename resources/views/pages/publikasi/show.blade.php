@@ -216,7 +216,7 @@
                                 </tr>
 
                                 <tr>
-                                    <td class="text-uppercase text-dark text-xxs font-weight-bolder opacity-7">File / Foto Dokumentasi</td>
+                                    <td class="text-uppercase text-dark text-xxs font-weight-bolder opacity-7">Upload Desain atau Flayer</td>
                                     <td class="text-dark text-xxs font-weight-bolder opacity-7 px-1">:</td>
                                     <td class="text-dark text-xxs font-weight-bolder opacity-7">
                                         @php
@@ -258,7 +258,7 @@
                                                 @endforeach
                                             </div>
                                         @else
-                                            <span class="text-muted fst-italic">Tidak ada file/foto dokumentasi yang diunggah</span>
+                                            <span class="text-muted fst-italic">Tidak ada desain atau flayer yang diunggah</span>
                                         @endif
                                     </td>
                                 </tr>
