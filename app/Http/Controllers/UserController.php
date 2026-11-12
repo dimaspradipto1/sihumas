@@ -60,34 +60,42 @@ class UserController extends Controller
         $data['email'] = $request->email;
         $data['no_wa'] = $this->formatNoWaTo08($request->no_wa);
         $data['unit_kegiatan_id'] = $unit?->id;
-        $data['is_admin'] = $request->has('is_admin');
-        $data['is_humas'] = $request->has('is_humas');
-        $data['is_rektorat'] = $request->has('is_rektorat');
-        $data['is_feb'] = $request->has('is_feb');
-        $data['is_fst'] = $request->has('is_fst');
-        $data['is_fikes'] = $request->has('is_fikes');
-        $data['is_users'] = $request->has('is_users');
         $data['password'] = bcrypt($request->filled('password') ? $request->password : 'password');
         $data['remember_token'] = Str::random(60);
 
-        // Jika tidak ada role yang dicentang secara manual, tetapkan default berdasarkan unit
-        if (!$data['is_admin'] && !$data['is_humas'] && !$data['is_rektorat'] && !$data['is_feb'] && !$data['is_fst'] && !$data['is_fikes']) {
+        // Tentukan 3 role fungsional utama (Opsi 1): admin, humas, operator
+        $selectedRole = $request->input('role');
+        $isAdmin = false;
+        $isHumas = false;
+        $isUsers = false;
+
+        if ($selectedRole === 'admin' || $request->has('is_admin')) {
+            $isAdmin = true;
+            $isHumas = true;
+        } elseif ($selectedRole === 'humas' || $request->has('is_humas')) {
+            $isHumas = true;
+        } elseif ($selectedRole === 'operator' || $request->has('is_users')) {
+            $isUsers = true;
+        } else {
+            // Default jika tidak dipilih secara manual berdasarkan nama unit
             $unitNameUpper = strtoupper($unit?->unit_kegiatan ?? '');
-            if (str_contains($unitNameUpper, 'IBNU SINA') || str_contains($unitNameUpper, 'HUMAS')) {
-                $data['is_admin'] = true;
-                $data['is_humas'] = true;
-            } elseif (str_contains($unitNameUpper, 'FST') || str_contains($unitNameUpper, 'SAINS')) {
-                $data['is_fst'] = true;
-            } elseif (str_contains($unitNameUpper, 'FEB') || str_contains($unitNameUpper, 'EKONOMI')) {
-                $data['is_feb'] = true;
-            } elseif (str_contains($unitNameUpper, 'FIKES') || str_contains($unitNameUpper, 'KESEHATAN')) {
-                $data['is_fikes'] = true;
-            } elseif (str_contains($unitNameUpper, 'REKTORAT')) {
-                $data['is_rektorat'] = true;
+            if (str_contains($unitNameUpper, 'HUMAS')) {
+                $isHumas = true;
             } else {
-                $data['is_users'] = true;
+                $isUsers = true;
             }
         }
+
+        $data['is_admin'] = $isAdmin;
+        $data['is_humas'] = $isHumas;
+        $data['is_users'] = $isUsers;
+
+        // Sinkronisasi otomatis flag fakultas/rektorat sesuai nama unit kegiatan
+        $unitNameUpper = strtoupper($unit?->unit_kegiatan ?? '');
+        $data['is_rektorat'] = $request->has('is_rektorat') || str_contains($unitNameUpper, 'REKTORAT');
+        $data['is_feb'] = $request->has('is_feb') || str_contains($unitNameUpper, 'FEB') || str_contains($unitNameUpper, 'EKONOMI');
+        $data['is_fst'] = $request->has('is_fst') || str_contains($unitNameUpper, 'FST') || str_contains($unitNameUpper, 'SAINS');
+        $data['is_fikes'] = $request->has('is_fikes') || str_contains($unitNameUpper, 'FIKES') || str_contains($unitNameUpper, 'KESEHATAN');
 
         User::create($data);
         Alert::success('success', 'data created successfully')->autoclose(2000)->toToast();
@@ -118,14 +126,46 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
+        $unit = null;
+        if ($request->has('unit_kegiatan_id')) {
+            $unit = \App\Models\UnitKegiatan::find($request->unit_kegiatan_id);
+        } else {
+            $unit = $user->unitKegiatan;
+        }
+
+        // Tentukan 3 role fungsional utama (Opsi 1): admin, humas, operator
+        $selectedRole = $request->input('role');
+        $isAdmin = false;
+        $isHumas = false;
+        $isUsers = false;
+
+        if ($selectedRole === 'admin' || $request->has('is_admin')) {
+            $isAdmin = true;
+            $isHumas = true;
+        } elseif ($selectedRole === 'humas' || $request->has('is_humas')) {
+            $isHumas = true;
+        } elseif ($selectedRole === 'operator' || $request->has('is_users')) {
+            $isUsers = true;
+        } else {
+            $isAdmin = $user->is_admin;
+            $isHumas = $user->is_humas;
+            $isUsers = $user->is_users;
+        }
+
+        $unitNameUpper = strtoupper($unit?->unit_kegiatan ?? '');
+        $isRektorat = $request->has('is_rektorat') || str_contains($unitNameUpper, 'REKTORAT');
+        $isFeb = $request->has('is_feb') || str_contains($unitNameUpper, 'FEB') || str_contains($unitNameUpper, 'EKONOMI');
+        $isFst = $request->has('is_fst') || str_contains($unitNameUpper, 'FST') || str_contains($unitNameUpper, 'SAINS');
+        $isFikes = $request->has('is_fikes') || str_contains($unitNameUpper, 'FIKES') || str_contains($unitNameUpper, 'KESEHATAN');
+
         $user->update([
-            'is_admin' => $request->has('is_admin') ? 1 : 0,
-            'is_humas' => $request->has('is_humas') ? 1 : 0,
-            'is_rektorat' => $request->has('is_rektorat') ? 1 : 0,
-            'is_feb' => $request->has('is_feb') ? 1 : 0,
-            'is_fst' => $request->has('is_fst') ? 1 : 0,
-            'is_fikes' => $request->has('is_fikes') ? 1 : 0,
-            'is_users' => $request->has('is_users') ? 1 : 0,
+            'is_admin' => $isAdmin ? 1 : 0,
+            'is_humas' => $isHumas ? 1 : 0,
+            'is_rektorat' => $isRektorat ? 1 : 0,
+            'is_feb' => $isFeb ? 1 : 0,
+            'is_fst' => $isFst ? 1 : 0,
+            'is_fikes' => $isFikes ? 1 : 0,
+            'is_users' => $isUsers ? 1 : 0,
         ]);
 
         $updateData = [
@@ -135,7 +175,6 @@ class UserController extends Controller
         ];
 
         if ($request->has('unit_kegiatan_id')) {
-            $unit = \App\Models\UnitKegiatan::find($request->unit_kegiatan_id);
             $updateData['unit_kegiatan_id'] = $unit?->id;
         }
 

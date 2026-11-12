@@ -206,5 +206,37 @@ class UserTest extends TestCase
         $this->assertNotNull($user);
         $this->assertTrue(\Illuminate\Support\Facades\Hash::check('password', $user->password));
     }
+
+    public function test_admin_can_create_user_with_role_radio_selection(): void
+    {
+        $admin = User::factory()->create([
+            'is_admin' => true,
+        ]);
+
+        $unit = \App\Models\UnitKegiatan::firstOrCreate([
+            'unit_kegiatan' => 'BAAK - Kabid Akademik',
+            'kategori' => 'BAAK',
+        ]);
+
+        $userData = [
+            'name' => 'Operator BAAK Baru',
+            'email' => 'baak_' . uniqid() . '@uis.ac.id',
+            'no_wa' => '081234567899',
+            'unit_kegiatan_id' => $unit->id,
+            'role' => 'operator',
+            'password' => 'password123',
+        ];
+
+        $response = $this->actingAs($admin)->post(route('users.store'), $userData);
+        $response->assertRedirect(route('users.index'));
+
+        $created = User::where('email', $userData['email'])->first();
+        $this->assertNotNull($created);
+        $this->assertFalse((bool)$created->is_admin);
+        $this->assertFalse((bool)$created->is_humas);
+        $this->assertTrue((bool)$created->is_users);
+        $this->assertEquals('operator', $created->role_key);
+        $this->assertEquals('Pengusul (Kabid Akademik)', $created->role_label);
+    }
 }
 

@@ -57,6 +57,8 @@
                             $scope = 'fikes';
                         } elseif (!empty($user->is_rektorat)) {
                             $scope = 'rektorat';
+                        } else {
+                            $scope = 'user';
                         }
 
                         $pending = $scope ? data_get($notif, "$scope.pending", 0) : 0;
@@ -68,13 +70,13 @@
 
                         // Label judul sesuai scope
                         $scopeLabel = match ($scope) {
-                            'admin' => 'All Faculties',
+                            'admin' => 'Seluruh Unit',
                             'humas' => 'Tugas PIC Anda',
                             'feb' => 'FEB',
                             'fst' => 'FST',
                             'fikes' => 'FIKES',
                             'rektorat' => 'Rektorat',
-                            default => '',
+                            default => $user->unitKegiatan?->nama_sub ?? 'Unit Anda',
                         };
                     @endphp
 
@@ -204,22 +206,8 @@
                                     style="font-size: 0.825rem; max-width: 170px; line-height: 1.2;">
                                     {{ Auth::user()->name }}
                                 </span>
-                                <small class="text-muted d-block" style="font-size: 0.7rem; line-height: 1;">
-                                    @if (!empty(Auth::user()->is_admin))
-                                        Admin Humas
-                                    @elseif (!empty(Auth::user()->is_humas))
-                                        Petugas Humas
-                                    @elseif (!empty(Auth::user()->is_rektorat))
-                                        Rektorat
-                                    @elseif (!empty(Auth::user()->is_feb))
-                                        Fakultas FEB
-                                    @elseif (!empty(Auth::user()->is_fst))
-                                        Fakultas FST
-                                    @elseif (!empty(Auth::user()->is_fikes))
-                                        Fakultas FIKES
-                                    @else
-                                        Pegawai
-                                    @endif
+                                <small class="text-muted d-block text-truncate" style="font-size: 0.7rem; line-height: 1; max-width: 170px;">
+                                    {{ Auth::user()->role_label }}
                                 </small>
                             </div>
                             <svg class="icon icon-xxs text-gray-500 ms-1 d-none d-md-inline" fill="currentColor" viewBox="0 0 20 20"

@@ -117,6 +117,8 @@
                       $scope = 'fikes';
                   } elseif (!empty($user->is_rektorat)) {
                       $scope = 'rektorat';
+                  } else {
+                      $scope = 'user';
                   }
 
                   $pending = $scope ? data_get($notif, "$scope.pending", 0) : 0;

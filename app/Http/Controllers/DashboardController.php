@@ -37,10 +37,10 @@ class DashboardController extends Controller
             $role = 'fst';
             $roleLabel = 'Operator FST';
             $unitName = 'Fakultas Sains dan Teknologi (FST)';
-        } elseif (!empty($user->is_fikes)) {
-            $role = 'fikes';
-            $roleLabel = 'Operator FIKES';
-            $unitName = 'Fakultas Ilmu Kesehatan (FIKES)';
+        } else {
+            $role = 'user';
+            $unitName = $user->unitKegiatan?->unit_kegiatan ?: 'Unit Pengusul';
+            $roleLabel = $user->role_label;
         }
 
         // Data Statistik Global (Untuk Admin)
@@ -108,11 +108,12 @@ class DashboardController extends Controller
         } elseif ($role === 'fikes') {
             $unit_stats = $units['FIKES'];
         } else {
+            $namaUnit = $user->unitKegiatan?->nama_sub ?: ($user->unitKegiatan?->unit_kegiatan ?: 'Unit Anda');
             $unit_stats = [
-                'name' => 'Pribadi',
-                'fullName' => 'Kegiatan Anda',
-                'badgeClass' => 'bg-secondary',
-                'color' => '#2563eb',
+                'name' => $namaUnit,
+                'fullName' => $user->unitKegiatan?->unit_kegiatan ?: 'Kegiatan Unit Anda',
+                'badgeClass' => 'bg-success',
+                'color' => '#198754',
                 'pengajuan' => Pengajuan::where('user_id', $user->id)->count(),
                 'diterima' => Pengajuan::where('user_id', $user->id)->where('status', 'diterima')->count(),
                 'pending' => Pengajuan::where('user_id', $user->id)->where('status', 'pending')->count(),

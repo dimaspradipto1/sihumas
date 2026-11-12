@@ -106,55 +106,41 @@
             </div>
 
             <div class="form-group row mb-4">
-              <label class="col-sm-2 col-form-label">ROLE AKSES</label>
+              <label class="col-sm-2 col-form-label text-uppercase fw-bold">ROLE AKSES</label>
               <div class="col-sm-10">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="true" id="create-is-admin" name="is_admin" {{ old('is_admin') ? 'checked' : '' }}>
-                  <label class="form-check-label text-uppercase" for="create-is-admin">
-                    admin
-                  </label>
-                </div>
+                <div class="row g-3">
+                  <!-- Option 1: Admin Humas -->
+                  <div class="col-md-4">
+                    <label class="card h-100 p-3 border rounded shadow-xs" for="role_admin" style="cursor: pointer;">
+                      <div class="d-flex align-items-center mb-2">
+                        <input class="form-check-input mt-0 me-2" type="radio" name="role" id="role_admin" value="admin" {{ old('role') === 'admin' ? 'checked' : '' }} required>
+                        <span class="badge text-white px-2 py-1" style="background-color: #dc3545 !important; font-size: 11px;"><i class="fa-solid fa-shield-halved me-1"></i> Admin Humas</span>
+                      </div>
+                      <small class="text-muted" style="font-size: 11.5px; line-height: 1.3;">Akses penuh: persetujuan pengajuan, penugasan PIC, validasi laporan, dan master data.</small>
+                    </label>
+                  </div>
 
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="true" id="create-is-humas" name="is_humas" {{ old('is_humas') ? 'checked' : '' }}>
-                  <label class="form-check-label text-uppercase fw-bold text-primary" for="create-is-humas">
-                    <i class="fa-solid fa-bullhorn me-1"></i> petugas humas
-                  </label>
-                </div>
+                  <!-- Option 2: Petugas Humas -->
+                  <div class="col-md-4">
+                    <label class="card h-100 p-3 border rounded shadow-xs" for="role_humas" style="cursor: pointer;">
+                      <div class="d-flex align-items-center mb-2">
+                        <input class="form-check-input mt-0 me-2" type="radio" name="role" id="role_humas" value="humas" {{ old('role') === 'humas' ? 'checked' : '' }}>
+                        <span class="badge text-white px-2 py-1" style="background-color: #0d6efd !important; font-size: 11px;"><i class="fa-solid fa-bullhorn me-1"></i> Petugas Humas</span>
+                      </div>
+                      <small class="text-muted" style="font-size: 11.5px; line-height: 1.3;">Tim peliputan: menerima tugas peliputan di Kotak Masuk dan mengunggah laporan dokumentasi.</small>
+                    </label>
+                  </div>
 
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="true" id="create-is-rektorat" name="is_rektorat" {{ old('is_rektorat') ? 'checked' : '' }}>
-                  <label class="form-check-label text-uppercase" for="create-is-rektorat">
-                    admin rektorat
-                  </label>
-                </div>
-
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="true" id="create-is-feb" name="is_feb" {{ old('is_feb') ? 'checked' : '' }}>
-                  <label class="form-check-label text-uppercase" for="create-is-feb">
-                    admin feb
-                  </label>
-                </div>
-
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="true" id="create-is-fst" name="is_fst" {{ old('is_fst') ? 'checked' : '' }}>
-                  <label class="form-check-label text-uppercase" for="create-is-fst">
-                    admin fst
-                  </label>
-                </div>
-
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="true" id="create-is-fikes" name="is_fikes" {{ old('is_fikes') ? 'checked' : '' }}>
-                  <label class="form-check-label text-uppercase" for="create-is-fikes">
-                    admin fikes
-                  </label>
-                </div>
-
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="true" id="create-is-users" name="is_users" {{ old('is_users') ? 'checked' : '' }}>
-                  <label class="form-check-label text-uppercase" for="create-is-users">
-                    pengguna
-                  </label>
+                  <!-- Option 3: Pengusul Unit -->
+                  <div class="col-md-4">
+                    <label class="card h-100 p-3 border rounded shadow-xs" for="role_operator" style="cursor: pointer;">
+                      <div class="d-flex align-items-center mb-2">
+                        <input class="form-check-input mt-0 me-2" type="radio" name="role" id="role_operator" value="operator" {{ old('role', 'operator') === 'operator' ? 'checked' : '' }}>
+                        <span class="badge text-white px-2 py-1" style="background-color: #198754 !important; font-size: 11px;"><i class="fa-solid fa-building me-1"></i> Pengusul Unit</span>
+                      </div>
+                      <small class="text-muted" style="font-size: 11.5px; line-height: 1.3;">Pemohon kegiatan: membuat pengajuan kegiatan baru mewakili unit kerja yang dipilih di atas.</small>
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>

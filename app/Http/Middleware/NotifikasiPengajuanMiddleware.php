@@ -83,6 +83,19 @@ class NotifikasiPengajuanMiddleware
         if (!empty($user->is_fikes))    $notif['fikes']    = $countByFlag('is_fikes');
         if (!empty($user->is_rektorat)) $notif['rektorat'] = $countByFlag('is_rektorat');
 
+        // user pengusul unit: pengajuan milik dirinya
+        if (empty($user->is_admin) && empty($user->is_humas)) {
+            $baseUser = Pengajuan::where('user_id', $user->id);
+            if ($pengajuanReadAt) {
+                $baseUser->where('updated_at', '>', $pengajuanReadAt);
+            }
+            $notif['user'] = [
+                'pending'  => (clone $baseUser)->where('status', 'pending')->count(),
+                'diterima' => (clone $baseUser)->where('status', 'diterima')->count(),
+                'ditolak'  => (clone $baseUser)->where('status', 'ditolak')->count(),
+            ];
+        }
+
         // overwrite session biar notif lama otomatis hilang
         session(['pengajuan_notif' => $notif]);
 
