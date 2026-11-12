@@ -252,11 +252,6 @@
                                         <h5 class="card-title mb-0 text-gray-800">
                                             <i class="fa-solid fa-file-lines me-2 text-primary"></i> Detail Pengajuan (Review)
                                         </h5>
-                                        @if (!Auth::user()->is_admin && Auth::user()->is_humas && $pengajuan->status == 'diterima' && $pengajuan->publikasi)
-                                            <a href="{{ route('publikasi.edit', $pengajuan->publikasi->slug ?? $pengajuan->publikasi->id) }}" class="btn btn-sm btn-success text-white d-inline-flex align-items-center">
-                                                <i class="fa-solid fa-file-pen me-1"></i> Laporkan Kegiatan
-                                            </a>
-                                        @endif
                                     </div>
                                     <div class="card-body p-0">
                                         <div class="table-responsive">
