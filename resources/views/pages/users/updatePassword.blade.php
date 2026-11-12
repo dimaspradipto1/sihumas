@@ -39,9 +39,9 @@
 
                 <div class="mb-4">
                   <label for="new_password" class="text-uppercase">Password Baru</label>
-                  <div class="input-group">
-                    <input type="password" name="new_password" value="{{old('new_password')}}" class="form-control" id="new_password" placeholder="Masukkan password baru">
-                    <button class="btn btn-outline-gray-400" type="button" onclick="togglePasswordVisibility('new_password', 'iconNewPassword')" title="Lihat/Sembunyikan Password">
+                  <div class="position-relative">
+                    <input type="password" name="new_password" value="{{old('new_password')}}" class="form-control" id="new_password" placeholder="Masukkan password baru" style="padding-right: 2.75rem;">
+                    <button type="button" class="btn position-absolute top-50 end-0 translate-middle-y text-muted border-0 bg-transparent pe-3" onclick="togglePasswordVisibility('new_password', 'iconNewPassword')" title="Lihat/Sembunyikan Password" tabindex="-1" style="z-index: 5; box-shadow: none; cursor: pointer;">
                       <i class="fa-solid fa-eye" id="iconNewPassword"></i>
                     </button>
                   </div>
@@ -49,9 +49,9 @@
 
                 <div class="mb-4">
                   <label for="new_password_confirmation" class="text-uppercase">Konfirmasi Password Baru</label>
-                  <div class="input-group">
-                    <input type="password" name="new_password_confirmation" value="{{old('new_password_confirmation')}}" class="form-control" id="new_password_confirmation" placeholder="Ulangi password baru">
-                    <button class="btn btn-outline-gray-400" type="button" onclick="togglePasswordVisibility('new_password_confirmation', 'iconConfirmPassword')" title="Lihat/Sembunyikan Password">
+                  <div class="position-relative">
+                    <input type="password" name="new_password_confirmation" value="{{old('new_password_confirmation')}}" class="form-control" id="new_password_confirmation" placeholder="Ulangi password baru" style="padding-right: 2.75rem;">
+                    <button type="button" class="btn position-absolute top-50 end-0 translate-middle-y text-muted border-0 bg-transparent pe-3" onclick="togglePasswordVisibility('new_password_confirmation', 'iconConfirmPassword')" title="Lihat/Sembunyikan Password" tabindex="-1" style="z-index: 5; box-shadow: none; cursor: pointer;">
                       <i class="fa-solid fa-eye" id="iconConfirmPassword"></i>
                     </button>
                   </div>

@@ -93,9 +93,9 @@
 
                 <div class="mb-4">
                   <label for="inputPassword" class="text-uppercase">Password</label>
-                  <div class="input-group">
-                    <input type="password" class="form-control" id="inputPassword" name="password" value="{{ old('password', 'password') }}" placeholder="Default: password">
-                    <button class="btn btn-outline-gray-400" type="button" onclick="togglePasswordVisibility('inputPassword', 'iconTogglePassword')" title="Lihat/Sembunyikan Password">
+                  <div class="position-relative">
+                    <input type="password" class="form-control" id="inputPassword" name="password" value="{{ old('password', 'password') }}" placeholder="Default: password" style="padding-right: 2.75rem;">
+                    <button type="button" class="btn position-absolute top-50 end-0 translate-middle-y text-muted border-0 bg-transparent pe-3" onclick="togglePasswordVisibility('inputPassword', 'iconTogglePassword')" title="Lihat/Sembunyikan Password" tabindex="-1" style="z-index: 5; box-shadow: none; cursor: pointer;">
                       <i class="fa-solid fa-eye" id="iconTogglePassword"></i>
                     </button>
                   </div>
