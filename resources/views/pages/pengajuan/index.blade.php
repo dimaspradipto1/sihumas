@@ -85,7 +85,7 @@
                     }, index * 400);
                 });
 
-                let htmlContent = '<p class="text-muted mb-2" style="font-size: 0.8125rem;">WhatsApp penugasan sedang/telah dibuka ke masing-masing PIC. Klik tombol di bawah jika ingin membuka kembali WhatsApp petugas:</p>';
+                let htmlContent = '<p class="text-muted mb-2" style="font-size: 0.8125rem; line-height: 1.35; text-align: justify; text-align-last: left;">WhatsApp penugasan sedang/telah dibuka ke masing-masing PIC. Klik tombol di bawah jika ingin membuka kembali WhatsApp petugas:</p>';
                 htmlContent += '<div class="d-grid gap-2 mb-1">';
                 picList.forEach((pic) => {
                     htmlContent += `
