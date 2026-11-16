@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class UserSeeder extends Seeder
 {
@@ -17,16 +16,17 @@ class UserSeeder extends Seeder
         $unitHumas = \App\Models\UnitKegiatan::where('unit_kegiatan', 'like', '%Humas%')->first();
         $unitRektorat = \App\Models\UnitKegiatan::where('unit_kegiatan', 'Rektorat')->first();
         $unitFeb = \App\Models\UnitKegiatan::where('kategori', 'like', '%FEB%')
-            ->orWhere('unit_kegiatan', 'like', '%MANAJEMEN%')
+            ->orderBy('id')
             ->first();
         $unitFst = \App\Models\UnitKegiatan::where('kategori', 'like', '%FST%')
-            ->orWhere('unit_kegiatan', 'like', '%TEKNIK%')
+            ->orderBy('id')
             ->first();
         $unitFikes = \App\Models\UnitKegiatan::where('kategori', 'like', '%FIKes%')
-            ->orWhere('unit_kegiatan', 'like', '%KESEHATAN%')
+            ->orderBy('id')
             ->first();
 
         $users = [
+            // 1. Role: Admin Humas
             [
                 'name' => 'admin humas dan publikasi',
                 'email' => 'admin@uis.ac.id',
@@ -43,6 +43,7 @@ class UserSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            // 2. Role: Petugas Humas (PIC)
             [
                 'name' => 'Nanda',
                 'email' => 'nanda@uis.ac.id',
@@ -64,7 +65,7 @@ class UserSeeder extends Seeder
                 'email' => 'ujang@uis.ac.id',
                 'no_wa' => '087701514453',
                 'password' => Hash::make('password'),
-                'unit_kegiatan_id' => $unitRektorat?->id,
+                'unit_kegiatan_id' => $unitHumas?->id,
                 'is_admin' => false,
                 'is_humas' => true,
                 'is_rektorat' => false,
@@ -75,6 +76,7 @@ class UserSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            // 3. Role: Pengusul Unit
             [
                 'name' => 'Rahman Syaputra, S.Sos., M.Si',
                 'email' => 'rahman@uis.ac.id',
@@ -87,7 +89,7 @@ class UserSeeder extends Seeder
                 'is_feb' => true,
                 'is_fst' => false,
                 'is_fikes' => false,
-                'is_users' => false,
+                'is_users' => true,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -103,7 +105,7 @@ class UserSeeder extends Seeder
                 'is_feb' => false,
                 'is_fst' => true,
                 'is_fikes' => false,
-                'is_users' => false,
+                'is_users' => true,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -119,7 +121,7 @@ class UserSeeder extends Seeder
                 'is_feb' => false,
                 'is_fst' => false,
                 'is_fikes' => true,
-                'is_users' => false,
+                'is_users' => true,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -128,10 +130,10 @@ class UserSeeder extends Seeder
                 'email' => 'dimas@uis.ac.id',
                 'no_wa' => '',
                 'password' => Hash::make('password'),
-                'unit_kegiatan_id' => $unitFst?->id,
+                'unit_kegiatan_id' => $unitRektorat?->id,
                 'is_admin' => false,
                 'is_humas' => false,
-                'is_rektorat' => false,
+                'is_rektorat' => true,
                 'is_feb' => false,
                 'is_fst' => false,
                 'is_fikes' => false,
