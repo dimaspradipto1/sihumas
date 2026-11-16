@@ -64,6 +64,7 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
     })->name('notifications.mark-as-read');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::post('/dashboard/banner', [DashboardController::class, 'updateBanner'])->name('dashboard.banner.update');
     Route::post('/publikasi/{publikasi}/validasi', [PublikasiController::class, 'validasi'])->name('publikasi.validasi');
     Route::resource('/publikasi', PublikasiController::class);
     Route::resource('/pengajuan', PengajuanController::class);
