@@ -97,7 +97,8 @@
                                         'Ruang Rapat FST',
                                         'Ruang Rapat FIKES',
                                         'Ruang Rapat Gedung B LT 4',
-                                        'Ruang Rapat Gedung E LT 5',
+                                        'Ruang Rapat Gedung F Lt 5',
+                                        'Aula Universitas Ibnu Sina',
                                     ];
                                     $valTempat = old('tempat_kegiatan', $pengajuan->tempat_kegiatan ?? '');
                                     $isCustomTempat = !empty($valTempat) && !in_array($valTempat, $daftarTempat);
