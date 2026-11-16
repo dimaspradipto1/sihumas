@@ -586,7 +586,8 @@
                                                                         <i class="fa-solid fa-user me-1 text-primary"></i> Nama PIC
                                                                     </label>
                                                                     <select name="pic_nama[]" class="form-select select-petugas-humas" style="width: 100%;">
-                                                                        <option value="">-- Cari & Pilih Petugas Humas --</option>
+                                                                        <option value="">-- Cari & Pilih PIC Humas --</option>
+                                                                        <option value="__clear__">-- Tidak Dipilih / Kosongkan PIC --</option>
                                                                         @php
                                                                             $selectedName = $pic['nama'] ?? '';
                                                                             $matched = false;
@@ -668,7 +669,8 @@
                                                                         <i class="fa-solid fa-user me-1 text-primary"></i> Nama PIC
                                                                     </label>
                                                                     <select name="pic_nama[]" class="form-select select-petugas-humas" style="width: 100%;">
-                                                                        <option value="">-- Cari & Pilih Petugas Humas --</option>
+                                                                        <option value="">-- Cari & Pilih PIC Humas --</option>
+                                                                        <option value="__clear__">-- Tidak Dipilih / Kosongkan PIC --</option>
                                                                         @php
                                                                             $selectedName = $pic['nama'] ?? '';
                                                                             $matched = false;
@@ -798,7 +800,7 @@
                     $el.select2({
                         theme: 'bootstrap-5',
                         width: '100%',
-                        placeholder: '-- Cari & Pilih Petugas Humas --',
+                        placeholder: '-- Cari & Pilih PIC Humas --',
                         allowClear: true,
                         tags: true
                     }).on('select2:select', function () {
@@ -808,6 +810,8 @@
                         if (row) {
                             const inputWa = row.querySelector('.input-pic-wa');
                             if (inputWa) inputWa.value = '';
+                            const inputCatatan = row.querySelector('.input-pic-catatan');
+                            if (inputCatatan) inputCatatan.value = '';
                         }
                     });
                 }
@@ -837,10 +841,19 @@
                 const row = selectElem.closest('.baris-pic');
                 if (!row) return;
                 const inputWa = row.querySelector('.input-pic-wa');
+                const inputCatatan = row.querySelector('.input-pic-catatan');
                 const selectedVal = selectElem.value;
 
-                if (!selectedVal) {
+                if (!selectedVal || selectedVal === '__clear__') {
+                    if (selectedVal === '__clear__') {
+                        if (window.$ && $(selectElem).hasClass('select2-hidden-accessible')) {
+                            $(selectElem).val('').trigger('change');
+                        } else {
+                            selectElem.value = '';
+                        }
+                    }
                     if (inputWa) inputWa.value = '';
+                    if (inputCatatan) inputCatatan.value = '';
                     return;
                 }
 
@@ -871,7 +884,7 @@
                     ? 'Contoh: Buat banner ukuran 3x1m & flyer IG, gunakan tema biru...'
                     : 'Contoh: Foto saat pembukaan, sesi pemateri, dan foto bersama peserta...';
 
-                let optionsHtml = '<option value="">-- Cari & Pilih Petugas Humas --</option>';
+                let optionsHtml = '<option value="">-- Cari & Pilih PIC Humas --</option><option value="__clear__">-- Tidak Dipilih / Kosongkan PIC --</option>';
                 if (listPetugasHumas && listPetugasHumas.length > 0) {
                     optionsHtml += listPetugasHumas.map(ph => `<option value="${ph.name}" data-wa="${ph.no_wa || ''}">${ph.name}</option>`).join('');
                 }

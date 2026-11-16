@@ -276,10 +276,13 @@ class PengajuanController extends Controller
             if ($request->has('pic_nama') && is_array($request->pic_nama)) {
                 foreach ($request->pic_nama as $index => $nama) {
                     $nama = trim($nama ?? '');
+                    if ($nama === '__clear__') {
+                        $nama = '';
+                    }
                     $noWa = trim($request->pic_no_wa[$index] ?? '');
                     $peran = trim($request->pic_peran[$index] ?? 'desain');
                     $catatanPic = trim($request->pic_catatan[$index] ?? '');
-                    if ($nama !== '' || $noWa !== '' || $catatanPic !== '') {
+                    if ($nama !== '' || $noWa !== '') {
                         $pics[] = [
                             'nama'    => $nama,
                             'no_wa'   => $noWa,
