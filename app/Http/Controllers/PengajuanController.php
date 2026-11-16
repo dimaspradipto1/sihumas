@@ -176,7 +176,8 @@ class PengajuanController extends Controller
         // Kirim notifikasi WhatsApp (Manual Redirect) jika nomor WA admin terisi
         $waAdmin = Setting::getValue('admin_whatsapp');
         if ($waAdmin) {
-            $waTemplate = Setting::getValue('wa_message_template', '');
+            $defaultTemplate = "Halo Admin, ada pengajuan kegiatan baru:\n\n*Nama Kegiatan:* {nama_kegiatan}\n*Tanggal:* {tgl_awal} s.d {tgl_selesai}\n*Tempat:* {tempat_kegiatan}\n*Pemohon:* {nama_user} (WA: {no_wa_user})\n\nSilakan cek di sistem SIHUMAS:\nhttps://sihumas.uisbatam.com/";
+            $waTemplate = Setting::getValue('wa_message_template', $defaultTemplate) ?: $defaultTemplate;
             
             // Format pesan
             $waMessage = strtr($waTemplate, [
@@ -186,7 +187,12 @@ class PengajuanController extends Controller
                 '{tempat_kegiatan}' => $pengajuan->tempat_kegiatan,
                 '{nama_user}' => auth()->user()->name,
                 '{no_wa_user}' => auth()->user()->no_wa ?? '-',
+                '{link_sistem}' => 'https://sihumas.uisbatam.com/',
             ]);
+
+            if (!str_contains($waMessage, 'sihumas.uisbatam.com')) {
+                $waMessage = rtrim($waMessage) . "\nhttps://sihumas.uisbatam.com/";
+            }
 
             $waUrl = 'https://wa.me/' . $waAdmin . '?text=' . urlencode($waMessage);
             session()->flash('wa_redirect_url', $waUrl);

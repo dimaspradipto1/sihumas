@@ -18,9 +18,16 @@ class SettingController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
+        $defaultTemplate = "Halo Admin, ada pengajuan kegiatan baru:\n\n*Nama Kegiatan:* {nama_kegiatan}\n*Tanggal:* {tgl_awal} s.d {tgl_selesai}\n*Tempat:* {tempat_kegiatan}\n*Pemohon:* {nama_user} (WA: {no_wa_user})\n\nSilakan cek di sistem SIHUMAS:\nhttps://sihumas.uisbatam.com/";
+        $currentTemplate = Setting::getValue('wa_message_template', $defaultTemplate);
+        if (!empty($currentTemplate) && !str_contains($currentTemplate, 'sihumas.uisbatam.com') && !str_contains($currentTemplate, '{link_sistem}')) {
+            $currentTemplate = rtrim($currentTemplate) . "\nhttps://sihumas.uisbatam.com/";
+            Setting::setValue('wa_message_template', $currentTemplate);
+        }
+
         $settings = [
             'admin_whatsapp' => Setting::getValue('admin_whatsapp', '6282283736481'),
-            'wa_message_template' => Setting::getValue('wa_message_template', ''),
+            'wa_message_template' => $currentTemplate ?: $defaultTemplate,
         ];
 
         return view('pages.settings.index', compact('settings'));

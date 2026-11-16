@@ -57,7 +57,7 @@
                             <!-- Template Pesan -->
                             <div class="mb-4">
                                 <label for="wa_message_template" class="form-label text-uppercase fw-semibold">Template Pesan WhatsApp</label>
-                                <textarea name="wa_message_template" id="wa_message_template" rows="6" 
+                                <textarea name="wa_message_template" id="wa_message_template" rows="8" 
                                     class="form-control @error('wa_message_template') is-invalid @enderror" 
                                     placeholder="Masukkan template pesan notifikasi..." required>{{ old('wa_message_template', $settings['wa_message_template']) }}</textarea>
                                 @error('wa_message_template')
@@ -81,6 +81,7 @@
                                             <li><code>{tempat_kegiatan}</code> : Lokasi pelaksanaan kegiatan</li>
                                             <li><code>{nama_user}</code> : Nama pengguna yang mengajukan kegiatan</li>
                                             <li><code>{no_wa_user}</code> : Nomor WhatsApp pengguna yang mengajukan</li>
+                                            <li><code>{link_sistem}</code> : Link akses sistem SIHUMAS (https://sihumas.uisbatam.com/)</li>
                                         </ul>
                                     </div>
                                 </div>
