@@ -245,9 +245,9 @@
                     @if (Auth::user()->is_admin || Auth::user()->is_humas)
                     <div class="card-body p-4">
                         <div class="row">
-                            <!-- Kolom Kiri: Detail Pengajuan / Review -->
-                            <div class="col-12 {{ Auth::user()->is_admin ? 'col-lg-6' : 'col-lg-12' }} mb-4">
-                                <div class="card border border-light shadow-sm h-100">
+                            <!-- Bagian Atas: Detail Pengajuan / Review (Full Width) -->
+                            <div class="col-12 mb-4">
+                                <div class="card border border-light shadow-sm">
                                     <div class="card-header bg-gray-100 py-3 d-flex justify-content-between align-items-center">
                                         <h5 class="card-title mb-0 text-gray-800">
                                             <i class="fa-solid fa-file-lines me-2 text-primary"></i> Detail Pengajuan (Review)
@@ -258,7 +258,7 @@
                                             <table class="table table-striped mb-0">
                                                 <tbody>
                                                     <tr>
-                                                        <th style="width: 32%; white-space: nowrap;" class="ps-3">Pemohon</th>
+                                                        <th style="width: 22%; white-space: nowrap;" class="ps-3">Pemohon</th>
                                                         <td class="text-break">
                                                             <strong>{{ $pengajuan->user?->name ?? '-' }}</strong>
                                                             @if ($pengajuan->user?->email)
@@ -473,8 +473,8 @@
                             </div>
 
                             @if (Auth::user()->is_admin)
-                            <!-- Kolom Kanan: Verifikasi & Penugasan (Khusus Super Admin) -->
-                            <div class="col-12 col-lg-6 mb-4">
+                            <!-- Bagian Bawah: Verifikasi & Penugasan (Full Width di Bawah Detail Pengajuan) -->
+                            <div class="col-12 mb-4">
                                 <div class="card border border-light shadow-sm">
                                     <div class="card-header bg-gray-100 py-3">
                                         <h5 class="card-title mb-0 text-gray-800">
@@ -510,7 +510,7 @@
                                             </div>
                                         </div>
 
-                                        <!-- Petugas / PIC yang Ditugaskan (Dibagi 2 Bagian: PIC Desain & PIC Dokumentasi dengan Catatan Tugas) -->
+                                        <!-- Petugas / PIC yang Ditugaskan (Dibagi 2 Bagian Kiri-Kanan: PIC Desain & PIC Dokumentasi) -->
                                         <div class="mb-4">
                                             <div class="mb-3 border-bottom pb-2">
                                                 <label class="form-label font-weight-bold mb-0 text-dark fs-6">
@@ -557,173 +557,179 @@
                                                 }
                                             @endphp
 
-                                            <!-- BAGIAN 1: PIC DESAIN -->
-                                            <div class="card border border-primary border-opacity-25 mb-3 shadow-xs">
-                                                <div class="card-header bg-primary bg-opacity-10 py-2 px-3 d-flex justify-content-between align-items-center">
-                                                    <span class="fw-bold text-primary small text-uppercase">
-                                                        <i class="fa-solid fa-palette me-1"></i> 1. PIC Desain
-                                                    </span>
-                                                    <button type="button" class="btn btn-xs btn-primary d-inline-flex align-items-center" onclick="tambahBarisPic('desain')">
-                                                        <i class="fa-solid fa-plus me-1"></i> Tambah PIC Desain
-                                                    </button>
-                                                </div>
-                                                <div class="card-body p-3">
-                                                    <div id="kontainerPicDesain" class="d-flex flex-column gap-3">
-                                                        @foreach ($daftarPicDesain as $index => $pic)
-                                                            <div class="baris-pic border rounded p-3 bg-white shadow-sm" data-peran="desain">
-                                                                <input type="hidden" name="pic_peran[]" value="desain">
-                                                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                                                    <span class="badge bg-primary text-white small">
-                                                                        <i class="fa-solid fa-palette me-1"></i> PIC Desain
-                                                                    </span>
-                                                                    <button type="button" class="btn btn-xs btn-outline-danger" title="Hapus PIC Desain ini" onclick="hapusBarisPic(this)">
-                                                                        <i class="fa-solid fa-trash me-1"></i> Hapus
-                                                                    </button>
-                                                                </div>
+                                            <div class="row g-3">
+                                                <!-- KIRI: BAGIAN 1: PIC DESAIN -->
+                                                <div class="col-12 col-lg-6">
+                                                    <div class="card border border-primary border-opacity-25 h-100 shadow-xs mb-0">
+                                                        <div class="card-header bg-primary bg-opacity-10 py-2 px-3 d-flex justify-content-between align-items-center">
+                                                            <span class="fw-bold text-primary small text-uppercase">
+                                                                <i class="fa-solid fa-palette me-1"></i> 1. PIC Desain
+                                                            </span>
+                                                            <button type="button" class="btn btn-xs btn-primary d-inline-flex align-items-center" onclick="tambahBarisPic('desain')">
+                                                                <i class="fa-solid fa-plus me-1"></i> Tambah PIC Desain
+                                                            </button>
+                                                        </div>
+                                                        <div class="card-body p-3">
+                                                            <div id="kontainerPicDesain" class="d-flex flex-column gap-3">
+                                                                @foreach ($daftarPicDesain as $index => $pic)
+                                                                    <div class="baris-pic border rounded p-3 bg-white shadow-sm" data-peran="desain">
+                                                                        <input type="hidden" name="pic_peran[]" value="desain">
+                                                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                                                            <span class="badge bg-primary text-white small">
+                                                                                <i class="fa-solid fa-palette me-1"></i> PIC Desain
+                                                                            </span>
+                                                                            <button type="button" class="btn btn-xs btn-outline-danger" title="Hapus PIC Desain ini" onclick="hapusBarisPic(this)">
+                                                                                <i class="fa-solid fa-trash me-1"></i> Hapus
+                                                                            </button>
+                                                                        </div>
 
-                                                                <div class="mb-2">
-                                                                    <label class="form-label small text-muted fw-bold mb-1">
-                                                                        <i class="fa-solid fa-user me-1 text-primary"></i> Nama PIC
-                                                                    </label>
-                                                                    <select name="pic_nama[]" class="form-select select-petugas-humas" style="width: 100%;">
-                                                                        <option value="">-- Cari & Pilih PIC Humas --</option>
-                                                                        <option value="__clear__">-- Tidak Dipilih / Kosongkan PIC --</option>
-                                                                        @php
-                                                                            $selectedName = $pic['nama'] ?? '';
-                                                                            $matched = false;
-                                                                        @endphp
-                                                                        @if(isset($petugasHumas))
-                                                                            @foreach ($petugasHumas as $ph)
+                                                                        <div class="mb-2">
+                                                                            <label class="form-label small text-muted fw-bold mb-1">
+                                                                                <i class="fa-solid fa-user me-1 text-primary"></i> Nama PIC
+                                                                            </label>
+                                                                            <select name="pic_nama[]" class="form-select select-petugas-humas" style="width: 100%;">
+                                                                                <option value="">-- Cari & Pilih PIC Humas --</option>
+                                                                                <option value="__clear__">-- Tidak Dipilih / Kosongkan PIC --</option>
                                                                                 @php
-                                                                                    $isSelected = ($selectedName === $ph->name);
-                                                                                    if ($isSelected) $matched = true;
+                                                                                    $selectedName = $pic['nama'] ?? '';
+                                                                                    $matched = false;
                                                                                 @endphp
-                                                                                <option value="{{ $ph->name }}" data-wa="{{ $ph->no_wa }}" {{ $isSelected ? 'selected' : '' }}>
-                                                                                    {{ $ph->name }}
-                                                                                </option>
-                                                                            @endforeach
-                                                                        @endif
-                                                                        @if(!empty($selectedName) && !$matched)
-                                                                            <option value="{{ $selectedName }}" data-wa="{{ $pic['no_wa'] ?? '' }}" selected>
-                                                                                {{ $selectedName }}
-                                                                            </option>
-                                                                        @endif
-                                                                    </select>
-                                                                </div>
+                                                                                @if(isset($petugasHumas))
+                                                                                    @foreach ($petugasHumas as $ph)
+                                                                                        @php
+                                                                                            $isSelected = ($selectedName === $ph->name);
+                                                                                            if ($isSelected) $matched = true;
+                                                                                        @endphp
+                                                                                        <option value="{{ $ph->name }}" data-wa="{{ $ph->no_wa }}" {{ $isSelected ? 'selected' : '' }}>
+                                                                                            {{ $ph->name }}
+                                                                                        </option>
+                                                                                    @endforeach
+                                                                                @endif
+                                                                                @if(!empty($selectedName) && !$matched)
+                                                                                    <option value="{{ $selectedName }}" data-wa="{{ $pic['no_wa'] ?? '' }}" selected>
+                                                                                        {{ $selectedName }}
+                                                                                    </option>
+                                                                                @endif
+                                                                            </select>
+                                                                        </div>
 
-                                                                <div class="mb-2">
-                                                                    <label class="form-label small text-muted fw-bold mb-1">
-                                                                        <i class="fa-brands fa-whatsapp me-1 text-success"></i> No. WhatsApp PIC
-                                                                    </label>
-                                                                    <div class="input-group">
-                                                                        <span class="input-group-text bg-success text-white">
-                                                                            <i class="fa-brands fa-whatsapp"></i>
-                                                                        </span>
-                                                                        <input type="text" name="pic_no_wa[]" class="form-control input-pic-wa"
-                                                                            value="{{ $pic['no_wa'] ?? '' }}" placeholder="082283736181">
-                                                                        <button type="button" class="btn btn-outline-success d-inline-flex align-items-center px-3" title="Chat WhatsApp PIC" onclick="chatWaPic(this)">
-                                                                            <i class="fa-brands fa-whatsapp me-1"></i> Chat
-                                                                        </button>
+                                                                        <div class="mb-2">
+                                                                            <label class="form-label small text-muted fw-bold mb-1">
+                                                                                <i class="fa-brands fa-whatsapp me-1 text-success"></i> No. WhatsApp PIC
+                                                                            </label>
+                                                                            <div class="input-group">
+                                                                                <span class="input-group-text bg-success text-white">
+                                                                                    <i class="fa-brands fa-whatsapp"></i>
+                                                                                </span>
+                                                                                <input type="text" name="pic_no_wa[]" class="form-control input-pic-wa"
+                                                                                    value="{{ $pic['no_wa'] ?? '' }}" placeholder="082283736181">
+                                                                                <button type="button" class="btn btn-outline-success d-inline-flex align-items-center px-3" title="Chat WhatsApp PIC" onclick="chatWaPic(this)">
+                                                                                    <i class="fa-brands fa-whatsapp me-1"></i> Chat
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div>
+                                                                            <label class="form-label small text-muted fw-bold mb-1">
+                                                                                <i class="fa-solid fa-note-sticky me-1 text-warning"></i> Catatan / Instruksi Tugas Desain
+                                                                            </label>
+                                                                            <textarea name="pic_catatan[]" class="form-control form-control-sm input-pic-catatan" rows="2"
+                                                                                placeholder="Contoh: Buat banner ukuran 3x1m & flyer IG, gunakan tema biru...">{{ $pic['catatan'] ?? '' }}</textarea>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-
-                                                                <div>
-                                                                    <label class="form-label small text-muted fw-bold mb-1">
-                                                                        <i class="fa-solid fa-note-sticky me-1 text-warning"></i> Catatan / Instruksi Tugas Desain
-                                                                    </label>
-                                                                    <textarea name="pic_catatan[]" class="form-control form-control-sm input-pic-catatan" rows="2"
-                                                                        placeholder="Contoh: Buat banner ukuran 3x1m & flyer IG, gunakan tema biru...">{{ $pic['catatan'] ?? '' }}</textarea>
-                                                                </div>
+                                                                @endforeach
                                                             </div>
-                                                        @endforeach
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- KANAN: BAGIAN 2: PIC DOKUMENTASI -->
+                                                <div class="col-12 col-lg-6">
+                                                    <div class="card border border-info border-opacity-25 h-100 shadow-xs mb-0">
+                                                        <div class="card-header bg-info bg-opacity-10 py-2 px-3 d-flex justify-content-between align-items-center">
+                                                            <span class="fw-bold text-info small text-uppercase">
+                                                                <i class="fa-solid fa-camera me-1"></i> 2. PIC Dokumentasi
+                                                            </span>
+                                                            <button type="button" class="btn btn-xs btn-info text-white d-inline-flex align-items-center" onclick="tambahBarisPic('dokumentasi')">
+                                                                <i class="fa-solid fa-plus me-1"></i> Tambah PIC Dokumentasi
+                                                            </button>
+                                                        </div>
+                                                        <div class="card-body p-3">
+                                                            <div id="kontainerPicDokumentasi" class="d-flex flex-column gap-3">
+                                                                @foreach ($daftarPicDokumentasi as $index => $pic)
+                                                                    <div class="baris-pic border rounded p-3 bg-white shadow-sm" data-peran="dokumentasi">
+                                                                        <input type="hidden" name="pic_peran[]" value="dokumentasi">
+                                                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                                                            <span class="badge bg-info text-white small">
+                                                                                <i class="fa-solid fa-camera me-1"></i> PIC Dokumentasi
+                                                                            </span>
+                                                                            <button type="button" class="btn btn-xs btn-outline-danger" title="Hapus PIC Dokumentasi ini" onclick="hapusBarisPic(this)">
+                                                                                <i class="fa-solid fa-trash me-1"></i> Hapus
+                                                                            </button>
+                                                                        </div>
+
+                                                                        <div class="mb-2">
+                                                                            <label class="form-label small text-muted fw-bold mb-1">
+                                                                                <i class="fa-solid fa-user me-1 text-primary"></i> Nama PIC
+                                                                            </label>
+                                                                            <select name="pic_nama[]" class="form-select select-petugas-humas" style="width: 100%;">
+                                                                                <option value="">-- Cari & Pilih PIC Humas --</option>
+                                                                                <option value="__clear__">-- Tidak Dipilih / Kosongkan PIC --</option>
+                                                                                @php
+                                                                                    $selectedName = $pic['nama'] ?? '';
+                                                                                    $matched = false;
+                                                                                @endphp
+                                                                                @if(isset($petugasHumas))
+                                                                                    @foreach ($petugasHumas as $ph)
+                                                                                        @php
+                                                                                            $isSelected = ($selectedName === $ph->name);
+                                                                                            if ($isSelected) $matched = true;
+                                                                                        @endphp
+                                                                                        <option value="{{ $ph->name }}" data-wa="{{ $ph->no_wa }}" {{ $isSelected ? 'selected' : '' }}>
+                                                                                            {{ $ph->name }}
+                                                                                        </option>
+                                                                                    @endforeach
+                                                                                @endif
+                                                                                @if(!empty($selectedName) && !$matched)
+                                                                                    <option value="{{ $selectedName }}" data-wa="{{ $pic['no_wa'] ?? '' }}" selected>
+                                                                                        {{ $selectedName }}
+                                                                                    </option>
+                                                                                @endif
+                                                                            </select>
+                                                                        </div>
+
+                                                                        <div class="mb-2">
+                                                                            <label class="form-label small text-muted fw-bold mb-1">
+                                                                                <i class="fa-brands fa-whatsapp me-1 text-success"></i> No. WhatsApp PIC
+                                                                            </label>
+                                                                            <div class="input-group">
+                                                                                <span class="input-group-text bg-success text-white">
+                                                                                    <i class="fa-brands fa-whatsapp"></i>
+                                                                                </span>
+                                                                                <input type="text" name="pic_no_wa[]" class="form-control input-pic-wa"
+                                                                                    value="{{ $pic['no_wa'] ?? '' }}" placeholder="082283736181">
+                                                                                <button type="button" class="btn btn-outline-success d-inline-flex align-items-center px-3" title="Chat WhatsApp PIC" onclick="chatWaPic(this)">
+                                                                                    <i class="fa-brands fa-whatsapp me-1"></i> Chat
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div>
+                                                                            <label class="form-label small text-muted fw-bold mb-1">
+                                                                                <i class="fa-solid fa-note-sticky me-1 text-warning"></i> Catatan / Instruksi Tugas Dokumentasi
+                                                                            </label>
+                                                                            <textarea name="pic_catatan[]" class="form-control form-control-sm input-pic-catatan" rows="2"
+                                                                                placeholder="Contoh: Foto saat pembukaan, sesi pemateri, dan foto bersama peserta...">{{ $pic['catatan'] ?? '' }}</textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            <!-- BAGIAN 2: PIC DOKUMENTASI -->
-                                            <div class="card border border-info border-opacity-25 mb-3 shadow-xs">
-                                                <div class="card-header bg-info bg-opacity-10 py-2 px-3 d-flex justify-content-between align-items-center">
-                                                    <span class="fw-bold text-info small text-uppercase">
-                                                        <i class="fa-solid fa-camera me-1"></i> 2. PIC Dokumentasi
-                                                    </span>
-                                                    <button type="button" class="btn btn-xs btn-info text-white d-inline-flex align-items-center" onclick="tambahBarisPic('dokumentasi')">
-                                                        <i class="fa-solid fa-plus me-1"></i> Tambah PIC Dokumentasi
-                                                    </button>
-                                                </div>
-                                                <div class="card-body p-3">
-                                                    <div id="kontainerPicDokumentasi" class="d-flex flex-column gap-3">
-                                                        @foreach ($daftarPicDokumentasi as $index => $pic)
-                                                            <div class="baris-pic border rounded p-3 bg-white shadow-sm" data-peran="dokumentasi">
-                                                                <input type="hidden" name="pic_peran[]" value="dokumentasi">
-                                                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                                                    <span class="badge bg-info text-white small">
-                                                                        <i class="fa-solid fa-camera me-1"></i> PIC Dokumentasi
-                                                                    </span>
-                                                                    <button type="button" class="btn btn-xs btn-outline-danger" title="Hapus PIC Dokumentasi ini" onclick="hapusBarisPic(this)">
-                                                                        <i class="fa-solid fa-trash me-1"></i> Hapus
-                                                                    </button>
-                                                                </div>
-
-                                                                <div class="mb-2">
-                                                                    <label class="form-label small text-muted fw-bold mb-1">
-                                                                        <i class="fa-solid fa-user me-1 text-primary"></i> Nama PIC
-                                                                    </label>
-                                                                    <select name="pic_nama[]" class="form-select select-petugas-humas" style="width: 100%;">
-                                                                        <option value="">-- Cari & Pilih PIC Humas --</option>
-                                                                        <option value="__clear__">-- Tidak Dipilih / Kosongkan PIC --</option>
-                                                                        @php
-                                                                            $selectedName = $pic['nama'] ?? '';
-                                                                            $matched = false;
-                                                                        @endphp
-                                                                        @if(isset($petugasHumas))
-                                                                            @foreach ($petugasHumas as $ph)
-                                                                                @php
-                                                                                    $isSelected = ($selectedName === $ph->name);
-                                                                                    if ($isSelected) $matched = true;
-                                                                                @endphp
-                                                                                <option value="{{ $ph->name }}" data-wa="{{ $ph->no_wa }}" {{ $isSelected ? 'selected' : '' }}>
-                                                                                    {{ $ph->name }}
-                                                                                </option>
-                                                                            @endforeach
-                                                                        @endif
-                                                                        @if(!empty($selectedName) && !$matched)
-                                                                            <option value="{{ $selectedName }}" data-wa="{{ $pic['no_wa'] ?? '' }}" selected>
-                                                                                {{ $selectedName }}
-                                                                            </option>
-                                                                        @endif
-                                                                    </select>
-                                                                </div>
-
-                                                                <div class="mb-2">
-                                                                    <label class="form-label small text-muted fw-bold mb-1">
-                                                                        <i class="fa-brands fa-whatsapp me-1 text-success"></i> No. WhatsApp PIC
-                                                                    </label>
-                                                                    <div class="input-group">
-                                                                        <span class="input-group-text bg-success text-white">
-                                                                            <i class="fa-brands fa-whatsapp"></i>
-                                                                        </span>
-                                                                        <input type="text" name="pic_no_wa[]" class="form-control input-pic-wa"
-                                                                            value="{{ $pic['no_wa'] ?? '' }}" placeholder="082283736181">
-                                                                        <button type="button" class="btn btn-outline-success d-inline-flex align-items-center px-3" title="Chat WhatsApp PIC" onclick="chatWaPic(this)">
-                                                                            <i class="fa-brands fa-whatsapp me-1"></i> Chat
-                                                                        </button>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div>
-                                                                    <label class="form-label small text-muted fw-bold mb-1">
-                                                                        <i class="fa-solid fa-note-sticky me-1 text-warning"></i> Catatan / Instruksi Tugas Dokumentasi
-                                                                    </label>
-                                                                    <textarea name="pic_catatan[]" class="form-control form-control-sm input-pic-catatan" rows="2"
-                                                                        placeholder="Contoh: Foto saat pembukaan, sesi pemateri, dan foto bersama peserta...">{{ $pic['catatan'] ?? '' }}</textarea>
-                                                                </div>
-                                                            </div>
-                                                        @endforeach
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="mt-1">
+                                            <div class="mt-2">
                                                 <small class="text-muted"><i class="fa-solid fa-circle-info me-1"></i> Notifikasi WhatsApp penugasan otomatis disiapkan untuk setiap PIC Desain dan Dokumentasi saat UPDATE.</small>
                                             </div>
                                         </div>
