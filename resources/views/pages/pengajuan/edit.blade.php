@@ -514,7 +514,7 @@
                                         <div class="mb-4">
                                             <div class="mb-3 border-bottom pb-2">
                                                 <label class="form-label font-weight-bold mb-0 text-dark fs-6">
-                                                    <i class="fa-solid fa-users text-primary me-1"></i> Penugasan Petugas / PIC Kegiatan
+                                                    <i class="fa-solid fa-users text-primary me-1"></i> PIC Kegiatan
                                                 </label>
                                                 <small class="text-muted d-block mt-1">
                                                     <i class="fa-solid fa-circle-info me-1"></i> Pisahkan penugasan untuk tim <strong>Desain</strong> dan tim <strong>Dokumentasi</strong>, serta berikan instruksi/catatan tugas spesifik.
@@ -561,7 +561,7 @@
                                             <div class="card border border-primary border-opacity-25 mb-3 shadow-xs">
                                                 <div class="card-header bg-primary bg-opacity-10 py-2 px-3 d-flex justify-content-between align-items-center">
                                                     <span class="fw-bold text-primary small text-uppercase">
-                                                        <i class="fa-solid fa-palette me-1"></i> 1. Petugas / PIC Desain
+                                                        <i class="fa-solid fa-palette me-1"></i> 1. PIC Desain
                                                     </span>
                                                     <button type="button" class="btn btn-xs btn-primary d-inline-flex align-items-center" onclick="tambahBarisPic('desain')">
                                                         <i class="fa-solid fa-plus me-1"></i> Tambah PIC Desain
@@ -583,7 +583,7 @@
 
                                                                 <div class="mb-2">
                                                                     <label class="form-label small text-muted fw-bold mb-1">
-                                                                        <i class="fa-solid fa-user me-1 text-primary"></i> Nama Petugas / PIC
+                                                                        <i class="fa-solid fa-user me-1 text-primary"></i> Nama PIC
                                                                     </label>
                                                                     <select name="pic_nama[]" class="form-select select-petugas-humas" style="width: 100%;">
                                                                         <option value="">-- Cari & Pilih Petugas Humas --</option>
@@ -643,7 +643,7 @@
                                             <div class="card border border-info border-opacity-25 mb-3 shadow-xs">
                                                 <div class="card-header bg-info bg-opacity-10 py-2 px-3 d-flex justify-content-between align-items-center">
                                                     <span class="fw-bold text-info small text-uppercase">
-                                                        <i class="fa-solid fa-camera me-1"></i> 2. Petugas / PIC Dokumentasi
+                                                        <i class="fa-solid fa-camera me-1"></i> 2. PIC Dokumentasi
                                                     </span>
                                                     <button type="button" class="btn btn-xs btn-info text-white d-inline-flex align-items-center" onclick="tambahBarisPic('dokumentasi')">
                                                         <i class="fa-solid fa-plus me-1"></i> Tambah PIC Dokumentasi
@@ -665,7 +665,7 @@
 
                                                                 <div class="mb-2">
                                                                     <label class="form-label small text-muted fw-bold mb-1">
-                                                                        <i class="fa-solid fa-user me-1 text-primary"></i> Nama Petugas / PIC
+                                                                        <i class="fa-solid fa-user me-1 text-primary"></i> Nama PIC
                                                                     </label>
                                                                     <select name="pic_nama[]" class="form-select select-petugas-humas" style="width: 100%;">
                                                                         <option value="">-- Cari & Pilih Petugas Humas --</option>
@@ -892,7 +892,7 @@
 
                     <div class="mb-2">
                         <label class="form-label small text-muted fw-bold mb-1">
-                            <i class="fa-solid fa-user me-1 text-primary"></i> Nama Petugas / PIC
+                            <i class="fa-solid fa-user me-1 text-primary"></i> Nama PIC
                         </label>
                         <select name="pic_nama[]" class="form-select select-petugas-humas" style="width: 100%;">
                             ${optionsHtml}
