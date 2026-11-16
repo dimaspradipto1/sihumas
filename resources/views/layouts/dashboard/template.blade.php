@@ -263,6 +263,80 @@
             padding-left: 1rem !important;
             padding-right: 1rem !important;
         }
+
+        /* Global Styling SweetAlert2: Proporsional, Compact, Rapi & Profesional */
+        .swal2-popup:not(.swal2-toast) {
+            width: 24rem !important;
+            max-width: 92vw !important;
+            padding: 1.25rem 1.25rem 1.15rem !important;
+            border-radius: 0.75rem !important;
+            font-size: 0.85rem !important;
+            box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.18), 0 8px 10px -6px rgba(15, 23, 42, 0.1) !important;
+        }
+        .swal2-popup:not(.swal2-toast) .swal2-icon {
+            transform: scale(0.72) !important;
+            margin: 0.1rem auto 0.35rem !important;
+        }
+        .swal2-popup:not(.swal2-toast) .swal2-title {
+            font-size: 1.05rem !important;
+            font-weight: 700 !important;
+            color: #1f2937 !important;
+            padding: 0.15rem 0.5rem 0 !important;
+            line-height: 1.35 !important;
+        }
+        .swal2-popup:not(.swal2-toast) .swal2-html-container,
+        .swal2-popup:not(.swal2-toast) .swal2-content {
+            font-size: 0.825rem !important;
+            color: #4b5563 !important;
+            margin: 0.45rem 0.5rem 0.25rem !important;
+            line-height: 1.5 !important;
+        }
+        .swal2-popup:not(.swal2-toast) .swal2-input,
+        .swal2-popup:not(.swal2-toast) .swal2-textarea {
+            font-size: 0.825rem !important;
+            border-radius: 0.5rem !important;
+            border: 1px solid #d1d5db !important;
+            padding: 0.5rem 0.75rem !important;
+            margin: 0.6rem auto 0.2rem !important;
+            box-shadow: none !important;
+        }
+        .swal2-popup:not(.swal2-toast) .swal2-input:focus,
+        .swal2-popup:not(.swal2-toast) .swal2-textarea:focus {
+            border-color: #1f2937 !important;
+            box-shadow: 0 0 0 0.18rem rgba(31, 41, 55, 0.12) !important;
+        }
+        .swal2-popup:not(.swal2-toast) .swal2-actions {
+            margin: 0.9rem auto 0 !important;
+            gap: 0.5rem !important;
+        }
+        .swal2-popup:not(.swal2-toast) .swal2-styled {
+            font-size: 0.8rem !important;
+            font-weight: 600 !important;
+            padding: 0.45rem 1rem !important;
+            border-radius: 0.5rem !important;
+            margin: 0 !important;
+            box-shadow: none !important;
+            letter-spacing: 0.01em !important;
+        }
+        .swal2-popup:not(.swal2-toast) .swal2-styled:focus {
+            box-shadow: none !important;
+        }
+        .swal2-popup.swal2-toast {
+            padding: 0.6rem 0.9rem !important;
+            border-radius: 0.6rem !important;
+            box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.12), 0 4px 6px -4px rgba(15, 23, 42, 0.08) !important;
+        }
+        .swal2-popup.swal2-toast .swal2-title {
+            font-size: 0.8125rem !important;
+            font-weight: 600 !important;
+            margin: 0 0.4rem !important;
+        }
+        .swal2-popup.swal2-toast .swal2-icon {
+            width: 1.5rem !important;
+            height: 1.5rem !important;
+            min-width: 1.5rem !important;
+            margin: 0 0.4rem 0 0 !important;
+        }
     </style>
 
     <script>

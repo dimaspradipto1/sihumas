@@ -85,18 +85,18 @@
                     }, index * 400);
                 });
 
-                let htmlContent = '<p class="text-muted mb-3">WhatsApp penugasan sedang/telah dibuka ke masing-masing PIC. Klik tombol di bawah jika ingin membuka kembali WhatsApp petugas:</p>';
-                htmlContent += '<div class="d-grid gap-2 mb-2">';
+                let htmlContent = '<p class="text-muted mb-2" style="font-size: 0.8125rem;">WhatsApp penugasan sedang/telah dibuka ke masing-masing PIC. Klik tombol di bawah jika ingin membuka kembali WhatsApp petugas:</p>';
+                htmlContent += '<div class="d-grid gap-2 mb-1">';
                 picList.forEach((pic) => {
                     htmlContent += `
-                        <a href="${pic.url}" target="_blank" class="btn btn-success text-white py-2 fw-semibold text-start px-3">
-                            <i class="fa-brands fa-whatsapp me-2 fs-5"></i> Kirim ke <b>${pic.nama}</b> (${pic.no_wa})
+                        <a href="${pic.url}" target="_blank" class="btn btn-sm btn-success text-white py-2 fw-semibold text-start px-3" style="font-size: 0.8rem; border-radius: 0.5rem;">
+                            <i class="fa-brands fa-whatsapp me-2"></i> Kirim ke <b>${pic.nama}</b> (${pic.no_wa})
                         </a>
                     `;
                 });
                 if (picList.length > 1) {
                     htmlContent += `
-                        <button type="button" class="btn btn-outline-primary py-2 mt-1" id="btnBukaSemuaWa">
+                        <button type="button" class="btn btn-sm btn-outline-primary py-2 mt-1" id="btnBukaSemuaWa" style="font-size: 0.8rem; border-radius: 0.5rem;">
                             <i class="fa-solid fa-up-right-from-square me-2"></i> Buka Semua WhatsApp Sekaligus
                         </button>
                     `;
