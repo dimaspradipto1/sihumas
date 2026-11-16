@@ -140,6 +140,16 @@
                                         <small class="text-muted"><i class="fa-solid fa-circle-info me-1"></i> Format teks didukung, sistem akan otomatis membersihkan tag HTML agar data tersimpan rapi.</small>
                                     </div>
 
+                                    @php
+                                        $showLinkDokumentasi = Auth::user()->is_admin || ($pengajuan ? $pengajuan->isUserAssignedAs('dokumentasi', Auth::user()) : true);
+                                        $showLinkDesain = Auth::user()->is_admin || ($pengajuan ? $pengajuan->isUserAssignedAs('desain', Auth::user()) : true);
+                                        if (!$showLinkDokumentasi && !$showLinkDesain) {
+                                            $showLinkDokumentasi = true;
+                                            $showLinkDesain = true;
+                                        }
+                                    @endphp
+
+                                    @if ($showLinkDokumentasi)
                                     <!-- Link Dokumentasi -->
                                     <div class="mb-4">
                                         <label for="link_dokumentasi" class="form-label text-uppercase fw-bold">
@@ -159,7 +169,9 @@
                                             @endif
                                         </div>
                                     </div>
+                                    @endif
 
+                                    @if ($showLinkDesain)
                                     <!-- Link GDrive Desain atau Flayer (Opsional) -->
                                     @php
                                         $existingDesainLink = $pengajuan?->link_desain ?? '';
@@ -194,6 +206,7 @@
                                             <i class="fa-solid fa-circle-info me-1"></i> Masukkan tautan Google Drive yang berisi desain atau flayer kegiatan (opsional).
                                         </small>
                                     </div>
+                                    @endif
 
                                     <!-- Link Publikasi (Bisa Tambah Lebih Dari 1 Link) -->
                                     <div class="mb-4">

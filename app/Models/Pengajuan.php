@@ -129,4 +129,31 @@ class Pengajuan extends Model
 
         return !empty($filtered) ? $filtered : $picList;
     }
+
+    /**
+     * Cek apakah user yang login ditugaskan pada peran tertentu ('desain' atau 'dokumentasi').
+     * Jika Super Admin (atau data lama tanpa pic_petugas), kembalikan true.
+     */
+    public function isUserAssignedAs(string $peran, $user = null): bool
+    {
+        $user = $user ?? auth()->user();
+        if (!$user || $user->is_admin) {
+            return true;
+        }
+
+        $picList = is_array($this->pic_petugas) ? $this->pic_petugas : [];
+        if (empty($picList)) {
+            return true;
+        }
+
+        $visiblePics = $this->getVisiblePicPetugas($user);
+        foreach ($visiblePics as $pic) {
+            $picPeran = strtolower(trim($pic['peran'] ?? 'desain'));
+            if ($picPeran === strtolower($peran)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
