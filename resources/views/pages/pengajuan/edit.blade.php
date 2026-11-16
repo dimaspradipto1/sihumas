@@ -255,11 +255,11 @@
                                     </div>
                                     <div class="card-body p-0">
                                         <div class="table-responsive">
-                                            <table class="table table-striped mb-0">
+                                            <table class="table table-striped mb-0" style="table-layout: fixed; width: 100%;">
                                                 <tbody>
                                                     <tr>
-                                                        <th style="width: 22%; white-space: nowrap;" class="ps-3">Pemohon</th>
-                                                        <td class="text-break">
+                                                        <th style="width: 24%; white-space: nowrap;" class="ps-3">Pemohon</th>
+                                                        <td class="text-break" style="white-space: normal !important; word-break: break-word !important;">
                                                             <strong>{{ $pengajuan->user?->name ?? '-' }}</strong>
                                                             @if ($pengajuan->user?->email)
                                                                 <br><small class="text-muted"><i class="fa-regular fa-envelope me-1"></i>{{ $pengajuan->user->email }}</small>
@@ -313,13 +313,13 @@
                                                     </tr>
                                                     <tr>
                                                         <th class="ps-3">Tempat Kegiatan</th>
-                                                        <td class="text-break">{{ $pengajuan->tempat_kegiatan ?? '-' }}</td>
+                                                        <td class="text-break" style="white-space: normal !important; word-break: break-word !important;">{{ $pengajuan->tempat_kegiatan ?? '-' }}</td>
                                                     </tr>
                                                     @if ($pengajuan->link_zoom)
                                                     <tr>
                                                         <th class="ps-3">Link Zoom</th>
-                                                        <td class="text-break">
-                                                            <a href="{{ $pengajuan->link_zoom }}" target="_blank" class="text-decoration-underline text-break">
+                                                        <td class="text-break" style="white-space: normal !important; word-break: break-word !important;">
+                                                            <a href="{{ $pengajuan->link_zoom }}" target="_blank" class="text-decoration-underline text-break" style="white-space: normal !important; word-break: break-all !important;">
                                                                 {{ $pengajuan->link_zoom }}
                                                             </a>
                                                         </td>
@@ -327,11 +327,11 @@
                                                     @endif
                                                     <tr>
                                                         <th class="ps-3">Deskripsi</th>
-                                                        <td class="text-break">{{ trim(strip_tags($pengajuan->deskripsi_kegiatan ?? '')) ?: '-' }}</td>
+                                                        <td class="text-break" style="white-space: normal !important; word-break: break-word !important;">{{ trim(strip_tags($pengajuan->deskripsi_kegiatan ?? '')) ?: '-' }}</td>
                                                     </tr>
                                                     <tr>
                                                         <th class="ps-3">Kebutuhan Perlengkapan</th>
-                                                        <td class="text-break">{{ trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags($pengajuan->perlengkapan ?? ''), ENT_QUOTES | ENT_HTML5, 'UTF-8'))) ?: '-' }}</td>
+                                                        <td class="text-break" style="white-space: normal !important; word-break: break-word !important;">{{ trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags($pengajuan->perlengkapan ?? ''), ENT_QUOTES | ENT_HTML5, 'UTF-8'))) ?: '-' }}</td>
                                                     </tr>
                                                     <tr>
                                                         <th class="ps-3">Dokumen Pendukung</th>

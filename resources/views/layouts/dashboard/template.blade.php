@@ -129,11 +129,16 @@
             border-bottom: 2px solid #e5e7eb !important;
         }
 
-        .table-responsive .table td {
+        .table-responsive .table td,
+        .table td.text-break,
+        .table td.text-wrap {
             font-size: 0.8125rem !important; /* ~13px */
             padding: 0.4rem 0.35rem !important;
             vertical-align: middle !important;
             line-height: 1.35 !important;
+            white-space: normal !important;
+            word-wrap: break-word !important;
+            word-break: break-word !important;
         }
 
         /* Compact badges di dalam tabel */
