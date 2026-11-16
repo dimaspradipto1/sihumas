@@ -98,16 +98,22 @@
                                         </div>
                                     </div>
 
-                                    <!-- Upload Desain atau Flayer (Multi, Optional) -->
+                                    <!-- Link GDrive Desain atau Flayer (Opsional) -->
                                     <div class="mb-4">
-                                        <label for="dokumentasi_files" class="form-label text-uppercase fw-bold d-flex justify-content-between align-items-center">
-                                            <span><i class="fa-solid fa-images me-1 text-info"></i> Upload Desain atau Flayer</span>
+                                        <label for="link_gdrive_desain" class="form-label text-uppercase fw-bold d-flex justify-content-between align-items-center">
+                                            <span><i class="fa-brands fa-google-drive me-1 text-info"></i> Link GDrive (Desain atau Flayer)</span>
                                             <span class="badge bg-secondary text-white fw-normal">Opsional</span>
                                         </label>
-                                        <input type="file" name="dokumentasi_files[]" id="dokumentasi_files" class="form-control" multiple
-                                            accept="image/*,.pdf,.doc,.docx,.zip,.rar">
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-white text-info">
+                                                <i class="fa-solid fa-link"></i>
+                                            </span>
+                                            <input type="url" name="link_desain" id="link_gdrive_desain" class="form-control"
+                                                value="{{ old('link_desain') }}"
+                                                placeholder="https://drive.google.com/drive/folders/...">
+                                        </div>
                                         <small class="text-muted d-block mt-1">
-                                            <i class="fa-solid fa-circle-info me-1"></i> Anda dapat memilih beberapa file atau foto sekaligus (format: JPG, PNG, PDF, DOCX, ZIP/RAR, maks 10MB per file).
+                                            <i class="fa-solid fa-circle-info me-1"></i> Masukkan tautan Google Drive yang berisi desain atau flayer kegiatan (opsional).
                                         </small>
                                     </div>
 

@@ -85,6 +85,10 @@ class PublikasiController extends Controller
 
         // Kemudian buat LaporanPublikasi dengan menggunakan ID dari Publikasi yang sudah dibuat
         $pengajuan = Pengajuan::find($request->pengajuan_id);
+        if ($pengajuan && $request->has('link_desain')) {
+            $linkDesain = trim((string) $request->input('link_desain', ''));
+            $pengajuan->update(['link_desain' => $linkDesain !== '' ? $linkDesain : null]);
+        }
         LaporanPublikasi::create([
             'publikasi_id' => $publikasi->id,
             'user_id' => auth()->user()->id,
@@ -142,6 +146,13 @@ class PublikasiController extends Controller
 
         if ($request->has('link_dokumentasi')) {
             $data['link_dokumentasi'] = !empty(trim($request->input('link_dokumentasi', ''))) ? trim($request->input('link_dokumentasi')) : null;
+        }
+
+        if ($request->has('link_desain') && $publikasi->pengajuan) {
+            $linkDesain = trim((string) $request->input('link_desain', ''));
+            $publikasi->pengajuan->update([
+                'link_desain' => $linkDesain !== '' ? $linkDesain : null,
+            ]);
         }
 
         // Simpan multiple link publikasi sebagai JSON

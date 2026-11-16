@@ -216,13 +216,26 @@
                                 </tr>
 
                                 <tr>
-                                    <td class="text-uppercase text-dark text-xxs font-weight-bolder opacity-7">Upload Desain atau Flayer</td>
+                                    <td class="text-uppercase text-dark text-xxs font-weight-bolder opacity-7">Link GDrive (Desain atau Flayer)</td>
                                     <td class="text-dark text-xxs font-weight-bolder opacity-7 px-1">:</td>
                                     <td class="text-dark text-xxs font-weight-bolder opacity-7">
                                         @php
+                                            $desainLink = $publikasi->pengajuan?->link_desain ?? '';
                                             $files = $publikasi->dokumentasi_files_array ?? [];
+                                            if (empty($desainLink) && !empty($files)) {
+                                                $firstItem = $files[0] ?? '';
+                                                if (is_string($firstItem) && filter_var($firstItem, FILTER_VALIDATE_URL)) {
+                                                    $desainLink = $firstItem;
+                                                } elseif (is_array($firstItem) && !empty($firstItem['url'])) {
+                                                    $desainLink = $firstItem['url'];
+                                                }
+                                            }
                                         @endphp
-                                        @if (!empty($files))
+                                        @if (!empty($desainLink))
+                                            <a href="{{ $desainLink }}" target="_blank" class="btn btn-xs btn-outline-info d-inline-flex align-items-center py-1 px-2">
+                                                <i class="fa-brands fa-google-drive me-1"></i> Buka GDrive Desain / Flayer
+                                            </a>
+                                        @elseif (!empty($files))
                                             <div class="row g-2">
                                                 @foreach ($files as $f)
                                                     @php
@@ -258,7 +271,7 @@
                                                 @endforeach
                                             </div>
                                         @else
-                                            <span class="text-muted fst-italic">Tidak ada desain atau flayer yang diunggah</span>
+                                            <span class="text-muted fst-italic">Tidak ada link GDrive desain atau flayer</span>
                                         @endif
                                     </td>
                                 </tr>
