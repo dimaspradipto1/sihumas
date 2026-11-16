@@ -482,14 +482,32 @@
                                         </h5>
                                     </div>
                                     <div class="card-body">
-                                        <!-- Status Pengajuan -->
-                                        <div class="mb-3">
-                                            <label for="status" class="form-label font-weight-bold">Status Pengajuan <span class="text-danger">*</span></label>
-                                            <select class="form-select" name="status" id="status" required>
-                                                <option value="pending" {{ $pengajuan->status == 'pending' ? 'selected' : '' }}>Pending</option>
-                                                <option value="diterima" {{ $pengajuan->status == 'diterima' ? 'selected' : '' }}>Diterima</option>
-                                                <option value="ditolak" {{ $pengajuan->status == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
-                                            </select>
+                                        <!-- Status Pengajuan (Pilih Langsung / Radio Cards) -->
+                                        <div class="mb-4">
+                                            <label class="form-label font-weight-bold d-block mb-2">Status Pengajuan <span class="text-danger">*</span></label>
+                                            @php
+                                                $currentStatus = old('status', $pengajuan->status ?? 'pending');
+                                            @endphp
+                                            <div class="row g-2" id="status_pengajuan_group">
+                                                <div class="col-4">
+                                                    <label class="status-option-card d-flex align-items-center justify-content-center gap-2 p-2 border rounded w-100 text-center {{ $currentStatus == 'pending' ? 'border-warning bg-warning bg-opacity-10 fw-bold' : 'bg-white' }}" for="status_pending" style="cursor: pointer; transition: all 0.15s ease;">
+                                                        <input class="form-check-input m-0" type="radio" name="status" id="status_pending" value="pending" {{ $currentStatus == 'pending' ? 'checked' : '' }} required onchange="updateStatusCardStyle()">
+                                                        <span class="small text-dark"><i class="fa-solid fa-clock text-warning me-1"></i> Pending</span>
+                                                    </label>
+                                                </div>
+                                                <div class="col-4">
+                                                    <label class="status-option-card d-flex align-items-center justify-content-center gap-2 p-2 border rounded w-100 text-center {{ $currentStatus == 'diterima' ? 'border-success bg-success bg-opacity-10 fw-bold' : 'bg-white' }}" for="status_diterima" style="cursor: pointer; transition: all 0.15s ease;">
+                                                        <input class="form-check-input m-0" type="radio" name="status" id="status_diterima" value="diterima" {{ $currentStatus == 'diterima' ? 'checked' : '' }} required onchange="updateStatusCardStyle()">
+                                                        <span class="small text-dark"><i class="fa-solid fa-circle-check text-success me-1"></i> Diterima</span>
+                                                    </label>
+                                                </div>
+                                                <div class="col-4">
+                                                    <label class="status-option-card d-flex align-items-center justify-content-center gap-2 p-2 border rounded w-100 text-center {{ $currentStatus == 'ditolak' ? 'border-danger bg-danger bg-opacity-10 fw-bold' : 'bg-white' }}" for="status_ditolak" style="cursor: pointer; transition: all 0.15s ease;">
+                                                        <input class="form-check-input m-0" type="radio" name="status" id="status_ditolak" value="ditolak" {{ $currentStatus == 'ditolak' ? 'checked' : '' }} required onchange="updateStatusCardStyle()">
+                                                        <span class="small text-dark"><i class="fa-solid fa-circle-xmark text-danger me-1"></i> Ditolak</span>
+                                                    </label>
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <!-- Petugas / PIC yang Ditugaskan (Dibagi 2 Bagian: PIC Desain & PIC Dokumentasi dengan Catatan Tugas) -->
@@ -977,8 +995,8 @@
                 const pemohon = @json($pengajuan->user?->name ?? '-');
                 const pemohonWa = @json($pengajuan->user?->no_wa ?? '-');
 
-                const statusSelect = document.getElementById('status');
-                const statusText = statusSelect ? statusSelect.options[statusSelect.selectedIndex].text.toUpperCase() : 'DITERIMA';
+                const checkedStatus = document.querySelector('input[name="status"]:checked');
+                const statusText = checkedStatus ? checkedStatus.value.toUpperCase() : 'DITERIMA';
                 const catatanAdminInput = document.getElementById('alasan_ditolak');
                 const catatanAdmin = (catatanAdminInput && catatanAdminInput.value.trim()) ? catatanAdminInput.value.trim() : '';
 
@@ -1001,14 +1019,28 @@
                 window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
             }
 
+            function updateStatusCardStyle() {
+                const map = {
+                    'pending': 'border-warning bg-warning bg-opacity-10 fw-bold',
+                    'diterima': 'border-success bg-success bg-opacity-10 fw-bold',
+                    'ditolak': 'border-danger bg-danger bg-opacity-10 fw-bold'
+                };
+                document.querySelectorAll('#status_pengajuan_group input[name="status"]').forEach(radio => {
+                    const label = radio.closest('.status-option-card');
+                    if (!label) return;
+                    label.className = 'status-option-card d-flex align-items-center justify-content-center gap-2 p-2 border rounded w-100 text-center ' +
+                        (radio.checked ? (map[radio.value] || 'bg-white') : 'bg-white');
+                });
+            }
+
             let isFormConfirmed = false;
 
             function handleFormSubmit(event) {
                 if (isFormConfirmed) {
                     return true;
                 }
-                const statusSelect = document.getElementById('status');
-                if (!statusSelect) {
+                const statusInput = document.querySelector('input[name="status"]');
+                if (!statusInput) {
                     return true;
                 }
 
