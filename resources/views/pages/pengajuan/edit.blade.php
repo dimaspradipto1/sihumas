@@ -818,6 +818,69 @@
 
     @push('scripts')
         <script>
+            function formatFileSizeEdit(bytes) {
+                if (bytes < 1024) return bytes + ' B';
+                if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+                return (bytes / 1048576).toFixed(2) + ' MB';
+            }
+
+            function previewDokumenEdit(input) {
+                const container = document.getElementById('filePreviewContainerEdit');
+                const icon = document.getElementById('filePreviewIconEdit');
+                const nameEl = document.getElementById('filePreviewNameEdit');
+                const sizeEl = document.getElementById('filePreviewSizeEdit');
+                const linkEl = document.getElementById('filePreviewLinkEdit');
+                const pdfWrapper = document.getElementById('pdfEmbedWrapperEdit');
+                const pdfFrame = document.getElementById('pdfEmbedPreviewEdit');
+
+                if (input.files && input.files[0]) {
+                    const file = input.files[0];
+                    const ext = (file.name.split('.').pop() || '').toLowerCase();
+                    const objUrl = URL.createObjectURL(file);
+
+                    if (nameEl) nameEl.textContent = file.name;
+                    if (sizeEl) sizeEl.textContent = formatFileSizeEdit(file.size) + ' • ' + ext.toUpperCase();
+                    if (linkEl) linkEl.href = objUrl;
+
+                    if (ext === 'pdf') {
+                        if (icon) icon.className = 'fa-solid fa-file-pdf fa-2x text-danger';
+                        if (pdfFrame) pdfFrame.src = objUrl;
+                        if (pdfWrapper) pdfWrapper.classList.remove('d-none');
+                    } else if (['doc', 'docx'].includes(ext)) {
+                        if (icon) icon.className = 'fa-solid fa-file-word fa-2x text-primary';
+                        if (pdfFrame) pdfFrame.src = '';
+                        if (pdfWrapper) pdfWrapper.classList.add('d-none');
+                    } else if (['xls', 'xlsx'].includes(ext)) {
+                        if (icon) icon.className = 'fa-solid fa-file-excel fa-2x text-success';
+                        if (pdfFrame) pdfFrame.src = '';
+                        if (pdfWrapper) pdfWrapper.classList.add('d-none');
+                    } else if (['zip', 'rar'].includes(ext)) {
+                        if (icon) icon.className = 'fa-solid fa-file-zipper fa-2x text-warning';
+                        if (pdfFrame) pdfFrame.src = '';
+                        if (pdfWrapper) pdfWrapper.classList.add('d-none');
+                    } else {
+                        if (icon) icon.className = 'fa-solid fa-file-lines fa-2x text-secondary';
+                        if (pdfFrame) pdfFrame.src = '';
+                        if (pdfWrapper) pdfWrapper.classList.add('d-none');
+                    }
+
+                    if (container) container.classList.remove('d-none');
+                } else {
+                    resetDokumenPreviewEdit();
+                }
+            }
+
+            function resetDokumenPreviewEdit() {
+                const input = document.getElementById('upload_file');
+                const container = document.getElementById('filePreviewContainerEdit');
+                const pdfWrapper = document.getElementById('pdfEmbedWrapperEdit');
+                const pdfFrame = document.getElementById('pdfEmbedPreviewEdit');
+                if (input) input.value = '';
+                if (pdfFrame) pdfFrame.src = '';
+                if (pdfWrapper) pdfWrapper.classList.add('d-none');
+                if (container) container.classList.add('d-none');
+            }
+
             function previewImageEdit(input) {
                 const previewContainer = document.getElementById('imagePreviewContainerEdit');
                 const preview = document.getElementById('imagePreviewEdit');
