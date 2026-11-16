@@ -146,7 +146,9 @@
                                 data-background="{{ asset('volt/assets/img/profile-cover.jpg') }}"></div>
                             <div class="card-body pb-5">
                                 <img src="{{ $pegawai->foto ? asset('storage/' . $pegawai->foto) : asset('volt/assets/img/team/avatar-grey.png') }}"
-                                    class="avatar-xl rounded-circle mx-auto mt-n7 mb-4" alt="Foto Profil" />
+                                    id="preview-foto-top"
+                                    class="avatar-xl rounded-circle mx-auto mt-n7 mb-4 border border-3 border-white shadow-sm"
+                                    style="object-fit: cover;" alt="Foto Profil" />
                                 <h5 class="h3">{{ Auth::user()->name }}</h5>
                                 <p class="fw-normal">{{ Auth::user()->unitKegiatan?->unit_kegiatan ?? 'Universitas Ibnu Sina' }}</p>
                             </div>
@@ -160,6 +162,7 @@
                                     <!-- Avatar -->
                                     <img class="rounded avatar-xl" id="preview-foto"
                                         src="{{ $pegawai->foto ? asset('storage/' . $pegawai->foto) : asset('volt/assets/img/team/avatar-grey.png') }}"
+                                        style="object-fit: cover;"
                                         alt="preview" />
                                 </div>
                                 <div class="file-field">
@@ -196,7 +199,10 @@
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
                 reader.onload = function(e) {
-                    document.getElementById('preview-foto').src = e.target.result;
+                    var img1 = document.getElementById('preview-foto');
+                    var img2 = document.getElementById('preview-foto-top');
+                    if (img1) img1.src = e.target.result;
+                    if (img2) img2.src = e.target.result;
                 }
                 reader.readAsDataURL(input.files[0]);
             }

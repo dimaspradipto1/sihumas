@@ -29,7 +29,7 @@
     <div class="row">
       <div class="col-12 mb-4">
         <div class="card border-0 shadow components-section">
-          <form action="{{route('users.store')}}" method="POST">
+          <form action="{{route('users.store')}}" method="POST" enctype="multipart/form-data">
             @csrf
             
 
@@ -112,6 +112,19 @@
                     </button>
                   </div>
                   <small class="text-muted"><i class="fa-solid fa-circle-info me-1 text-primary"></i>Password default: <code>password</code> (klik ikon mata untuk melihat)</small>
+                </div>
+
+                <div class="mb-4">
+                  <label for="foto" class="text-uppercase fw-bold">Foto Profil <span class="badge bg-secondary text-white fw-normal ms-1">Opsional</span></label>
+                  <div class="d-flex align-items-center gap-3 p-3 border rounded bg-light">
+                    <img id="previewUserFoto" src="{{ asset('volt/assets/img/team/avatar-grey.png') }}" alt="Preview Foto Profil"
+                      class="rounded-circle border shadow-sm" style="width: 64px; height: 64px; object-fit: cover;">
+                    <div class="flex-grow-1">
+                      <input type="file" name="foto" id="foto" class="form-control form-control-sm" accept="image/*"
+                        onchange="if(this.files && this.files[0]){ const r = new FileReader(); r.onload = e => document.getElementById('previewUserFoto').src = e.target.result; r.readAsDataURL(this.files[0]); }">
+                      <small class="text-muted d-block mt-1">Format: JPG, PNG, GIF, WEBP (Maks. 2MB).</small>
+                    </div>
+                  </div>
                 </div>
 
               </div>

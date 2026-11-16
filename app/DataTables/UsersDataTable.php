@@ -24,6 +24,15 @@ class UsersDataTable extends DataTable
         return (new EloquentDataTable($query))
             ->addIndexColumn()
             ->addColumn('DT_RowIndex', '')
+            ->editColumn('name', function ($user) {
+                $fotoUrl = $user->pegawai?->foto
+                    ? asset('storage/' . $user->pegawai->foto)
+                    : asset('volt/assets/img/team/avatar-grey.png');
+                return '<div class="d-flex align-items-center gap-2">'
+                     . '  <img src="' . e($fotoUrl) . '" alt="' . e($user->name) . '" class="rounded-circle border" style="width: 30px; height: 30px; object-fit: cover; flex-shrink: 0;">'
+                     . '  <span class="fw-semibold text-gray-800">' . e($user->name) . '</span>'
+                     . '</div>';
+            })
             ->addColumn('action', function($user){
                 return '
                     <a href="'.route('users.updatePassword', $user->id).'" class="btn btn-sm btn-info text-white px-3" title="Ubah Password"><i class="fa-solid fa-key"></i></a>
@@ -75,7 +84,7 @@ class UsersDataTable extends DataTable
             ->addColumn('role', function ($user) {
                 return $user->role_badges;
             })
-            ->rawColumns(['action', 'no_wa', 'unit_kegiatan', 'role'])
+            ->rawColumns(['name', 'action', 'no_wa', 'unit_kegiatan', 'role'])
             ->setRowId('DT_RowIndex');
     }
 
@@ -84,7 +93,7 @@ class UsersDataTable extends DataTable
      */
     public function query(User $model): QueryBuilder
     {
-        return $model->newQuery()->with('unitKegiatan');
+        return $model->newQuery()->with(['unitKegiatan', 'pegawai']);
     }
 
     /**

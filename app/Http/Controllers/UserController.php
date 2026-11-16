@@ -97,7 +97,19 @@ class UserController extends Controller
         $data['is_fst'] = $request->has('is_fst') || str_contains($unitNameUpper, 'FST') || str_contains($unitNameUpper, 'SAINS') || str_contains($unitNameUpper, 'INDUSTRI') || str_contains($unitNameUpper, 'INFORMATIKA') || str_contains($unitNameUpper, 'PERKAPALAN') || str_contains($unitNameUpper, 'LOGISTIK') || str_contains($unitNameUpper, 'SISTEM INFORMASI');
         $data['is_fikes'] = $request->has('is_fikes') || str_contains($unitNameUpper, 'FIKES') || str_contains($unitNameUpper, 'KESEHATAN') || str_contains($unitNameUpper, 'K3') || str_contains($unitNameUpper, 'KESMAS') || str_contains($unitNameUpper, 'KESLING');
 
-        User::create($data);
+        $user = User::create($data);
+
+        if ($request->hasFile('foto')) {
+            $request->validate([
+                'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            ]);
+            $fotoPath = $request->file('foto')->store('foto_pegawai', 'public');
+            \App\Models\Pegawai::updateOrCreate(
+                ['user_id' => $user->id],
+                ['foto' => $fotoPath, 'no_wa' => $data['no_wa'] ?? null]
+            );
+        }
+
         Alert::success('success', 'data created successfully')->autoclose(2000)->toToast();
         return redirect()->route('users.index');
     }
@@ -183,6 +195,19 @@ class UserController extends Controller
         }
 
         $user->update($updateData);
+
+        if ($request->hasFile('foto')) {
+            $request->validate([
+                'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            ]);
+            $pegawai = \App\Models\Pegawai::firstOrNew(['user_id' => $user->id]);
+            if ($pegawai->foto) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($pegawai->foto);
+            }
+            $pegawai->foto = $request->file('foto')->store('foto_pegawai', 'public');
+            $pegawai->save();
+        }
+
         Alert::success('success', 'data updated successfully')->autoclose(2000)->toToast();
         return redirect()->route('users.index');
     }

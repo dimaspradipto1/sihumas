@@ -125,16 +125,48 @@
             <div class="row">
                 <div class="col-12 mb-4">
                     <div class="card shadow border-0 text-center p-0">
-                        <div class="profile-cover rounded-top" data-background="volt/assets/img/profile-cover.jpg"></div>
-                        <div class="card-body pb-5">
+                        <div class="profile-cover rounded-top" data-background="{{ asset('volt/assets/img/profile-cover.jpg') }}"></div>
+                        <div class="card-body pb-4">
                             <img src="{{ $pegawai->foto ? asset('storage/' . $pegawai->foto) : asset('volt/assets/img/team/avatar-grey.png') }}"
-                                class="avatar-xl rounded-circle mx-auto mt-n7 mb-4" alt="Neil Portrait" />
-                            <h5 class="h3">{{ Auth::user()->name }}</h5>
-                            <p class="fw-normal">{{ Auth::user()->unitKegiatan?->unit_kegiatan ?? 'Universitas Ibnu Sina' }}</p>
+                                id="preview-foto-top"
+                                class="avatar-xl rounded-circle mx-auto mt-n7 mb-3 border border-3 border-white shadow-sm"
+                                style="object-fit: cover;" alt="Foto Profil" />
+                            <h5 class="h4 mb-1">{{ Auth::user()->name }}</h5>
+                            <p class="fw-normal text-muted mb-3">{{ Auth::user()->unitKegiatan?->unit_kegiatan ?? 'Universitas Ibnu Sina' }}</p>
+
+                            <form action="{{ route('pegawai.update', $pegawai->id) }}" method="POST" enctype="multipart/form-data" class="px-3">
+                                @csrf
+                                @method('PUT')
+                                <div class="d-flex flex-column align-items-center gap-2">
+                                    <label for="foto_index" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center m-0" style="cursor: pointer;">
+                                        <i class="fa-solid fa-camera me-2"></i> Pilih / Ganti Foto Profil
+                                    </label>
+                                    <input type="file" name="foto" id="foto_index" accept="image/*" class="d-none" onchange="previewIndexFoto(this)" />
+                                    <small class="text-muted" style="font-size: 0.75rem;">Format: JPG, PNG, WEBP (Maks. 2MB)</small>
+                                    <button type="submit" id="btnSimpanFotoIndex" class="btn btn-sm btn-success text-white d-none mt-1 px-3">
+                                        <i class="fa-solid fa-check me-1"></i> Simpan Foto Profil
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        function previewIndexFoto(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var topImg = document.getElementById('preview-foto-top');
+                    if (topImg) topImg.src = e.target.result;
+                    var btn = document.getElementById('btnSimpanFotoIndex');
+                    if (btn) btn.classList.remove('d-none');
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
 @endsection
