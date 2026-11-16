@@ -419,6 +419,12 @@
                                                             @endif
                                                         </td>
                                                     </tr>
+                                                    @if (!empty($pengajuan->alasan_ditolak))
+                                                    <tr>
+                                                        <th class="ps-3">Keterangan</th>
+                                                        <td class="text-muted text-break" style="white-space: normal !important; word-break: break-word !important;">{{ $pengajuan->alasan_ditolak }}</td>
+                                                    </tr>
+                                                    @endif
                                                     @if (!Auth::user()->is_admin)
                                                     <tr>
                                                         <th class="ps-3">Status Pengajuan</th>
@@ -432,12 +438,6 @@
                                                             @endif
                                                         </td>
                                                     </tr>
-                                                    @if (!empty($pengajuan->alasan_ditolak))
-                                                    <tr>
-                                                        <th class="ps-3">Catatan Verifikasi</th>
-                                                        <td class="text-muted text-break" style="white-space: normal !important; word-break: break-word !important;">{{ $pengajuan->alasan_ditolak }}</td>
-                                                    </tr>
-                                                    @endif
                                                     @if (!empty($pengajuan->link_desain))
                                                     <tr>
                                                         <th class="ps-3">Link Desain</th>
@@ -740,6 +740,16 @@
                                             <input type="email" class="form-control" name="email_tujuan" id="email_tujuan"
                                                 value="{{ old('email_tujuan', $pengajuan->email_tujuan ?? $pengajuan->user?->email) }}"
                                                 placeholder="contoh: pengguna@gmail.com">
+                                        </div>
+
+                                        <!-- Keterangan (Opsional) -->
+                                        <div class="mb-3">
+                                            <label for="alasan_ditolak" class="form-label font-weight-bold">
+                                                Keterangan <span class="badge bg-secondary text-white fw-normal ms-1">Opsional</span>
+                                            </label>
+                                            <textarea class="form-control" name="alasan_ditolak" id="alasan_ditolak" rows="2"
+                                                placeholder="Tuliskan keterangan atau catatan tambahan pengajuan (opsional)...">{{ old('alasan_ditolak', $pengajuan->alasan_ditolak) }}</textarea>
+                                            <small class="text-muted"><i class="fa-solid fa-circle-info me-1"></i> Jika diisi oleh Admin, keterangan ini akan tampil pada tabel Pengajuan Kegiatan.</small>
                                         </div>
 
 

@@ -77,6 +77,13 @@ class PengajuanDataTable extends DataTable
                 return '';
             })
 
+            ->editColumn('alasan_ditolak', function ($pengajuan) {
+                $ket = trim(strip_tags($pengajuan->alasan_ditolak ?? ''));
+                return $ket !== ''
+                    ? '<div class="text-break small text-gray-800" style="white-space: normal !important; word-break: break-word !important;">' . e($ket) . '</div>'
+                    : '';
+            })
+
             ->addColumn('action', function ($pengajuan) use ($user) {
                 $html = '<div class="d-flex justify-content-center gap-1">';
                 $html .= '<a href="' . route('pengajuan.show', $pengajuan->id) . '" class="btn btn-sm btn-primary text-white px-2 py-1" title="Lihat"><i class="fa-solid fa-eye"></i></a>';
@@ -92,7 +99,7 @@ class PengajuanDataTable extends DataTable
                 return $html;
             })
 
-            ->rawColumns(['nama_kegiatan', 'action', 'tgl_pelaksanaan', 'tgl_awal', 'tgl_selesai', 'status', 'user_id'])
+            ->rawColumns(['nama_kegiatan', 'action', 'tgl_pelaksanaan', 'tgl_awal', 'tgl_selesai', 'status', 'alasan_ditolak', 'user_id'])
             ->setRowId('DT_RowIndex');
     }
 
@@ -155,19 +162,21 @@ class PengajuanDataTable extends DataTable
         if ($isAdmin) {
             return [
                 Column::make('DT_RowIndex')->title('NO')->addClass('text-center')->width('4%')->orderable(false)->searchable(false),
-                Column::make('nama_kegiatan')->title('NAMA KEGIATAN')->addClass('text-start')->width('35%'),
-                Column::make('tgl_pelaksanaan')->title('TANGGAL')->addClass('text-start')->width('22%')->orderable(false)->searchable(false),
-                Column::make('status')->title('STATUS PENGAJUAN')->addClass('text-center')->width('14%'),
-                Column::make('user_id')->title('SUBMIT PENGGUNA')->addClass('text-start')->width('14%'),
-                Column::computed('action')->title('AKSI')->exportable(false)->printable(false)->width('11%')->addClass('text-center'),
+                Column::make('nama_kegiatan')->title('NAMA KEGIATAN')->addClass('text-start')->width('24%'),
+                Column::make('tgl_pelaksanaan')->title('TANGGAL')->addClass('text-start')->width('21%')->orderable(false)->searchable(false),
+                Column::make('status')->title('STATUS PENGAJUAN')->addClass('text-center')->width('13%'),
+                Column::make('alasan_ditolak')->title('KETERANGAN')->addClass('text-start')->width('15%'),
+                Column::make('user_id')->title('SUBMIT PENGGUNA')->addClass('text-start')->width('13%'),
+                Column::computed('action')->title('AKSI')->exportable(false)->printable(false)->width('10%')->addClass('text-center'),
             ];
         }
 
         return [
             Column::make('DT_RowIndex')->title('NO')->addClass('text-center')->width('5%')->orderable(false)->searchable(false),
-            Column::make('nama_kegiatan')->title('NAMA KEGIATAN')->addClass('text-start')->width('40%'),
-            Column::make('tgl_pelaksanaan')->title('TANGGAL')->addClass('text-start')->width('28%')->orderable(false)->searchable(false),
-            Column::make('status')->title('STATUS PENGAJUAN')->addClass('text-center')->width('17%'),
+            Column::make('nama_kegiatan')->title('NAMA KEGIATAN')->addClass('text-start')->width('30%'),
+            Column::make('tgl_pelaksanaan')->title('TANGGAL')->addClass('text-start')->width('25%')->orderable(false)->searchable(false),
+            Column::make('status')->title('STATUS PENGAJUAN')->addClass('text-center')->width('14%'),
+            Column::make('alasan_ditolak')->title('KETERANGAN')->addClass('text-start')->width('16%'),
             Column::computed('action')->title('AKSI')->exportable(false)->printable(false)->width('10%')->addClass('text-center'),
         ];
     }
