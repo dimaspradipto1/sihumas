@@ -271,11 +271,11 @@
                                                     </tr>
                                                     <tr>
                                                         <th class="ps-3">Nama Kegiatan</th>
-                                                        <td><span class="badge bg-primary text-uppercase">{{ $pengajuan->nama_kegiatan }}</span></td>
+                                                        <td class="text-break" style="white-space: normal !important; word-break: break-word !important;"><span class="badge bg-primary text-uppercase text-wrap" style="white-space: normal !important;">{{ $pengajuan->nama_kegiatan }}</span></td>
                                                     </tr>
                                                     <tr>
                                                         <th class="ps-3">Tanggal Kegiatan</th>
-                                                        <td>
+                                                        <td class="text-break" style="white-space: normal !important; word-break: break-word !important;">
                                                             @if (Auth::user()->is_admin)
                                                                 <div class="p-2 bg-light border rounded">
                                                                     <div class="row g-2">
@@ -305,11 +305,11 @@
                                                     </tr>
                                                     <tr>
                                                         <th class="ps-3">Waktu Kegiatan</th>
-                                                        <td>{{ $pengajuan->jam_kegiatan }} WIB - {{ $pengajuan->waktu_selesai }} WIB</td>
+                                                        <td class="text-break" style="white-space: normal !important; word-break: break-word !important;">{{ $pengajuan->jam_kegiatan }} WIB - {{ $pengajuan->waktu_selesai }} WIB</td>
                                                     </tr>
                                                     <tr>
                                                         <th class="ps-3">Unit Kegiatan</th>
-                                                        <td>{{ $pengajuan->unit_kegiatan }}</td>
+                                                        <td class="text-break" style="white-space: normal !important; word-break: break-word !important;">{{ $pengajuan->unit_kegiatan }}</td>
                                                     </tr>
                                                     <tr>
                                                         <th class="ps-3">Tempat Kegiatan</th>
@@ -335,12 +335,12 @@
                                                     </tr>
                                                     <tr>
                                                         <th class="ps-3">Dokumen Pendukung</th>
-                                                        <td>
+                                                        <td class="text-break" style="white-space: normal !important; word-break: break-word !important;">
                                                             @if ($pengajuan->upload_file)
                                                                 @php
                                                                     $ext = strtoupper(pathinfo($pengajuan->upload_file, PATHINFO_EXTENSION));
                                                                 @endphp
-                                                                <a href="{{ asset('storage/' . $pengajuan->upload_file) }}" target="_blank" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center">
+                                                                <a href="{{ asset('storage/' . $pengajuan->upload_file) }}" target="_blank" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center text-wrap" style="white-space: normal !important;">
                                                                     <i class="fa-solid fa-file-arrow-down me-2"></i> Unduh Dokumen Pendukung @if($ext)({{ $ext }})@endif
                                                                 </a>
                                                             @else
@@ -350,9 +350,9 @@
                                                     </tr>
                                                     <tr>
                                                         <th class="ps-3">Bahan Materi</th>
-                                                        <td>
+                                                        <td class="text-break" style="white-space: normal !important; word-break: break-word !important;">
                                                             @if ($pengajuan->upload_png)
-                                                                <div class="d-inline-block p-2 bg-light border rounded">
+                                                                <div class="d-inline-block p-2 bg-light border rounded" style="max-width: 100%;">
                                                                     <a href="{{ asset('storage/' . $pengajuan->upload_png) }}" target="_blank" class="d-block mb-2">
                                                                         <img src="{{ asset('storage/' . $pengajuan->upload_png) }}" alt="Bahan Materi" class="img-fluid rounded border shadow-sm" style="max-height: 150px; object-fit: contain;">
                                                                     </a>
@@ -369,7 +369,7 @@
                                                     </tr>
                                                     <tr>
                                                         <th class="ps-3">PIC yang Ditugaskan</th>
-                                                        <td>
+                                                        <td class="text-break" style="white-space: normal !important; word-break: break-word !important;">
                                                             @php
                                                                 $picList = $pengajuan->getVisiblePicPetugas(Auth::user());
                                                                 $picDesain = array_values(array_filter($picList, fn($p) => ($p['peran'] ?? 'desain') === 'desain'));
@@ -383,10 +383,10 @@
                                                                         <div class="d-flex flex-column gap-1 ms-1">
                                                                             @foreach($picDesain as $pd)
                                                                                 @if(!empty($pd['nama']) || !empty($pd['no_wa']))
-                                                                                <div class="small text-gray-800">
+                                                                                <div class="small text-gray-800 text-break" style="white-space: normal !important; word-break: break-word !important;">
                                                                                     <strong>{{ $pd['nama'] ?: '-' }}</strong>
                                                                                     @if(!empty($pd['no_wa'])) <small class="text-success ms-1"><i class="fa-brands fa-whatsapp"></i> {{ $pd['no_wa'] }}</small> @endif
-                                                                                    @if(!empty($pd['catatan'])) <div class="text-muted fst-italic ps-2 border-start border-2 border-primary mt-1"><i class="fa-solid fa-comment-dots me-1 text-primary"></i>Catatan: {{ $pd['catatan'] }}</div> @endif
+                                                                                    @if(!empty($pd['catatan'])) <div class="text-muted fst-italic ps-2 border-start border-2 border-primary mt-1 text-break" style="white-space: normal !important; word-break: break-word !important;"><i class="fa-solid fa-comment-dots me-1 text-primary"></i>Catatan: {{ $pd['catatan'] }}</div> @endif
                                                                                 </div>
                                                                                 @endif
                                                                             @endforeach
@@ -400,10 +400,10 @@
                                                                         <div class="d-flex flex-column gap-1 ms-1">
                                                                             @foreach($picDokumentasi as $pdk)
                                                                                 @if(!empty($pdk['nama']) || !empty($pdk['no_wa']))
-                                                                                <div class="small text-gray-800">
+                                                                                <div class="small text-gray-800 text-break" style="white-space: normal !important; word-break: break-word !important;">
                                                                                     <strong>{{ $pdk['nama'] ?: '-' }}</strong>
                                                                                     @if(!empty($pdk['no_wa'])) <small class="text-success ms-1"><i class="fa-brands fa-whatsapp"></i> {{ $pdk['no_wa'] }}</small> @endif
-                                                                                    @if(!empty($pdk['catatan'])) <div class="text-muted fst-italic ps-2 border-start border-2 border-info mt-1"><i class="fa-solid fa-comment-dots me-1 text-info"></i>Catatan: {{ $pdk['catatan'] }}</div> @endif
+                                                                                    @if(!empty($pdk['catatan'])) <div class="text-muted fst-italic ps-2 border-start border-2 border-info mt-1 text-break" style="white-space: normal !important; word-break: break-word !important;"><i class="fa-solid fa-comment-dots me-1 text-info"></i>Catatan: {{ $pdk['catatan'] }}</div> @endif
                                                                                 </div>
                                                                                 @endif
                                                                             @endforeach
@@ -411,7 +411,7 @@
                                                                     </div>
                                                                 @endif
                                                             @elseif (!empty($pengajuan->petugas_ditugaskan))
-                                                                <span class="badge bg-primary text-white px-2 py-1">
+                                                                <span class="badge bg-primary text-white px-2 py-1 text-wrap" style="white-space: normal !important;">
                                                                     <i class="fa-solid fa-user-check me-1"></i> {{ $pengajuan->petugas_ditugaskan }}
                                                                 </span>
                                                             @else
@@ -422,7 +422,7 @@
                                                     @if (!Auth::user()->is_admin)
                                                     <tr>
                                                         <th class="ps-3">Status Pengajuan</th>
-                                                        <td>
+                                                        <td class="text-break" style="white-space: normal !important; word-break: break-word !important;">
                                                             @if ($pengajuan->status === 'diterima')
                                                                 <span class="badge bg-success text-white px-2 py-1"><i class="fa-solid fa-check me-1"></i> Diterima</span>
                                                             @elseif ($pengajuan->status === 'ditolak')
@@ -435,14 +435,14 @@
                                                     @if (!empty($pengajuan->alasan_ditolak))
                                                     <tr>
                                                         <th class="ps-3">Catatan Verifikasi</th>
-                                                        <td class="text-muted">{{ $pengajuan->alasan_ditolak }}</td>
+                                                        <td class="text-muted text-break" style="white-space: normal !important; word-break: break-word !important;">{{ $pengajuan->alasan_ditolak }}</td>
                                                     </tr>
                                                     @endif
                                                     @if (!empty($pengajuan->link_desain))
                                                     <tr>
                                                         <th class="ps-3">Link Desain</th>
-                                                        <td>
-                                                            <a href="{{ $pengajuan->link_desain }}" target="_blank" class="text-primary text-decoration-underline">
+                                                        <td class="text-break" style="white-space: normal !important; word-break: break-word !important;">
+                                                            <a href="{{ $pengajuan->link_desain }}" target="_blank" class="text-primary text-decoration-underline text-break" style="white-space: normal !important; word-break: break-all !important;">
                                                                 <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> {{ $pengajuan->link_desain }}
                                                             </a>
                                                         </td>
