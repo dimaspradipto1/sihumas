@@ -288,8 +288,21 @@
         .swal2-popup:not(.swal2-toast) .swal2-content {
             font-size: 0.825rem !important;
             color: #4b5563 !important;
-            margin: 0.45rem 0.5rem 0.25rem !important;
-            line-height: 1.5 !important;
+            margin: 0.35rem 0.25rem 0.2rem !important;
+            line-height: 1.35 !important;
+            text-align: justify !important;
+            text-align-last: left !important;
+            word-spacing: normal !important;
+            letter-spacing: normal !important;
+        }
+        .swal2-popup:not(.swal2-toast) .swal2-html-container p {
+            font-size: 0.825rem !important;
+            line-height: 1.35 !important;
+            text-align: justify !important;
+            text-align-last: left !important;
+            word-spacing: normal !important;
+            letter-spacing: normal !important;
+            margin-bottom: 0.5rem !important;
         }
         .swal2-popup:not(.swal2-toast) .swal2-input,
         .swal2-popup:not(.swal2-toast) .swal2-textarea {
