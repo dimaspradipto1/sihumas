@@ -491,19 +491,19 @@
                                             <div class="row g-2" id="status_pengajuan_group">
                                                 <div class="col-4">
                                                     <label class="status-option-card d-flex align-items-center justify-content-center gap-2 p-2 border rounded w-100 text-center {{ $currentStatus == 'pending' ? 'border-warning bg-warning bg-opacity-10 fw-bold' : 'bg-white' }}" for="status_pending" style="cursor: pointer; transition: all 0.15s ease;">
-                                                        <input class="form-check-input m-0" type="radio" name="status" id="status_pending" value="pending" {{ $currentStatus == 'pending' ? 'checked' : '' }} required onchange="updateStatusCardStyle()">
+                                                        <input class="form-check-input m-0 d-none" type="radio" name="status" id="status_pending" value="pending" {{ $currentStatus == 'pending' ? 'checked' : '' }} required onchange="updateStatusCardStyle()">
                                                         <span class="small text-dark"><i class="fa-solid fa-clock text-warning me-1"></i> Pending</span>
                                                     </label>
                                                 </div>
                                                 <div class="col-4">
                                                     <label class="status-option-card d-flex align-items-center justify-content-center gap-2 p-2 border rounded w-100 text-center {{ $currentStatus == 'diterima' ? 'border-success bg-success bg-opacity-10 fw-bold' : 'bg-white' }}" for="status_diterima" style="cursor: pointer; transition: all 0.15s ease;">
-                                                        <input class="form-check-input m-0" type="radio" name="status" id="status_diterima" value="diterima" {{ $currentStatus == 'diterima' ? 'checked' : '' }} required onchange="updateStatusCardStyle()">
+                                                        <input class="form-check-input m-0 d-none" type="radio" name="status" id="status_diterima" value="diterima" {{ $currentStatus == 'diterima' ? 'checked' : '' }} required onchange="updateStatusCardStyle()">
                                                         <span class="small text-dark"><i class="fa-solid fa-circle-check text-success me-1"></i> Diterima</span>
                                                     </label>
                                                 </div>
                                                 <div class="col-4">
                                                     <label class="status-option-card d-flex align-items-center justify-content-center gap-2 p-2 border rounded w-100 text-center {{ $currentStatus == 'ditolak' ? 'border-danger bg-danger bg-opacity-10 fw-bold' : 'bg-white' }}" for="status_ditolak" style="cursor: pointer; transition: all 0.15s ease;">
-                                                        <input class="form-check-input m-0" type="radio" name="status" id="status_ditolak" value="ditolak" {{ $currentStatus == 'ditolak' ? 'checked' : '' }} required onchange="updateStatusCardStyle()">
+                                                        <input class="form-check-input m-0 d-none" type="radio" name="status" id="status_ditolak" value="ditolak" {{ $currentStatus == 'ditolak' ? 'checked' : '' }} required onchange="updateStatusCardStyle()">
                                                         <span class="small text-dark"><i class="fa-solid fa-circle-xmark text-danger me-1"></i> Ditolak</span>
                                                     </label>
                                                 </div>
