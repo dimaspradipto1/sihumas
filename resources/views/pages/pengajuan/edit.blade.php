@@ -172,9 +172,35 @@
                                         <div class="input-group">
                                             <span class="input-group-text"><i class="fa-solid fa-file-arrow-up"></i></span>
                                             <input type="file" name="upload_file" id="upload_file" class="form-control"
-                                                accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar">
+                                                accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar" onchange="previewDokumenEdit(this)">
                                         </div>
                                         <small class="text-muted">Biarkan kosong jika tidak ingin mengubah dokumen pendukung.</small>
+
+                                        <div id="filePreviewContainerEdit" class="mt-3 d-none">
+                                            <p class="text-xs text-muted mb-1 fw-bold">Pratinjau Dokumen Pendukung Baru:</p>
+                                            <div class="border rounded p-2 bg-light shadow-sm">
+                                                <div class="d-flex align-items-center justify-content-between gap-2">
+                                                    <div class="d-flex align-items-center gap-2 text-truncate">
+                                                        <i id="filePreviewIconEdit" class="fa-solid fa-file-pdf fa-2x text-danger"></i>
+                                                        <div class="text-truncate">
+                                                            <div id="filePreviewNameEdit" class="small fw-bold text-dark text-truncate"></div>
+                                                            <div id="filePreviewSizeEdit" class="text-muted" style="font-size: 0.75rem;"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex gap-1 flex-shrink-0">
+                                                        <a id="filePreviewLinkEdit" href="#" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2" title="Buka Pratinjau">
+                                                            <i class="fa-solid fa-eye me-1"></i> Lihat
+                                                        </a>
+                                                        <button type="button" class="btn btn-xs btn-outline-danger py-1 px-2" onclick="resetDokumenPreviewEdit()" title="Hapus Pilihan">
+                                                            <i class="fa-solid fa-trash-can"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div id="pdfEmbedWrapperEdit" class="mt-2 d-none">
+                                                    <iframe id="pdfEmbedPreviewEdit" src="" class="w-100 border rounded bg-white" style="height: 220px;"></iframe>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <!-- Upload Bahan Materi -->

@@ -182,9 +182,35 @@
                                             <div class="input-group">
                                                 <span class="input-group-text"><i class="fa-solid fa-file-arrow-up"></i></span>
                                                 <input type="file" name="upload_file" id="upload_file" class="form-control"
-                                                    accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar">
+                                                    accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar" onchange="previewDokumen(this)">
                                             </div>
                                             <small class="text-muted">Lampirkan file proposal, surat permohonan, atau berkas pendukung kegiatan.</small>
+
+                                            <div id="filePreviewContainer" class="mt-3 d-none">
+                                                <p class="text-xs text-muted mb-1 fw-bold">Pratinjau Dokumen Pendukung:</p>
+                                                <div class="border rounded p-2 bg-light shadow-sm">
+                                                    <div class="d-flex align-items-center justify-content-between gap-2">
+                                                        <div class="d-flex align-items-center gap-2 text-truncate">
+                                                            <i id="filePreviewIcon" class="fa-solid fa-file-pdf fa-2x text-danger"></i>
+                                                            <div class="text-truncate">
+                                                                <div id="filePreviewName" class="small fw-bold text-dark text-truncate"></div>
+                                                                <div id="filePreviewSize" class="text-muted" style="font-size: 0.75rem;"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex gap-1 flex-shrink-0">
+                                                            <a id="filePreviewLink" href="#" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2" title="Buka Pratinjau">
+                                                                <i class="fa-solid fa-eye me-1"></i> Lihat
+                                                            </a>
+                                                            <button type="button" class="btn btn-xs btn-outline-danger py-1 px-2" onclick="resetDokumenPreview()" title="Hapus Pilihan">
+                                                                <i class="fa-solid fa-trash-can"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div id="pdfEmbedWrapper" class="mt-2 d-none">
+                                                        <iframe id="pdfEmbedPreview" src="" class="w-100 border rounded bg-white" style="height: 220px;"></iframe>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <!-- Upload Bahan Materi -->
@@ -199,9 +225,22 @@
                                             <small class="text-muted">Lampirkan materi kegiatan seperti flyer, banner, pamflet, foto, atau logo pendukung.</small>
                                             <div id="imagePreviewContainer" class="mt-3 d-none">
                                                 <p class="text-xs text-muted mb-1 fw-bold">Pratinjau Bahan Materi:</p>
-                                                <div class="border rounded p-2 bg-light d-inline-block shadow-sm">
-                                                    <img id="imagePreview" src="#" alt="Preview"
-                                                        class="img-fluid rounded" style="max-height: 200px; object-fit: contain;">
+                                                <div class="border rounded p-2 bg-light shadow-sm">
+                                                    <div class="text-center mb-2">
+                                                        <a id="imagePreviewFullLink" href="#" target="_blank">
+                                                            <img id="imagePreview" src="#" alt="Preview"
+                                                                class="img-fluid rounded border bg-white" style="max-height: 200px; object-fit: contain;">
+                                                        </a>
+                                                    </div>
+                                                    <div class="d-flex align-items-center justify-content-between gap-2 border-top pt-2">
+                                                        <div class="text-truncate">
+                                                            <div id="imagePreviewName" class="small fw-bold text-dark text-truncate"></div>
+                                                            <div id="imagePreviewSize" class="text-muted" style="font-size: 0.75rem;"></div>
+                                                        </div>
+                                                        <button type="button" class="btn btn-xs btn-outline-danger py-1 px-2 flex-shrink-0" onclick="resetImagePreview()" title="Hapus Pilihan">
+                                                            <i class="fa-solid fa-trash-can me-1"></i> Hapus
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -254,20 +293,101 @@
 
     @push('scripts')
         <script>
+            function formatFileSize(bytes) {
+                if (bytes < 1024) return bytes + ' B';
+                if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+                return (bytes / 1048576).toFixed(2) + ' MB';
+            }
+
+            function previewDokumen(input) {
+                const container = document.getElementById('filePreviewContainer');
+                const icon = document.getElementById('filePreviewIcon');
+                const nameEl = document.getElementById('filePreviewName');
+                const sizeEl = document.getElementById('filePreviewSize');
+                const linkEl = document.getElementById('filePreviewLink');
+                const pdfWrapper = document.getElementById('pdfEmbedWrapper');
+                const pdfFrame = document.getElementById('pdfEmbedPreview');
+
+                if (input.files && input.files[0]) {
+                    const file = input.files[0];
+                    const ext = (file.name.split('.').pop() || '').toLowerCase();
+                    const objUrl = URL.createObjectURL(file);
+
+                    nameEl.textContent = file.name;
+                    sizeEl.textContent = formatFileSize(file.size) + ' • ' + ext.toUpperCase();
+                    linkEl.href = objUrl;
+
+                    if (ext === 'pdf') {
+                        icon.className = 'fa-solid fa-file-pdf fa-2x text-danger';
+                        pdfFrame.src = objUrl;
+                        pdfWrapper.classList.remove('d-none');
+                    } else if (['doc', 'docx'].includes(ext)) {
+                        icon.className = 'fa-solid fa-file-word fa-2x text-primary';
+                        pdfFrame.src = '';
+                        pdfWrapper.classList.add('d-none');
+                    } else if (['xls', 'xlsx'].includes(ext)) {
+                        icon.className = 'fa-solid fa-file-excel fa-2x text-success';
+                        pdfFrame.src = '';
+                        pdfWrapper.classList.add('d-none');
+                    } else if (['zip', 'rar'].includes(ext)) {
+                        icon.className = 'fa-solid fa-file-zipper fa-2x text-warning';
+                        pdfFrame.src = '';
+                        pdfWrapper.classList.add('d-none');
+                    } else {
+                        icon.className = 'fa-solid fa-file-lines fa-2x text-secondary';
+                        pdfFrame.src = '';
+                        pdfWrapper.classList.add('d-none');
+                    }
+
+                    container.classList.remove('d-none');
+                } else {
+                    resetDokumenPreview();
+                }
+            }
+
+            function resetDokumenPreview() {
+                const input = document.getElementById('upload_file');
+                const container = document.getElementById('filePreviewContainer');
+                const pdfWrapper = document.getElementById('pdfEmbedWrapper');
+                const pdfFrame = document.getElementById('pdfEmbedPreview');
+                if (input) input.value = '';
+                if (pdfFrame) pdfFrame.src = '';
+                if (pdfWrapper) pdfWrapper.classList.add('d-none');
+                if (container) container.classList.add('d-none');
+            }
+
             function previewImage(input) {
                 const previewContainer = document.getElementById('imagePreviewContainer');
                 const preview = document.getElementById('imagePreview');
+                const fullLink = document.getElementById('imagePreviewFullLink');
+                const nameEl = document.getElementById('imagePreviewName');
+                const sizeEl = document.getElementById('imagePreviewSize');
+
                 if (input.files && input.files[0]) {
+                    const file = input.files[0];
+                    if (nameEl) nameEl.textContent = file.name;
+                    if (sizeEl) sizeEl.textContent = formatFileSize(file.size);
+                    const objUrl = URL.createObjectURL(file);
+                    if (fullLink) fullLink.href = objUrl;
+
                     const reader = new FileReader();
                     reader.onload = function(e) {
                         preview.src = e.target.result;
                         previewContainer.classList.remove('d-none');
                     };
-                    reader.readAsDataURL(input.files[0]);
+                    reader.readAsDataURL(file);
                 } else {
-                    preview.src = '#';
-                    previewContainer.classList.add('d-none');
+                    resetImagePreview();
                 }
+            }
+
+            function resetImagePreview() {
+                const input = document.getElementById('upload_png');
+                const previewContainer = document.getElementById('imagePreviewContainer');
+                const preview = document.getElementById('imagePreview');
+                if (input) input.value = '';
+                if (preview) preview.src = '#';
+                if (previewContainer) previewContainer.classList.add('d-none');
             }
         </script>
         <script>
