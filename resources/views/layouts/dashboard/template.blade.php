@@ -230,28 +230,15 @@
             color: #111827 !important;
         }
 
-        /* Penyeragaman tinggi elemen di dalam input-group (form-control, input-group-text, btn) */
-        .input-group {
+        /* Penyeragaman tinggi elemen di dalam seluruh input-group (form-control, input-group-text, btn) */
+        .input-group:not(.input-group-sm):not(.input-group-lg) {
             display: flex !important;
             align-items: stretch !important;
         }
-        .input-group > .btn,
-        .input-group > a.btn {
-            display: inline-flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            align-self: stretch !important;
-        }
-
-        /* Penyeragaman khusus baris input link publikasi agar tinggi button sama persis dengan input field */
-        .link-publikasi-row {
-            display: flex !important;
-            align-items: stretch !important;
-        }
-        .link-publikasi-row .input-group-text,
-        .link-publikasi-row .form-control,
-        .link-publikasi-row .btn,
-        .link-publikasi-row a.btn {
+        .input-group:not(.input-group-sm):not(.input-group-lg) > .input-group-text,
+        .input-group:not(.input-group-sm):not(.input-group-lg) > .form-control,
+        .input-group:not(.input-group-sm):not(.input-group-lg) > .btn,
+        .input-group:not(.input-group-sm):not(.input-group-lg) > a.btn {
             height: 42px !important;
             min-height: 42px !important;
             max-height: 42px !important;
@@ -261,12 +248,17 @@
             font-size: 0.875rem !important;
             line-height: 1.5 !important;
         }
-        .link-publikasi-row .btn,
-        .link-publikasi-row a.btn {
+        .input-group:not(.input-group-sm):not(.input-group-lg) > .btn,
+        .input-group:not(.input-group-sm):not(.input-group-lg) > a.btn {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            align-self: stretch !important;
             padding-top: 0 !important;
             padding-bottom: 0 !important;
             padding-left: 1rem !important;
             padding-right: 1rem !important;
+            white-space: nowrap !important;
         }
 
         /* Global Styling SweetAlert2: Proporsional, Compact, Rapi & Profesional */
