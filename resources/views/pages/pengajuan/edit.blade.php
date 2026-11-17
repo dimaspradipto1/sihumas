@@ -41,17 +41,41 @@
                         <div class="row mb-4">
                             <div class="col-12">
 
+                                @php
+                                    $daftarJenisPengajuan = [
+                                        'Desain' => 'Desain',
+                                        'Dokumentasi' => 'Dokumentasi',
+                                        'Desain dan Dokumentasi' => 'Desain dan Dokumentasi',
+                                        'Publikasi' => 'Publikasi',
+                                        'Desain dan Publikasi' => 'Desain dan Publikasi',
+                                        'Tamu Undangan' => 'Tamu',
+                                    ];
+                                    $valJenis = old('nama_kegiatan', $pengajuan->nama_kegiatan ?? '');
+                                    $isCustomJenis = !empty($valJenis) && !array_key_exists($valJenis, $daftarJenisPengajuan);
+                                @endphp
                                 <div class="mb-4">
                                     <label for="nama_kegiatan" class="text-capitalize">jenis pengajuan</label>
-                                    <select name="nama_kegiatan" id="nama_kegiatan" class="form-select single" required>
-                                        <option value="">Pilih Jenis Pengajuan</option>
-                                        <option value="Desain" {{ old('nama_kegiatan', $pengajuan->nama_kegiatan) == 'Desain' ? 'selected' : '' }}>Desain</option>
-                                        <option value="Dokumentasi" {{ old('nama_kegiatan', $pengajuan->nama_kegiatan) == 'Dokumentasi' ? 'selected' : '' }}>Dokumentasi</option>
-                                        <option value="Desain dan Dokumentasi" {{ old('nama_kegiatan', $pengajuan->nama_kegiatan) == 'Desain dan Dokumentasi' ? 'selected' : '' }}>Desain dan Dokumentasi</option>
-                                        <option value="Publikasi" {{ old('nama_kegiatan', $pengajuan->nama_kegiatan) == 'Publikasi' ? 'selected' : '' }}>Publikasi</option>
-                                        <option value="Desain dan Publikasi" {{ old('nama_kegiatan', $pengajuan->nama_kegiatan) == 'Desain dan Publikasi' ? 'selected' : '' }}>Desain dan Publikasi</option>
-                                        <option value="Tamu Undangan" {{ old('nama_kegiatan', $pengajuan->nama_kegiatan) == 'Tamu Undangan' ? 'selected' : '' }}>Tamu</option>
+                                    <select name="{{ $isCustomJenis ? '' : 'nama_kegiatan' }}" id="nama_kegiatan" class="form-select single" {{ $isCustomJenis ? '' : 'required' }}>
+                                        <option value="">Pilih Jenis Pengajuan atau Ketik Custom</option>
+                                        @foreach ($daftarJenisPengajuan as $val => $label)
+                                            <option value="{{ $val }}" {{ $valJenis === $val ? 'selected' : '' }}>{{ $label }}</option>
+                                        @endforeach
+                                        @if ($isCustomJenis)
+                                            <option value="{{ $valJenis }}" selected>{{ $valJenis }}</option>
+                                        @endif
+                                        <option value="__custom__" {{ $isCustomJenis ? 'selected' : '' }}>➕ Lainnya (Ketik Manual)...</option>
                                     </select>
+                                    <div id="wrapper_custom_jenis" class="mt-2 {{ $isCustomJenis ? '' : 'd-none' }}">
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light text-primary"><i class="fa-solid fa-pen"></i></span>
+                                            <input type="text" id="input_custom_jenis" class="form-control"
+                                                name="{{ $isCustomJenis ? 'nama_kegiatan' : '' }}"
+                                                value="{{ $isCustomJenis ? $valJenis : '' }}"
+                                                placeholder="Tuliskan jenis pengajuan custom / lainnya..."
+                                                {{ $isCustomJenis ? 'required' : 'disabled' }}>
+                                        </div>
+                                        <small class="text-muted"><i class="fa-solid fa-circle-info me-1"></i>Pilih opsi di atas atau ketik langsung jenis pengajuan baru.</small>
+                                    </div>
                                 </div>
 
                                 <div class="row mb-4">
@@ -1387,11 +1411,49 @@
                 }
 
                 if (namaKegiatanSelect) {
-                    namaKegiatanSelect.addEventListener('change', toggleFormByNamaKegiatan);
-                    if (window.$) {
-                        $(namaKegiatanSelect).on('change', toggleFormByNamaKegiatan);
+                    const $jenisSelect = $('#nama_kegiatan');
+                    const $customJenisWrapper = $('#wrapper_custom_jenis');
+                    const $customJenisInput = $('#input_custom_jenis');
+
+                    if (window.$ && $.fn.select2) {
+                        if ($jenisSelect.hasClass('select2-hidden-accessible')) {
+                            $jenisSelect.select2('destroy');
+                        }
+                        $jenisSelect.select2({
+                            theme: 'bootstrap-5',
+                            width: '100%',
+                            tags: true,
+                            placeholder: 'Pilih Jenis Pengajuan atau Ketik Custom',
+                            allowClear: true,
+                            createTag: function (params) {
+                                const term = $.trim(params.term);
+                                if (term === '' || term.toLowerCase() === 'lainnya') {
+                                    return null;
+                                }
+                                return { id: term, text: term, newTag: true };
+                            }
+                        });
                     }
-                    toggleFormByNamaKegiatan();
+
+                    function handleJenisChange() {
+                        const val = $jenisSelect.val();
+                        if (val === '__custom__') {
+                            $customJenisWrapper.removeClass('d-none');
+                            $customJenisInput.prop('disabled', false).attr('name', 'nama_kegiatan').attr('required', true).focus();
+                            $jenisSelect.removeAttr('name').removeAttr('required');
+                        } else {
+                            $customJenisWrapper.addClass('d-none');
+                            $customJenisInput.prop('disabled', true).removeAttr('name').removeAttr('required');
+                            $jenisSelect.attr('name', 'nama_kegiatan').attr('required', true);
+                        }
+                        toggleFormByNamaKegiatan();
+                    }
+
+                    namaKegiatanSelect.addEventListener('change', handleJenisChange);
+                    if (window.$) {
+                        $jenisSelect.on('change', handleJenisChange);
+                    }
+                    handleJenisChange();
                 }
             });
         </script>
