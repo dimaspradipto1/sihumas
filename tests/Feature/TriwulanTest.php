@@ -116,16 +116,18 @@ class TriwulanTest extends TestCase
         $admin = User::factory()->create(['is_admin' => true]);
         $tw = Triwulan::where('kode', 'TW1')->firstOrFail();
 
-        $this->actingAs($admin)->post(route('triwulan.set-active', $tw->id));
-        $this->assertTrue((bool) $tw->fresh()->is_active || !$tw->fresh()->is_active);
-
         // Ensure toggling active -> inactive works in 1 click
-        $tw->update(['is_active' => true]);
-        $this->actingAs($admin)->post(route('triwulan.set-active', $tw->id));
+        $tw->refresh();
+        if (!$tw->is_active) {
+            $tw->update(['is_active' => true]);
+        }
+        $res1 = $this->actingAs($admin)->post(route('triwulan.set-active', $tw->id));
+        $res1->assertRedirect();
         $this->assertFalse((bool) $tw->fresh()->is_active);
 
         // Ensure toggling inactive -> active works in 1 click
-        $this->actingAs($admin)->post(route('triwulan.set-active', $tw->id));
+        $res2 = $this->actingAs($admin)->post(route('triwulan.set-active', $tw->id));
+        $res2->assertRedirect();
         $this->assertTrue((bool) $tw->fresh()->is_active);
     }
 }
