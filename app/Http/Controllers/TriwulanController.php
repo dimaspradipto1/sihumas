@@ -11,7 +11,12 @@ class TriwulanController extends Controller
 {
     public function index(TriwulanDataTable $dataTable)
     {
-        $activeTw = Triwulan::syncActiveByCurrentMonth();
+        if (!session('triwulan_manual_mode')) {
+            $activeTw = Triwulan::syncActiveByCurrentMonth();
+        } else {
+            $activeTw = Triwulan::where('is_active', true)->first();
+        }
+
         return $dataTable->render('pages.triwulan.index', compact('activeTw'));
     }
 
@@ -79,6 +84,14 @@ class TriwulanController extends Controller
 
     public function setActive(Triwulan $triwulan)
     {
+        session(['triwulan_manual_mode' => true]);
+
+        if ($triwulan->is_active) {
+            $triwulan->update(['is_active' => false]);
+            Alert::success('Berhasil', "{$triwulan->nama} dinonaktifkan.")->autoclose(2500)->toToast();
+            return back();
+        }
+
         Triwulan::where('id', '!=', $triwulan->id)->update(['is_active' => false]);
         $triwulan->update(['is_active' => true]);
 
@@ -88,6 +101,7 @@ class TriwulanController extends Controller
 
     public function syncAuto()
     {
+        session()->forget('triwulan_manual_mode');
         $activeTw = Triwulan::syncActiveByCurrentMonth();
         $nama = $activeTw?->nama ?? '-';
 

@@ -37,7 +37,14 @@ class TriwulanDataTable extends DataTable
                 $isCurrentMonth = $item->containsMonth($currentMonth);
                 if ($item->is_active) {
                     $label = $isCurrentMonth ? 'Aktif (Bulan Berjalan)' : 'Aktif';
-                    return '<span class="badge bg-success text-white px-3 py-2"><i class="fa-solid fa-circle-check me-1"></i> ' . $label . '</span>';
+                    return '
+                        <form action="' . route('triwulan.set-active', $item->id) . '" method="POST" style="display: inline">
+                            ' . csrf_field() . '
+                            <button type="submit" class="btn btn-xs btn-success text-white rounded-pill px-3 py-1 border-0" title="Klik untuk menonaktifkan">
+                                <i class="fa-solid fa-circle-check me-1"></i> ' . $label . '
+                            </button>
+                        </form>
+                    ';
                 }
 
                 return '

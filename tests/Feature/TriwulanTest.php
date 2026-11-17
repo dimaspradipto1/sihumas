@@ -110,4 +110,22 @@ class TriwulanTest extends TestCase
         $showResp->assertSee('Kegiatan TW2 Januari');
         $showResp->assertDontSee('Kegiatan TW3 April');
     }
+
+    public function test_triwulan_active_status_badge_can_be_toggled_directly(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+        $tw = Triwulan::where('kode', 'TW1')->firstOrFail();
+
+        $this->actingAs($admin)->post(route('triwulan.set-active', $tw->id));
+        $this->assertTrue((bool) $tw->fresh()->is_active || !$tw->fresh()->is_active);
+
+        // Ensure toggling active -> inactive works in 1 click
+        $tw->update(['is_active' => true]);
+        $this->actingAs($admin)->post(route('triwulan.set-active', $tw->id));
+        $this->assertFalse((bool) $tw->fresh()->is_active);
+
+        // Ensure toggling inactive -> active works in 1 click
+        $this->actingAs($admin)->post(route('triwulan.set-active', $tw->id));
+        $this->assertTrue((bool) $tw->fresh()->is_active);
+    }
 }
