@@ -120,18 +120,24 @@ class PengajuanController extends Controller
             ? $data['unit_kegiatan']
             : ($user?->unitKegiatan?->unit_kegiatan ?? ($user?->fakultas ?? '-'));
 
+        $isDesainOnly = ($data['nama_kegiatan'] ?? '') === 'Desain';
+        $tglSelesai = !empty($data['tgl_selesai']) ? $data['tgl_selesai'] : $data['tgl_awal'];
+        $jamKegiatan = !$isDesainOnly && !empty($data['jam_kegiatan']) ? $data['jam_kegiatan'] : ($data['jam_kegiatan'] ?? null);
+        $waktuSelesai = !$isDesainOnly && !empty($data['waktu_selesai']) ? $data['waktu_selesai'] : ($data['waktu_selesai'] ?? null);
+        $tempatKegiatan = !$isDesainOnly && !empty($data['tempat_kegiatan']) ? $data['tempat_kegiatan'] : ($data['tempat_kegiatan'] ?? null);
+
         $pengajuan = Pengajuan::create([
             'user_id'           => auth()->id(),
             'nama_kegiatan'     => $data['nama_kegiatan'],
             'tgl_awal'          => $data['tgl_awal'],
-            'tgl_selesai'       => $data['tgl_selesai'],
-            'jam_kegiatan'      => $data['jam_kegiatan'],
-            'waktu_selesai'     => $data['waktu_selesai'],
+            'tgl_selesai'       => $tglSelesai,
+            'jam_kegiatan'      => $jamKegiatan,
+            'waktu_selesai'     => $waktuSelesai,
             'deskripsi_kegiatan' => isset($data['deskripsi_kegiatan']) ? trim(strip_tags($data['deskripsi_kegiatan'])) : null,
-            'perlengkapan'      => isset($data['perlengkapan']) ? trim(strip_tags($data['perlengkapan'])) : null,
-            'link_zoom'         => $data['link_zoom'] ?? null,
+            'perlengkapan'      => !$isDesainOnly && isset($data['perlengkapan']) ? trim(strip_tags($data['perlengkapan'])) : null,
+            'link_zoom'         => !$isDesainOnly ? ($data['link_zoom'] ?? null) : null,
             'unit_kegiatan'     => $unitKegiatanVal,
-            'tempat_kegiatan'   => $data['tempat_kegiatan'],
+            'tempat_kegiatan'   => $tempatKegiatan,
             'alasan_ditolak'    => $data['alasan_ditolak'] ?? null,
             'email_tujuan'      => $data['email_tujuan'] ?? null,
             'upload_file'       => $uploadFilePath,
@@ -154,7 +160,7 @@ class PengajuanController extends Controller
             'publikasi_id'  => $pengajuan->publikasi->id,
             'pengajuan_id'  => $pengajuan->id,
             'tgl_awal'      => $data['tgl_awal'],
-            'tgl_selesai'   => $data['tgl_selesai'],
+            'tgl_selesai'   => $tglSelesai,
         ]);
 
         // Buat KotakMasukPengajuan terkait pengajuan yang baru
@@ -183,8 +189,8 @@ class PengajuanController extends Controller
             $waMessage = strtr($waTemplate, [
                 '{nama_kegiatan}' => $pengajuan->nama_kegiatan,
                 '{tgl_awal}' => Carbon::parse($pengajuan->tgl_awal)->translatedFormat('d F Y'),
-                '{tgl_selesai}' => Carbon::parse($pengajuan->tgl_selesai)->translatedFormat('d F Y'),
-                '{tempat_kegiatan}' => $pengajuan->tempat_kegiatan,
+                '{tgl_selesai}' => Carbon::parse($pengajuan->tgl_selesai ?? $pengajuan->tgl_awal)->translatedFormat('d F Y'),
+                '{tempat_kegiatan}' => $pengajuan->tempat_kegiatan ?: '-',
                 '{nama_user}' => auth()->user()->name,
                 '{no_wa_user}' => auth()->user()->no_wa ?? '-',
                 '{link_sistem}' => 'https://sihumas.uisbatam.com/',
@@ -340,9 +346,13 @@ class PengajuanController extends Controller
             $unit = $pengajuan->unit_kegiatan;
             $status = strtoupper($pengajuan->status);
             $tglAwal = Carbon::parse($pengajuan->tgl_awal)->locale('id')->isoFormat('dddd, D MMMM Y');
-            $tglSelesai = Carbon::parse($pengajuan->tgl_selesai)->locale('id')->isoFormat('dddd, D MMMM Y');
-            $waktu = "{$pengajuan->jam_kegiatan} - {$pengajuan->waktu_selesai} WIB";
-            $tempat = $pengajuan->tempat_kegiatan ?? '-';
+            $tglSelesai = $pengajuan->tgl_selesai
+                ? Carbon::parse($pengajuan->tgl_selesai)->locale('id')->isoFormat('dddd, D MMMM Y')
+                : $tglAwal;
+            $waktu = !empty($pengajuan->jam_kegiatan)
+                ? "{$pengajuan->jam_kegiatan}" . (!empty($pengajuan->waktu_selesai) ? " - {$pengajuan->waktu_selesai} WIB" : ' WIB')
+                : '-';
+            $tempat = $pengajuan->tempat_kegiatan ?: '-';
             $catatan = $pengajuan->alasan_ditolak ?: '-';
             $pemohon = $pengajuan->user?->name ?? '-';
             $pemohonWa = $pengajuan->user?->no_wa ?? '-';

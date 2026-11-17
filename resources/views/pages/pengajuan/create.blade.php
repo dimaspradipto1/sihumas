@@ -63,27 +63,27 @@
                                     </div>
 
                                     <div class="row mb-4">
-                                        <div class="col-md-6">
+                                        <div class="col-md-6" id="col_tgl_awal">
                                             <div class="mb-4 mb-md-0">
-                                                <label for="date" class="text-capitalize">tanggal mulai kegiatan</label>
+                                                <label for="tgl_awal" id="label_tgl_awal" class="text-capitalize fw-bold">tanggal mulai kegiatan</label>
                                                 <input type="date" name="tgl_awal" value="{{ old('tgl_awal') }}"
-                                                    class="form-control" id="tgl_awal">
+                                                    class="form-control" id="tgl_awal" required>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-6" id="wrapper_jam_kegiatan">
                                             <div class="mb-4 mb-md-0">
                                                 <label for="jam_kegiatan" class="text-capitalize">jam kegiatan</label>
-                                                <input type="time" name="jam_kegiatan" class="form-control"
+                                                <input type="time" name="jam_kegiatan" id="jam_kegiatan" class="form-control"
                                                     value="{{ old('jam_kegiatan') }}">
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="row mb-4">
+                                    <div class="row mb-4" id="wrapper_tgl_selesai_waktu">
                                         <div class="col-md-6">
 
                                             <div class="mb-4 mb-md-0">
-                                                <label for="date" class="text-capitalize">tanggal Selesai
+                                                <label for="tgl_selesai" class="text-capitalize">tanggal Selesai
                                                     kegiatan</label>
                                                 <input type="date" name="tgl_selesai" value="{{ old('tgl_selesai') }}"
                                                     class="form-control" id="tgl_selesai">
@@ -93,8 +93,8 @@
                                         <div class="col-md-6">
                                             <div class="mb-4 mb-md-0">
                                                 <label for="waktu_selesai" class="text-capitalize">waktu selesai</label>
-                                                <input type="time" name="waktu_selesai" class="form-control"
-                                                    value="{{ old('unit_kegiatan') }}">
+                                                <input type="time" name="waktu_selesai" id="waktu_selesai" class="form-control"
+                                                    value="{{ old('waktu_selesai') }}">
                                             </div>
                                         </div>
                                     </div>
@@ -113,7 +113,7 @@
                                         $isCustomTempat = !empty($valTempat) && !in_array($valTempat, $daftarTempat);
                                     @endphp
 
-                                    <div class="mb-4">
+                                    <div class="mb-4" id="wrapper_tempat_kegiatan">
                                         <label for="tempat_kegiatan_select" class="form-label text-capitalize fw-bold">Tempat Kegiatan</label>
                                         <select id="tempat_kegiatan_select" class="form-select select2-tempat" name="{{ $isCustomTempat ? '' : 'tempat_kegiatan' }}" {{ $isCustomTempat ? '' : 'required' }}>
                                             <option value="">-- Pilih Tempat Kegiatan atau Ketik Custom --</option>
@@ -148,29 +148,32 @@
 
                                     <div class="mb-4">
                                         <div class="form-group">
-                                            <label for="deskripsi_kegiatan" class="text-capitalize">deskripsi
+                                            <label for="deskripsi_kegiatan" id="label_deskripsi_kegiatan" class="text-capitalize fw-bold">deskripsi
                                                 kegiatan</label>
                                             <textarea class="form-control" id="deskripsi_kegiatan" name="deskripsi_kegiatan"
                                                 value="{{ old('deskripsi_kegiatan') }}" rows="3"
-                                                placeholder="Masukkan Deskripsi Kegiatan"></textarea>
+                                                placeholder="Masukkan Deskripsi Kegiatan">{{ old('deskripsi_kegiatan') }}</textarea>
+                                            <small id="hint_brief_desain" class="text-muted d-none mt-1">
+                                                <i class="fa-solid fa-palette me-1 text-primary"></i> Jelaskan brief desain: jenis media (Flyer IG / Spanduk / Backdrop / Sertifikat), ukuran, teks/judul acara, tema warna, dan detail narasumber.
+                                            </small>
                                         </div>
                                     </div>
-                                    <div class="mb-4">
+                                    <div class="mb-4" id="wrapper_perlengkapan">
                                         <div class="form-group">
                                             <label for="perlengkapan" class="text-capitalize">Kebutuhan
                                                 perlengkapan</label>
                                             <textarea class="form-control" id="perlengkapan" name="perlengkapan"
                                                 value="{{ old('perlengkapan') }}" rows="3"
-                                                placeholder="Masukkan Kebutuhan Perlengkapan"></textarea>
+                                                placeholder="Masukkan Kebutuhan Perlengkapan">{{ old('perlengkapan') }}</textarea>
                                         </div>
                                     </div>
 
-                                    <div class="mb-4">
+                                    <div class="mb-4" id="wrapper_link_zoom">
                                         <div class="form-group">
                                             <label for="link_zoom" class="text-capitalize">link zoom <span
                                                     class="text-danger">(jika ada)</span></label>
-                                            <textarea class="form-control" name="link_zoom" value="{{ old('link_zoom') }}" id="" rows="3"
-                                                placeholder="contoh: https://zoom.us/j/123456789"></textarea>
+                                            <textarea class="form-control" name="link_zoom" id="link_zoom" rows="3"
+                                                placeholder="contoh: https://zoom.us/j/123456789">{{ old('link_zoom') }}</textarea>
                                         </div>
                                     </div>
 
