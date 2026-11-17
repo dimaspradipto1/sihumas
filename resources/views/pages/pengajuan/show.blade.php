@@ -78,7 +78,7 @@
                     <h5 class="card-title mb-0 text-gray-800 fw-bold">
                         <i class="fa-solid fa-circle-info me-2 text-primary"></i> Rincian Informasi Kegiatan
                     </h5>
-                    <span class="badge bg-light text-dark border px-2 py-1 small">
+                    <span class="badge bg-light border px-2 py-1 small" style="color: #1f2937 !important;">
                         <i class="fa-regular fa-clock me-1"></i> Diajukan: {{ $pengajuan->created_at ? $pengajuan->created_at->locale('id')->diffForHumans() : '-' }}
                     </span>
                 </div>
@@ -123,7 +123,7 @@
                                 <tr>
                                     <th class="ps-3 text-muted small text-uppercase">{{ $isDesainOnly ? 'Deadline Desain' : 'Target Publikasi' }}</th>
                                     <td class="pe-3">
-                                        <span class="badge {{ $isDesainOnly ? 'bg-primary text-primary border-primary' : 'bg-success text-success border-success' }} bg-opacity-10 border border-opacity-25 px-2 py-1">
+                                        <span class="badge border px-2 py-1" style="color: {{ $isDesainOnly ? '#1d4ed8' : '#15803d' }} !important; background-color: {{ $isDesainOnly ? 'rgba(59, 130, 246, 0.12)' : 'rgba(16, 185, 129, 0.12)' }} !important; border-color: {{ $isDesainOnly ? 'rgba(59, 130, 246, 0.35)' : 'rgba(16, 185, 129, 0.35)' }} !important;">
                                             <i class="fa-regular fa-calendar-check me-1"></i> {{ $isDesainOnly ? 'Deadline:' : 'Target:' }} {{ $pengajuan->tgl_awal ? \Carbon\Carbon::parse($pengajuan->tgl_awal)->locale('id')->translatedFormat('l, d F Y') : '-' }}
                                         </span>
                                     </td>
@@ -133,10 +133,10 @@
                                     <th class="ps-3 text-muted small text-uppercase">Tanggal Kegiatan</th>
                                     <td class="pe-3">
                                         <div class="d-flex flex-wrap gap-2 align-items-center">
-                                            <span class="badge bg-light text-dark border px-2 py-1">
+                                            <span class="badge bg-light border px-2 py-1" style="color: #1f2937 !important;">
                                                 <i class="fa-regular fa-calendar-check text-primary me-1"></i> Mulai: {{ $pengajuan->tgl_awal ? \Carbon\Carbon::parse($pengajuan->tgl_awal)->locale('id')->translatedFormat('l, d F Y') : '-' }}
                                             </span>
-                                            <span class="badge bg-light text-dark border px-2 py-1">
+                                            <span class="badge bg-light border px-2 py-1" style="color: #1f2937 !important;">
                                                 <i class="fa-regular fa-calendar-xmark text-danger me-1"></i> Selesai: {{ $pengajuan->tgl_selesai ? \Carbon\Carbon::parse($pengajuan->tgl_selesai)->locale('id')->translatedFormat('l, d F Y') : '-' }}
                                             </span>
                                         </div>
