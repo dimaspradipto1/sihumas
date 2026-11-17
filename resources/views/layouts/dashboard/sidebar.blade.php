@@ -149,13 +149,15 @@
 
                   /* Badge bulat kecil */
                   .badge-dot {
-                      min-width: 18px;
-                      height: 18px;
+                      min-width: 20px;
+                      height: 20px;
                       border-radius: 999px;
                       font-size: 11px;
                       display: inline-flex;
                       align-items: center;
                       justify-content: center;
+                      text-align: center;
+                      font-variant-numeric: tabular-nums;
                       color: #fff;
                       font-weight: 700;
                       line-height: 1;
@@ -244,7 +246,7 @@
                               }
                           @endphp
                           @if ($pendingPublikasiCount > 0)
-                              <span class="badge badge-sm bg-warning text-dark font-weight-bold">{{ $pendingPublikasiCount }}</span>
+                              <span class="badge-dot bg-warning text-dark flex-shrink-0">{{ $pendingPublikasiCount }}</span>
                           @endif
                       @endif
                   </a>

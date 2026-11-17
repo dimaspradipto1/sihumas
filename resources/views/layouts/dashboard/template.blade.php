@@ -271,8 +271,18 @@
             box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.18), 0 8px 10px -6px rgba(15, 23, 42, 0.1) !important;
         }
         .swal2-popup:not(.swal2-toast) .swal2-icon {
-            transform: scale(0.72) !important;
+            transform: scale(0.75) !important;
             margin: 0.1rem auto 0.35rem !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        .swal2-popup:not(.swal2-toast) .swal2-icon .swal2-icon-content {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            line-height: 1 !important;
+            margin: 0 !important;
         }
         .swal2-popup:not(.swal2-toast) .swal2-title {
             font-size: 1.05rem !important;
@@ -286,29 +296,34 @@
             font-size: 0.825rem !important;
             color: #4b5563 !important;
             margin: 0.35rem 0.25rem 0.2rem !important;
-            line-height: 1.35 !important;
-            text-align: justify !important;
-            text-align-last: left !important;
+            line-height: 1.45 !important;
+            text-align: center !important;
+            text-align-last: auto !important;
             word-spacing: normal !important;
             letter-spacing: normal !important;
         }
         .swal2-popup:not(.swal2-toast) .swal2-html-container p {
             font-size: 0.825rem !important;
-            line-height: 1.35 !important;
-            text-align: justify !important;
-            text-align-last: left !important;
+            line-height: 1.45 !important;
+            text-align: center !important;
+            text-align-last: auto !important;
             word-spacing: normal !important;
             letter-spacing: normal !important;
             margin-bottom: 0.5rem !important;
         }
         .swal2-popup:not(.swal2-toast) .swal2-input,
         .swal2-popup:not(.swal2-toast) .swal2-textarea {
+            width: 100% !important;
+            box-sizing: border-box !important;
             font-size: 0.825rem !important;
             border-radius: 0.5rem !important;
             border: 1px solid #d1d5db !important;
-            padding: 0.5rem 0.75rem !important;
-            margin: 0.6rem auto 0.2rem !important;
+            padding: 0.6rem 0.75rem !important;
+            margin: 0.65rem 0 0.2rem !important;
             box-shadow: none !important;
+        }
+        .swal2-popup:not(.swal2-toast) .swal2-textarea {
+            min-height: 92px !important;
         }
         .swal2-popup:not(.swal2-toast) .swal2-input:focus,
         .swal2-popup:not(.swal2-toast) .swal2-textarea:focus {
@@ -327,6 +342,10 @@
             margin: 0 !important;
             box-shadow: none !important;
             letter-spacing: 0.01em !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 0.35rem !important;
         }
         .swal2-popup:not(.swal2-toast) .swal2-styled:focus {
             box-shadow: none !important;
