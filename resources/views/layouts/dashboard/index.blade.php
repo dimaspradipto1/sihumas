@@ -6,52 +6,56 @@
     @if (Auth::user()->is_admin)
         <div class="card border-0 shadow-sm mb-4 text-white overflow-hidden hero-welcome-card">
             {{-- BAGIAN ATAS: BANNER IMAGE / DEFAULT GREY PLACEHOLDER (KHUSUS ADMIN) --}}
-            <div class="position-relative w-100" style="height: 220px; background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%); overflow: hidden;">
-                @php
-                    $hasCustomBanner = !empty($dashboardBanner) && \Illuminate\Support\Facades\Storage::disk('public')->exists($dashboardBanner);
-                @endphp
-
+            @php
+                $hasCustomBanner = !empty($dashboardBanner) && \Illuminate\Support\Facades\Storage::disk('public')->exists($dashboardBanner);
+                $savedBannerUrl = $hasCustomBanner ? asset('storage/' . $dashboardBanner) : '';
+            @endphp
+            <div class="position-relative w-100" style="background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%); overflow: hidden;">
                 <img id="adminBannerPreviewImg"
-                     src="{{ $hasCustomBanner ? asset('storage/' . $dashboardBanner) : '#' }}"
+                     src="{{ $hasCustomBanner ? $savedBannerUrl : '#' }}"
+                     data-saved-src="{{ $savedBannerUrl }}"
                      alt="Dashboard Banner"
                      class="{{ $hasCustomBanner ? '' : 'd-none' }}"
-                     style="width: 100%; height: 220px; object-fit: cover; display: block;">
+                     style="width: 100%; height: auto; max-height: 480px; object-fit: contain; background-color: #1f2937; display: block;">
 
                 <div id="adminBannerDefaultGrey"
-                     class="w-100 h-100 d-flex flex-column align-items-center justify-content-center text-center px-3 {{ $hasCustomBanner ? 'd-none' : '' }}"
-                     style="background: linear-gradient(135deg, #e5e7eb 0%, #cfd4dc 100%); color: #4b5563;">
+                     class="w-100 d-flex flex-column align-items-center justify-content-center text-center px-3 {{ $hasCustomBanner ? 'd-none' : '' }}"
+                     style="height: 200px; background: linear-gradient(135deg, #e5e7eb 0%, #cfd4dc 100%); color: #4b5563;">
                     <i class="fa-regular fa-image fa-3x mb-2 text-secondary opacity-75"></i>
                     <div class="fw-bold text-gray-700" style="font-size: 0.9rem;">Default Image Banner Dashboard</div>
                     <div class="small text-gray-600 mt-1">
                         <span class="badge bg-secondary bg-opacity-25 text-dark border px-2 py-1">
-                            <i class="fa-solid fa-ruler-combined me-1"></i> Ukuran Desain Rekomendasi: <strong>1400 × 260 px</strong> (Rasio ~16:3 • JPG, PNG, WEBP • Maks. 5MB)
+                            <i class="fa-solid fa-ruler-combined me-1"></i> Ukuran Desain Rekomendasi: <strong>1400 × 350 px</strong> (Format JPG, PNG, WEBP • Maks. 5MB)
                         </span>
                     </div>
                 </div>
 
-                {{-- Kontrol Upload / Ganti Banner di Pojok Kanan Atas --}}
+                {{-- Kontrol Upload / Ganti / Hapus Banner di Pojok Kanan Atas --}}
                 <div class="position-absolute top-0 end-0 p-2 p-md-3 d-flex flex-wrap align-items-center justify-content-end gap-2" style="z-index: 5;">
-                    <span class="badge bg-dark bg-opacity-75 text-white px-2 py-1 d-none d-sm-inline-flex align-items-center shadow-sm" style="font-size: 0.72rem;" title="Ukuran desain banner yang disarankan">
-                        <i class="fa-solid fa-ruler-combined me-1 text-warning"></i> Size: 1400 × 260 px
+                    <span class="badge text-white px-2 py-1 d-none d-sm-inline-flex align-items-center shadow-sm" style="background-color: rgba(17, 24, 39, 0.8) !important; font-size: 0.72rem;" title="Ukuran desain banner yang disarankan">
+                        <i class="fa-solid fa-ruler-combined me-1 text-warning"></i> Size: 1400 × 350 px
                     </span>
 
                     <form action="{{ route('dashboard.banner.update') }}" method="POST" enctype="multipart/form-data" class="d-inline-flex align-items-center gap-1 m-0">
                         @csrf
-                        <label for="inputBannerDashboard" class="btn btn-xs btn-light text-dark fw-semibold px-2 py-1 shadow-sm m-0 d-inline-flex align-items-center" style="cursor: pointer; font-size: 0.75rem;">
-                            <i class="fa-solid fa-camera me-1 text-primary"></i> {{ $hasCustomBanner ? 'Ganti Gambar' : 'Upload Gambar' }}
+                        <label for="inputBannerDashboard" class="btn btn-xs fw-semibold px-2 py-1 shadow-sm m-0 d-inline-flex align-items-center" style="cursor: pointer; font-size: 0.75rem; background-color: #ffffff !important; color: #1f2937 !important; border: 1px solid #d1d5db;">
+                            <i class="fa-solid fa-camera me-1 text-primary"></i> <span id="labelTextUploadBanner">{{ $hasCustomBanner ? 'Ganti Gambar' : 'Upload Gambar' }}</span>
                         </label>
                         <input type="file" name="banner_image" id="inputBannerDashboard" accept="image/*" class="d-none" onchange="previewDashboardBanner(this)">
                         <button type="submit" id="btnSaveBannerDashboard" class="btn btn-xs btn-success text-white fw-semibold px-2 py-1 shadow-sm d-none" style="font-size: 0.75rem;">
                             <i class="fa-solid fa-check me-1"></i> Simpan
                         </button>
+                        <button type="button" id="btnCancelPreviewBanner" class="btn btn-xs btn-danger text-white fw-semibold px-2 py-1 shadow-sm d-none" style="font-size: 0.75rem;" onclick="batalPreviewDashboardBanner()" title="Hapus / Batalkan gambar yang dipilih">
+                            <i class="fa-solid fa-trash-can me-1"></i> Hapus
+                        </button>
                     </form>
 
                     @if ($hasCustomBanner)
-                        <form action="{{ route('dashboard.banner.update') }}" method="POST" class="d-inline m-0">
+                        <form action="{{ route('dashboard.banner.update') }}" method="POST" class="d-inline m-0" id="formDeleteSavedBanner">
                             @csrf
                             <input type="hidden" name="delete_banner" value="1">
-                            <button type="submit" class="btn btn-xs btn-danger text-white px-2 py-1 shadow-sm" style="font-size: 0.75rem;" title="Kembalikan ke gambar abu-abu default">
-                                <i class="fa-solid fa-rotate-left"></i>
+                            <button type="submit" class="btn btn-xs btn-danger text-white fw-semibold px-2 py-1 shadow-sm" style="font-size: 0.75rem;" title="Hapus gambar banner ini dan kembalikan ke default">
+                                <i class="fa-solid fa-trash-can me-1"></i> Hapus Gambar
                             </button>
                         </form>
                     @endif
@@ -99,14 +103,45 @@
                         const img = document.getElementById('adminBannerPreviewImg');
                         const grey = document.getElementById('adminBannerDefaultGrey');
                         const btnSave = document.getElementById('btnSaveBannerDashboard');
+                        const btnCancel = document.getElementById('btnCancelPreviewBanner');
+                        const formDeleteSaved = document.getElementById('formDeleteSavedBanner');
                         if (img) {
                             img.src = e.target.result;
                             img.classList.remove('d-none');
                         }
                         if (grey) grey.classList.add('d-none');
                         if (btnSave) btnSave.classList.remove('d-none');
+                        if (btnCancel) btnCancel.classList.remove('d-none');
+                        if (formDeleteSaved) formDeleteSaved.classList.add('d-none');
                     };
                     reader.readAsDataURL(input.files[0]);
+                }
+            }
+
+            function batalPreviewDashboardBanner() {
+                const input = document.getElementById('inputBannerDashboard');
+                const img = document.getElementById('adminBannerPreviewImg');
+                const grey = document.getElementById('adminBannerDefaultGrey');
+                const btnSave = document.getElementById('btnSaveBannerDashboard');
+                const btnCancel = document.getElementById('btnCancelPreviewBanner');
+                const formDeleteSaved = document.getElementById('formDeleteSavedBanner');
+
+                if (input) input.value = '';
+                if (btnSave) btnSave.classList.add('d-none');
+                if (btnCancel) btnCancel.classList.add('d-none');
+                if (formDeleteSaved) formDeleteSaved.classList.remove('d-none');
+
+                const savedSrc = img ? img.getAttribute('data-saved-src') : '';
+                if (savedSrc) {
+                    img.src = savedSrc;
+                    img.classList.remove('d-none');
+                    if (grey) grey.classList.add('d-none');
+                } else {
+                    if (img) {
+                        img.src = '#';
+                        img.classList.add('d-none');
+                    }
+                    if (grey) grey.classList.remove('d-none');
                 }
             }
         </script>
