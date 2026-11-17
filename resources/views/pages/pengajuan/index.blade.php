@@ -48,7 +48,59 @@
       {!! $dataTable->scripts() !!}
     @endif
 
-    @if(session('wa_redirect_url'))
+    @if(session('wa_admin_list') && count(session('wa_admin_list')) > 0)
+        @php
+            $waAdminList = session('wa_admin_list');
+        @endphp
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const adminList = @json($waAdminList);
+                if (!adminList || adminList.length === 0) return;
+
+                let htmlContent = '<p class="text-muted mb-2" style="font-size: 0.8125rem; line-height: 1.4;">Silakan pilih nomor WhatsApp Admin aktif di bawah ini untuk mengirim konfirmasi pengajuan:</p>';
+                htmlContent += '<div class="d-grid gap-2 mb-1">';
+                adminList.forEach((admin) => {
+                    htmlContent += `
+                        <a href="${admin.url}" target="_blank" class="btn btn-sm btn-success text-white py-2 fw-semibold text-start px-3" style="font-size: 0.8rem; border-radius: 0.5rem;">
+                            <i class="fa-brands fa-whatsapp me-2"></i> Kirim ke <b>${admin.nama}</b> (${admin.no_wa})
+                        </a>
+                    `;
+                });
+                if (adminList.length > 1) {
+                    htmlContent += `
+                        <button type="button" class="btn btn-sm btn-outline-primary py-2 mt-1" id="btnBukaSemuaWaAdmin" style="font-size: 0.8rem; border-radius: 0.5rem;">
+                            <i class="fa-solid fa-up-right-from-square me-2"></i> Buka Semua WA Admin Sekaligus
+                        </button>
+                    `;
+                }
+                htmlContent += '</div>';
+
+                Swal.fire({
+                    title: 'Pengajuan Berhasil!',
+                    html: htmlContent,
+                    icon: 'success',
+                    showConfirmButton: false,
+                    showCancelButton: true,
+                    cancelButtonText: 'Lewati',
+                    cancelButtonColor: '#6c757d',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => {
+                        const btnAll = document.getElementById('btnBukaSemuaWaAdmin');
+                        if (btnAll) {
+                            btnAll.addEventListener('click', function () {
+                                adminList.forEach((admin, index) => {
+                                    setTimeout(() => {
+                                        window.open(admin.url, '_blank');
+                                    }, index * 400);
+                                });
+                            });
+                        }
+                    }
+                });
+            });
+        </script>
+    @elseif(session('wa_redirect_url'))
         <script>
             Swal.fire({
                 title: 'Pengajuan Berhasil!',

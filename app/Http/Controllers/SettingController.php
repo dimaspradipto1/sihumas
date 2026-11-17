@@ -25,8 +25,14 @@ class SettingController extends Controller
             Setting::setValue('wa_message_template', $currentTemplate);
         }
 
+        $adminWaList = Setting::getAdminWhatsappList();
+        if (empty($adminWaList)) {
+            $adminWaList = [['nama' => 'Admin Humas', 'no_wa' => '6282283736481', 'is_active' => true]];
+        }
+
         $settings = [
             'admin_whatsapp' => Setting::getValue('admin_whatsapp', '6282283736481'),
+            'admin_whatsapp_list' => $adminWaList,
             'wa_message_template' => $currentTemplate ?: $defaultTemplate,
         ];
 
@@ -44,11 +50,51 @@ class SettingController extends Controller
         }
 
         $request->validate([
-            'admin_whatsapp' => 'required|string',
             'wa_message_template' => 'required|string',
+            'admin_whatsapp' => 'nullable|string',
+            'admin_wa_nomor' => 'nullable|array',
+            'admin_wa_nomor.*' => 'nullable|string|max:30',
+            'admin_wa_nama' => 'nullable|array',
+            'admin_wa_nama.*' => 'nullable|string|max:100',
+            'admin_wa_active' => 'nullable|array',
         ]);
 
-        Setting::setValue('admin_whatsapp', $request->admin_whatsapp);
+        $waList = [];
+        if ($request->has('admin_wa_nomor') && is_array($request->admin_wa_nomor)) {
+            $names = $request->input('admin_wa_nama', []);
+            $actives = $request->input('admin_wa_active', []);
+
+            foreach ($request->admin_wa_nomor as $idx => $rawNo) {
+                $normalized = Setting::normalizeWhatsappNumber($rawNo);
+                if ($normalized === '') {
+                    continue;
+                }
+                $waList[] = [
+                    'nama' => trim((string) ($names[$idx] ?? '')) ?: ('Admin Humas ' . (count($waList) + 1)),
+                    'no_wa' => $normalized,
+                    'is_active' => !empty($actives[$idx]) && (string) $actives[$idx] !== '0',
+                ];
+            }
+        } elseif ($request->filled('admin_whatsapp')) {
+            $normalized = Setting::normalizeWhatsappNumber($request->admin_whatsapp);
+            if ($normalized !== '') {
+                $waList[] = [
+                    'nama' => 'Admin Humas',
+                    'no_wa' => $normalized,
+                    'is_active' => true,
+                ];
+            }
+        }
+
+        if (empty($waList)) {
+            return back()
+                ->withErrors(['admin_wa_nomor' => 'Minimal harus ada 1 nomor WhatsApp Admin yang valid.'])
+                ->withInput();
+        }
+
+        Setting::setValue('admin_whatsapp_list', json_encode($waList));
+        $firstActive = collect($waList)->firstWhere('is_active', true);
+        Setting::setValue('admin_whatsapp', $firstActive['no_wa'] ?? ($waList[0]['no_wa'] ?? null));
         Setting::setValue('wa_message_template', $request->wa_message_template);
 
         Alert::success('Success', 'Pengaturan WhatsApp berhasil diperbarui.')->toToast()->autoclose(3000)->timerProgressBar();

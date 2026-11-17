@@ -36,20 +36,67 @@
                             <h2 class="fs-5 fw-bold mb-0 text-uppercase">Konfigurasi WhatsApp</h2>
                         </div>
                         <div class="card-body">
-                            <!-- Nomor WA Admin -->
+                            <!-- Daftar Nomor WA Admin (Multi & Multi-Active) -->
                             <div class="mb-4">
-                                <label for="admin_whatsapp" class="form-label text-uppercase fw-semibold">Nomor WhatsApp Admin</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fa-brands fa-whatsapp text-success fs-5"></i></span>
-                                    <input type="text" name="admin_whatsapp" id="admin_whatsapp" 
-                                        value="{{ old('admin_whatsapp', $settings['admin_whatsapp']) }}" 
-                                        class="form-control @error('admin_whatsapp') is-invalid @enderror" 
-                                        placeholder="Contoh: 628123456789 (Gunakan kode negara, tanpa tanda + atau 0)" required>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <label class="form-label text-uppercase fw-semibold mb-0">Daftar Nomor WhatsApp Admin</label>
+                                    <button type="button" class="btn btn-xs btn-outline-success d-inline-flex align-items-center" id="btnAddAdminWa">
+                                        <i class="fa-solid fa-plus me-1"></i> Tambah Nomor WA Admin
+                                    </button>
                                 </div>
+
+                                @php
+                                    $adminWaRows = $settings['admin_whatsapp_list'] ?? [];
+                                    if (old('admin_wa_nomor')) {
+                                        $adminWaRows = [];
+                                        $oldNames = old('admin_wa_nama', []);
+                                        $oldActives = old('admin_wa_active', []);
+                                        foreach (old('admin_wa_nomor') as $idx => $no) {
+                                            $adminWaRows[] = [
+                                                'nama' => $oldNames[$idx] ?? '',
+                                                'no_wa' => $no,
+                                                'is_active' => !empty($oldActives[$idx]) && (string) $oldActives[$idx] !== '0',
+                                            ];
+                                        }
+                                    }
+                                @endphp
+
+                                <div id="adminWaContainer" class="d-flex flex-column gap-2">
+                                    @foreach ($adminWaRows as $idx => $row)
+                                        <div class="border rounded p-2 bg-light admin-wa-row">
+                                            <div class="row g-2 align-items-center">
+                                                <div class="col-md-4">
+                                                    <input type="text" name="admin_wa_nama[]" class="form-control form-control-sm"
+                                                        value="{{ $row['nama'] ?? '' }}" placeholder="Label (mis: Admin Humas 1)">
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <div class="input-group input-group-sm">
+                                                        <span class="input-group-text bg-white"><i class="fa-brands fa-whatsapp text-success"></i></span>
+                                                        <input type="text" name="admin_wa_nomor[]" class="form-control"
+                                                            value="{{ $row['no_wa'] ?? '' }}" placeholder="628123456789" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 d-flex align-items-center justify-content-between gap-2">
+                                                    <div class="form-check form-switch mb-0">
+                                                        <input type="hidden" name="admin_wa_active[{{ $idx }}]" value="0">
+                                                        <input class="form-check-input admin-wa-active-checkbox" type="checkbox"
+                                                            name="admin_wa_active[{{ $idx }}]" value="1"
+                                                            id="adminWaActive{{ $idx }}" {{ !empty($row['is_active']) ? 'checked' : '' }}>
+                                                        <label class="form-check-label small fw-semibold" for="adminWaActive{{ $idx }}">Aktif</label>
+                                                    </div>
+                                                    <button type="button" class="btn btn-xs btn-outline-danger btn-remove-admin-wa" title="Hapus nomor">
+                                                        <i class="fa-solid fa-trash-can"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+
                                 <small class="form-text text-muted mt-1 d-block">
-                                    Format nomor harus menggunakan kode negara di depannya. Contoh: <strong>628123456789</strong> untuk nomor Indonesia (+62).
+                                    Format nomor menggunakan kode negara (contoh: <strong>628123456789</strong>). Anda dapat mengaktifkan lebih dari 1 nomor WA Admin; seluruh nomor yang berstatus <strong>Aktif</strong> akan tampil saat pengguna mengajukan kegiatan.
                                 </small>
-                                @error('admin_whatsapp')
+                                @error('admin_wa_nomor')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -107,3 +154,78 @@
         </form>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const container = document.getElementById('adminWaContainer');
+        const btnAdd = document.getElementById('btnAddAdminWa');
+
+        function reindexAdminWaRows() {
+            const rows = container.querySelectorAll('.admin-wa-row');
+            rows.forEach((row, index) => {
+                const hidden = row.querySelector('input[type="hidden"]');
+                const checkbox = row.querySelector('.admin-wa-active-checkbox');
+                const label = row.querySelector('.form-check-label');
+                const id = `adminWaActive${index}`;
+                if (hidden) hidden.name = `admin_wa_active[${index}]`;
+                if (checkbox) {
+                    checkbox.name = `admin_wa_active[${index}]`;
+                    checkbox.id = id;
+                }
+                if (label) label.setAttribute('for', id);
+            });
+        }
+
+        if (btnAdd && container) {
+            btnAdd.addEventListener('click', function () {
+                const index = container.querySelectorAll('.admin-wa-row').length;
+                const row = document.createElement('div');
+                row.className = 'border rounded p-2 bg-light admin-wa-row';
+                row.innerHTML = `
+                    <div class="row g-2 align-items-center">
+                        <div class="col-md-4">
+                            <input type="text" name="admin_wa_nama[]" class="form-control form-control-sm"
+                                placeholder="Label (mis: Admin Humas ${index + 1})">
+                        </div>
+                        <div class="col-md-5">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text bg-white"><i class="fa-brands fa-whatsapp text-success"></i></span>
+                                <input type="text" name="admin_wa_nomor[]" class="form-control"
+                                    placeholder="628123456789" required>
+                            </div>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-center justify-content-between gap-2">
+                            <div class="form-check form-switch mb-0">
+                                <input type="hidden" name="admin_wa_active[${index}]" value="0">
+                                <input class="form-check-input admin-wa-active-checkbox" type="checkbox"
+                                    name="admin_wa_active[${index}]" value="1"
+                                    id="adminWaActive${index}" checked>
+                                <label class="form-check-label small fw-semibold" for="adminWaActive${index}">Aktif</label>
+                            </div>
+                            <button type="button" class="btn btn-xs btn-outline-danger btn-remove-admin-wa" title="Hapus nomor">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(row);
+                reindexAdminWaRows();
+            });
+
+            container.addEventListener('click', function (e) {
+                const removeBtn = e.target.closest('.btn-remove-admin-wa');
+                if (!removeBtn) return;
+                const rows = container.querySelectorAll('.admin-wa-row');
+                if (rows.length <= 1) {
+                    const inputNo = rows[0].querySelector('input[name="admin_wa_nomor[]"]');
+                    if (inputNo) inputNo.value = '';
+                    return;
+                }
+                removeBtn.closest('.admin-wa-row').remove();
+                reindexAdminWaRows();
+            });
+        }
+    });
+</script>
+@endpush

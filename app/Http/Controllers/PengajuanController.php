@@ -179,12 +179,12 @@ class PengajuanController extends Controller
             ->send(new PengajuanSubmitted($pengajuan));
 
 
-        // Kirim notifikasi WhatsApp (Manual Redirect) jika nomor WA admin terisi
-        $waAdmin = Setting::getValue('admin_whatsapp');
-        if ($waAdmin) {
+        // Kirim notifikasi WhatsApp (Manual Redirect) ke seluruh nomor WA admin yang aktif
+        $activeAdminWaList = Setting::getActiveAdminWhatsapps();
+        if (!empty($activeAdminWaList)) {
             $defaultTemplate = "Halo Admin, ada pengajuan kegiatan baru:\n\n*Nama Kegiatan:* {nama_kegiatan}\n*Tanggal:* {tgl_awal} s.d {tgl_selesai}\n*Tempat:* {tempat_kegiatan}\n*Pemohon:* {nama_user} (WA: {no_wa_user})\n\nSilakan cek di sistem SIHUMAS:\nhttps://sihumas.uisbatam.com/";
             $waTemplate = Setting::getValue('wa_message_template', $defaultTemplate) ?: $defaultTemplate;
-            
+
             // Format pesan
             $waMessage = strtr($waTemplate, [
                 '{nama_kegiatan}' => $pengajuan->nama_kegiatan,
@@ -200,8 +200,17 @@ class PengajuanController extends Controller
                 $waMessage = rtrim($waMessage) . "\nhttps://sihumas.uisbatam.com/";
             }
 
-            $waUrl = 'https://wa.me/' . $waAdmin . '?text=' . urlencode($waMessage);
-            session()->flash('wa_redirect_url', $waUrl);
+            $encodedMsg = urlencode($waMessage);
+            $waAdminLinks = array_map(function ($item) use ($encodedMsg) {
+                return [
+                    'nama' => $item['nama'] ?? 'Admin Humas',
+                    'no_wa' => $item['no_wa'],
+                    'url' => 'https://wa.me/' . $item['no_wa'] . '?text=' . $encodedMsg,
+                ];
+            }, $activeAdminWaList);
+
+            session()->flash('wa_admin_list', $waAdminLinks);
+            session()->flash('wa_redirect_url', $waAdminLinks[0]['url']);
         } else {
             Alert::success('Success', 'Data berhasil ditambahkan dan email telah dikirim.')->toToast()->autoclose(3000)->timerProgressBar();
         }

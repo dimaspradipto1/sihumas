@@ -491,5 +491,38 @@ class PengajuanTest extends TestCase
         $pubEdit->assertSee('Link GDrive (Desain atau Flayer)');
         $pubEdit->assertSee('Link Publikasi');
     }
+
+    public function test_multiple_active_admin_whatsapp_numbers_appear_after_pengajuan_submit(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+        $user = User::factory()->create(['is_admin' => false, 'is_users' => true]);
+
+        $settingResp = $this->actingAs($admin)->post(route('settings.update'), [
+            'admin_wa_nama' => ['Admin 1', 'Admin 2 (Nonaktif)', 'Admin 3'],
+            'admin_wa_nomor' => ['08118989777', '081200001111', '6282283736481'],
+            'admin_wa_active' => ['1', '0', '1'],
+            'wa_message_template' => 'Halo Admin, ada pengajuan {nama_kegiatan} oleh {nama_user}.',
+        ]);
+        $settingResp->assertRedirect(route('settings.index'));
+
+        $activeList = \App\Models\Setting::getActiveAdminWhatsapps();
+        $this->assertCount(2, $activeList);
+        $this->assertEquals('628118989777', $activeList[0]['no_wa']);
+        $this->assertEquals('6282283736481', $activeList[1]['no_wa']);
+
+        $storeResp = $this->actingAs($user)->post(route('pengajuan.store'), [
+            'nama_kegiatan' => 'Desain',
+            'tgl_awal' => now()->addDays(2)->toDateString(),
+            'deskripsi_kegiatan' => 'Poster seminar.',
+        ]);
+        $storeResp->assertRedirect(route('pengajuan.index'));
+
+        $waAdminList = session('wa_admin_list');
+        $this->assertCount(2, $waAdminList);
+        $this->assertEquals('Admin 1', $waAdminList[0]['nama']);
+        $this->assertEquals('628118989777', $waAdminList[0]['no_wa']);
+        $this->assertEquals('Admin 3', $waAdminList[1]['nama']);
+        $this->assertEquals('6282283736481', $waAdminList[1]['no_wa']);
+    }
 }
 
