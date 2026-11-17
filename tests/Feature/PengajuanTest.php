@@ -410,7 +410,26 @@ class PengajuanTest extends TestCase
         ])->assertStatus(403);
         $this->actingAs($otherUser)->delete(route('pengajuan.destroy', $pengajuan->id))->assertStatus(403);
 
-        // Owner can delete own pengajuan
+        // When pengajuan is completed/diterima, edit and delete buttons are hidden for owner
+        $completedPengajuan = Pengajuan::create([
+            'user_id' => $owner->id,
+            'nama_kegiatan' => 'Desain',
+            'tgl_awal' => now()->addDays(4)->toDateString(),
+            'tgl_selesai' => now()->addDays(4)->toDateString(),
+            'unit_kegiatan' => 'BAAK',
+            'deskripsi_kegiatan' => 'Sudah selesai',
+            'status' => 'diterima',
+        ]);
+        $dtCompleted = $this->actingAs($owner)->getJson(route('pengajuan.index'), [
+            'X-Requested-With' => 'XMLHttpRequest',
+        ]);
+        $dtCompleted->assertStatus(200);
+        $completedRow = collect($dtCompleted->json('data'))->firstWhere('id', $completedPengajuan->id);
+        $this->assertNotNull($completedRow);
+        $this->assertStringNotContainsString(route('pengajuan.edit', $completedPengajuan->id), $completedRow['action']);
+        $this->assertStringNotContainsString(route('pengajuan.destroy', $completedPengajuan->id), $completedRow['action']);
+
+        // Owner can delete own pending pengajuan
         $deleteResponse = $this->actingAs($owner)->delete(route('pengajuan.destroy', $pengajuan->id));
         $deleteResponse->assertRedirect(route('pengajuan.index'));
         $this->assertDatabaseMissing('pengajuans', ['id' => $pengajuan->id]);

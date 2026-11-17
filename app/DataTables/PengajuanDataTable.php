@@ -118,7 +118,10 @@ class PengajuanDataTable extends DataTable
                 $html = '<div class="d-inline-flex align-items-center justify-content-center gap-1 flex-nowrap">';
                 $html .= '<a href="' . route('pengajuan.show', $pengajuan->id) . '" class="btn btn-sm btn-primary text-white d-inline-flex align-items-center justify-content-center p-0" style="' . $btnStyle . '" title="Lihat"><i class="fa-solid fa-eye"></i></a>';
 
-                if ($user->is_admin || (int) $pengajuan->user_id === (int) $user->id) {
+                $isCompleted = in_array(strtolower((string) $pengajuan->status), ['diterima', 'selesai'], true)
+                    || ($pengajuan->publikasi?->status_validasi === 'disetujui');
+
+                if ($user->is_admin || ((int) $pengajuan->user_id === (int) $user->id && !$isCompleted)) {
                     $html .= '<a href="' . route('pengajuan.edit', $pengajuan->id) . '" class="btn btn-sm btn-warning text-white d-inline-flex align-items-center justify-content-center p-0" style="' . $btnStyle . '" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>';
                     $html .= '<form action="' . route('pengajuan.destroy', $pengajuan->id) . '" method="POST" style="display:inline" class="form-action-delete">'
                            . csrf_field()
@@ -145,7 +148,7 @@ class PengajuanDataTable extends DataTable
 
         $query = $model->newQuery()
             ->select('pengajuans.*')
-            ->with('user')
+            ->with(['user', 'publikasi'])
             ->orderBy('pengajuans.created_at', 'desc');
 
         // ✅ scope data sesuai tipe user (sama seperti logic kamu sebelumnya)

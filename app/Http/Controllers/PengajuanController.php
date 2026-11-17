@@ -222,11 +222,22 @@ class PengajuanController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
+    private function isPengajuanCompleted(Pengajuan $pengajuan): bool
+    {
+        return in_array(strtolower((string) $pengajuan->status), ['diterima', 'selesai'], true)
+            || ($pengajuan->publikasi?->status_validasi === 'disetujui');
+    }
+
     public function edit(Pengajuan $pengajuan)
     {
         $user = auth()->user();
         if (!$user->is_admin && !$user->is_humas && (int) $pengajuan->user_id !== (int) $user->id) {
             abort(403, 'Anda tidak memiliki akses untuk mengedit pengajuan ini.');
+        }
+
+        if (!$user->is_admin && !$user->is_humas && $this->isPengajuanCompleted($pengajuan)) {
+            Alert::warning('Tidak Dapat Diedit', 'Pengajuan yang sudah diterima/selesai tidak dapat diubah lagi.')->autoclose(3000)->toToast();
+            return redirect()->route('pengajuan.index');
         }
 
         $tahunAkademik = TahunAkademik::all();
@@ -246,6 +257,11 @@ class PengajuanController extends Controller
         $user = auth()->user();
         if (!$user->is_admin && !$user->is_humas && (int) $pengajuan->user_id !== (int) $user->id) {
             abort(403, 'Anda tidak memiliki akses untuk memperbarui pengajuan ini.');
+        }
+
+        if (!$user->is_admin && !$user->is_humas && $this->isPengajuanCompleted($pengajuan)) {
+            Alert::warning('Tidak Dapat Diperbarui', 'Pengajuan yang sudah diterima/selesai tidak dapat diubah lagi.')->autoclose(3000)->toToast();
+            return redirect()->route('pengajuan.index');
         }
 
         // Cek jika status pengajuan adalah 'ditolak', simpan alasan ditolak (hanya untuk Admin/Humas)
@@ -540,6 +556,11 @@ class PengajuanController extends Controller
         $user = auth()->user();
         if (!$user->is_admin && (int) $pengajuan->user_id !== (int) $user->id) {
             abort(403, 'Anda tidak memiliki akses untuk menghapus pengajuan ini.');
+        }
+
+        if (!$user->is_admin && $this->isPengajuanCompleted($pengajuan)) {
+            Alert::warning('Tidak Dapat Dihapus', 'Pengajuan yang sudah diterima/selesai tidak dapat dihapus lagi.')->autoclose(3000)->toToast();
+            return redirect()->route('pengajuan.index');
         }
 
         $pengajuan->delete();
