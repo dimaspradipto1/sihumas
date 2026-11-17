@@ -302,20 +302,22 @@
                                                     </tr>
                                                     @php
                                                         $isDesainOnly = ($pengajuan->nama_kegiatan === 'Desain');
+                                                        $isPublikasiOnly = ($pengajuan->nama_kegiatan === 'Publikasi');
+                                                        $isFlexibleSchedule = $isDesainOnly || $isPublikasiOnly;
                                                     @endphp
                                                     <tr>
-                                                        <th class="ps-3">{{ $isDesainOnly ? 'Deadline Desain' : 'Tanggal Kegiatan' }}</th>
+                                                        <th class="ps-3">{{ $isDesainOnly ? 'Deadline Desain' : ($isPublikasiOnly ? 'Target Publikasi' : 'Tanggal Kegiatan') }}</th>
                                                         <td class="text-break" style="white-space: normal !important; word-break: break-word !important;">
                                                             @if (Auth::user()->is_admin)
                                                                 <div class="p-2 bg-light border rounded">
                                                                     <div class="row g-2">
-                                                                        <div class="col-12 {{ $isDesainOnly ? '' : 'col-sm-6' }}">
+                                                                        <div class="col-12 {{ $isFlexibleSchedule ? '' : 'col-sm-6' }}">
                                                                             <label for="tgl_awal" class="form-label small text-muted mb-1 fw-bold">
-                                                                                <i class="fa-regular fa-calendar-check me-1 text-primary"></i> {{ $isDesainOnly ? 'Batas Waktu / Deadline' : 'Mulai' }}
+                                                                                <i class="fa-regular fa-calendar-check me-1 text-primary"></i> {{ $isDesainOnly ? 'Batas Waktu / Deadline' : ($isPublikasiOnly ? 'Target Tayang / Publikasi' : 'Mulai') }}
                                                                             </label>
                                                                             <input type="date" name="tgl_awal" id="tgl_awal" class="form-control form-control-sm" value="{{ $pengajuan->tgl_awal }}">
                                                                         </div>
-                                                                        @if (!$isDesainOnly)
+                                                                        @if (!$isFlexibleSchedule)
                                                                         <div class="col-12 col-sm-6">
                                                                             <label for="tgl_selesai" class="form-label small text-muted mb-1 fw-bold">
                                                                                 <i class="fa-regular fa-calendar-check me-1 text-success"></i> Selesai
@@ -330,14 +332,14 @@
                                                             @else
                                                                 <span class="fw-semibold text-gray-800">
                                                                     {{ $pengajuan->tgl_awal ? \Carbon\Carbon::parse($pengajuan->tgl_awal)->locale('id')->translatedFormat('l, d F Y') : '-' }}
-                                                                    @if(!$isDesainOnly && $pengajuan->tgl_selesai && $pengajuan->tgl_selesai !== $pengajuan->tgl_awal)
+                                                                    @if(!$isFlexibleSchedule && $pengajuan->tgl_selesai && $pengajuan->tgl_selesai !== $pengajuan->tgl_awal)
                                                                         <br><small class="text-muted">s/d {{ \Carbon\Carbon::parse($pengajuan->tgl_selesai)->locale('id')->translatedFormat('l, d F Y') }}</small>
                                                                     @endif
                                                                 </span>
                                                             @endif
                                                         </td>
                                                     </tr>
-                                                    @if (!$isDesainOnly || !empty($pengajuan->jam_kegiatan))
+                                                    @if (!$isFlexibleSchedule || !empty($pengajuan->jam_kegiatan))
                                                     <tr>
                                                         <th class="ps-3">Waktu Kegiatan</th>
                                                         <td class="text-break" style="white-space: normal !important; word-break: break-word !important;">{{ $pengajuan->jam_kegiatan }} WIB - {{ $pengajuan->waktu_selesai }} WIB</td>
@@ -347,7 +349,7 @@
                                                         <th class="ps-3">Unit Kegiatan</th>
                                                         <td class="text-break" style="white-space: normal !important; word-break: break-word !important;">{{ $pengajuan->unit_kegiatan }}</td>
                                                     </tr>
-                                                    @if (!$isDesainOnly || !empty($pengajuan->tempat_kegiatan))
+                                                    @if (!$isFlexibleSchedule || !empty($pengajuan->tempat_kegiatan))
                                                     <tr>
                                                         <th class="ps-3">Tempat Kegiatan</th>
                                                         <td class="text-break" style="white-space: normal !important; word-break: break-word !important;">{{ $pengajuan->tempat_kegiatan ?? '-' }}</td>
@@ -364,13 +366,13 @@
                                                     </tr>
                                                     @endif
                                                     <tr>
-                                                        <th class="ps-3">{{ $isDesainOnly ? 'Brief Desain' : 'Deskripsi' }}</th>
+                                                        <th class="ps-3">{{ $isDesainOnly ? 'Brief Desain' : ($isPublikasiOnly ? 'Brief Publikasi' : 'Deskripsi') }}</th>
                                                         <td class="text-break" style="white-space: normal !important; word-break: break-word !important;">{{ trim(strip_tags($pengajuan->deskripsi_kegiatan ?? '')) ?: '-' }}</td>
                                                     </tr>
                                                     @php
                                                         $cleanPerlengkapan = trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags($pengajuan->perlengkapan ?? ''), ENT_QUOTES | ENT_HTML5, 'UTF-8')));
                                                     @endphp
-                                                    @if (!$isDesainOnly || $cleanPerlengkapan !== '')
+                                                    @if (!$isFlexibleSchedule || $cleanPerlengkapan !== '')
                                                     <tr>
                                                         <th class="ps-3">Kebutuhan Perlengkapan</th>
                                                         <td class="text-break" style="white-space: normal !important; word-break: break-word !important;">{{ $cleanPerlengkapan ?: '-' }}</td>
@@ -601,15 +603,19 @@
                                             @endphp
 
                                             <div class="row g-3">
-                                                <!-- KIRI: BAGIAN 1: PIC DESAIN -->
-                                                <div class="col-12 {{ $isDesainOnly ? '' : 'col-lg-6' }}">
+                                                <!-- KIRI: BAGIAN 1: PIC DESAIN / PUBLIKASI -->
+                                                <div class="col-12 {{ $isFlexibleSchedule ? '' : 'col-lg-6' }}">
                                                     <div class="card border border-primary border-opacity-25 h-100 shadow-xs mb-0">
                                                         <div class="card-header bg-primary bg-opacity-10 py-2 px-3 d-flex justify-content-between align-items-center">
                                                             <span class="fw-bold text-primary small text-uppercase">
-                                                                <i class="fa-solid fa-palette me-1"></i> 1. PIC Desain
+                                                                @if ($isPublikasiOnly)
+                                                                    <i class="fa-solid fa-bullhorn me-1"></i> 1. PIC Publikasi / Humas
+                                                                @else
+                                                                    <i class="fa-solid fa-palette me-1"></i> 1. PIC Desain
+                                                                @endif
                                                             </span>
                                                             <button type="button" class="btn btn-xs btn-primary d-inline-flex align-items-center" onclick="tambahBarisPic('desain')">
-                                                                <i class="fa-solid fa-plus me-1"></i> Tambah PIC Desain
+                                                                <i class="fa-solid fa-plus me-1"></i> {{ $isPublikasiOnly ? 'Tambah PIC' : 'Tambah PIC Desain' }}
                                                             </button>
                                                         </div>
                                                         <div class="card-body p-3">
@@ -686,7 +692,7 @@
                                                     </div>
                                                 </div>
 
-                                                @if (!$isDesainOnly)
+                                                @if (!$isFlexibleSchedule)
                                                 <!-- KANAN: BAGIAN 2: PIC DOKUMENTASI -->
                                                 <div class="col-12 col-lg-6">
                                                     <div class="card border border-info border-opacity-25 h-100 shadow-xs mb-0">

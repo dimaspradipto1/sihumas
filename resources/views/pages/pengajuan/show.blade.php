@@ -86,6 +86,8 @@
                     <div class="table-responsive">
                         @php
                             $isDesainOnly = ($pengajuan->nama_kegiatan === 'Desain');
+                            $isPublikasiOnly = ($pengajuan->nama_kegiatan === 'Publikasi');
+                            $isFlexibleSchedule = $isDesainOnly || $isPublikasiOnly;
                         @endphp
                         <table class="table table-striped align-middle mb-0">
                             <tbody>
@@ -117,12 +119,12 @@
                                         @endif
                                     </td>
                                 </tr>
-                                @if ($isDesainOnly)
+                                @if ($isFlexibleSchedule)
                                 <tr>
-                                    <th class="ps-3 text-muted small text-uppercase">Deadline Desain</th>
+                                    <th class="ps-3 text-muted small text-uppercase">{{ $isDesainOnly ? 'Deadline Desain' : 'Target Publikasi' }}</th>
                                     <td class="pe-3">
-                                        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2 py-1">
-                                            <i class="fa-regular fa-calendar-check me-1"></i> Deadline: {{ $pengajuan->tgl_awal ? \Carbon\Carbon::parse($pengajuan->tgl_awal)->locale('id')->translatedFormat('l, d F Y') : '-' }}
+                                        <span class="badge {{ $isDesainOnly ? 'bg-primary text-primary border-primary' : 'bg-success text-success border-success' }} bg-opacity-10 border border-opacity-25 px-2 py-1">
+                                            <i class="fa-regular fa-calendar-check me-1"></i> {{ $isDesainOnly ? 'Deadline:' : 'Target:' }} {{ $pengajuan->tgl_awal ? \Carbon\Carbon::parse($pengajuan->tgl_awal)->locale('id')->translatedFormat('l, d F Y') : '-' }}
                                         </span>
                                     </td>
                                 </tr>
@@ -141,7 +143,7 @@
                                     </td>
                                 </tr>
                                 @endif
-                                @if (!$isDesainOnly || !empty($pengajuan->jam_kegiatan))
+                                @if (!$isFlexibleSchedule || !empty($pengajuan->jam_kegiatan))
                                 <tr>
                                     <th class="ps-3 text-muted small text-uppercase">Waktu Kegiatan</th>
                                     <td class="pe-3">
@@ -155,7 +157,7 @@
                                     </td>
                                 </tr>
                                 @endif
-                                @if (!$isDesainOnly || !empty($pengajuan->tempat_kegiatan))
+                                @if (!$isFlexibleSchedule || !empty($pengajuan->tempat_kegiatan))
                                 <tr>
                                     <th class="ps-3 text-muted small text-uppercase">Tempat Kegiatan</th>
                                     <td class="pe-3">
@@ -176,7 +178,7 @@
                                 </tr>
                                 @endif
                                 <tr>
-                                    <th class="ps-3 text-muted small text-uppercase">{{ $isDesainOnly ? 'Brief Desain' : 'Deskripsi Kegiatan' }}</th>
+                                    <th class="ps-3 text-muted small text-uppercase">{{ $isDesainOnly ? 'Brief Desain' : ($isPublikasiOnly ? 'Brief Publikasi' : 'Deskripsi Kegiatan') }}</th>
                                     <td class="pe-3 text-break">
                                         @php
                                             $cleanDesk = trim(strip_tags($pengajuan->deskripsi_kegiatan ?? ''));
@@ -191,7 +193,7 @@
                                 @php
                                     $cleanPerl = trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags($pengajuan->perlengkapan ?? ''), ENT_QUOTES | ENT_HTML5, 'UTF-8')));
                                 @endphp
-                                @if (!$isDesainOnly || !empty($cleanPerl))
+                                @if (!$isFlexibleSchedule || !empty($cleanPerl))
                                 <tr>
                                     <th class="ps-3 text-muted small text-uppercase">Kebutuhan Perlengkapan</th>
                                     <td class="pe-3 text-break">

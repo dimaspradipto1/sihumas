@@ -130,26 +130,40 @@
                                     </div> --}}
                                     
 
-                                    @if (Auth::user()->is_admin)
-                                    <!-- Laporan Kegiatan (Textarea TinyMCE - Khusus Admin) -->
-                                    <div class="mb-4">
-                                        <label for="upload_laporan" class="form-label text-uppercase fw-bold">
-                                            <i class="fa-solid fa-file-lines me-1 text-primary"></i> Laporan Kegiatan / Ringkasan Liputan
-                                        </label>
-                                        <textarea name="upload_laporan" class="form-control" id="upload_laporan" rows="6"
-                                            placeholder="Tuliskan ringkasan hasil kegiatan, rilis berita, atau laporan peliputan...">{{ old('upload_laporan') ?? ($publikasi->upload_laporan ?? ($pengajuan->upload_laporan ?? '')) }}</textarea>
-                                        <small class="text-muted"><i class="fa-solid fa-circle-info me-1"></i> Format teks didukung, sistem akan otomatis membersihkan tag HTML agar data tersimpan rapi.</small>
-                                    </div>
-                                    @endif
-
                                     @php
-                                        $showLinkDokumentasi = Auth::user()->is_admin || ($pengajuan ? $pengajuan->isUserAssignedAs('dokumentasi', Auth::user()) : true);
-                                        $showLinkDesain = Auth::user()->is_admin || ($pengajuan ? $pengajuan->isUserAssignedAs('desain', Auth::user()) : true);
-                                        if (!$showLinkDokumentasi && !$showLinkDesain) {
+                                        $jenisPengajuan = $pengajuan?->nama_kegiatan ?? '';
+                                        $isPublikasiOnly = ($jenisPengajuan === 'Publikasi');
+                                        $isDesainOnly = ($jenisPengajuan === 'Desain');
+                                        $isDokumentasiOnly = ($jenisPengajuan === 'Dokumentasi');
+
+                                        $showLaporan = Auth::user()->is_admin || $isPublikasiOnly;
+                                        $showLinkPublikasi = Auth::user()->is_admin || $isPublikasiOnly;
+
+                                        $showLinkDokumentasi = Auth::user()->is_admin
+                                            ? (!$isDesainOnly || !empty($publikasi->link_dokumentasi))
+                                            : ($pengajuan ? $pengajuan->isUserAssignedAs('dokumentasi', Auth::user()) : true);
+
+                                        $showLinkDesain = Auth::user()->is_admin
+                                            ? ((!$isDokumentasiOnly && !$isPublikasiOnly) || !empty($pengajuan?->link_desain))
+                                            : ($pengajuan && !$isPublikasiOnly && !$isDokumentasiOnly ? $pengajuan->isUserAssignedAs('desain', Auth::user()) : false);
+
+                                        if (!Auth::user()->is_admin && !$isPublikasiOnly && !$showLinkDokumentasi && !$showLinkDesain) {
                                             $showLinkDokumentasi = true;
                                             $showLinkDesain = true;
                                         }
                                     @endphp
+
+                                    @if ($showLaporan)
+                                    <!-- Laporan Kegiatan / Rilis Berita -->
+                                    <div class="mb-4">
+                                        <label for="upload_laporan" class="form-label text-uppercase fw-bold">
+                                            <i class="fa-solid fa-file-lines me-1 text-primary"></i> {{ $isPublikasiOnly ? 'Narasi / Rilis Berita Publikasi' : 'Laporan Kegiatan / Ringkasan Liputan' }}
+                                        </label>
+                                        <textarea name="upload_laporan" class="form-control" id="upload_laporan" rows="6"
+                                            placeholder="{{ $isPublikasiOnly ? 'Tuliskan narasi berita, caption publikasi, atau rilis yang ditayangkan...' : 'Tuliskan ringkasan hasil kegiatan, rilis berita, atau laporan peliputan...' }}">{{ old('upload_laporan') ?? ($publikasi->upload_laporan ?? ($pengajuan->upload_laporan ?? '')) }}</textarea>
+                                        <small class="text-muted"><i class="fa-solid fa-circle-info me-1"></i> Format teks didukung, sistem akan otomatis membersihkan tag HTML agar data tersimpan rapi.</small>
+                                    </div>
+                                    @endif
 
                                     @if ($showLinkDokumentasi)
                                     <!-- Link Dokumentasi -->
@@ -223,8 +237,8 @@
                                     </div>
                                     @endif
 
-                                    @if (Auth::user()->is_admin)
-                                    <!-- Link Publikasi (Bisa Tambah Lebih Dari 1 Link - Khusus Admin) -->
+                                    @if ($showLinkPublikasi)
+                                    <!-- Link Publikasi (Bisa Tambah Lebih Dari 1 Link) -->
                                     <div class="mb-4">
                                         <label class="form-label text-uppercase fw-bold d-flex justify-content-between align-items-center">
                                             <span><i class="fa-solid fa-globe me-1 text-success"></i> Link Publikasi (Media Online / Website / Sosmed)</span>

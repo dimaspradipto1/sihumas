@@ -60,10 +60,15 @@ class PublikasiDataTable extends DataTable
                 $jamMulai = !empty($p?->jam_kegiatan) ? substr($p->jam_kegiatan, 0, 5) . ' WIB' : '';
                 $jamSelesai = !empty($p?->waktu_selesai) ? substr($p->waktu_selesai, 0, 5) . ' WIB' : '';
 
-                if ($p?->nama_kegiatan === 'Desain' && empty($jamMulai)) {
+                if (in_array($p?->nama_kegiatan, ['Desain', 'Publikasi'], true) && empty($jamMulai)) {
+                    $isDesain = $p?->nama_kegiatan === 'Desain';
+                    $label = $isDesain ? 'Deadline:' : 'Target:';
+                    $badge = $isDesain
+                        ? '<span class="badge bg-light text-info border small ms-2"><i class="fa-solid fa-palette me-1"></i>Desain</span>'
+                        : '<span class="badge bg-light text-success border small ms-2"><i class="fa-solid fa-bullhorn me-1"></i>Publikasi</span>';
                     return '<div class="d-inline-flex align-items-center">'
-                         . '  <span class="text-nowrap"><span class="text-muted small">Deadline:</span> <span class="fw-semibold">' . $startStr . '</span></span>'
-                         . '  <span class="badge bg-light text-info border small ms-2"><i class="fa-solid fa-palette me-1"></i>Desain</span>'
+                         . '  <span class="text-nowrap"><span class="text-muted small">' . $label . '</span> <span class="fw-semibold">' . $startStr . '</span></span>'
+                         . '  ' . $badge
                          . '</div>';
                 }
 

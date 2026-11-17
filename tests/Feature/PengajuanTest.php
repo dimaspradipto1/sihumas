@@ -281,5 +281,72 @@ class PengajuanTest extends TestCase
         $editResponse->assertSee('1. PIC Desain');
         $editResponse->assertDontSee('2. PIC Dokumentasi');
     }
+
+    public function test_user_can_submit_publikasi_only_without_schedule_and_location(): void
+    {
+        $user = User::factory()->create([
+            'is_admin' => false,
+            'is_humas' => false,
+            'is_fst' => true,
+        ]);
+
+        $admin = User::factory()->create([
+            'is_admin' => true,
+        ]);
+
+        $humas = User::factory()->create([
+            'is_admin' => false,
+            'is_humas' => true,
+            'name' => 'HUMAS_PUB_' . uniqid(),
+        ]);
+
+        $targetTayang = now()->addDays(2)->toDateString();
+
+        $response = $this->actingAs($user)->post(route('pengajuan.store'), [
+            'nama_kegiatan' => 'Publikasi',
+            'tgl_awal' => $targetTayang,
+            'deskripsi_kegiatan' => 'Rilis berita prestasi mahasiswa FST juara lomba UI/UX Nasional.',
+            'unit_kegiatan' => 'FST',
+        ]);
+
+        $response->assertRedirect(route('pengajuan.index'));
+
+        $this->assertDatabaseHas('pengajuans', [
+            'user_id' => $user->id,
+            'nama_kegiatan' => 'Publikasi',
+            'tgl_awal' => $targetTayang,
+            'tgl_selesai' => $targetTayang,
+            'jam_kegiatan' => null,
+            'waktu_selesai' => null,
+            'tempat_kegiatan' => null,
+        ]);
+
+        $pengajuan = Pengajuan::where('user_id', $user->id)->where('nama_kegiatan', 'Publikasi')->firstOrFail();
+
+        $showResponse = $this->actingAs($user)->get(route('pengajuan.show', $pengajuan->id));
+        $showResponse->assertStatus(200);
+        $showResponse->assertSee('Target Publikasi');
+        $showResponse->assertSee('Brief Publikasi');
+        $showResponse->assertDontSee('Waktu Kegiatan');
+        $showResponse->assertDontSee('Tempat Kegiatan');
+
+        $editResponse = $this->actingAs($admin)->get(route('pengajuan.edit', $pengajuan->id));
+        $editResponse->assertStatus(200);
+        $editResponse->assertSee('Target Publikasi');
+        $editResponse->assertSee('1. PIC Publikasi / Humas');
+        $editResponse->assertDontSee('2. PIC Dokumentasi');
+
+        $pengajuan->update([
+            'status' => 'diterima',
+            'petugas_ditugaskan' => $humas->name,
+            'pic_petugas' => [['nama' => $humas->name, 'no_wa' => '081234567890', 'peran' => 'desain', 'catatan' => 'Tayangkan di web']],
+        ]);
+
+        $publikasiEdit = $this->actingAs($humas)->get(route('publikasi.edit', $pengajuan->publikasi->id));
+        $publikasiEdit->assertStatus(200);
+        $publikasiEdit->assertSee('Narasi / Rilis Berita Publikasi');
+        $publikasiEdit->assertSee('Link Publikasi');
+        $publikasiEdit->assertDontSee('Link GDrive (Desain atau Flayer)');
+    }
 }
 
