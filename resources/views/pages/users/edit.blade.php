@@ -92,10 +92,13 @@
 
                       @if ($hasKategori)
                         @foreach ($groupedUnits as $kategori => $items)
+                          @php
+                              $sortedItems = $items->sortBy(fn($u) => $u->unit_kegiatan === $kategori ? 0 : 1);
+                          @endphp
                           <optgroup label="🏢 {{ $kategori }}">
-                            @foreach ($items as $unit)
+                            @foreach ($sortedItems as $unit)
                               <option value="{{ $unit->id }}" title="{{ $unit->unit_kegiatan }}" {{ old('unit_kegiatan_id', $user->unit_kegiatan_id) == $unit->id ? 'selected' : '' }}>
-                                {{ $unit->nama_sub }}
+                                {{ $unit->unit_kegiatan === $kategori ? $unit->unit_kegiatan . ' (Fakultas)' : $unit->nama_sub }}
                               </option>
                             @endforeach
                           </optgroup>

@@ -56,11 +56,13 @@ class UnitKegiatan extends Seeder
             ['kategori' => 'Rektorat', 'unit_kegiatan' => 'Rektorat'],
 
             // FAKULTAS EKONOMI DAN BISNIS (FEB)
+            ['kategori' => 'FAKULTAS EKONOMI DAN BISNIS (FEB)', 'unit_kegiatan' => 'FAKULTAS EKONOMI DAN BISNIS (FEB)'],
             ['kategori' => 'FAKULTAS EKONOMI DAN BISNIS (FEB)', 'unit_kegiatan' => 'S2-MAGISTER MANAJEMEN'],
             ['kategori' => 'FAKULTAS EKONOMI DAN BISNIS (FEB)', 'unit_kegiatan' => 'S1-MANAJEMEN'],
             ['kategori' => 'FAKULTAS EKONOMI DAN BISNIS (FEB)', 'unit_kegiatan' => 'S1-AKUNTANSI'],
 
             // FAKULTAS SAINS DAN TEKNOLOGI (FST)
+            ['kategori' => 'FAKULTAS SAINS DAN TEKNOLOGI (FST)', 'unit_kegiatan' => 'FAKULTAS SAINS DAN TEKNOLOGI (FST)'],
             ['kategori' => 'FAKULTAS SAINS DAN TEKNOLOGI (FST)', 'unit_kegiatan' => 'S1-TEKNIK INDUSTRI'],
             ['kategori' => 'FAKULTAS SAINS DAN TEKNOLOGI (FST)', 'unit_kegiatan' => 'S1-TEKNIK INFORMATIKA'],
             ['kategori' => 'FAKULTAS SAINS DAN TEKNOLOGI (FST)', 'unit_kegiatan' => 'S1-TEKNIK LOGISTIK'],
@@ -68,6 +70,7 @@ class UnitKegiatan extends Seeder
             ['kategori' => 'FAKULTAS SAINS DAN TEKNOLOGI (FST)', 'unit_kegiatan' => 'S1-TEKNIK PERKAPALAN'],
 
             // FAKULTAS ILMU KESEHATAN (FIKes)
+            ['kategori' => 'FAKULTAS ILMU KESEHATAN (FIKes)', 'unit_kegiatan' => 'FAKULTAS ILMU KESEHATAN (FIKes)'],
             ['kategori' => 'FAKULTAS ILMU KESEHATAN (FIKes)', 'unit_kegiatan' => 'S2-KESEHATAN MASYARAKAT'],
             ['kategori' => 'FAKULTAS ILMU KESEHATAN (FIKes)', 'unit_kegiatan' => 'S1-KESEHATAN DAN KESELAMATAN KERJA'],
             ['kategori' => 'FAKULTAS ILMU KESEHATAN (FIKes)', 'unit_kegiatan' => 'S1-KESEHATAN LINGKUNGAN'],
@@ -86,13 +89,11 @@ class UnitKegiatan extends Seeder
         $legacyMap = [
             'Prodi Feb' => 'S1-MANAJEMEN',
             'Feb' => 'S1-MANAJEMEN',
-            'Fakultas Ekonomi dan Bisnis (FEB)' => 'S1-MANAJEMEN',
             'FEB - S1 Manajemen' => 'S1-MANAJEMEN',
             'FEB - S2 Manajemen' => 'S2-MAGISTER MANAJEMEN',
             'FEB - S1 Akuntansi' => 'S1-AKUNTANSI',
             'Prodi Fst' => 'S1-TEKNIK INFORMATIKA',
             'Fst' => 'S1-TEKNIK INFORMATIKA',
-            'Fakultas Sains dan Teknologi (FST)' => 'S1-TEKNIK INFORMATIKA',
             'FST - Teknik Industri' => 'S1-TEKNIK INDUSTRI',
             'FST - Teknik Informatika' => 'S1-TEKNIK INFORMATIKA',
             'FST - Teknik Perkapalan' => 'S1-TEKNIK PERKAPALAN',
@@ -100,7 +101,6 @@ class UnitKegiatan extends Seeder
             'FST - Sistem Informasi' => 'S1-SISTEM INFORMASI',
             'Prodi Fikes' => 'S1-KESEHATAN DAN KESELAMATAN KERJA',
             'Fikes' => 'S1-KESEHATAN DAN KESELAMATAN KERJA',
-            'Fakultas Ilmu Kesehatan (FIKES)' => 'S1-KESEHATAN DAN KESELAMATAN KERJA',
             'FIKES - S1 K3' => 'S1-KESEHATAN DAN KESELAMATAN KERJA',
             'FIKES - S2 Kesmas' => 'S2-KESEHATAN MASYARAKAT',
             'FIKES - S1 Kesling' => 'S1-KESEHATAN LINGKUNGAN',
