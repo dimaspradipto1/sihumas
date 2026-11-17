@@ -361,10 +361,9 @@
             margin: 0 0.4rem !important;
         }
         .swal2-popup.swal2-toast .swal2-icon {
-            width: 1.5rem !important;
-            height: 1.5rem !important;
-            min-width: 1.5rem !important;
-            margin: 0 0.4rem 0 0 !important;
+            font-size: 0.85rem !important;
+            margin: 0 0.5rem 0 0 !important;
+            align-self: center !important;
         }
     </style>
 
