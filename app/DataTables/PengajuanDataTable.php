@@ -79,9 +79,26 @@ class PengajuanDataTable extends DataTable
 
             ->editColumn('alasan_ditolak', function ($pengajuan) {
                 $ket = trim(strip_tags($pengajuan->alasan_ditolak ?? ''));
-                return $ket !== ''
-                    ? '<div class="text-break small text-gray-800" style="white-space: normal !important; word-break: break-word !important;">' . e($ket) . '</div>'
-                    : '';
+                $linkDesain = trim($pengajuan->link_desain ?? '');
+
+                if ($ket === '' && $linkDesain === '') {
+                    return '';
+                }
+
+                $html = '<div class="text-break small text-gray-800 d-flex flex-column gap-1" style="white-space: normal !important; word-break: break-word !important;">';
+                if ($ket !== '') {
+                    $html .= '<span>' . e($ket) . '</span>';
+                } elseif ($linkDesain !== '') {
+                    $html .= '<span>Berikut untuk link desain kegiatan:</span>';
+                }
+
+                if ($linkDesain !== '') {
+                    $html .= '<div><a href="' . e($linkDesain) . '" target="_blank" class="btn btn-xs btn-outline-info d-inline-flex align-items-center py-1 px-2 mt-1" style="font-size: 11px;">'
+                           . '<i class="fa-brands fa-google-drive me-1"></i> Buka Link Desain</a></div>';
+                }
+                $html .= '</div>';
+
+                return $html;
             })
 
             ->addColumn('action', function ($pengajuan) use ($user) {

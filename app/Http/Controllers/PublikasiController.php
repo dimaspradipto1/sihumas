@@ -85,9 +85,26 @@ class PublikasiController extends Controller
 
         // Kemudian buat LaporanPublikasi dengan menggunakan ID dari Publikasi yang sudah dibuat
         $pengajuan = Pengajuan::find($request->pengajuan_id);
-        if ($pengajuan && $request->has('link_desain')) {
+        if ($pengajuan && ($request->has('link_desain') || $request->has('keterangan_desain'))) {
+            $updatePengajuan = [];
             $linkDesain = trim((string) $request->input('link_desain', ''));
-            $pengajuan->update(['link_desain' => $linkDesain !== '' ? $linkDesain : null]);
+            if ($request->has('link_desain')) {
+                $updatePengajuan['link_desain'] = $linkDesain !== '' ? $linkDesain : null;
+            }
+            if ($request->has('keterangan_desain')) {
+                $ketDesain = trim((string) $request->input('keterangan_desain', ''));
+                if ($ketDesain === '' && $linkDesain !== '') {
+                    $ketDesain = 'Berikut untuk link desain kegiatan:';
+                }
+                if ($ketDesain !== '') {
+                    $updatePengajuan['alasan_ditolak'] = $ketDesain;
+                }
+            } elseif ($linkDesain !== '' && empty($pengajuan->alasan_ditolak)) {
+                $updatePengajuan['alasan_ditolak'] = 'Berikut untuk link desain kegiatan:';
+            }
+            if (!empty($updatePengajuan)) {
+                $pengajuan->update($updatePengajuan);
+            }
         }
         LaporanPublikasi::create([
             'publikasi_id' => $publikasi->id,
@@ -148,11 +165,29 @@ class PublikasiController extends Controller
             $data['link_dokumentasi'] = !empty(trim($request->input('link_dokumentasi', ''))) ? trim($request->input('link_dokumentasi')) : null;
         }
 
-        if ($request->has('link_desain') && $publikasi->pengajuan) {
-            $linkDesain = trim((string) $request->input('link_desain', ''));
-            $publikasi->pengajuan->update([
-                'link_desain' => $linkDesain !== '' ? $linkDesain : null,
-            ]);
+        if ($publikasi->pengajuan && ($request->has('link_desain') || $request->has('keterangan_desain'))) {
+            $updatePengajuan = [];
+            $linkDesain = $request->has('link_desain')
+                ? trim((string) $request->input('link_desain', ''))
+                : trim((string) ($publikasi->pengajuan->link_desain ?? ''));
+
+            if ($request->has('link_desain')) {
+                $updatePengajuan['link_desain'] = $linkDesain !== '' ? $linkDesain : null;
+            }
+
+            if ($request->has('keterangan_desain')) {
+                $ketDesain = trim((string) $request->input('keterangan_desain', ''));
+                if ($ketDesain === '' && $linkDesain !== '') {
+                    $ketDesain = 'Berikut untuk link desain kegiatan:';
+                }
+                $updatePengajuan['alasan_ditolak'] = $ketDesain !== '' ? $ketDesain : null;
+            } elseif ($linkDesain !== '' && empty($publikasi->pengajuan->alasan_ditolak)) {
+                $updatePengajuan['alasan_ditolak'] = 'Berikut untuk link desain kegiatan:';
+            }
+
+            if (!empty($updatePengajuan)) {
+                $publikasi->pengajuan->update($updatePengajuan);
+            }
         }
 
         // Simpan multiple link publikasi sebagai JSON

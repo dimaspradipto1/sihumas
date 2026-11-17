@@ -119,6 +119,16 @@
                                         </small>
                                     </div>
 
+                                    <!-- Keterangan / Informasi Desain untuk Pengusul -->
+                                    <div class="mb-4">
+                                        <label for="keterangan_desain" class="form-label text-uppercase fw-bold d-flex justify-content-between align-items-center">
+                                            <span><i class="fa-solid fa-comment-dots me-1 text-primary"></i> Keterangan / Informasi Desain</span>
+                                            <span class="badge bg-secondary text-white fw-normal">Opsional</span>
+                                        </label>
+                                        <textarea name="keterangan_desain" id="keterangan_desain" class="form-control" rows="2"
+                                            placeholder="Contoh: Berikut untuk link desain kegiatan ini / terkait desain estimasi selesai dalam 1 jam...">{{ old('keterangan_desain') }}</textarea>
+                                    </div>
+
                                     @if (Auth::user()->is_admin)
                                     <!-- Link Publikasi (Bisa Tambah Lebih Dari 1 Link - Khusus Admin) -->
                                     <div class="mb-4">
