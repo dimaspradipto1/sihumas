@@ -432,7 +432,14 @@
                     }
 
                     function handleTempatChange() {
+                        const isDesainOnly = ($('#nama_kegiatan').val() === 'Desain');
                         const val = $select.val();
+                        if (isDesainOnly) {
+                            $customWrapper.addClass('d-none');
+                            $customInput.prop('disabled', true).removeAttr('name').removeAttr('required');
+                            $select.attr('name', 'tempat_kegiatan').removeAttr('required');
+                            return;
+                        }
                         if (val === '__custom__') {
                             $customWrapper.removeClass('d-none');
                             $customInput.prop('disabled', false).attr('name', 'tempat_kegiatan').attr('required', true).focus();
@@ -446,6 +453,66 @@
 
                     $select.on('change', handleTempatChange);
                     handleTempatChange();
+                }
+
+                // Adaptive form: khusus pilihan "Desain"
+                const namaKegiatanSelect = document.getElementById('nama_kegiatan');
+                const colTglAwal = document.getElementById('col_tgl_awal');
+                const labelTglAwal = document.getElementById('label_tgl_awal');
+                const wrapperJam = document.getElementById('wrapper_jam_kegiatan');
+                const wrapperSelesai = document.getElementById('wrapper_tgl_selesai_waktu');
+                const wrapperTempat = document.getElementById('wrapper_tempat_kegiatan');
+                const wrapperPerlengkapan = document.getElementById('wrapper_perlengkapan');
+                const wrapperLinkZoom = document.getElementById('wrapper_link_zoom');
+                const labelDeskripsi = document.getElementById('label_deskripsi_kegiatan');
+                const hintBriefDesain = document.getElementById('hint_brief_desain');
+
+                function toggleFormByNamaKegiatan() {
+                    if (!namaKegiatanSelect) return;
+                    const isDesain = namaKegiatanSelect.value === 'Desain';
+
+                    if (isDesain) {
+                        if (colTglAwal) {
+                            colTglAwal.classList.remove('col-md-6');
+                            colTglAwal.classList.add('col-12');
+                        }
+                        if (labelTglAwal) labelTglAwal.innerHTML = 'Deadline / Batas Waktu Desain <span class="text-danger">*</span>';
+                        if (wrapperJam) wrapperJam.classList.add('d-none');
+                        if (wrapperSelesai) wrapperSelesai.classList.add('d-none');
+                        if (wrapperTempat) wrapperTempat.classList.add('d-none');
+                        if (wrapperPerlengkapan) wrapperPerlengkapan.classList.add('d-none');
+                        if (wrapperLinkZoom) wrapperLinkZoom.classList.add('d-none');
+                        if (labelDeskripsi) labelDeskripsi.textContent = 'Deskripsi / Brief Desain';
+                        if (hintBriefDesain) hintBriefDesain.classList.remove('d-none');
+
+                        if ($select.length) $select.removeAttr('required');
+                        if ($customInput.length) $customInput.removeAttr('required');
+                    } else {
+                        if (colTglAwal) {
+                            colTglAwal.classList.remove('col-12');
+                            colTglAwal.classList.add('col-md-6');
+                        }
+                        if (labelTglAwal) labelTglAwal.textContent = 'tanggal mulai kegiatan';
+                        if (wrapperJam) wrapperJam.classList.remove('d-none');
+                        if (wrapperSelesai) wrapperSelesai.classList.remove('d-none');
+                        if (wrapperTempat) wrapperTempat.classList.remove('d-none');
+                        if (wrapperPerlengkapan) wrapperPerlengkapan.classList.remove('d-none');
+                        if (wrapperLinkZoom) wrapperLinkZoom.classList.remove('d-none');
+                        if (labelDeskripsi) labelDeskripsi.textContent = 'deskripsi kegiatan';
+                        if (hintBriefDesain) hintBriefDesain.classList.add('d-none');
+
+                        if ($select.length && $select.val() !== '__custom__') {
+                            $select.attr('required', true);
+                        }
+                    }
+                }
+
+                if (namaKegiatanSelect) {
+                    namaKegiatanSelect.addEventListener('change', toggleFormByNamaKegiatan);
+                    if (window.$) {
+                        $(namaKegiatanSelect).on('change', toggleFormByNamaKegiatan);
+                    }
+                    toggleFormByNamaKegiatan();
                 }
             });
         </script>

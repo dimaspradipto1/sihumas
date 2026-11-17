@@ -60,6 +60,13 @@ class LaporanPublikasiDataTable extends DataTable
                 $jamMulai = !empty($p?->jam_kegiatan) ? substr($p->jam_kegiatan, 0, 5) . ' WIB' : '';
                 $jamSelesai = !empty($p?->waktu_selesai) ? substr($p->waktu_selesai, 0, 5) . ' WIB' : '';
 
+                if ($p?->nama_kegiatan === 'Desain' && empty($jamMulai)) {
+                    return '<div class="d-inline-flex align-items-center">'
+                         . '  <span class="text-nowrap"><span class="text-muted small">Deadline:</span> <span class="fw-semibold">' . $startStr . '</span></span>'
+                         . '  <span class="badge bg-light text-info border small ms-2"><i class="fa-solid fa-palette me-1"></i>Desain</span>'
+                         . '</div>';
+                }
+
                 return '<div class="d-flex flex-column gap-1">'
                      . '  <div class="d-inline-flex align-items-center">'
                      . '    <span class="text-nowrap"><span class="text-muted small">Pelaksanaan:</span> <span class="fw-semibold">' . $startStr . '</span></span>'

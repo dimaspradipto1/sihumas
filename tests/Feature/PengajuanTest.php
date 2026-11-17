@@ -232,5 +232,54 @@ class PengajuanTest extends TestCase
         $humasResponse->assertSee('Detail Pengajuan (Review)');
         $humasResponse->assertSee('Kembali ke Kotak Masuk');
     }
+
+    public function test_user_can_submit_desain_only_without_schedule_and_location(): void
+    {
+        $user = User::factory()->create([
+            'is_admin' => false,
+            'is_humas' => false,
+            'is_fst' => true,
+        ]);
+
+        $admin = User::factory()->create([
+            'is_admin' => true,
+        ]);
+
+        $deadline = now()->addDays(3)->toDateString();
+
+        $response = $this->actingAs($user)->post(route('pengajuan.store'), [
+            'nama_kegiatan' => 'Desain',
+            'tgl_awal' => $deadline,
+            'deskripsi_kegiatan' => 'Poster Seminar Nasional AI, ukuran A3, warna hijau UIS.',
+            'unit_kegiatan' => 'FST',
+        ]);
+
+        $response->assertRedirect(route('pengajuan.index'));
+
+        $this->assertDatabaseHas('pengajuans', [
+            'user_id' => $user->id,
+            'nama_kegiatan' => 'Desain',
+            'tgl_awal' => $deadline,
+            'tgl_selesai' => $deadline,
+            'jam_kegiatan' => null,
+            'waktu_selesai' => null,
+            'tempat_kegiatan' => null,
+        ]);
+
+        $pengajuan = Pengajuan::where('user_id', $user->id)->where('nama_kegiatan', 'Desain')->firstOrFail();
+
+        $showResponse = $this->actingAs($user)->get(route('pengajuan.show', $pengajuan->id));
+        $showResponse->assertStatus(200);
+        $showResponse->assertSee('Deadline Desain');
+        $showResponse->assertSee('Brief Desain');
+        $showResponse->assertDontSee('Waktu Kegiatan');
+        $showResponse->assertDontSee('Tempat Kegiatan');
+
+        $editResponse = $this->actingAs($admin)->get(route('pengajuan.edit', $pengajuan->id));
+        $editResponse->assertStatus(200);
+        $editResponse->assertSee('Deadline Desain');
+        $editResponse->assertSee('1. PIC Desain');
+        $editResponse->assertDontSee('2. PIC Dokumentasi');
+    }
 }
 
