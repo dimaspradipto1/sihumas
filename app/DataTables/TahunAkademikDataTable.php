@@ -26,7 +26,14 @@ class TahunAkademikDataTable extends DataTable
             ->addColumn('DT_RowIndex', '')
             ->addColumn('is_active', function($item) {
                 if ($item->is_active) {
-                    return '<span class="badge bg-success text-white px-3 py-2"><i class="fa-solid fa-circle-check me-1"></i> Aktif (Default)</span>';
+                    return '
+                        <form action="'.route('tahun-akademik.set-active', $item->id).'" method="POST" style="display: inline" class="form-toggle-active">
+                            '.csrf_field().'
+                            <button type="submit" class="btn btn-xs btn-success text-white rounded-pill px-3 py-1 border-0" title="Klik untuk menonaktifkan">
+                                <i class="fa-solid fa-circle-check me-1"></i> Aktif (Default)
+                            </button>
+                        </form>
+                    ';
                 }
                 return '
                     <form action="'.route('tahun-akademik.set-active', $item->id).'" method="POST" style="display: inline" class="form-toggle-active">

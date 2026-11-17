@@ -92,6 +92,21 @@ class TahunAkademikController extends Controller
      */
     public function setActive(Request $request, TahunAkademik $tahunAkademik)
     {
+        if ($tahunAkademik->is_active) {
+            $tahunAkademik->update(['is_active' => false]);
+            $message = "Tahun Akademik {$tahunAkademik->tahun_akademik} dinonaktifkan.";
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'is_active' => false,
+                    'message' => $message,
+                ]);
+            }
+
+            Alert::success('Berhasil', $message)->autoclose(2500)->toToast();
+            return back();
+        }
+
         TahunAkademik::where('id', '!=', $tahunAkademik->id)->update(['is_active' => false]);
         $tahunAkademik->update(['is_active' => true]);
 
@@ -99,6 +114,7 @@ class TahunAkademikController extends Controller
         if ($request->expectsJson() || $request->ajax()) {
             return response()->json([
                 'success' => true,
+                'is_active' => true,
                 'message' => $message,
             ]);
         }
