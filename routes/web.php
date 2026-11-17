@@ -10,6 +10,7 @@ use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\PublikasiController;
 use App\Http\Controllers\UnitKegiatanController;
 use App\Http\Controllers\TahunAkademikController;
+use App\Http\Controllers\TriwulanController;
 use App\Http\Controllers\LaporanPublikasiController;
 use App\Http\Controllers\KotakMasukPengajuanController;
 use App\Http\Controllers\SettingController;
@@ -74,6 +75,9 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
     Route::get('/laporan-publikasi/show', [LaporanPublikasiController::class, 'show'])->name('laporan-publikasi.show');
     Route::post('/tahun-akademik/{tahunAkademik}/set-active', [TahunAkademikController::class, 'setActive'])->name('tahun-akademik.set-active');
     Route::resource('/tahun-akademik', TahunAkademikController::class);
+    Route::post('/triwulan/sync-auto', [TriwulanController::class, 'syncAuto'])->name('triwulan.sync-auto');
+    Route::post('/triwulan/{triwulan}/set-active', [TriwulanController::class, 'setActive'])->name('triwulan.set-active');
+    Route::resource('/triwulan', TriwulanController::class);
     Route::get('/user/{id}/update-password',[UserController::class, 'showUpdatePasswordForm'])->name('users.showUpdatePasswordForm');
     Route::put('/user/{id}/update-password', [UserController::class, 'updatePassword'])->name('users.updatePassword');
     Route::resource('/unit-kegiatan', UnitKegiatanController::class);

@@ -6,6 +6,7 @@ use App\DataTables\LaporanPublikasiDataTable;
 use App\Models\LaporanPublikasi;
 use App\Models\Pengajuan;
 use App\Models\TahunAkademik;
+use App\Models\Triwulan;
 use Illuminate\Http\Request;
 
 class LaporanPublikasiController extends Controller
@@ -18,11 +19,13 @@ class LaporanPublikasiController extends Controller
         // $tahunAkademik = TahunAkademik::all();
         // return $dataTable->render('pages.laporanPublikasi.index', compact('tahunAkademik'));
         $tahunAkademik = TahunAkademik::orderByDesc('id')->get();
+        $triwulanList = Triwulan::orderBy('id')->get();
+        $activeTw = Triwulan::syncActiveByCurrentMonth();
         $selectedPeriode = request('tahun_akademik'); // Jangan auto default
 
         return $dataTable
             ->with(['tahun_akademik' => $selectedPeriode])
-            ->render('pages.laporanPublikasi.index', compact('tahunAkademik', 'selectedPeriode'));
+            ->render('pages.laporanPublikasi.index', compact('tahunAkademik', 'triwulanList', 'activeTw', 'selectedPeriode'));
     }
 
     /**
@@ -112,6 +115,7 @@ class LaporanPublikasiController extends Controller
     {
         $tahunAkademikList = TahunAkademik::orderByDesc('id')->get();
         $selectedPeriode = $request->get('tahun_akademik');
+        $tw = $request->get('tw');
         $bulan = $request->get('bulan');
         $tahun = $request->get('tahun');
         $tglAwal = $request->get('tgl_awal');
@@ -139,7 +143,29 @@ class LaporanPublikasiController extends Controller
                 $filterLabel = 'Tahun Akademik: ' . ($ta->tahun_akademik ?? $selectedPeriode);
             }
         }
-        // 2. Filter Bulan (dan opsional Tahun)
+        // 2. Filter Triwulan (TW) + Tahun
+        elseif ($filterType === 'tw' || !empty($tw)) {
+            $twModel = !empty($tw)
+                ? (Triwulan::where('kode', $tw)->orWhere('id', $tw)->first())
+                : Triwulan::syncActiveByCurrentMonth();
+
+            if ($twModel) {
+                $targetYear = (int) ($tahun ?: now()->year);
+                [$startDate, $endDate] = $twModel->getDateRangeForYear($targetYear);
+
+                $query->where(function ($q) use ($startDate, $endDate) {
+                    $q->whereBetween('tgl_awal', [$startDate->toDateString(), $endDate->toDateString()])
+                      ->orWhereHas('pengajuan', function ($pq) use ($startDate, $endDate) {
+                          $pq->whereBetween('tgl_awal', [$startDate->toDateString(), $endDate->toDateString()]);
+                      });
+                });
+
+                $startStr = $startDate->copy()->locale('id')->translatedFormat('M Y');
+                $endStr = $endDate->copy()->locale('id')->translatedFormat('M Y');
+                $filterLabel = "{$twModel->nama} ({$startStr} – {$endStr})";
+            }
+        }
+        // 3. Filter Bulan (dan opsional Tahun)
         elseif ($filterType === 'bulan' || !empty($bulan)) {
             if (!empty($bulan)) {
                 $query->where(function ($q) use ($bulan) {

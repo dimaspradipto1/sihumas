@@ -43,6 +43,12 @@
                                         <span class="tab-label">Tahun<br>Akademik</span>
                                     </label>
 
+                                    <input type="radio" class="btn-check" name="filter_type" id="filter_tw" value="tw" autocomplete="off">
+                                    <label class="btn filter-tab-btn flex-fill d-flex flex-column align-items-center justify-content-center text-center py-2 px-1 mb-0" for="filter_tw">
+                                        <i class="fa-solid fa-clock-rotate-left mb-1 fs-6"></i>
+                                        <span class="tab-label">TW</span>
+                                    </label>
+
                                     <input type="radio" class="btn-check" name="filter_type" id="filter_bulan" value="bulan" autocomplete="off">
                                     <label class="btn filter-tab-btn flex-fill d-flex flex-column align-items-center justify-content-center text-center py-2 px-1 mb-0" for="filter_bulan">
                                         <i class="fa-solid fa-calendar-days mb-1 fs-6"></i>
@@ -81,6 +87,34 @@
                                         </option>
                                     @endforeach
                                 </select>
+                            </div>
+
+                            <!-- 2b. Panel TW (Triwulan) & Tahun -->
+                            <div class="filter-panel mb-3 d-none" id="panel-tw">
+                                <div class="row g-2">
+                                    <div class="col-7">
+                                        <label for="filter_select_tw" class="form-label small fw-bold">Pilih Triwulan (TW)</label>
+                                        <select name="tw" id="filter_select_tw" class="form-select form-select-sm" disabled>
+                                            @foreach ($triwulanList ?? [] as $twItem)
+                                                <option value="{{ $twItem->kode }}" {{ ($activeTw?->id === $twItem->id || $twItem->is_active) ? 'selected' : '' }}>
+                                                    {{ $twItem->nama }} {{ $twItem->is_active ? '✅ (Aktif)' : '' }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-5">
+                                        <label for="filter_tahun_for_tw" class="form-label small fw-bold">Tahun</label>
+                                        <select name="tahun" id="filter_tahun_for_tw" class="form-select form-select-sm" disabled>
+                                            @php $currY = date('Y'); @endphp
+                                            @for ($y = $currY + 1; $y >= $currY - 5; $y--)
+                                                <option value="{{ $y }}" {{ $y == $currY ? 'selected' : '' }}>{{ $y }}</option>
+                                            @endfor
+                                        </select>
+                                    </div>
+                                </div>
+                                <small class="text-muted d-block mt-1" style="font-size: 11px;">
+                                    <i class="fa-solid fa-circle-info me-1"></i> Untuk TW2 (Des–Feb), sistem otomatis menarik data Desember tahun terpilih s/d Februari tahun berikutnya.
+                                </small>
                             </div>
 
                             <!-- 3. Panel Bulan & Tahun -->
@@ -183,6 +217,7 @@
             const panels = {
                 'all': document.getElementById('panel-all'),
                 'tahun_akademik': document.getElementById('panel-ta'),
+                'tw': document.getElementById('panel-tw'),
                 'bulan': document.getElementById('panel-bulan'),
                 'tahun': document.getElementById('panel-tahun'),
                 'tanggal': document.getElementById('panel-tanggal'),

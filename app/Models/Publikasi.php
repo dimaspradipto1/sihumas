@@ -13,6 +13,7 @@ class Publikasi extends Model
         'slug',
         'user_id',
         'tahun_akademik_id',
+        'triwulan_id',
         'pengajuan_id',
         'upload_laporan',
         'link_dokumentasi',
@@ -36,6 +37,10 @@ class Publikasi extends Model
                 $publikasi->tahun_akademik_id = TahunAkademik::getActive()?->id;
             }
 
+            if (empty($publikasi->triwulan_id)) {
+                $publikasi->triwulan_id = Triwulan::getActive()?->id;
+            }
+
             if (empty($publikasi->slug)) {
                 $title = $publikasi->pengajuan?->nama_kegiatan;
                 if (!$title && $publikasi->pengajuan_id) {
@@ -48,6 +53,10 @@ class Publikasi extends Model
         static::updating(function ($publikasi) {
             if (empty($publikasi->tahun_akademik_id)) {
                 $publikasi->tahun_akademik_id = TahunAkademik::getActive()?->id;
+            }
+
+            if (empty($publikasi->triwulan_id)) {
+                $publikasi->triwulan_id = Triwulan::getActive()?->id;
             }
 
             if (empty($publikasi->slug)) {
@@ -185,5 +194,10 @@ class Publikasi extends Model
             }
         }
         return [];
+    }
+
+    public function triwulan()
+    {
+        return $this->belongsTo(Triwulan::class, 'triwulan_id');
     }
 }
