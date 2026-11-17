@@ -102,21 +102,22 @@
 
               @if (!Auth::user()->is_humas || Auth::user()->is_admin)
               <li class="nav-item {{ request()->routeIs('pengajuan.*') ? 'active' : '' }}">
-                  <a href="{{ route('pengajuan.index') }}" class="nav-link nav-with-badge">
-                      <span class="sidebar-icon">
-                          <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                              xmlns="http://www.w3.org/2000/svg">
-                              <path fill-rule="evenodd"
-                                  d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
-                                  clip-rule="evenodd"></path>
-                          </svg>
+                  <a href="{{ route('pengajuan.index') }}" class="nav-link nav-with-badge d-flex justify-content-between align-items-center gap-2">
+                      <span class="d-flex align-items-center text-truncate">
+                          <span class="sidebar-icon">
+                              <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
+                                  xmlns="http://www.w3.org/2000/svg">
+                                  <path fill-rule="evenodd"
+                                      d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
+                                      clip-rule="evenodd"></path>
+                              </svg>
+                          </span>
+                          <span class="sidebar-text text-capitalize">Pengajuan Kegiatan</span>
                       </span>
 
-                      <span class="sidebar-text text-capitalize">Pengajuan Kegiatan</span>
-
-                      {{-- BADGE: pojok kanan atas --}}
+                      {{-- BADGE: sejajar di dalam menu agar tidak overflow --}}
                       @if (!request()->routeIs('pengajuan.*') && ($pending > 0 || $diterima > 0 || $ditolak > 0))
-                          <div class="badge-group">
+                          <div class="badge-group flex-shrink-0">
                               @if ($pending > 0)
                                   <span class="badge-dot badge-pending" title="Pending">{{ $pending }}</span>
                               @endif
@@ -135,19 +136,15 @@
               @endif
 
               <style>
-                  /* WAJIB: ini bikin absolute nempel di area menu */
                   .nav-with-badge {
                       position: relative;
                   }
 
-                  /* Container badge di pojok kanan atas */
+                  /* Container badge rapi di kanan dalam area nav-link */
                   .badge-group {
-                      position: absolute;
-                      top: -6px;
-                      right: -10px;
-                      display: flex;
+                      display: inline-flex;
+                      align-items: center;
                       gap: 4px;
-                      z-index: 10;
                   }
 
                   /* Badge bulat kecil */
@@ -180,45 +177,43 @@
 
               @if (Auth::user()->is_admin || Auth::user()->is_humas)
                   <li class="nav-item {{ request()->routeIs('kotak-masuk-pengajuan.*') ? 'active' : '' }}">
-                      <a href="{{ route('kotak-masuk-pengajuan.index') }}" class="nav-link" style="position: relative;">
-                          <span class="sidebar-icon">
-                              <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                                  xmlns="http://www.w3.org/2000/svg">
-                                  <path fill-rule="evenodd"
-                                      d="M5 3a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2H5zm0 2h10v7h-2l-1 2H8l-1-2H5V5z"
-                                      clip-rule="evenodd"></path>
-                              </svg>
-                          </span>
-
-                          <span class="sidebar-text text-capitalize">Kotak Masuk</span>
-
-                          <span class="sidebar-subtext text-capitalize"
-                              style="display:block; text-align:start; margin-left:35px;">
-                              Pengajuan kegiatan
-
-                              @if (!request()->routeIs('kotak-masuk-pengajuan.*') && ($notifikasi_pengajuan_admin ?? 0) > 0)
-                                  <span
-                                      class="badge-kotak-masuk"
-                                      style="
-                        position:absolute;
-                        top: -45px;
-                        right: -20px;
-                        background:red;
-                        color:white;
-                        border-radius:999px;
-                        min-width:20px;
-                        height:20px;
-                        padding:0 6px;
-                        display:inline-flex;
-                        justify-content:center;
-                        align-items:center;
-                        font-size:12px;
-                        line-height:1;
-                    ">
-                                      {{ $notifikasi_pengajuan_admin }}
+                      <a href="{{ route('kotak-masuk-pengajuan.index') }}" class="nav-link d-flex justify-content-between align-items-center gap-2">
+                          <span class="d-flex align-items-start">
+                              <span class="sidebar-icon mt-1">
+                                  <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
+                                      xmlns="http://www.w3.org/2000/svg">
+                                      <path fill-rule="evenodd"
+                                          d="M5 3a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2H5zm0 2h10v7h-2l-1 2H8l-1-2H5V5z"
+                                          clip-rule="evenodd"></path>
+                                  </svg>
+                              </span>
+                              <span>
+                                  <span class="sidebar-text text-capitalize d-block">Kotak Masuk</span>
+                                  <span class="sidebar-subtext text-capitalize d-block" style="font-size: 0.75rem; opacity: 0.85;">
+                                      Pengajuan kegiatan
                                   </span>
-                              @endif
+                              </span>
                           </span>
+
+                          @if (!request()->routeIs('kotak-masuk-pengajuan.*') && ($notifikasi_pengajuan_admin ?? 0) > 0)
+                              <span class="badge-kotak-masuk flex-shrink-0"
+                                  style="
+                                      background: #dc3545;
+                                      color: #ffffff;
+                                      border-radius: 999px;
+                                      min-width: 20px;
+                                      height: 20px;
+                                      padding: 0 6px;
+                                      display: inline-flex;
+                                      justify-content: center;
+                                      align-items: center;
+                                      font-size: 11px;
+                                      font-weight: 700;
+                                      line-height: 1;
+                                  ">
+                                  {{ $notifikasi_pengajuan_admin }}
+                              </span>
+                          @endif
                       </a>
                   </li>
               @endif
