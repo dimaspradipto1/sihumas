@@ -126,8 +126,9 @@ class LaporanPublikasiDataTable extends DataTable
                     return '<span class="text-muted small">-</span>';
                 }
                 $target = !empty($pub->slug) ? $pub->slug : $pub->id;
-                $html = '<div class="d-flex justify-content-center gap-1">';
-                $html .= '<a href="' . route('publikasi.show', $target) . '" class="btn btn-sm btn-primary text-white px-2 py-1" title="Lihat Detail"><i class="fa-solid fa-eye"></i></a>';
+                $btnStyle = 'width: 32px; height: 32px; font-size: 0.875rem;';
+                $html = '<div class="d-inline-flex align-items-center justify-content-center gap-1 flex-nowrap">';
+                $html .= '<a href="' . route('publikasi.show', $target) . '" class="btn btn-sm btn-primary text-white d-inline-flex align-items-center justify-content-center p-0" style="' . $btnStyle . '" title="Lihat Detail"><i class="fa-solid fa-eye"></i></a>';
 
                 if (auth()->check() && auth()->user()->is_admin) {
                     $actionUrl = route('publikasi.validasi', $target);
@@ -136,7 +137,7 @@ class LaporanPublikasiDataTable extends DataTable
                     $html .= '<form action="' . $actionUrl . '" method="POST" style="display: inline" class="form-validasi-setujui">'
                            . csrf_field()
                            . '<input type="hidden" name="status_validasi" value="disetujui">'
-                           . '<button type="submit" class="btn btn-sm btn-success text-white px-2 py-1" title="Validasi / Setujui Laporan">'
+                           . '<button type="submit" class="btn btn-sm btn-success text-white d-inline-flex align-items-center justify-content-center p-0" style="' . $btnStyle . '" title="Validasi / Setujui Laporan">'
                            . '<i class="fa-solid fa-clipboard-check"></i></button></form>';
 
                     // 2. Tombol Menolak Validasi Langsung (SweetAlert)
@@ -144,19 +145,19 @@ class LaporanPublikasiDataTable extends DataTable
                            . csrf_field()
                            . '<input type="hidden" name="status_validasi" value="ditolak">'
                            . '<input type="hidden" name="catatan_validasi" value="">'
-                           . '<button type="submit" class="btn btn-sm btn-danger text-white px-2 py-1" title="Tolak Validasi">'
-                           . '<i class="fa-solid fa-clipboard-xmark"></i></button></form>';
+                           . '<button type="submit" class="btn btn-sm btn-danger text-white d-inline-flex align-items-center justify-content-center p-0" style="' . $btnStyle . '" title="Tolak Validasi">'
+                           . '<i class="fa-solid fa-circle-xmark"></i></button></form>';
                 }
 
                 // Hanya Admin & Humas yang bisa mengedit / mengisi laporan kegiatan
                 if (auth()->check() && (auth()->user()->is_admin || auth()->user()->is_humas)) {
-                    $html .= '<a href="' . route('publikasi.edit', $target) . '" class="btn btn-sm btn-warning text-white px-2 py-1" title="Edit / Laporkan"><i class="fa-solid fa-pen-to-square"></i></a>';
+                    $html .= '<a href="' . route('publikasi.edit', $target) . '" class="btn btn-sm btn-warning text-white d-inline-flex align-items-center justify-content-center p-0" style="' . $btnStyle . '" title="Edit / Laporkan"><i class="fa-solid fa-pen-to-square"></i></a>';
                 }
 
                 if (auth()->check() && auth()->user()->is_admin) {
                     $html .= '<form action="' . route('publikasi.destroy', $target) . '" method="POST" style="display: inline" class="form-action-delete">'
                            . csrf_field() . method_field('DELETE')
-                           . '<button type="submit" class="btn btn-sm btn-danger px-2 py-1" title="Hapus"><i class="fa-solid fa-trash-can"></i></button></form>';
+                           . '<button type="submit" class="btn btn-sm btn-danger d-inline-flex align-items-center justify-content-center p-0" style="' . $btnStyle . '" title="Hapus"><i class="fa-solid fa-trash-can"></i></button></form>';
                 }
                 $html .= '</div>';
                 return $html;
@@ -267,7 +268,7 @@ class LaporanPublikasiDataTable extends DataTable
             Column::make('link_dokumentasi')->title('DOKUMENTASI')->orderable(false)->searchable(false)->width('9%')->addClass('text-center'),
             Column::make('link_publikasi')->title('LINK PUBLIKASI')->orderable(false)->searchable(false)->width('11%'),
             Column::make('user_id')->name('user.name')->title('SUBMIT PENGGUNA')->visible($isAdmin)->width('12%'),
-            Column::computed('action')->title('AKSI')->exportable(false)->printable(false)->width($isAdmin ? '12%' : '8%')->addClass('text-center'),
+            Column::computed('action')->title('AKSI')->exportable(false)->printable(false)->width($isAdmin ? '15%' : '8%')->addClass('text-center text-nowrap'),
         ];
     }
 
