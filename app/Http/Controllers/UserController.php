@@ -7,6 +7,8 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\DataTables\UsersDataTable;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class UserController extends Controller
@@ -51,6 +53,24 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+        ], [
+            'name.required' => 'Nama pengguna wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email sudah terdaftar. Gunakan email lain atau edit pengguna yang sudah ada.',
+            'foto.image' => 'File foto harus berupa gambar.',
+            'foto.max' => 'Ukuran foto maksimal 2 MB.',
+        ]);
+
+        if ($validator->fails()) {
+            Alert::error('Gagal Menyimpan', $validator->errors()->first())->autoclose(4000)->toToast();
+            return back()->withErrors($validator)->withInput();
+        }
+
         $unit = null;
         if ($request->filled('unit_kegiatan_id')) {
             $unit = \App\Models\UnitKegiatan::find($request->unit_kegiatan_id);
@@ -137,6 +157,24 @@ class UserController extends Controller
     public function update(Request $request, string $id)
     {
         $user = User::findOrFail($id);
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+        ], [
+            'name.required' => 'Nama pengguna wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email sudah digunakan oleh pengguna lain.',
+            'foto.image' => 'File foto harus berupa gambar.',
+            'foto.max' => 'Ukuran foto maksimal 2 MB.',
+        ]);
+
+        if ($validator->fails()) {
+            Alert::error('Gagal Memperbarui', $validator->errors()->first())->autoclose(4000)->toToast();
+            return back()->withErrors($validator)->withInput();
+        }
 
         $unit = null;
         if ($request->has('unit_kegiatan_id')) {

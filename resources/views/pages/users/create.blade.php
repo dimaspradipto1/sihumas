@@ -39,12 +39,18 @@
 
                 <div class="mb-4">
                   <label for="nama_mahasiswa" class="text-uppercase">nama pengguna</label>
-                  <input type="text" name="name" value="{{old('name') }}" class="form-control" id="nama_mahasiswa">
+                  <input type="text" name="name" value="{{old('name') }}" class="form-control @error('name') is-invalid @enderror" id="nama_mahasiswa" required>
+                  @error('name')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
                 </div>
 
                 <div class="mb-4">
                   <label for="email" class="text-uppercase">Email</label>
-                  <input type="email" name="email" value="{{old('email')}}" class="form-control" id="email">
+                  <input type="email" name="email" value="{{old('email')}}" class="form-control @error('email') is-invalid @enderror" id="email" required>
+                  @error('email')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
                 </div>
 
                 <div class="mb-4">

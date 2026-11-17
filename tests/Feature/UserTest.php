@@ -238,5 +238,35 @@ class UserTest extends TestCase
         $this->assertEquals('operator', $created->role_key);
         $this->assertEquals('Pengusul (Kabid Akademik)', $created->role_label);
     }
+
+    public function test_duplicate_email_returns_validation_alert_instead_of_server_error(): void
+    {
+        $admin = User::factory()->create([
+            'is_admin' => true,
+        ]);
+
+        $existingEmail = 'ropianto_' . uniqid() . '@uis.ac.id';
+        User::factory()->create([
+            'email' => $existingEmail,
+        ]);
+
+        $storeResponse = $this->actingAs($admin)->post(route('users.store'), [
+            'name' => 'Duplicate User',
+            'email' => $existingEmail,
+            'role' => 'operator',
+        ]);
+
+        $storeResponse->assertStatus(302);
+        $storeResponse->assertSessionHasErrors('email');
+
+        $otherUser = User::factory()->create();
+        $updateResponse = $this->actingAs($admin)->put(route('users.update', $otherUser->id), [
+            'name' => 'Updated User',
+            'email' => $existingEmail,
+        ]);
+
+        $updateResponse->assertStatus(302);
+        $updateResponse->assertSessionHasErrors('email');
+    }
 }
 
