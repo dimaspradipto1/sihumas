@@ -39,53 +39,22 @@
                 <!-- Right Side: Notifications & User profile dropdown -->
                 <ul class="navbar-nav align-items-center mb-0">
                     @php
-                        $notif = session('pengajuan_notif', []);
                         $user = auth()->user();
-
-                        // Scope mengikuti role yang login
-                        $scope = null;
-
-                        if (!empty($user->is_admin) || !empty($user->is_staffbaak)) {
-                            $scope = 'admin';
-                        } elseif (!empty($user->is_humas)) {
-                            $scope = 'humas';
-                        } elseif (!empty($user->is_feb)) {
-                            $scope = 'feb';
-                        } elseif (!empty($user->is_fst)) {
-                            $scope = 'fst';
-                        } elseif (!empty($user->is_fikes)) {
-                            $scope = 'fikes';
-                        } elseif (!empty($user->is_rektorat)) {
-                            $scope = 'rektorat';
-                        } else {
-                            $scope = 'user';
-                        }
-
-                        $pending = $scope ? data_get($notif, "$scope.pending", 0) : 0;
-                        $diterima = $scope ? data_get($notif, "$scope.diterima", 0) : 0;
-                        $ditolak = $scope ? data_get($notif, "$scope.ditolak", 0) : 0;
-
-                        $totalNotif = $pending + $diterima + $ditolak;
-                        $hasNotifications = $totalNotif > 0;
-
-                        // Label judul sesuai scope
-                        $scopeLabel = match ($scope) {
-                            'admin' => 'Seluruh Unit',
-                            'humas' => 'Tugas PIC Anda',
-                            'feb' => 'FEB',
-                            'fst' => 'FST',
-                            'fikes' => 'FIKES',
-                            'rektorat' => 'Rektorat',
-                            default => $user->unitKegiatan?->nama_sub ?? 'Unit Anda',
-                        };
+                        $bellData = $bellNotif ?? ['total' => 0, 'pending' => 0, 'diterima' => 0, 'ditolak' => 0, 'recent' => collect()];
+                        $recentNotifs = $bellData['recent'] ?? collect();
+                        $totalNotif = (int) ($bellData['total'] ?? 0);
+                        $hasNotifications = $totalNotif > 0 || $recentNotifs->isNotEmpty();
+                        $notifAllRoute = (!empty($user->is_admin) || !empty($user->is_humas))
+                            ? route('kotak-masuk-pengajuan.index')
+                            : route('pengajuan.index');
                     @endphp
 
                     {{-- Notification Bell --}}
                     <li class="nav-item dropdown me-2">
                         <a class="nav-link text-gray-700 notification-bell-btn dropdown-toggle"
-                            data-unread-notifications="{{ $hasNotifications ? 'true' : 'false' }}" href="#"
+                            data-unread-notifications="{{ $totalNotif > 0 ? 'true' : 'false' }}" href="#"
                             role="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false"
-                            title="Notifikasi Pengajuan">
+                            title="Notifikasi Pengajuan & Informasi Terbaru">
                             <svg style="width: 19px; height: 19px; display: block; margin: 0 auto;" fill="currentColor" viewBox="0 0 20 20"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path
@@ -98,85 +67,56 @@
                             @endif
                         </a>
 
-                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end mt-2 py-0 shadow-sm border-0">
+                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end mt-2 py-0 shadow-sm border-0" style="min-width: 340px; max-width: 92vw;">
                             <div class="list-group list-group-flush">
-                                <a href="#" class="text-center text-primary fw-bold border-bottom border-light py-3">
-                                    Notifications
-                                </a>
+                                <div class="d-flex justify-content-between align-items-center px-3 py-3 border-bottom border-light">
+                                    <span class="text-primary fw-bold small text-uppercase">Notifikasi &amp; Info Terbaru</span>
+                                    @if (($bellData['pending'] ?? 0) > 0)
+                                        <span class="badge bg-warning text-dark">{{ $bellData['pending'] }} Pending</span>
+                                    @endif
+                                </div>
 
-                                {{-- PENDING --}}
-                                @if ($pending > 0)
-                                    <a href="{{ route('kotak-masuk-pengajuan.index', ['status' => 'pending']) }}"
-                                        class="list-group-item list-group-item-action border-bottom">
-                                        <div class="row align-items-center">
-                                            <div class="col ps-0 ms-2">
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <div>
-                                                        <h4 class="h6 mb-0 text-small">
-                                                            Pengajuan Pending {{ $scopeLabel }}
-                                                        </h4>
+                                @if ($recentNotifs->isNotEmpty())
+                                    @foreach ($recentNotifs as $item)
+                                        @php
+                                            $itemUrl = !empty($user->is_admin)
+                                                ? route('pengajuan.edit', $item->id)
+                                                : route('pengajuan.show', $item->id);
+                                            $statusBadge = match ($item->status) {
+                                                'diterima' => '<span class="badge bg-success text-white">Diterima</span>',
+                                                'ditolak' => '<span class="badge bg-danger text-white">Ditolak</span>',
+                                                default => '<span class="badge bg-warning text-dark">Pending</span>',
+                                            };
+                                        @endphp
+                                        <a href="{{ $itemUrl }}" class="list-group-item list-group-item-action border-bottom py-2 px-3">
+                                            <div class="d-flex justify-content-between align-items-start gap-2">
+                                                <div class="text-truncate">
+                                                    <div class="fw-bold text-gray-900 small text-truncate">{{ $item->nama_kegiatan }}</div>
+                                                    <div class="text-muted text-truncate" style="font-size: 0.75rem;">
+                                                        {{ $item->unit_kegiatan ?: ($item->user?->name ?? '-') }}
+                                                        @if (!empty($item->link_desain))
+                                                            • <span class="text-info fw-semibold">Link Desain Tersedia</span>
+                                                        @endif
                                                     </div>
-                                                    <div class="text-end">
-                                                        <small class="text-warning">{{ $pending }} Pengajuan</small>
+                                                </div>
+                                                <div class="text-end flex-shrink-0">
+                                                    {!! $statusBadge !!}
+                                                    <div class="text-muted mt-1" style="font-size: 0.68rem;">
+                                                        {{ $item->updated_at ? $item->updated_at->locale('id')->diffForHumans() : '' }}
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </a>
-                                @endif
-
-                                {{-- DITERIMA --}}
-                                @if ($diterima > 0)
-                                    <a href="{{ route('kotak-masuk-pengajuan.index', ['status' => 'diterima']) }}"
-                                        class="list-group-item list-group-item-action border-bottom">
-                                        <div class="row align-items-center">
-                                            <div class="col ps-0 ms-2">
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <div>
-                                                        <h4 class="h6 mb-0 text-small">
-                                                            Pengajuan Diterima {{ $scopeLabel }}
-                                                        </h4>
-                                                    </div>
-                                                    <div class="text-end">
-                                                        <small class="text-success">{{ $diterima }} Pengajuan</small>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                @endif
-
-                                {{-- DITOLAK --}}
-                                @if ($ditolak > 0)
-                                    <a href="{{ route('kotak-masuk-pengajuan.index', ['status' => 'ditolak']) }}"
-                                        class="list-group-item list-group-item-action border-bottom">
-                                        <div class="row align-items-center">
-                                            <div class="col ps-0 ms-2">
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <div>
-                                                        <h4 class="h6 mb-0 text-small">
-                                                            Pengajuan Ditolak {{ $scopeLabel }}
-                                                        </h4>
-                                                    </div>
-                                                    <div class="text-end">
-                                                        <small class="text-danger">{{ $ditolak }} Pengajuan</small>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                @endif
-
-                                {{-- Jika tidak ada notif --}}
-                                @if (!$hasNotifications)
+                                        </a>
+                                    @endforeach
+                                @else
                                     <div class="list-group-item border-bottom">
-                                        <div class="text-center text-muted py-3">
+                                        <div class="text-center text-muted py-3 small">
                                             Tidak ada notifikasi terbaru
                                         </div>
                                     </div>
                                 @endif
 
-                                <a href="{{ route('kotak-masuk-pengajuan.index') }}"
+                                <a href="{{ $notifAllRoute }}"
                                     class="dropdown-item text-center fw-bold rounded-bottom py-3">
                                     <svg class="icon icon-xxs text-gray-400 me-1" fill="currentColor" viewBox="0 0 20 20"
                                         xmlns="http://www.w3.org/2000/svg">
