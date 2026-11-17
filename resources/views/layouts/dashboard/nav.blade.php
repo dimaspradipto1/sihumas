@@ -67,12 +67,13 @@
                             @endif
                         </a>
 
-                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end mt-2 py-0 shadow-sm border-0" style="min-width: 340px; max-width: 92vw;">
+                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end mt-2 py-0 shadow-sm border-0"
+                            style="width: 340px !important; min-width: 340px !important; max-width: 92vw !important; overflow: hidden !important;">
                             <div class="list-group list-group-flush">
-                                <div class="d-flex justify-content-between align-items-center px-3 py-3 border-bottom border-light">
-                                    <span class="text-primary fw-bold small text-uppercase">Notifikasi &amp; Info Terbaru</span>
+                                <div class="d-flex justify-content-between align-items-center gap-2 px-3 py-2 border-bottom border-light">
+                                    <span class="text-primary fw-bold text-uppercase" style="font-size: 11px; white-space: nowrap;">Notifikasi &amp; Info Terbaru</span>
                                     @if (($bellData['pending'] ?? 0) > 0)
-                                        <span class="badge bg-warning text-dark">{{ $bellData['pending'] }} Pending</span>
+                                        <span class="badge bg-warning flex-shrink-0 px-2 py-1" style="font-size: 11px; color: #1f2937 !important; white-space: nowrap;">{{ $bellData['pending'] }} Pending</span>
                                     @endif
                                 </div>
 
@@ -83,16 +84,16 @@
                                                 ? route('pengajuan.edit', $item->id)
                                                 : route('pengajuan.show', $item->id);
                                             $statusBadge = match ($item->status) {
-                                                'diterima' => '<span class="badge bg-success text-white">Diterima</span>',
-                                                'ditolak' => '<span class="badge bg-danger text-white">Ditolak</span>',
-                                                default => '<span class="badge bg-warning text-dark">Pending</span>',
+                                                'diterima' => '<span class="badge bg-success px-2 py-1" style="font-size: 11px; color: #ffffff !important;">Diterima</span>',
+                                                'ditolak' => '<span class="badge bg-danger px-2 py-1" style="font-size: 11px; color: #ffffff !important;">Ditolak</span>',
+                                                default => '<span class="badge bg-warning px-2 py-1" style="font-size: 11px; color: #1f2937 !important;">Pending</span>',
                                             };
                                         @endphp
                                         <a href="{{ $itemUrl }}" class="list-group-item list-group-item-action border-bottom py-2 px-3">
                                             <div class="d-flex justify-content-between align-items-start gap-2">
-                                                <div class="text-truncate">
-                                                    <div class="fw-bold text-gray-900 small text-truncate">{{ $item->nama_kegiatan }}</div>
-                                                    <div class="text-muted text-truncate" style="font-size: 0.75rem;">
+                                                <div class="flex-grow-1" style="min-width: 0;">
+                                                    <div class="fw-bold text-gray-900 text-truncate" style="font-size: 11px;">{{ $item->nama_kegiatan }}</div>
+                                                    <div class="text-muted text-truncate" style="font-size: 11px;">
                                                         {{ $item->unit_kegiatan ?: ($item->user?->name ?? '-') }}
                                                         @if (!empty($item->link_desain))
                                                             • <span class="text-info fw-semibold">Link Desain Tersedia</span>
@@ -101,7 +102,7 @@
                                                 </div>
                                                 <div class="text-end flex-shrink-0">
                                                     {!! $statusBadge !!}
-                                                    <div class="text-muted mt-1" style="font-size: 0.68rem;">
+                                                    <div class="text-muted mt-1" style="font-size: 11px; white-space: nowrap;">
                                                         {{ $item->updated_at ? $item->updated_at->locale('id')->diffForHumans() : '' }}
                                                     </div>
                                                 </div>
@@ -110,14 +111,14 @@
                                     @endforeach
                                 @else
                                     <div class="list-group-item border-bottom">
-                                        <div class="text-center text-muted py-3 small">
+                                        <div class="text-center text-muted py-3" style="font-size: 11px;">
                                             Tidak ada notifikasi terbaru
                                         </div>
                                     </div>
                                 @endif
 
                                 <a href="{{ $notifAllRoute }}"
-                                    class="dropdown-item text-center fw-bold rounded-bottom py-3">
+                                    class="dropdown-item text-center fw-bold rounded-bottom py-2" style="font-size: 11px;">
                                     <svg class="icon icon-xxs text-gray-400 me-1" fill="currentColor" viewBox="0 0 20 20"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
