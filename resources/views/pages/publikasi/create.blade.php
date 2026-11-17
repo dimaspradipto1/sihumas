@@ -74,7 +74,8 @@
                                             class="form-control" id="tgl_akhir">
                                     </div>
 
-                                    <!-- Laporan Kegiatan (Textarea TinyMCE) -->
+                                    @if (Auth::user()->is_admin)
+                                    <!-- Laporan Kegiatan (Textarea TinyMCE - Khusus Admin) -->
                                     <div class="mb-4">
                                         <label for="upload_laporan" class="form-label text-uppercase fw-bold">
                                             <i class="fa-solid fa-file-lines me-1 text-primary"></i> Laporan Kegiatan / Ringkasan Liputan
@@ -83,6 +84,7 @@
                                             placeholder="Tuliskan ringkasan hasil kegiatan, rilis berita, atau laporan peliputan...">{{ old('upload_laporan') }}</textarea>
                                         <small class="text-muted"><i class="fa-solid fa-circle-info me-1"></i> Format teks didukung, sistem akan otomatis membersihkan tag HTML agar data tersimpan rapi.</small>
                                     </div>
+                                    @endif
 
                                     <!-- Link Dokumentasi -->
                                     <div class="mb-4">
@@ -117,7 +119,8 @@
                                         </small>
                                     </div>
 
-                                    <!-- Link Publikasi (Bisa Tambah Lebih Dari 1 Link) -->
+                                    @if (Auth::user()->is_admin)
+                                    <!-- Link Publikasi (Bisa Tambah Lebih Dari 1 Link - Khusus Admin) -->
                                     <div class="mb-4">
                                         <label class="form-label text-uppercase fw-bold d-flex justify-content-between align-items-center">
                                             <span><i class="fa-solid fa-globe me-1 text-success"></i> Link Publikasi (Media Online / Website / Sosmed)</span>
@@ -151,6 +154,7 @@
                                             <i class="fa-solid fa-circle-plus me-1"></i> Tambah Link Publikasi
                                         </button>
                                     </div>
+                                    @endif
 
                                 </div>
                             </div>
