@@ -427,7 +427,7 @@ class PengajuanTest extends TestCase
         $completedRow = collect($dtCompleted->json('data'))->firstWhere('id', $completedPengajuan->id);
         $this->assertNotNull($completedRow);
         $this->assertStringNotContainsString(route('pengajuan.edit', $completedPengajuan->id), $completedRow['action']);
-        $this->assertStringNotContainsString(route('pengajuan.destroy', $completedPengajuan->id), $completedRow['action']);
+        $this->assertStringNotContainsString('form-action-delete', $completedRow['action']);
 
         // Owner can delete own pending pengajuan
         $deleteResponse = $this->actingAs($owner)->delete(route('pengajuan.destroy', $pengajuan->id));
