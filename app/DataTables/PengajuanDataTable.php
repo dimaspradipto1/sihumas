@@ -93,7 +93,7 @@ class PengajuanDataTable extends DataTable
                 }
 
                 if ($linkDesain !== '') {
-                    $html .= '<div><a href="' . e($linkDesain) . '" target="_blank" class="btn btn-xs btn-outline-info d-inline-flex align-items-center py-1 px-2 mt-1" style="font-size: 11px;">'
+                    $html .= '<div><a href="' . e($linkDesain) . '" target="_blank" class="text-primary text-decoration-underline fw-semibold d-inline-flex align-items-center" title="' . e($linkDesain) . '">'
                            . '<i class="fa-brands fa-google-drive me-1"></i> Buka Link Desain</a></div>';
                 }
                 $html .= '</div>';
