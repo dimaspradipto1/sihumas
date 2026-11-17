@@ -232,15 +232,19 @@
         /* Password Toggle */
         .btn-toggle-pw {
             position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
+            right: 8px;
+            top: 0;
+            bottom: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             background: none;
             border: none;
             color: var(--slate-400);
             font-size: 14px;
             cursor: pointer;
-            padding: 4px;
+            padding: 0 8px;
+            line-height: 1;
             transition: color 0.2s;
         }
         .btn-toggle-pw:hover {

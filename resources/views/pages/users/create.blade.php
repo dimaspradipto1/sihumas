@@ -107,7 +107,7 @@
                   <label for="inputPassword" class="text-uppercase">Password</label>
                   <div class="position-relative">
                     <input type="password" class="form-control" id="inputPassword" name="password" value="{{ old('password', 'password') }}" placeholder="Default: password" style="padding-right: 2.75rem;">
-                    <button type="button" class="btn position-absolute top-50 end-0 translate-middle-y text-muted border-0 bg-transparent pe-3" onclick="togglePasswordVisibility('inputPassword', 'iconTogglePassword')" title="Lihat/Sembunyikan Password" tabindex="-1" style="z-index: 5; box-shadow: none; cursor: pointer;">
+                    <button type="button" class="position-absolute top-0 bottom-0 end-0 d-inline-flex align-items-center justify-content-center text-muted border-0 bg-transparent px-3" onclick="togglePasswordVisibility('inputPassword', 'iconTogglePassword')" title="Lihat/Sembunyikan Password" tabindex="-1" style="z-index: 5; box-shadow: none; cursor: pointer; line-height: 1;">
                       <i class="fa-solid fa-eye" id="iconTogglePassword"></i>
                     </button>
                   </div>
