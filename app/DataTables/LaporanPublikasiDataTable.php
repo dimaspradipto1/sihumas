@@ -273,12 +273,12 @@ class LaporanPublikasiDataTable extends DataTable
 
         return [
             Column::make('DT_RowIndex')->title('NO')->addClass('text-center')->orderable(false)->searchable(false)->width('4%'),
-            Column::make('nama_kegiatan')->data('nama_kegiatan')->name('pengajuan.nama_kegiatan')->title('JENIS PENGAJUAN'),
+            Column::make('nama_kegiatan')->data('nama_kegiatan')->name('pengajuan.nama_kegiatan')->title('JENIS PENGAJUAN')->width('14%'),
             Column::make('status_validasi')->name('publikasi.status_validasi')->title('STATUS VALIDASI')->width('12%')->addClass('text-center'),
             Column::make('tgl_pelaksanaan')->title('TANGGAL')->orderable(false)->searchable(false)->width('16%'),
             Column::make('link_dokumentasi')->title('DOKUMENTASI')->orderable(false)->searchable(false)->width('9%')->addClass('text-center'),
             Column::make('link_publikasi')->title('LINK PUBLIKASI')->orderable(false)->searchable(false)->width('11%'),
-            Column::make('user_id')->name('user.name')->title('SUBMIT PENGGUNA')->visible($isAdmin)->width('12%'),
+            Column::make('user_id')->name('user.name')->title('SUBMIT PENGGUNA')->visible($isAdmin)->addClass('text-start text-nowrap')->width('20%'),
             Column::computed('action')->title('AKSI')->exportable(false)->printable(false)->width($isAdmin ? '15%' : '8%')->addClass('text-center text-nowrap'),
         ];
     }

@@ -291,7 +291,8 @@ class PublikasiDataTable extends DataTable
             Column::make('nama_kegiatan')
                 ->data('nama_kegiatan')
                 ->name('pengajuan.nama_kegiatan')
-                ->title('JENIS PENGAJUAN'),
+                ->title('JENIS PENGAJUAN')
+                ->width('14%'),
             Column::make('status_validasi')
                 ->name('publikasis.status_validasi')
                 ->title('STATUS VALIDASI')
@@ -317,7 +318,8 @@ class PublikasiDataTable extends DataTable
                 ->name('publikasis.user_id')
                 ->title('SUBMIT PENGGUNA')
                 ->visible($isAdmin)
-                ->width('12%'),
+                ->addClass('text-start text-nowrap')
+                ->width('20%'),
             Column::computed('action')
                 ->title('AKSI')
                 ->exportable(false)
