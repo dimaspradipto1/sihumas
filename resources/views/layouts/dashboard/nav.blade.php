@@ -67,11 +67,11 @@
                             @endif
                         </a>
 
-                        <div class="dropdown-menu dropdown-menu-end mt-2 py-0 shadow-lg border notif-dropdown-menu"
-                            style="width: 360px !important; min-width: 300px !important; max-width: calc(100vw - 24px) !important; right: 0 !important; left: auto !important; border-radius: 0.65rem !important;">
-                            <div class="list-group list-group-flush w-100">
-                                <div class="px-3 py-2 border-bottom border-light w-100" style="box-sizing: border-box;">
-                                    <span class="text-primary fw-bold text-uppercase d-block" style="font-size: 11px; white-space: normal; line-height: 1.3;">Notifikasi &amp; Info Terbaru</span>
+                        <div class="dropdown-menu dropdown-menu-end mt-2 p-0 shadow-lg border notif-dropdown-menu"
+                            style="width: 380px !important; min-width: 380px !important; max-width: calc(100vw - 24px) !important; right: 0 !important; left: auto !important; border-radius: 0.65rem !important; overflow: hidden !important;">
+                            <div style="display: block !important; width: 100% !important; box-sizing: border-box !important;">
+                                <div style="display: block !important; width: 100% !important; padding: 10px 14px; border-bottom: 1px solid #e5e7eb; font-size: 11px; font-weight: 700; color: #2563eb; text-transform: uppercase; white-space: nowrap !important; box-sizing: border-box !important;">
+                                    Notifikasi &amp; Info Terbaru
                                 </div>
 
                                 @if ($recentNotifs->isNotEmpty())
@@ -81,33 +81,30 @@
                                                 ? route('pengajuan.edit', $item->id)
                                                 : route('pengajuan.show', $item->id);
                                         @endphp
-                                        <a href="{{ $itemUrl }}" class="list-group-item list-group-item-action border-bottom py-2 px-3 w-100" style="box-sizing: border-box; white-space: normal;">
-                                            <div class="d-flex justify-content-between align-items-start gap-2 w-100">
-                                                <div class="flex-grow-1" style="min-width: 0; white-space: normal; word-break: break-word;">
-                                                    <div class="fw-bold text-gray-900" style="font-size: 11px; line-height: 1.35;">{{ $item->nama_kegiatan }}</div>
-                                                    <div class="text-muted mt-1" style="font-size: 11px; line-height: 1.35;">
-                                                        {{ $item->unit_kegiatan ?: ($item->user?->name ?? '-') }}
-                                                        @if (!empty($item->link_desain))
-                                                            • <span class="text-info fw-semibold">Link Desain Tersedia</span>
-                                                        @endif
-                                                    </div>
+                                        <a href="{{ $itemUrl }}" class="dropdown-item"
+                                            style="display: flex !important; justify-content: space-between !important; align-items: flex-start !important; gap: 10px !important; width: 100% !important; padding: 10px 14px !important; border-bottom: 1px solid #f1f5f9 !important; white-space: normal !important; box-sizing: border-box !important;">
+                                            <div style="flex: 1 1 auto !important; min-width: 0 !important; white-space: normal !important; word-break: break-word !important;">
+                                                <div class="fw-bold text-gray-900" style="font-size: 11px; line-height: 1.35;">{{ $item->nama_kegiatan }}</div>
+                                                <div class="text-muted mt-1" style="font-size: 11px; line-height: 1.35;">
+                                                    {{ $item->unit_kegiatan ?: ($item->user?->name ?? '-') }}
+                                                    @if (!empty($item->link_desain))
+                                                        • <span class="text-info fw-semibold">Link Desain Tersedia</span>
+                                                    @endif
                                                 </div>
-                                                <div class="text-end flex-shrink-0 text-muted" style="font-size: 11px; white-space: nowrap;">
-                                                    {{ $item->updated_at ? $item->updated_at->locale('id')->diffForHumans() : '' }}
-                                                </div>
+                                            </div>
+                                            <div class="text-muted" style="flex: 0 0 auto !important; font-size: 11px; white-space: nowrap !important;">
+                                                {{ $item->updated_at ? $item->updated_at->locale('id')->diffForHumans() : '' }}
                                             </div>
                                         </a>
                                     @endforeach
                                 @else
-                                    <div class="list-group-item border-bottom">
-                                        <div class="text-center text-muted py-3" style="font-size: 11px;">
-                                            Tidak ada notifikasi terbaru
-                                        </div>
+                                    <div class="text-center text-muted py-3 px-3 border-bottom" style="font-size: 11px;">
+                                        Tidak ada notifikasi terbaru
                                     </div>
                                 @endif
 
                                 <a href="{{ $notifAllRoute }}"
-                                    class="dropdown-item text-center fw-bold rounded-bottom py-2" style="font-size: 11px;">
+                                    class="dropdown-item text-center fw-bold rounded-bottom py-2" style="display: block !important; width: 100% !important; font-size: 11px;">
                                     <svg class="icon icon-xxs text-gray-400 me-1" fill="currentColor" viewBox="0 0 20 20"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
