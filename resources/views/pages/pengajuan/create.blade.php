@@ -51,9 +51,9 @@
                                     </div> --}}
 
                                     <div class="mb-4">
-                                        <label for="nama_kegiatan" class="text-capitalize">nama kegiatan</label>
+                                        <label for="nama_kegiatan" class="text-capitalize">jenis pengajuan</label>
                                         <select name="nama_kegiatan" id="nama_kegiatan" class="form-select single" required>
-                                            <option value="">Pilih Nama Kegiatan</option>
+                                            <option value="">Pilih Jenis Pengajuan</option>
                                             <option value="Desain" {{ old('nama_kegiatan') == 'Desain' ? 'selected' : '' }}>Desain</option>
                                             <option value="Dokumentasi" {{ old('nama_kegiatan') == 'Dokumentasi' ? 'selected' : '' }}>Dokumentasi</option>
                                             <option value="Desain dan Dokumentasi" {{ old('nama_kegiatan') == 'Desain dan Dokumentasi' ? 'selected' : '' }}>Desain dan Dokumentasi</option>

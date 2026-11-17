@@ -280,7 +280,7 @@ class PublikasiDataTable extends DataTable
             Column::make('nama_kegiatan')
                 ->data('nama_kegiatan')
                 ->name('pengajuan.nama_kegiatan')
-                ->title('NAMA KEGIATAN'),
+                ->title('JENIS PENGAJUAN'),
             Column::make('status_validasi')
                 ->name('publikasis.status_validasi')
                 ->title('STATUS VALIDASI')

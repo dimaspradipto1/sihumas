@@ -42,9 +42,9 @@
                             <div class="col-12">
 
                                 <div class="mb-4">
-                                    <label for="nama_kegiatan" class="text-capitalize">nama kegiatan</label>
+                                    <label for="nama_kegiatan" class="text-capitalize">jenis pengajuan</label>
                                     <select name="nama_kegiatan" id="nama_kegiatan" class="form-select single" required>
-                                        <option value="">Pilih Nama Kegiatan</option>
+                                        <option value="">Pilih Jenis Pengajuan</option>
                                         <option value="Desain" {{ old('nama_kegiatan', $pengajuan->nama_kegiatan) == 'Desain' ? 'selected' : '' }}>Desain</option>
                                         <option value="Dokumentasi" {{ old('nama_kegiatan', $pengajuan->nama_kegiatan) == 'Dokumentasi' ? 'selected' : '' }}>Dokumentasi</option>
                                         <option value="Desain dan Dokumentasi" {{ old('nama_kegiatan', $pengajuan->nama_kegiatan) == 'Desain dan Dokumentasi' ? 'selected' : '' }}>Desain dan Dokumentasi</option>
@@ -304,7 +304,7 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <th class="ps-3">Nama Kegiatan</th>
+                                                        <th class="ps-3">Jenis Pengajuan</th>
                                                         <td class="text-break" style="white-space: normal !important; word-break: break-word !important;"><span class="badge bg-primary text-uppercase text-wrap" style="white-space: normal !important;">{{ $pengajuan->nama_kegiatan }}</span></td>
                                                     </tr>
                                                     @php
@@ -1184,7 +1184,7 @@
                     `Halo *${nama}*,\n` +
                     `Anda telah ditugaskan untuk kegiatan berikut:\n\n` +
                     `- *Peran Penugasan:* ${peranVal}\n` +
-                    `- *Nama Kegiatan:* ${kegiatan}\n` +
+                    `- *Jenis Pengajuan:* ${kegiatan}\n` +
                     `- *Unit:* ${unit}\n` +
                     `- *Tanggal:* ${tglAwal} s/d ${tglSelesai}\n` +
                     `- *Waktu:* ${waktu}\n` +

@@ -92,7 +92,7 @@
                         <table class="table table-striped align-middle mb-0">
                             <tbody>
                                 <tr>
-                                    <th style="width: 28%;" class="ps-3 text-muted small text-uppercase">Nama Kegiatan</th>
+                                    <th style="width: 28%;" class="ps-3 text-muted small text-uppercase">Jenis Pengajuan</th>
                                     <td class="pe-3 fw-bold text-gray-900 fs-6">
                                         {{ $pengajuan->nama_kegiatan }}
                                     </td>

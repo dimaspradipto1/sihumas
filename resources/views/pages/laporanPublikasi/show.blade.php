@@ -260,7 +260,7 @@
                     <th style="text-align: center; width: 30px;">No</th>
                     <th style="width: 100px;">Tahun Akademik</th>
                     <th>Fakultas</th>
-                    <th>Nama Kegiatan</th>
+                    <th>Jenis Pengajuan</th>
                     <th>Tanggal Awal</th>
                     <th>Tanggal Selesai</th>
                     <th>Deskripsi Kegiatan</th>

@@ -195,7 +195,7 @@ class PengajuanDataTable extends DataTable
         if ($isAdmin) {
             return [
                 Column::make('DT_RowIndex')->title('NO')->addClass('text-center')->width('4%')->orderable(false)->searchable(false),
-                Column::make('nama_kegiatan')->title('NAMA KEGIATAN')->addClass('text-start')->width('24%'),
+                Column::make('nama_kegiatan')->title('JENIS PENGAJUAN')->addClass('text-start')->width('24%'),
                 Column::make('tgl_pelaksanaan')->title('TANGGAL')->addClass('text-start')->width('21%')->orderable(false)->searchable(false),
                 Column::make('status')->title('STATUS PENGAJUAN')->addClass('text-center')->width('13%'),
                 Column::make('alasan_ditolak')->title('KETERANGAN')->addClass('text-start')->width('15%'),
@@ -206,7 +206,7 @@ class PengajuanDataTable extends DataTable
 
         return [
             Column::make('DT_RowIndex')->title('NO')->addClass('text-center')->width('5%')->orderable(false)->searchable(false),
-            Column::make('nama_kegiatan')->title('NAMA KEGIATAN')->addClass('text-start')->width('30%'),
+            Column::make('nama_kegiatan')->title('JENIS PENGAJUAN')->addClass('text-start')->width('30%'),
             Column::make('tgl_pelaksanaan')->title('TANGGAL')->addClass('text-start')->width('25%')->orderable(false)->searchable(false),
             Column::make('status')->title('STATUS PENGAJUAN')->addClass('text-center')->width('14%'),
             Column::make('alasan_ditolak')->title('KETERANGAN')->addClass('text-start')->width('16%'),

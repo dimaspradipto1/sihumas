@@ -538,7 +538,7 @@
                                 <table class="table table-hover align-items-center mb-0">
                                     <thead class="bg-gray-50 text-muted" style="font-size: 11px; text-transform: uppercase;">
                                         <tr>
-                                            <th class="ps-3 py-3">Nama Kegiatan</th>
+                                            <th class="ps-3 py-3">Jenis Pengajuan</th>
                                             <th class="py-3">Jadwal Pelaksanaan</th>
                                             <th class="text-center py-3">Status</th>
                                             <th class="text-end pe-3 py-3">Aksi</th>

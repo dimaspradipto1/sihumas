@@ -158,7 +158,7 @@
                                 </tr>
 
                                 <tr>
-                                    <td class="text-uppercase text-dark text-xxs font-weight-bolder opacity-7">Nama Kegiatan</td>
+                                    <td class="text-uppercase text-dark text-xxs font-weight-bolder opacity-7">Jenis Pengajuan</td>
                                     <td class="text-dark text-xxs font-weight-bolder opacity-7 px-1">:</td>
                                     <td class="text-dark text-xxs font-weight-bolder opacity-7 fw-bold text-primary">
                                         {{ $publikasi->pengajuan?->nama_kegiatan ?? '-' }}

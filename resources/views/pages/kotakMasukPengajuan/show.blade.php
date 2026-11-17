@@ -46,7 +46,7 @@
             </td>
           </tr>
           <tr>
-            <th>Nama Kegiatan</th>
+            <th>Jenis Pengajuan</th>
             <td>{{ $pengajuan->nama_kegiatan }}</td>
           </tr>
           <tr>

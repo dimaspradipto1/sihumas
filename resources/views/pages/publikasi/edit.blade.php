@@ -82,9 +82,9 @@
                                         <small class="text-muted"><i class="fa-solid fa-circle-info me-1"></i> Tahun akademik terinput otomatis dari tahun akademik yang berstatus aktif di sistem.</small>
                                     </div>
 
-                                    <!-- Nama Kegiatan -->
+                                    <!-- Jenis Pengajuan -->
                                     <div class="mb-4">
-                                        <label for="nama_kegiatan" class="text-uppercase">Nama Kegiatan</label>
+                                        <label for="nama_kegiatan" class="text-uppercase">Jenis Pengajuan</label>
                                         <textarea name="nama_kegiatan" class="form-control" id="nama_kegiatan" readonly>{{ old('nama_kegiatan') ?? ($pengajuan?->nama_kegiatan ?? '') }}</textarea>
                                     </div>
 

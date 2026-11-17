@@ -210,7 +210,7 @@ class KotakMasukPengajuanDataTable extends DataTable
                 ->searchable(false)
                 ->width('4%'),
             Column::make('pengajuan.nama_kegiatan')
-                ->title('NAMA KEGIATAN')
+                ->title('JENIS PENGAJUAN')
                 ->addClass('text-start'),
             Column::make('pengajuan.tgl_pelaksanaan')
                 ->title('TANGGAL')
