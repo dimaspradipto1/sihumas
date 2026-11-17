@@ -111,7 +111,7 @@
                                     <td class="text-dark text-xxs font-weight-bolder opacity-7 px-1" style="width: 2%;">:</td>
                                     <td class="text-dark text-xxs font-weight-bolder opacity-7" style="width: 78%;">
                                         @if ($publikasi->status_validasi === 'disetujui')
-                                            <span class="badge bg-success text-white px-2 py-1"><i class="fa-solid fa-circle-check me-1"></i> Disetujui / Valid</span>
+                                            <span class="badge bg-success text-white px-2 py-1"><i class="fa-solid fa-circle-check me-1"></i> Disetujui</span>
                                         @elseif ($publikasi->status_validasi === 'menunggu_validasi')
                                             <span class="badge bg-warning text-dark px-2 py-1"><i class="fa-solid fa-clock me-1"></i> Menunggu Validasi Admin</span>
                                         @elseif ($publikasi->status_validasi === 'perlu_revisi')
@@ -318,7 +318,7 @@
                                 <label for="status_validasi_select" class="form-label fw-bold">Status Validasi <span class="text-danger">*</span></label>
                                 <select name="status_validasi" id="status_validasi_select" class="form-select" required>
                                     <option value="disetujui" {{ old('status_validasi', $publikasi->status_validasi) == 'disetujui' ? 'selected' : '' }}>
-                                        Disetujui / Valid
+                                        Disetujui
                                     </option>
                                     <option value="ditolak" {{ old('status_validasi', $publikasi->status_validasi) == 'ditolak' ? 'selected' : '' }}>
                                         Ditolak (Kembalikan ke PIC)

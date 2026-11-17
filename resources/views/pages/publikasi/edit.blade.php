@@ -278,7 +278,7 @@
                                                     <label for="status_validasi" class="form-label fw-bold">Status Validasi</label>
                                                     <select name="status_validasi" id="status_validasi" class="form-select">
                                                         <option value="disetujui" {{ old('status_validasi', $publikasi->status_validasi) == 'disetujui' ? 'selected' : '' }}>
-                                                            ✅ Disetujui / Valid
+                                                            ✅ Disetujui
                                                         </option>
                                                         <option value="ditolak" {{ old('status_validasi', $publikasi->status_validasi) == 'ditolak' ? 'selected' : '' }}>
                                                             ❌ Ditolak (Kembalikan ke PIC)
