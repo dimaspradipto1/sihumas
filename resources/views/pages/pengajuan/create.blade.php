@@ -95,6 +95,13 @@
                                                     class="form-control" id="tgl_awal" required>
                                             </div>
                                         </div>
+                                        <div class="col-md-6 d-none" id="col_target_publikasi">
+                                            <div class="mb-4 mb-md-0">
+                                                <label for="target_publikasi_tgl" class="text-capitalize fw-bold">Target Publikasi <span class="text-danger">*</span></label>
+                                                <input type="date" name="tgl_selesai" id="target_publikasi_tgl" class="form-control"
+                                                    value="{{ old('tgl_selesai') }}" disabled>
+                                            </div>
+                                        </div>
                                         <div class="col-md-6" id="wrapper_jam_kegiatan">
                                             <div class="mb-4 mb-md-0">
                                                 <label for="jam_kegiatan" class="text-capitalize">jam kegiatan</label>
@@ -484,6 +491,9 @@
                 // Adaptive form: khusus pilihan "Desain"
                 const namaKegiatanSelect = document.getElementById('nama_kegiatan');
                 const colTglAwal = document.getElementById('col_tgl_awal');
+                const colTargetPublikasi = document.getElementById('col_target_publikasi');
+                const inputTargetPublikasi = document.getElementById('target_publikasi_tgl');
+                const inputTglSelesai = document.getElementById('tgl_selesai');
                 const labelTglAwal = document.getElementById('label_tgl_awal');
                 const wrapperJam = document.getElementById('wrapper_jam_kegiatan');
                 const wrapperSelesai = document.getElementById('wrapper_tgl_selesai_waktu');
@@ -503,14 +513,24 @@
 
                     if (isFlexible) {
                         if (colTglAwal) {
-                            colTglAwal.classList.remove('col-md-6');
-                            colTglAwal.classList.add('col-12');
+                            colTglAwal.classList.toggle('col-md-6', isDesainDanPublikasi);
+                            colTglAwal.classList.toggle('col-12', !isDesainDanPublikasi);
+                        }
+                        if (colTargetPublikasi) {
+                            colTargetPublikasi.classList.toggle('d-none', !isDesainDanPublikasi);
+                        }
+                        if (inputTargetPublikasi) {
+                            inputTargetPublikasi.disabled = !isDesainDanPublikasi;
+                            inputTargetPublikasi.required = isDesainDanPublikasi;
+                        }
+                        if (inputTglSelesai) {
+                            inputTglSelesai.disabled = isDesainDanPublikasi;
                         }
                         if (labelTglAwal) {
                             labelTglAwal.innerHTML = isDesain
                                 ? 'Deadline / Batas Waktu Desain <span class="text-danger">*</span>'
                                 : (isDesainDanPublikasi
-                                    ? 'Deadline Desain &amp; Target Publikasi <span class="text-danger">*</span>'
+                                    ? 'Deadline Desain <span class="text-danger">*</span>'
                                     : 'Target Tayang / Tanggal Publikasi <span class="text-danger">*</span>');
                         }
                         if (wrapperJam) wrapperJam.classList.add('d-none');
@@ -541,6 +561,12 @@
                             colTglAwal.classList.remove('col-12');
                             colTglAwal.classList.add('col-md-6');
                         }
+                        if (colTargetPublikasi) colTargetPublikasi.classList.add('d-none');
+                        if (inputTargetPublikasi) {
+                            inputTargetPublikasi.disabled = true;
+                            inputTargetPublikasi.required = false;
+                        }
+                        if (inputTglSelesai) inputTglSelesai.disabled = false;
                         if (labelTglAwal) labelTglAwal.textContent = 'tanggal mulai kegiatan';
                         if (wrapperJam) wrapperJam.classList.remove('d-none');
                         if (wrapperSelesai) wrapperSelesai.classList.remove('d-none');

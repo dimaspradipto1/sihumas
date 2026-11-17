@@ -42,14 +42,22 @@ class PengajuanDataTable extends DataTable
                 $jamSelesai = !empty($pengajuan->waktu_selesai) ? substr($pengajuan->waktu_selesai, 0, 5) . ' WIB' : '';
 
                 if (in_array($pengajuan->nama_kegiatan, ['Desain', 'Publikasi', 'Desain dan Publikasi'], true) && empty($jamMulai)) {
+                    if ($pengajuan->nama_kegiatan === 'Desain dan Publikasi') {
+                        return '<div class="d-flex flex-column gap-1">'
+                             . '  <div class="d-inline-flex align-items-center">'
+                             . '    <span class="text-nowrap"><span class="text-muted small">Deadline Desain:</span> <span class="fw-semibold">' . $startStr . '</span></span>'
+                             . '    <span class="badge bg-light text-primary border small ms-2"><i class="fa-solid fa-layer-group me-1"></i>Desain &amp; Publikasi</span>'
+                             . '  </div>'
+                             . '  <div class="d-inline-flex align-items-center">'
+                             . '    <span class="text-nowrap"><span class="text-muted small">Target Publikasi:</span> <span class="fw-semibold">' . $endStr . '</span></span>'
+                             . '  </div>'
+                             . '</div>';
+                    }
                     $isDesain = $pengajuan->nama_kegiatan === 'Desain';
-                    $isBoth = $pengajuan->nama_kegiatan === 'Desain dan Publikasi';
-                    $label = $isDesain ? 'Deadline:' : ($isBoth ? 'Deadline / Target:' : 'Target:');
+                    $label = $isDesain ? 'Deadline:' : 'Target:';
                     $badge = $isDesain
                         ? '<span class="badge bg-light text-info border small ms-2"><i class="fa-solid fa-palette me-1"></i>Desain</span>'
-                        : ($isBoth
-                            ? '<span class="badge bg-light text-primary border small ms-2"><i class="fa-solid fa-layer-group me-1"></i>Desain &amp; Publikasi</span>'
-                            : '<span class="badge bg-light text-success border small ms-2"><i class="fa-solid fa-bullhorn me-1"></i>Publikasi</span>');
+                        : '<span class="badge bg-light text-success border small ms-2"><i class="fa-solid fa-bullhorn me-1"></i>Publikasi</span>';
                     return '<div class="d-inline-flex align-items-center">'
                          . '  <span class="text-nowrap"><span class="text-muted small">' . $label . '</span> <span class="fw-semibold">' . $startStr . '</span></span>'
                          . '  ' . $badge

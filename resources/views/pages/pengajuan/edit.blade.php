@@ -87,6 +87,13 @@
                                                 id="tgl_awal" required>
                                         </div>
                                     </div>
+                                    <div class="col-md-6 d-none" id="col_target_publikasi">
+                                        <div class="mb-4 mb-md-0">
+                                            <label for="target_publikasi_tgl" class="text-capitalize fw-bold">Target Publikasi <span class="text-danger">*</span></label>
+                                            <input type="date" name="tgl_selesai" id="target_publikasi_tgl" class="form-control"
+                                                value="{{ old('tgl_selesai', $pengajuan->tgl_selesai ?? $pengajuan->tgl_awal) }}" disabled>
+                                        </div>
+                                    </div>
                                     <div class="col-md-6" id="wrapper_jam_kegiatan">
                                         <div class="mb-4 mb-md-0">
                                             <label for="jam_kegiatan" class="text-capitalize">jam kegiatan</label>
@@ -344,18 +351,18 @@
                                                             @if (Auth::user()->is_admin)
                                                                 <div class="p-2 bg-light border rounded">
                                                                     <div class="row g-2">
-                                                                        <div class="col-12 {{ $isFlexibleSchedule ? '' : 'col-sm-6' }}">
+                                                                        <div class="col-12 {{ ($isFlexibleSchedule && !$isDesainDanPublikasi) ? '' : 'col-sm-6' }}">
                                                                             <label for="tgl_awal" class="form-label small text-muted mb-1 fw-bold">
-                                                                                <i class="fa-regular fa-calendar-check me-1 text-primary"></i> {{ $isDesainOnly ? 'Batas Waktu / Deadline' : ($isDesainDanPublikasi ? 'Deadline Desain & Target Publikasi' : ($isPublikasiOnly ? 'Target Tayang / Publikasi' : 'Mulai')) }}
+                                                                                <i class="fa-regular fa-calendar-check me-1 text-primary"></i> {{ $isDesainOnly || $isDesainDanPublikasi ? 'Deadline Desain' : ($isPublikasiOnly ? 'Target Tayang / Publikasi' : 'Mulai') }}
                                                                             </label>
                                                                             <input type="date" name="tgl_awal" id="tgl_awal" class="form-control form-control-sm" value="{{ $pengajuan->tgl_awal }}">
                                                                         </div>
-                                                                        @if (!$isFlexibleSchedule)
+                                                                        @if (!$isFlexibleSchedule || $isDesainDanPublikasi)
                                                                         <div class="col-12 col-sm-6">
                                                                             <label for="tgl_selesai" class="form-label small text-muted mb-1 fw-bold">
-                                                                                <i class="fa-regular fa-calendar-check me-1 text-success"></i> Selesai
+                                                                                <i class="fa-regular fa-calendar-check me-1 text-success"></i> {{ $isDesainDanPublikasi ? 'Target Publikasi' : 'Selesai' }}
                                                                             </label>
-                                                                            <input type="date" name="tgl_selesai" id="tgl_selesai" class="form-control form-control-sm" value="{{ $pengajuan->tgl_selesai }}">
+                                                                            <input type="date" name="tgl_selesai" id="tgl_selesai" class="form-control form-control-sm" value="{{ $pengajuan->tgl_selesai ?? $pengajuan->tgl_awal }}">
                                                                         </div>
                                                                         @else
                                                                             <input type="hidden" name="tgl_selesai" value="{{ $pengajuan->tgl_selesai ?? $pengajuan->tgl_awal }}">
@@ -364,9 +371,14 @@
                                                                 </div>
                                                             @else
                                                                 <span class="fw-semibold text-gray-800">
-                                                                    {{ $pengajuan->tgl_awal ? \Carbon\Carbon::parse($pengajuan->tgl_awal)->locale('id')->translatedFormat('l, d F Y') : '-' }}
-                                                                    @if(!$isFlexibleSchedule && $pengajuan->tgl_selesai && $pengajuan->tgl_selesai !== $pengajuan->tgl_awal)
-                                                                        <br><small class="text-muted">s/d {{ \Carbon\Carbon::parse($pengajuan->tgl_selesai)->locale('id')->translatedFormat('l, d F Y') }}</small>
+                                                                    @if ($isDesainDanPublikasi)
+                                                                        Deadline Desain: {{ $pengajuan->tgl_awal ? \Carbon\Carbon::parse($pengajuan->tgl_awal)->locale('id')->translatedFormat('l, d F Y') : '-' }}
+                                                                        <br><small class="text-muted">Target Publikasi: {{ ($pengajuan->tgl_selesai ?? $pengajuan->tgl_awal) ? \Carbon\Carbon::parse($pengajuan->tgl_selesai ?? $pengajuan->tgl_awal)->locale('id')->translatedFormat('l, d F Y') : '-' }}</small>
+                                                                    @else
+                                                                        {{ $pengajuan->tgl_awal ? \Carbon\Carbon::parse($pengajuan->tgl_awal)->locale('id')->translatedFormat('l, d F Y') : '-' }}
+                                                                        @if(!$isFlexibleSchedule && $pengajuan->tgl_selesai && $pengajuan->tgl_selesai !== $pengajuan->tgl_awal)
+                                                                            <br><small class="text-muted">s/d {{ \Carbon\Carbon::parse($pengajuan->tgl_selesai)->locale('id')->translatedFormat('l, d F Y') }}</small>
+                                                                        @endif
                                                                     @endif
                                                                 </span>
                                                             @endif
@@ -1338,6 +1350,9 @@
                 // Adaptive form: khusus pilihan "Desain" dan "Publikasi"
                 const namaKegiatanSelect = document.getElementById('nama_kegiatan');
                 const colTglAwal = document.getElementById('col_tgl_awal');
+                const colTargetPublikasi = document.getElementById('col_target_publikasi');
+                const inputTargetPublikasi = document.getElementById('target_publikasi_tgl');
+                const inputTglSelesai = document.getElementById('tgl_selesai');
                 const labelTglAwal = document.getElementById('label_tgl_awal');
                 const wrapperJam = document.getElementById('wrapper_jam_kegiatan');
                 const wrapperSelesai = document.getElementById('wrapper_tgl_selesai_waktu');
@@ -1357,14 +1372,24 @@
 
                     if (isFlexible) {
                         if (colTglAwal) {
-                            colTglAwal.classList.remove('col-md-6');
-                            colTglAwal.classList.add('col-12');
+                            colTglAwal.classList.toggle('col-md-6', isDesainDanPublikasi);
+                            colTglAwal.classList.toggle('col-12', !isDesainDanPublikasi);
+                        }
+                        if (colTargetPublikasi) {
+                            colTargetPublikasi.classList.toggle('d-none', !isDesainDanPublikasi);
+                        }
+                        if (inputTargetPublikasi) {
+                            inputTargetPublikasi.disabled = !isDesainDanPublikasi;
+                            inputTargetPublikasi.required = isDesainDanPublikasi;
+                        }
+                        if (inputTglSelesai) {
+                            inputTglSelesai.disabled = isDesainDanPublikasi;
                         }
                         if (labelTglAwal) {
                             labelTglAwal.innerHTML = isDesain
                                 ? 'Deadline / Batas Waktu Desain <span class="text-danger">*</span>'
                                 : (isDesainDanPublikasi
-                                    ? 'Deadline Desain &amp; Target Publikasi <span class="text-danger">*</span>'
+                                    ? 'Deadline Desain <span class="text-danger">*</span>'
                                     : 'Target Tayang / Tanggal Publikasi <span class="text-danger">*</span>');
                         }
                         if (wrapperJam) wrapperJam.classList.add('d-none');
@@ -1395,6 +1420,12 @@
                             colTglAwal.classList.remove('col-12');
                             colTglAwal.classList.add('col-md-6');
                         }
+                        if (colTargetPublikasi) colTargetPublikasi.classList.add('d-none');
+                        if (inputTargetPublikasi) {
+                            inputTargetPublikasi.disabled = true;
+                            inputTargetPublikasi.required = false;
+                        }
+                        if (inputTglSelesai) inputTglSelesai.disabled = false;
                         if (labelTglAwal) labelTglAwal.textContent = 'tanggal mulai kegiatan';
                         if (wrapperJam) wrapperJam.classList.remove('d-none');
                         if (wrapperSelesai) wrapperSelesai.classList.remove('d-none');

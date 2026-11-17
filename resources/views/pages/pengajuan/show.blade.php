@@ -120,12 +120,26 @@
                                         @endif
                                     </td>
                                 </tr>
-                                @if ($isFlexibleSchedule)
+                                @if ($isDesainDanPublikasi)
                                 <tr>
-                                    <th class="ps-3 text-muted small text-uppercase">{{ $isDesainOnly ? 'Deadline Desain' : ($isDesainDanPublikasi ? 'Deadline & Target Publikasi' : 'Target Publikasi') }}</th>
+                                    <th class="ps-3 text-muted small text-uppercase">Deadline Desain &amp; Target Publikasi</th>
                                     <td class="pe-3">
-                                        <span class="badge border px-2 py-1" style="color: {{ $isDesainOnly || $isDesainDanPublikasi ? '#1d4ed8' : '#15803d' }} !important; background-color: {{ $isDesainOnly || $isDesainDanPublikasi ? 'rgba(59, 130, 246, 0.12)' : 'rgba(16, 185, 129, 0.12)' }} !important; border-color: {{ $isDesainOnly || $isDesainDanPublikasi ? 'rgba(59, 130, 246, 0.35)' : 'rgba(16, 185, 129, 0.35)' }} !important;">
-                                            <i class="fa-regular fa-calendar-check me-1"></i> {{ $isDesainOnly ? 'Deadline:' : ($isDesainDanPublikasi ? 'Deadline / Target:' : 'Target:') }} {{ $pengajuan->tgl_awal ? \Carbon\Carbon::parse($pengajuan->tgl_awal)->locale('id')->translatedFormat('l, d F Y') : '-' }}
+                                        <div class="d-flex flex-wrap gap-2 align-items-center">
+                                            <span class="badge border px-2 py-1" style="color: #1d4ed8 !important; background-color: rgba(59, 130, 246, 0.12) !important; border-color: rgba(59, 130, 246, 0.35) !important;">
+                                                <i class="fa-solid fa-palette me-1"></i> Deadline Desain: {{ $pengajuan->tgl_awal ? \Carbon\Carbon::parse($pengajuan->tgl_awal)->locale('id')->translatedFormat('l, d F Y') : '-' }}
+                                            </span>
+                                            <span class="badge border px-2 py-1" style="color: #15803d !important; background-color: rgba(16, 185, 129, 0.12) !important; border-color: rgba(16, 185, 129, 0.35) !important;">
+                                                <i class="fa-solid fa-bullhorn me-1"></i> Target Publikasi: {{ ($pengajuan->tgl_selesai ?? $pengajuan->tgl_awal) ? \Carbon\Carbon::parse($pengajuan->tgl_selesai ?? $pengajuan->tgl_awal)->locale('id')->translatedFormat('l, d F Y') : '-' }}
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @elseif ($isFlexibleSchedule)
+                                <tr>
+                                    <th class="ps-3 text-muted small text-uppercase">{{ $isDesainOnly ? 'Deadline Desain' : 'Target Publikasi' }}</th>
+                                    <td class="pe-3">
+                                        <span class="badge border px-2 py-1" style="color: {{ $isDesainOnly ? '#1d4ed8' : '#15803d' }} !important; background-color: {{ $isDesainOnly ? 'rgba(59, 130, 246, 0.12)' : 'rgba(16, 185, 129, 0.12)' }} !important; border-color: {{ $isDesainOnly ? 'rgba(59, 130, 246, 0.35)' : 'rgba(16, 185, 129, 0.35)' }} !important;">
+                                            <i class="fa-regular fa-calendar-check me-1"></i> {{ $isDesainOnly ? 'Deadline:' : 'Target:' }} {{ $pengajuan->tgl_awal ? \Carbon\Carbon::parse($pengajuan->tgl_awal)->locale('id')->translatedFormat('l, d F Y') : '-' }}
                                         </span>
                                     </td>
                                 </tr>

@@ -454,10 +454,12 @@ class PengajuanTest extends TestCase
             ->assertSee('Desain dan Publikasi');
 
         $deadline = now()->addDays(3)->toDateString();
+        $targetPublikasi = now()->addDays(5)->toDateString();
 
         $response = $this->actingAs($user)->post(route('pengajuan.store'), [
             'nama_kegiatan' => 'Desain dan Publikasi',
             'tgl_awal' => $deadline,
+            'tgl_selesai' => $targetPublikasi,
             'deskripsi_kegiatan' => 'Poster dan rilis berita wisuda UIS.',
             'unit_kegiatan' => 'BAAK',
         ]);
@@ -467,9 +469,13 @@ class PengajuanTest extends TestCase
             ->where('nama_kegiatan', 'Desain dan Publikasi')
             ->firstOrFail();
 
+        $this->assertEquals($deadline, $pengajuan->tgl_awal);
+        $this->assertEquals($targetPublikasi, $pengajuan->tgl_selesai);
+
         $showResponse = $this->actingAs($user)->get(route('pengajuan.show', $pengajuan->id));
         $showResponse->assertStatus(200);
-        $showResponse->assertSee('Deadline &amp; Target Publikasi', false);
+        $showResponse->assertSee('Deadline Desain:');
+        $showResponse->assertSee('Target Publikasi:');
         $showResponse->assertSee('Brief Desain &amp; Publikasi', false);
         $showResponse->assertSee('Link Desain');
 
