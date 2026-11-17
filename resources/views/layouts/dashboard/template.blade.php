@@ -270,6 +270,12 @@
             font-size: 0.85rem !important;
             box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.18), 0 8px 10px -6px rgba(15, 23, 42, 0.1) !important;
         }
+        .swal2-icon,
+        .swal2-icon *,
+        .swal2-icon *::before,
+        .swal2-icon *::after {
+            box-sizing: content-box !important;
+        }
         .swal2-popup:not(.swal2-toast) .swal2-icon {
             transform: scale(0.75) !important;
             margin: 0.1rem auto 0.35rem !important;
@@ -361,8 +367,8 @@
             margin: 0 0.4rem !important;
         }
         .swal2-popup.swal2-toast .swal2-icon {
-            font-size: 0.85rem !important;
-            margin: 0 0.5rem 0 0 !important;
+            font-size: 0.9rem !important;
+            margin: 0 0.55rem 0 0 !important;
             align-self: center !important;
         }
     </style>
