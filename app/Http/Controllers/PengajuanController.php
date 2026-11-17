@@ -120,7 +120,7 @@ class PengajuanController extends Controller
             ? $data['unit_kegiatan']
             : ($user?->unitKegiatan?->unit_kegiatan ?? ($user?->fakultas ?? '-'));
 
-        $isFlexibleSchedule = in_array($data['nama_kegiatan'] ?? '', ['Desain', 'Publikasi'], true);
+        $isFlexibleSchedule = in_array($data['nama_kegiatan'] ?? '', ['Desain', 'Publikasi', 'Desain dan Publikasi'], true);
         $tglSelesai = !empty($data['tgl_selesai']) ? $data['tgl_selesai'] : $data['tgl_awal'];
         $jamKegiatan = !$isFlexibleSchedule && !empty($data['jam_kegiatan']) ? $data['jam_kegiatan'] : ($data['jam_kegiatan'] ?? null);
         $waktuSelesai = !$isFlexibleSchedule && !empty($data['waktu_selesai']) ? $data['waktu_selesai'] : ($data['waktu_selesai'] ?? null);

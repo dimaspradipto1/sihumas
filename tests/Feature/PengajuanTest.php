@@ -434,5 +434,56 @@ class PengajuanTest extends TestCase
         $deleteResponse->assertRedirect(route('pengajuan.index'));
         $this->assertDatabaseMissing('pengajuans', ['id' => $pengajuan->id]);
     }
+
+    public function test_user_can_submit_desain_dan_publikasi_with_combined_features(): void
+    {
+        $user = User::factory()->create([
+            'is_admin' => false,
+            'is_humas' => false,
+            'is_users' => true,
+        ]);
+
+        $humas = User::factory()->create([
+            'is_admin' => false,
+            'is_humas' => true,
+            'name' => 'HUMAS_BOTH_' . uniqid(),
+        ]);
+
+        $this->actingAs($user)->get(route('pengajuan.create'))
+            ->assertStatus(200)
+            ->assertSee('Desain dan Publikasi');
+
+        $deadline = now()->addDays(3)->toDateString();
+
+        $response = $this->actingAs($user)->post(route('pengajuan.store'), [
+            'nama_kegiatan' => 'Desain dan Publikasi',
+            'tgl_awal' => $deadline,
+            'deskripsi_kegiatan' => 'Poster dan rilis berita wisuda UIS.',
+            'unit_kegiatan' => 'BAAK',
+        ]);
+        $response->assertRedirect(route('pengajuan.index'));
+
+        $pengajuan = Pengajuan::where('user_id', $user->id)
+            ->where('nama_kegiatan', 'Desain dan Publikasi')
+            ->firstOrFail();
+
+        $showResponse = $this->actingAs($user)->get(route('pengajuan.show', $pengajuan->id));
+        $showResponse->assertStatus(200);
+        $showResponse->assertSee('Deadline &amp; Target Publikasi', false);
+        $showResponse->assertSee('Brief Desain &amp; Publikasi', false);
+        $showResponse->assertSee('Link Desain');
+
+        $pengajuan->update([
+            'status' => 'diterima',
+            'petugas_ditugaskan' => $humas->name,
+            'pic_petugas' => [['nama' => $humas->name, 'no_wa' => '081234567890', 'peran' => 'desain', 'catatan' => 'Desain + rilis']],
+        ]);
+
+        $pubEdit = $this->actingAs($humas)->get(route('publikasi.edit', $pengajuan->publikasi->id));
+        $pubEdit->assertStatus(200);
+        $pubEdit->assertSee('Narasi / Rilis Berita Publikasi');
+        $pubEdit->assertSee('Link GDrive (Desain atau Flayer)');
+        $pubEdit->assertSee('Link Publikasi');
+    }
 }
 

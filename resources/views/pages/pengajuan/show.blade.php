@@ -87,7 +87,8 @@
                         @php
                             $isDesainOnly = ($pengajuan->nama_kegiatan === 'Desain');
                             $isPublikasiOnly = ($pengajuan->nama_kegiatan === 'Publikasi');
-                            $isFlexibleSchedule = $isDesainOnly || $isPublikasiOnly;
+                            $isDesainDanPublikasi = ($pengajuan->nama_kegiatan === 'Desain dan Publikasi');
+                            $isFlexibleSchedule = $isDesainOnly || $isPublikasiOnly || $isDesainDanPublikasi;
                         @endphp
                         <table class="table table-striped align-middle mb-0">
                             <tbody>
@@ -121,10 +122,10 @@
                                 </tr>
                                 @if ($isFlexibleSchedule)
                                 <tr>
-                                    <th class="ps-3 text-muted small text-uppercase">{{ $isDesainOnly ? 'Deadline Desain' : 'Target Publikasi' }}</th>
+                                    <th class="ps-3 text-muted small text-uppercase">{{ $isDesainOnly ? 'Deadline Desain' : ($isDesainDanPublikasi ? 'Deadline & Target Publikasi' : 'Target Publikasi') }}</th>
                                     <td class="pe-3">
-                                        <span class="badge border px-2 py-1" style="color: {{ $isDesainOnly ? '#1d4ed8' : '#15803d' }} !important; background-color: {{ $isDesainOnly ? 'rgba(59, 130, 246, 0.12)' : 'rgba(16, 185, 129, 0.12)' }} !important; border-color: {{ $isDesainOnly ? 'rgba(59, 130, 246, 0.35)' : 'rgba(16, 185, 129, 0.35)' }} !important;">
-                                            <i class="fa-regular fa-calendar-check me-1"></i> {{ $isDesainOnly ? 'Deadline:' : 'Target:' }} {{ $pengajuan->tgl_awal ? \Carbon\Carbon::parse($pengajuan->tgl_awal)->locale('id')->translatedFormat('l, d F Y') : '-' }}
+                                        <span class="badge border px-2 py-1" style="color: {{ $isDesainOnly || $isDesainDanPublikasi ? '#1d4ed8' : '#15803d' }} !important; background-color: {{ $isDesainOnly || $isDesainDanPublikasi ? 'rgba(59, 130, 246, 0.12)' : 'rgba(16, 185, 129, 0.12)' }} !important; border-color: {{ $isDesainOnly || $isDesainDanPublikasi ? 'rgba(59, 130, 246, 0.35)' : 'rgba(16, 185, 129, 0.35)' }} !important;">
+                                            <i class="fa-regular fa-calendar-check me-1"></i> {{ $isDesainOnly ? 'Deadline:' : ($isDesainDanPublikasi ? 'Deadline / Target:' : 'Target:') }} {{ $pengajuan->tgl_awal ? \Carbon\Carbon::parse($pengajuan->tgl_awal)->locale('id')->translatedFormat('l, d F Y') : '-' }}
                                         </span>
                                     </td>
                                 </tr>
@@ -178,7 +179,7 @@
                                 </tr>
                                 @endif
                                 <tr>
-                                    <th class="ps-3 text-muted small text-uppercase">{{ $isDesainOnly ? 'Brief Desain' : ($isPublikasiOnly ? 'Brief Publikasi' : 'Deskripsi Kegiatan') }}</th>
+                                    <th class="ps-3 text-muted small text-uppercase">{{ $isDesainOnly ? 'Brief Desain' : ($isDesainDanPublikasi ? 'Brief Desain & Publikasi' : ($isPublikasiOnly ? 'Brief Publikasi' : 'Deskripsi Kegiatan')) }}</th>
                                     <td class="pe-3 text-break">
                                         @php
                                             $cleanDesk = $pengajuan->formatted_deskripsi;
@@ -205,7 +206,7 @@
                                     </td>
                                 </tr>
                                 @endif
-                                @if ($pengajuan->nama_kegiatan == 'Desain' || $pengajuan->nama_kegiatan == 'Desain dan Dokumentasi' || !empty($pengajuan->link_desain))
+                                @if ($pengajuan->nama_kegiatan == 'Desain' || $pengajuan->nama_kegiatan == 'Desain dan Dokumentasi' || $pengajuan->nama_kegiatan == 'Desain dan Publikasi' || !empty($pengajuan->link_desain))
                                 <tr>
                                     <th class="ps-3 text-muted small text-uppercase">Link Desain</th>
                                     <td class="pe-3">

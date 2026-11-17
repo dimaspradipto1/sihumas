@@ -58,6 +58,7 @@
                                             <option value="Dokumentasi" {{ old('nama_kegiatan') == 'Dokumentasi' ? 'selected' : '' }}>Dokumentasi</option>
                                             <option value="Desain dan Dokumentasi" {{ old('nama_kegiatan') == 'Desain dan Dokumentasi' ? 'selected' : '' }}>Desain dan Dokumentasi</option>
                                             <option value="Publikasi" {{ old('nama_kegiatan') == 'Publikasi' ? 'selected' : '' }}>Publikasi</option>
+                                            <option value="Desain dan Publikasi" {{ old('nama_kegiatan') == 'Desain dan Publikasi' ? 'selected' : '' }}>Desain dan Publikasi</option>
                                             <option value="Tamu Undangan" {{ old('nama_kegiatan') == 'Tamu Undangan' ? 'selected' : '' }}>Tamu</option>
                                         </select>
                                     </div>
@@ -433,7 +434,7 @@
 
                     function handleTempatChange() {
                         const jenis = $('#nama_kegiatan').val();
-                        const isFlexible = (jenis === 'Desain' || jenis === 'Publikasi');
+                        const isFlexible = (jenis === 'Desain' || jenis === 'Publikasi' || jenis === 'Desain dan Publikasi');
                         const val = $select.val();
                         if (isFlexible) {
                             $customWrapper.addClass('d-none');
@@ -473,7 +474,8 @@
                     const jenis = namaKegiatanSelect.value;
                     const isDesain = jenis === 'Desain';
                     const isPublikasi = jenis === 'Publikasi';
-                    const isFlexible = isDesain || isPublikasi;
+                    const isDesainDanPublikasi = jenis === 'Desain dan Publikasi';
+                    const isFlexible = isDesain || isPublikasi || isDesainDanPublikasi;
 
                     if (isFlexible) {
                         if (colTglAwal) {
@@ -483,7 +485,9 @@
                         if (labelTglAwal) {
                             labelTglAwal.innerHTML = isDesain
                                 ? 'Deadline / Batas Waktu Desain <span class="text-danger">*</span>'
-                                : 'Target Tayang / Tanggal Publikasi <span class="text-danger">*</span>';
+                                : (isDesainDanPublikasi
+                                    ? 'Deadline Desain &amp; Target Publikasi <span class="text-danger">*</span>'
+                                    : 'Target Tayang / Tanggal Publikasi <span class="text-danger">*</span>');
                         }
                         if (wrapperJam) wrapperJam.classList.add('d-none');
                         if (wrapperSelesai) wrapperSelesai.classList.add('d-none');
@@ -493,12 +497,16 @@
                         if (labelDeskripsi) {
                             labelDeskripsi.textContent = isDesain
                                 ? 'Deskripsi / Brief Desain'
-                                : 'Deskripsi / Brief Publikasi (5W+1H)';
+                                : (isDesainDanPublikasi
+                                    ? 'Deskripsi / Brief Desain & Publikasi (5W+1H)'
+                                    : 'Deskripsi / Brief Publikasi (5W+1H)');
                         }
                         if (hintBriefDesain) {
                             hintBriefDesain.innerHTML = isDesain
                                 ? '<i class="fa-solid fa-circle-info me-1"></i> Untuk pengajuan <strong>Desain</strong>, cukup isi deadline, brief desain (ukuran, teks, referensi warna), dan lampiran materi jika ada.'
-                                : '<i class="fa-solid fa-circle-info me-1"></i> Untuk pengajuan <strong>Publikasi</strong>, cukup isi target tayang, poin berita (5W+1H) atau caption, serta lampiran foto/file/link GDrive materi jika ada.';
+                                : (isDesainDanPublikasi
+                                    ? '<i class="fa-solid fa-circle-info me-1"></i> Untuk pengajuan <strong>Desain dan Publikasi</strong>, isi deadline/target tayang, brief desain (ukuran, teks, tema warna) sekaligus poin publikasi (5W+1H / caption), serta lampiran materi jika ada.'
+                                    : '<i class="fa-solid fa-circle-info me-1"></i> Untuk pengajuan <strong>Publikasi</strong>, cukup isi target tayang, poin berita (5W+1H) atau caption, serta lampiran foto/file/link GDrive materi jika ada.');
                             hintBriefDesain.classList.remove('d-none');
                         }
 

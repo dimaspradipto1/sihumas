@@ -49,6 +49,7 @@
                                         <option value="Dokumentasi" {{ old('nama_kegiatan', $pengajuan->nama_kegiatan) == 'Dokumentasi' ? 'selected' : '' }}>Dokumentasi</option>
                                         <option value="Desain dan Dokumentasi" {{ old('nama_kegiatan', $pengajuan->nama_kegiatan) == 'Desain dan Dokumentasi' ? 'selected' : '' }}>Desain dan Dokumentasi</option>
                                         <option value="Publikasi" {{ old('nama_kegiatan', $pengajuan->nama_kegiatan) == 'Publikasi' ? 'selected' : '' }}>Publikasi</option>
+                                        <option value="Desain dan Publikasi" {{ old('nama_kegiatan', $pengajuan->nama_kegiatan) == 'Desain dan Publikasi' ? 'selected' : '' }}>Desain dan Publikasi</option>
                                         <option value="Tamu Undangan" {{ old('nama_kegiatan', $pengajuan->nama_kegiatan) == 'Tamu Undangan' ? 'selected' : '' }}>Tamu</option>
                                     </select>
                                 </div>
@@ -310,17 +311,18 @@
                                                     @php
                                                         $isDesainOnly = ($pengajuan->nama_kegiatan === 'Desain');
                                                         $isPublikasiOnly = ($pengajuan->nama_kegiatan === 'Publikasi');
-                                                        $isFlexibleSchedule = $isDesainOnly || $isPublikasiOnly;
+                                                        $isDesainDanPublikasi = ($pengajuan->nama_kegiatan === 'Desain dan Publikasi');
+                                                        $isFlexibleSchedule = $isDesainOnly || $isPublikasiOnly || $isDesainDanPublikasi;
                                                     @endphp
                                                     <tr>
-                                                        <th class="ps-3">{{ $isDesainOnly ? 'Deadline Desain' : ($isPublikasiOnly ? 'Target Publikasi' : 'Tanggal Kegiatan') }}</th>
+                                                        <th class="ps-3">{{ $isDesainOnly ? 'Deadline Desain' : ($isDesainDanPublikasi ? 'Deadline & Target Publikasi' : ($isPublikasiOnly ? 'Target Publikasi' : 'Tanggal Kegiatan')) }}</th>
                                                         <td class="text-break" style="white-space: normal !important; word-break: break-word !important;">
                                                             @if (Auth::user()->is_admin)
                                                                 <div class="p-2 bg-light border rounded">
                                                                     <div class="row g-2">
                                                                         <div class="col-12 {{ $isFlexibleSchedule ? '' : 'col-sm-6' }}">
                                                                             <label for="tgl_awal" class="form-label small text-muted mb-1 fw-bold">
-                                                                                <i class="fa-regular fa-calendar-check me-1 text-primary"></i> {{ $isDesainOnly ? 'Batas Waktu / Deadline' : ($isPublikasiOnly ? 'Target Tayang / Publikasi' : 'Mulai') }}
+                                                                                <i class="fa-regular fa-calendar-check me-1 text-primary"></i> {{ $isDesainOnly ? 'Batas Waktu / Deadline' : ($isDesainDanPublikasi ? 'Deadline Desain & Target Publikasi' : ($isPublikasiOnly ? 'Target Tayang / Publikasi' : 'Mulai')) }}
                                                                             </label>
                                                                             <input type="date" name="tgl_awal" id="tgl_awal" class="form-control form-control-sm" value="{{ $pengajuan->tgl_awal }}">
                                                                         </div>
@@ -394,7 +396,7 @@
                                                     </tr>
                                                     @endif
                                                     <tr>
-                                                        <th class="ps-3">{{ $isDesainOnly ? 'Brief Desain' : ($isPublikasiOnly ? 'Brief Publikasi' : 'Deskripsi') }}</th>
+                                                        <th class="ps-3">{{ $isDesainOnly ? 'Brief Desain' : ($isDesainDanPublikasi ? 'Brief Desain & Publikasi' : ($isPublikasiOnly ? 'Brief Publikasi' : 'Deskripsi')) }}</th>
                                                         <td class="text-break" style="white-space: normal !important; word-break: break-word !important;">
                                                             @php
                                                                 $cleanDeskEdit = $pengajuan->formatted_deskripsi;
@@ -645,14 +647,16 @@
                                                     <div class="card border border-primary border-opacity-25 h-100 shadow-xs mb-0">
                                                         <div class="card-header bg-primary bg-opacity-10 py-2 px-3 d-flex justify-content-between align-items-center">
                                                             <span class="fw-bold text-primary small text-uppercase">
-                                                                @if ($isPublikasiOnly)
+                                                                @if ($isDesainDanPublikasi)
+                                                                    <i class="fa-solid fa-layer-group me-1"></i> 1. PIC Desain &amp; Publikasi
+                                                                @elseif ($isPublikasiOnly)
                                                                     <i class="fa-solid fa-bullhorn me-1"></i> 1. PIC Publikasi / Humas
                                                                 @else
                                                                     <i class="fa-solid fa-palette me-1"></i> 1. PIC Desain
                                                                 @endif
                                                             </span>
                                                             <button type="button" class="btn btn-xs btn-primary d-inline-flex align-items-center" onclick="tambahBarisPic('desain')">
-                                                                <i class="fa-solid fa-plus me-1"></i> {{ $isPublikasiOnly ? 'Tambah PIC' : 'Tambah PIC Desain' }}
+                                                                <i class="fa-solid fa-plus me-1"></i> {{ ($isPublikasiOnly || $isDesainDanPublikasi) ? 'Tambah PIC' : 'Tambah PIC Desain' }}
                                                             </button>
                                                         </div>
                                                         <div class="card-body p-3">
@@ -1284,7 +1288,7 @@
 
                     function handleTempatChange() {
                         const jenis = $('#nama_kegiatan').val();
-                        const isFlexible = (jenis === 'Desain' || jenis === 'Publikasi');
+                        const isFlexible = (jenis === 'Desain' || jenis === 'Publikasi' || jenis === 'Desain dan Publikasi');
                         const val = $select.val();
                         if (isFlexible) {
                             $customWrapper.addClass('d-none');
@@ -1324,7 +1328,8 @@
                     const jenis = namaKegiatanSelect.value;
                     const isDesain = jenis === 'Desain';
                     const isPublikasi = jenis === 'Publikasi';
-                    const isFlexible = isDesain || isPublikasi;
+                    const isDesainDanPublikasi = jenis === 'Desain dan Publikasi';
+                    const isFlexible = isDesain || isPublikasi || isDesainDanPublikasi;
 
                     if (isFlexible) {
                         if (colTglAwal) {
@@ -1334,7 +1339,9 @@
                         if (labelTglAwal) {
                             labelTglAwal.innerHTML = isDesain
                                 ? 'Deadline / Batas Waktu Desain <span class="text-danger">*</span>'
-                                : 'Target Tayang / Tanggal Publikasi <span class="text-danger">*</span>';
+                                : (isDesainDanPublikasi
+                                    ? 'Deadline Desain &amp; Target Publikasi <span class="text-danger">*</span>'
+                                    : 'Target Tayang / Tanggal Publikasi <span class="text-danger">*</span>');
                         }
                         if (wrapperJam) wrapperJam.classList.add('d-none');
                         if (wrapperSelesai) wrapperSelesai.classList.add('d-none');
@@ -1344,12 +1351,16 @@
                         if (labelDeskripsi) {
                             labelDeskripsi.textContent = isDesain
                                 ? 'Deskripsi / Brief Desain'
-                                : 'Deskripsi / Brief Publikasi (5W+1H)';
+                                : (isDesainDanPublikasi
+                                    ? 'Deskripsi / Brief Desain & Publikasi (5W+1H)'
+                                    : 'Deskripsi / Brief Publikasi (5W+1H)');
                         }
                         if (hintBriefDesain) {
                             hintBriefDesain.innerHTML = isDesain
                                 ? '<i class="fa-solid fa-circle-info me-1"></i> Untuk pengajuan <strong>Desain</strong>, cukup isi deadline, brief desain (ukuran, teks, referensi warna), dan lampiran materi jika ada.'
-                                : '<i class="fa-solid fa-circle-info me-1"></i> Untuk pengajuan <strong>Publikasi</strong>, cukup isi target tayang, poin berita (5W+1H) atau caption, serta lampiran foto/file/link GDrive materi jika ada.';
+                                : (isDesainDanPublikasi
+                                    ? '<i class="fa-solid fa-circle-info me-1"></i> Untuk pengajuan <strong>Desain dan Publikasi</strong>, isi deadline/target tayang, brief desain (ukuran, teks, tema warna) sekaligus poin publikasi (5W+1H / caption), serta lampiran materi jika ada.'
+                                    : '<i class="fa-solid fa-circle-info me-1"></i> Untuk pengajuan <strong>Publikasi</strong>, cukup isi target tayang, poin berita (5W+1H) atau caption, serta lampiran foto/file/link GDrive materi jika ada.');
                             hintBriefDesain.classList.remove('d-none');
                         }
 

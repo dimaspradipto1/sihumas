@@ -133,21 +133,22 @@
                                     @php
                                         $jenisPengajuan = $pengajuan?->nama_kegiatan ?? '';
                                         $isPublikasiOnly = ($jenisPengajuan === 'Publikasi');
+                                        $isDesainDanPublikasi = ($jenisPengajuan === 'Desain dan Publikasi');
                                         $isDesainOnly = ($jenisPengajuan === 'Desain');
                                         $isDokumentasiOnly = ($jenisPengajuan === 'Dokumentasi');
 
-                                        $showLaporan = Auth::user()->is_admin || $isPublikasiOnly;
-                                        $showLinkPublikasi = Auth::user()->is_admin || $isPublikasiOnly;
+                                        $showLaporan = Auth::user()->is_admin || $isPublikasiOnly || $isDesainDanPublikasi;
+                                        $showLinkPublikasi = Auth::user()->is_admin || $isPublikasiOnly || $isDesainDanPublikasi;
 
                                         $showLinkDokumentasi = Auth::user()->is_admin
-                                            ? (!$isDesainOnly || !empty($publikasi->link_dokumentasi))
+                                            ? ((!$isDesainOnly && !$isDesainDanPublikasi) || !empty($publikasi->link_dokumentasi))
                                             : ($pengajuan ? $pengajuan->isUserAssignedAs('dokumentasi', Auth::user()) : true);
 
                                         $showLinkDesain = Auth::user()->is_admin
                                             ? ((!$isDokumentasiOnly && !$isPublikasiOnly) || !empty($pengajuan?->link_desain))
                                             : ($pengajuan && !$isPublikasiOnly && !$isDokumentasiOnly ? $pengajuan->isUserAssignedAs('desain', Auth::user()) : false);
 
-                                        if (!Auth::user()->is_admin && !$isPublikasiOnly && !$showLinkDokumentasi && !$showLinkDesain) {
+                                        if (!Auth::user()->is_admin && !$isPublikasiOnly && !$isDesainDanPublikasi && !$showLinkDokumentasi && !$showLinkDesain) {
                                             $showLinkDokumentasi = true;
                                             $showLinkDesain = true;
                                         }
