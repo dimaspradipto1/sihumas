@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
 
 class Triwulan extends Model
 {
@@ -51,6 +52,10 @@ class Triwulan extends Model
      */
     public static function resolveForMonth(?int $month = null): ?self
     {
+        if (!Schema::hasTable('triwulans')) {
+            return null;
+        }
+
         $month = $month ?? (int) Carbon::now()->month;
 
         $all = static::orderBy('id')->get();

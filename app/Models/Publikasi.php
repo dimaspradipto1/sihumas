@@ -3,6 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class Publikasi extends Model
@@ -37,7 +38,7 @@ class Publikasi extends Model
                 $publikasi->tahun_akademik_id = TahunAkademik::getActive()?->id;
             }
 
-            if (empty($publikasi->triwulan_id)) {
+            if (empty($publikasi->triwulan_id) && Schema::hasColumn('publikasis', 'triwulan_id')) {
                 $publikasi->triwulan_id = Triwulan::getActive()?->id;
             }
 
@@ -55,7 +56,7 @@ class Publikasi extends Model
                 $publikasi->tahun_akademik_id = TahunAkademik::getActive()?->id;
             }
 
-            if (empty($publikasi->triwulan_id)) {
+            if (empty($publikasi->triwulan_id) && Schema::hasColumn('publikasis', 'triwulan_id')) {
                 $publikasi->triwulan_id = Triwulan::getActive()?->id;
             }
 
