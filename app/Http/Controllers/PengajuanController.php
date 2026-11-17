@@ -120,11 +120,11 @@ class PengajuanController extends Controller
             ? $data['unit_kegiatan']
             : ($user?->unitKegiatan?->unit_kegiatan ?? ($user?->fakultas ?? '-'));
 
-        $isDesainOnly = ($data['nama_kegiatan'] ?? '') === 'Desain';
+        $isFlexibleSchedule = in_array($data['nama_kegiatan'] ?? '', ['Desain', 'Publikasi'], true);
         $tglSelesai = !empty($data['tgl_selesai']) ? $data['tgl_selesai'] : $data['tgl_awal'];
-        $jamKegiatan = !$isDesainOnly && !empty($data['jam_kegiatan']) ? $data['jam_kegiatan'] : ($data['jam_kegiatan'] ?? null);
-        $waktuSelesai = !$isDesainOnly && !empty($data['waktu_selesai']) ? $data['waktu_selesai'] : ($data['waktu_selesai'] ?? null);
-        $tempatKegiatan = !$isDesainOnly && !empty($data['tempat_kegiatan']) ? $data['tempat_kegiatan'] : ($data['tempat_kegiatan'] ?? null);
+        $jamKegiatan = !$isFlexibleSchedule && !empty($data['jam_kegiatan']) ? $data['jam_kegiatan'] : ($data['jam_kegiatan'] ?? null);
+        $waktuSelesai = !$isFlexibleSchedule && !empty($data['waktu_selesai']) ? $data['waktu_selesai'] : ($data['waktu_selesai'] ?? null);
+        $tempatKegiatan = !$isFlexibleSchedule && !empty($data['tempat_kegiatan']) ? $data['tempat_kegiatan'] : ($data['tempat_kegiatan'] ?? null);
 
         $pengajuan = Pengajuan::create([
             'user_id'           => auth()->id(),
@@ -134,8 +134,8 @@ class PengajuanController extends Controller
             'jam_kegiatan'      => $jamKegiatan,
             'waktu_selesai'     => $waktuSelesai,
             'deskripsi_kegiatan' => isset($data['deskripsi_kegiatan']) ? trim(strip_tags($data['deskripsi_kegiatan'])) : null,
-            'perlengkapan'      => !$isDesainOnly && isset($data['perlengkapan']) ? trim(strip_tags($data['perlengkapan'])) : null,
-            'link_zoom'         => !$isDesainOnly ? ($data['link_zoom'] ?? null) : null,
+            'perlengkapan'      => !$isFlexibleSchedule && isset($data['perlengkapan']) ? trim(strip_tags($data['perlengkapan'])) : null,
+            'link_zoom'         => !$isFlexibleSchedule ? ($data['link_zoom'] ?? null) : null,
             'unit_kegiatan'     => $unitKegiatanVal,
             'tempat_kegiatan'   => $tempatKegiatan,
             'alasan_ditolak'    => $data['alasan_ditolak'] ?? null,

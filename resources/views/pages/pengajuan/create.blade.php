@@ -432,9 +432,10 @@
                     }
 
                     function handleTempatChange() {
-                        const isDesainOnly = ($('#nama_kegiatan').val() === 'Desain');
+                        const jenis = $('#nama_kegiatan').val();
+                        const isFlexible = (jenis === 'Desain' || jenis === 'Publikasi');
                         const val = $select.val();
-                        if (isDesainOnly) {
+                        if (isFlexible) {
                             $customWrapper.addClass('d-none');
                             $customInput.prop('disabled', true).removeAttr('name').removeAttr('required');
                             $select.attr('name', 'tempat_kegiatan').removeAttr('required');
@@ -469,21 +470,37 @@
 
                 function toggleFormByNamaKegiatan() {
                     if (!namaKegiatanSelect) return;
-                    const isDesain = namaKegiatanSelect.value === 'Desain';
+                    const jenis = namaKegiatanSelect.value;
+                    const isDesain = jenis === 'Desain';
+                    const isPublikasi = jenis === 'Publikasi';
+                    const isFlexible = isDesain || isPublikasi;
 
-                    if (isDesain) {
+                    if (isFlexible) {
                         if (colTglAwal) {
                             colTglAwal.classList.remove('col-md-6');
                             colTglAwal.classList.add('col-12');
                         }
-                        if (labelTglAwal) labelTglAwal.innerHTML = 'Deadline / Batas Waktu Desain <span class="text-danger">*</span>';
+                        if (labelTglAwal) {
+                            labelTglAwal.innerHTML = isDesain
+                                ? 'Deadline / Batas Waktu Desain <span class="text-danger">*</span>'
+                                : 'Target Tayang / Tanggal Publikasi <span class="text-danger">*</span>';
+                        }
                         if (wrapperJam) wrapperJam.classList.add('d-none');
                         if (wrapperSelesai) wrapperSelesai.classList.add('d-none');
                         if (wrapperTempat) wrapperTempat.classList.add('d-none');
                         if (wrapperPerlengkapan) wrapperPerlengkapan.classList.add('d-none');
                         if (wrapperLinkZoom) wrapperLinkZoom.classList.add('d-none');
-                        if (labelDeskripsi) labelDeskripsi.textContent = 'Deskripsi / Brief Desain';
-                        if (hintBriefDesain) hintBriefDesain.classList.remove('d-none');
+                        if (labelDeskripsi) {
+                            labelDeskripsi.textContent = isDesain
+                                ? 'Deskripsi / Brief Desain'
+                                : 'Deskripsi / Brief Publikasi (5W+1H)';
+                        }
+                        if (hintBriefDesain) {
+                            hintBriefDesain.innerHTML = isDesain
+                                ? '<i class="fa-solid fa-circle-info me-1"></i> Untuk pengajuan <strong>Desain</strong>, cukup isi deadline, brief desain (ukuran, teks, referensi warna), dan lampiran materi jika ada.'
+                                : '<i class="fa-solid fa-circle-info me-1"></i> Untuk pengajuan <strong>Publikasi</strong>, cukup isi target tayang, poin berita (5W+1H) atau caption, serta lampiran foto/file/link GDrive materi jika ada.';
+                            hintBriefDesain.classList.remove('d-none');
+                        }
 
                         if ($select.length) $select.removeAttr('required');
                         if ($customInput.length) $customInput.removeAttr('required');
