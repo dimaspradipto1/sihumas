@@ -348,5 +348,72 @@ class PengajuanTest extends TestCase
         $publikasiEdit->assertSee('Link Publikasi');
         $publikasiEdit->assertDontSee('Link GDrive (Desain atau Flayer)');
     }
+
+    public function test_regular_user_can_edit_and_delete_own_pengajuan_only(): void
+    {
+        $owner = User::factory()->create([
+            'is_admin' => false,
+            'is_humas' => false,
+            'is_users' => true,
+        ]);
+
+        $otherUser = User::factory()->create([
+            'is_admin' => false,
+            'is_humas' => false,
+            'is_users' => true,
+        ]);
+
+        $pengajuan = Pengajuan::create([
+            'user_id' => $owner->id,
+            'nama_kegiatan' => 'Desain dan Dokumentasi',
+            'tgl_awal' => now()->addDays(2)->toDateString(),
+            'tgl_selesai' => now()->addDays(2)->toDateString(),
+            'jam_kegiatan' => '09:00',
+            'waktu_selesai' => '11:00',
+            'tempat_kegiatan' => 'Auditorium',
+            'unit_kegiatan' => 'BAAK',
+            'deskripsi_kegiatan' => 'Brief awal',
+            'status' => 'pending',
+        ]);
+
+        // Owner sees edit and delete actions in DataTables AJAX response
+        $dtResponse = $this->actingAs($owner)->getJson(route('pengajuan.index'), [
+            'X-Requested-With' => 'XMLHttpRequest',
+        ]);
+        $dtResponse->assertStatus(200);
+        $actionHtml = $dtResponse->json('data.0.action') ?? '';
+        $this->assertStringContainsString(route('pengajuan.edit', $pengajuan->id), $actionHtml);
+        $this->assertStringContainsString(route('pengajuan.destroy', $pengajuan->id), $actionHtml);
+
+        // Owner can view edit page and update own pengajuan
+        $this->actingAs($owner)->get(route('pengajuan.edit', $pengajuan->id))->assertStatus(200);
+        $updateResponse = $this->actingAs($owner)->put(route('pengajuan.update', $pengajuan->id), [
+            'nama_kegiatan' => 'Dokumentasi',
+            'tgl_awal' => $pengajuan->tgl_awal,
+            'tgl_selesai' => $pengajuan->tgl_selesai,
+            'jam_kegiatan' => '10:00',
+            'waktu_selesai' => '12:00',
+            'tempat_kegiatan' => 'Ruang Rapat',
+            'deskripsi_kegiatan' => 'Brief diperbarui',
+        ]);
+        $updateResponse->assertRedirect(route('pengajuan.index'));
+        $this->assertDatabaseHas('pengajuans', [
+            'id' => $pengajuan->id,
+            'nama_kegiatan' => 'Dokumentasi',
+            'tempat_kegiatan' => 'Ruang Rapat',
+        ]);
+
+        // Other user is forbidden from editing, updating, or deleting owner's pengajuan
+        $this->actingAs($otherUser)->get(route('pengajuan.edit', $pengajuan->id))->assertStatus(403);
+        $this->actingAs($otherUser)->put(route('pengajuan.update', $pengajuan->id), [
+            'nama_kegiatan' => 'Publikasi',
+        ])->assertStatus(403);
+        $this->actingAs($otherUser)->delete(route('pengajuan.destroy', $pengajuan->id))->assertStatus(403);
+
+        // Owner can delete own pengajuan
+        $deleteResponse = $this->actingAs($owner)->delete(route('pengajuan.destroy', $pengajuan->id));
+        $deleteResponse->assertRedirect(route('pengajuan.index'));
+        $this->assertDatabaseMissing('pengajuans', ['id' => $pengajuan->id]);
+    }
 }
 

@@ -22,7 +22,7 @@
     <div class="d-flex justify-content-between w-100 flex-wrap">
         <div class="mb-3 mb-lg-0">
             <h1 class="h4 text-capitalize">
-                {{ Auth::user()->is_admin ? 'form edit pengajuan berita' : 'detail pengajuan tugas kegiatan' }}
+                {{ (Auth::user()->is_admin || !Auth::user()->is_humas) ? 'form edit pengajuan berita' : 'detail pengajuan tugas kegiatan' }}
             </h1>
             <div>
             </div>
@@ -253,7 +253,7 @@
                             </div>
                         </div>
 
-                        <button class="btn btn-gray-800 d-inline-flex align-items-center me-2 aria-haspopup=" true"
+                        <button type="submit" class="btn btn-gray-800 d-inline-flex align-items-center me-2" aria-haspopup="true"
                             aria-expanded="false">
                             <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                 xmlns="http://www.w3.org/2000/svg">

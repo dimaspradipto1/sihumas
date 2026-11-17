@@ -224,6 +224,11 @@ class PengajuanController extends Controller
      */
     public function edit(Pengajuan $pengajuan)
     {
+        $user = auth()->user();
+        if (!$user->is_admin && !$user->is_humas && (int) $pengajuan->user_id !== (int) $user->id) {
+            abort(403, 'Anda tidak memiliki akses untuk mengedit pengajuan ini.');
+        }
+
         $tahunAkademik = TahunAkademik::all();
         $petugasHumas = User::where('is_humas', true)
             ->orderBy('name')
@@ -238,13 +243,20 @@ class PengajuanController extends Controller
      */
     public function update(Request $request, Pengajuan $pengajuan)
     {
-        // Cek jika status pengajuan adalah 'ditolak', simpan alasan ditolak
-        if ($request->status == 'ditolak') {
-            $pengajuan->alasan_ditolak = $request->alasan_ditolak;
-        } elseif ($request->status == 'diterima') {
-            $pengajuan->alasan_ditolak = null; // Hapus alasan jika diterima
-        } else {
-            $pengajuan->alasan_ditolak = null; // Jika status bukan 'ditolak' atau 'diterima'
+        $user = auth()->user();
+        if (!$user->is_admin && !$user->is_humas && (int) $pengajuan->user_id !== (int) $user->id) {
+            abort(403, 'Anda tidak memiliki akses untuk memperbarui pengajuan ini.');
+        }
+
+        // Cek jika status pengajuan adalah 'ditolak', simpan alasan ditolak (hanya untuk Admin/Humas)
+        if ($user->is_admin || $user->is_humas) {
+            if ($request->status == 'ditolak') {
+                $pengajuan->alasan_ditolak = $request->alasan_ditolak;
+            } elseif ($request->status == 'diterima') {
+                $pengajuan->alasan_ditolak = null; // Hapus alasan jika diterima
+            } else {
+                $pengajuan->alasan_ditolak = null; // Jika status bukan 'ditolak' atau 'diterima'
+            }
         }
 
         // Mengambil email tujuan dari input admin, jika tidak diisi maka ambil dari email user yang login
@@ -449,8 +461,8 @@ class PengajuanController extends Controller
             return redirect()->route('kotak-masuk-pengajuan.index');
         }
 
-        // Cek jika pengguna adalah is_feb, is_fst, is_fikes, atau is_rektorat
-        elseif (auth()->user()->is_feb || auth()->user()->is_fst || auth()->user()->is_fikes || auth()->user()->is_rektorat) {
+        // Cek jika pengguna adalah pemilik pengajuan atau role unit/fakultas/rektorat
+        elseif ((int) $pengajuan->user_id === (int) auth()->id() || auth()->user()->is_users || auth()->user()->is_feb || auth()->user()->is_fst || auth()->user()->is_fikes || auth()->user()->is_rektorat) {
             // Jika status bukan 'ditolak', ubah status menjadi 'pending'
             if ($request->status != 'ditolak') {
                 $pengajuan->status = 'pending';
@@ -525,6 +537,11 @@ class PengajuanController extends Controller
      */
     public function destroy(Pengajuan $pengajuan)
     {
+        $user = auth()->user();
+        if (!$user->is_admin && (int) $pengajuan->user_id !== (int) $user->id) {
+            abort(403, 'Anda tidak memiliki akses untuk menghapus pengajuan ini.');
+        }
+
         $pengajuan->delete();
         Alert::success('SUSSCESS', 'data deleted successfully')->autoclose(2000)->toToast()->timerProgressBar();
         return redirect()->route('pengajuan.index');
