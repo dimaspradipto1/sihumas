@@ -158,10 +158,10 @@
                                     <!-- Laporan Kegiatan / Rilis Berita -->
                                     <div class="mb-4">
                                         <label for="upload_laporan" class="form-label text-uppercase fw-bold">
-                                            <i class="fa-solid fa-file-lines me-1 text-primary"></i> {{ $isPublikasiOnly ? 'Narasi / Rilis Berita Publikasi' : 'Laporan Kegiatan / Ringkasan Liputan' }}
+                                            <i class="fa-solid fa-file-lines me-1 text-primary"></i> {{ ($isPublikasiOnly || $isDesainDanPublikasi) ? 'Narasi / Rilis Berita Publikasi' : 'Laporan Kegiatan / Ringkasan Liputan' }}
                                         </label>
                                         <textarea name="upload_laporan" class="form-control" id="upload_laporan" rows="6"
-                                            placeholder="{{ $isPublikasiOnly ? 'Tuliskan narasi berita, caption publikasi, atau rilis yang ditayangkan...' : 'Tuliskan ringkasan hasil kegiatan, rilis berita, atau laporan peliputan...' }}">{{ old('upload_laporan') ?? ($publikasi->upload_laporan ?? ($pengajuan->upload_laporan ?? '')) }}</textarea>
+                                            placeholder="{{ ($isPublikasiOnly || $isDesainDanPublikasi) ? 'Tuliskan narasi berita, caption publikasi, atau rilis yang ditayangkan...' : 'Tuliskan ringkasan hasil kegiatan, rilis berita, atau laporan peliputan...' }}">{{ old('upload_laporan') ?? ($publikasi->upload_laporan ?? ($pengajuan->upload_laporan ?? '')) }}</textarea>
                                         <small class="text-muted"><i class="fa-solid fa-circle-info me-1"></i> Format teks didukung, sistem akan otomatis membersihkan tag HTML agar data tersimpan rapi.</small>
                                     </div>
                                     @endif
