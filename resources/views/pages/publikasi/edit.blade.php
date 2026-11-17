@@ -174,6 +174,19 @@
                                     @endif
 
                                     @if ($showLinkDesain)
+                                    <!-- Keterangan / Informasi Desain untuk Pengusul -->
+                                    <div class="mb-4">
+                                        <label for="keterangan_desain" class="form-label text-uppercase fw-bold d-flex justify-content-between align-items-center">
+                                            <span><i class="fa-solid fa-comment-dots me-1 text-primary"></i> Keterangan / Informasi Desain</span>
+                                            <span class="badge bg-secondary text-white fw-normal">Opsional</span>
+                                        </label>
+                                        <textarea name="keterangan_desain" id="keterangan_desain" class="form-control" rows="2"
+                                            placeholder="Contoh: Berikut untuk link desain kegiatan ini / terkait desain estimasi selesai dalam 1 jam...">{{ old('keterangan_desain', $pengajuan?->alasan_ditolak ?? '') }}</textarea>
+                                        <small class="text-muted d-block mt-1">
+                                            <i class="fa-solid fa-circle-info me-1"></i> Keterangan ini dapat diisi oleh PIC Humas maupun Admin untuk menginformasikan status/link desain kepada pengusul di tabel Pengajuan Kegiatan.
+                                        </small>
+                                    </div>
+
                                     <!-- Link GDrive Desain atau Flayer (Opsional) -->
                                     @php
                                         $existingDesainLink = $pengajuan?->link_desain ?? '';
@@ -206,19 +219,6 @@
                                         </div>
                                         <small class="text-muted d-block mt-1">
                                             <i class="fa-solid fa-circle-info me-1"></i> Masukkan tautan Google Drive yang berisi desain atau flayer kegiatan (opsional). Saat link diisi, link akan otomatis tampil di kolom <strong>Keterangan</strong> pada menu Pengajuan.
-                                        </small>
-                                    </div>
-
-                                    <!-- Keterangan / Informasi Desain untuk Pengusul -->
-                                    <div class="mb-4">
-                                        <label for="keterangan_desain" class="form-label text-uppercase fw-bold d-flex justify-content-between align-items-center">
-                                            <span><i class="fa-solid fa-comment-dots me-1 text-primary"></i> Keterangan / Informasi Desain</span>
-                                            <span class="badge bg-secondary text-white fw-normal">Opsional</span>
-                                        </label>
-                                        <textarea name="keterangan_desain" id="keterangan_desain" class="form-control" rows="2"
-                                            placeholder="Contoh: Berikut untuk link desain kegiatan ini / terkait desain estimasi selesai dalam 1 jam...">{{ old('keterangan_desain', $pengajuan?->alasan_ditolak ?? '') }}</textarea>
-                                        <small class="text-muted d-block mt-1">
-                                            <i class="fa-solid fa-circle-info me-1"></i> Keterangan ini dapat diisi oleh PIC Humas maupun Admin untuk menginformasikan status/link desain kepada pengusul di tabel Pengajuan Kegiatan.
                                         </small>
                                     </div>
                                     @endif
