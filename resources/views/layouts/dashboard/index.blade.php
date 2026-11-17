@@ -4,7 +4,7 @@
 <div class="py-3">
     {{-- 1. HERO WELCOME BANNER (PROFESSIONAL UIS GREEN #046B26 & YELLOW #FED802) --}}
     @if (Auth::user()->is_admin)
-        <div class="card border-0 shadow-sm mb-4 text-white overflow-hidden hero-welcome-card">
+        <div class="card border-0 shadow-sm mb-4 text-white overflow-hidden hero-welcome-card hero-welcome-admin">
             {{-- BAGIAN ATAS: BANNER IMAGE / DEFAULT GREY PLACEHOLDER (KHUSUS ADMIN) --}}
             @php
                 $hasCustomBanner = !empty($dashboardBanner) && \Illuminate\Support\Facades\Storage::disk('public')->exists($dashboardBanner);
@@ -664,6 +664,9 @@
         border-radius: 1rem !important;
         border-left: 6px solid #FED802 !important;
         box-shadow: 0 6px 20px rgba(4, 107, 38, 0.28) !important;
+    }
+    .hero-welcome-card.hero-welcome-admin {
+        border-left: none !important;
     }
     .hero-role-badge {
         background: rgba(0, 0, 0, 0.24);
