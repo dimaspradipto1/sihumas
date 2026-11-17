@@ -67,11 +67,11 @@
                             @endif
                         </a>
 
-                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end mt-2 py-0 shadow-sm border-0"
-                            style="width: 340px !important; min-width: 340px !important; max-width: 92vw !important; overflow: hidden !important;">
-                            <div class="list-group list-group-flush">
-                                <div class="d-flex justify-content-between align-items-center gap-2 px-3 py-2 border-bottom border-light">
-                                    <span class="text-primary fw-bold text-uppercase" style="font-size: 11px; white-space: nowrap;">Notifikasi &amp; Info Terbaru</span>
+                        <div class="dropdown-menu dropdown-menu-end mt-2 py-0 shadow-lg border notif-dropdown-menu"
+                            style="width: 380px !important; min-width: 320px !important; max-width: calc(100vw - 24px) !important; right: 0 !important; left: auto !important; overflow: hidden !important; border-radius: 0.65rem !important;">
+                            <div class="list-group list-group-flush w-100">
+                                <div class="d-flex justify-content-between align-items-center gap-2 px-3 py-2 border-bottom border-light w-100" style="box-sizing: border-box;">
+                                    <span class="text-primary fw-bold text-uppercase text-truncate" style="font-size: 11px; min-width: 0;">Notifikasi &amp; Info Terbaru</span>
                                     @if (($bellData['pending'] ?? 0) > 0)
                                         <span class="badge bg-warning flex-shrink-0 px-2 py-1" style="font-size: 11px; color: #1f2937 !important; white-space: nowrap;">{{ $bellData['pending'] }} Pending</span>
                                     @endif
@@ -84,14 +84,14 @@
                                                 ? route('pengajuan.edit', $item->id)
                                                 : route('pengajuan.show', $item->id);
                                             $statusBadge = match ($item->status) {
-                                                'diterima' => '<span class="badge bg-success px-2 py-1" style="font-size: 11px; color: #ffffff !important;">Diterima</span>',
-                                                'ditolak' => '<span class="badge bg-danger px-2 py-1" style="font-size: 11px; color: #ffffff !important;">Ditolak</span>',
-                                                default => '<span class="badge bg-warning px-2 py-1" style="font-size: 11px; color: #1f2937 !important;">Pending</span>',
+                                                'diterima' => '<span class="badge bg-success px-2 py-1" style="font-size: 11px; color: #ffffff !important; white-space: nowrap;">Diterima</span>',
+                                                'ditolak' => '<span class="badge bg-danger px-2 py-1" style="font-size: 11px; color: #ffffff !important; white-space: nowrap;">Ditolak</span>',
+                                                default => '<span class="badge bg-warning px-2 py-1" style="font-size: 11px; color: #1f2937 !important; white-space: nowrap;">Pending</span>',
                                             };
                                         @endphp
-                                        <a href="{{ $itemUrl }}" class="list-group-item list-group-item-action border-bottom py-2 px-3">
-                                            <div class="d-flex justify-content-between align-items-start gap-2">
-                                                <div class="flex-grow-1" style="min-width: 0;">
+                                        <a href="{{ $itemUrl }}" class="list-group-item list-group-item-action border-bottom py-2 px-3 w-100" style="box-sizing: border-box;">
+                                            <div class="d-flex justify-content-between align-items-center gap-2 w-100" style="min-width: 0;">
+                                                <div class="flex-grow-1" style="min-width: 0; overflow: hidden;">
                                                     <div class="fw-bold text-gray-900 text-truncate" style="font-size: 11px;">{{ $item->nama_kegiatan }}</div>
                                                     <div class="text-muted text-truncate" style="font-size: 11px;">
                                                         {{ $item->unit_kegiatan ?: ($item->user?->name ?? '-') }}
@@ -100,9 +100,9 @@
                                                         @endif
                                                     </div>
                                                 </div>
-                                                <div class="text-end flex-shrink-0">
+                                                <div class="text-end flex-shrink-0" style="white-space: nowrap;">
                                                     {!! $statusBadge !!}
-                                                    <div class="text-muted mt-1" style="font-size: 11px; white-space: nowrap;">
+                                                    <div class="text-muted mt-1" style="font-size: 11px;">
                                                         {{ $item->updated_at ? $item->updated_at->locale('id')->diffForHumans() : '' }}
                                                     </div>
                                                 </div>
