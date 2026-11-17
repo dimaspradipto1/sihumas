@@ -342,7 +342,28 @@
                                                     @if (!$isFlexibleSchedule || !empty($pengajuan->jam_kegiatan))
                                                     <tr>
                                                         <th class="ps-3">Waktu Kegiatan</th>
-                                                        <td class="text-break" style="white-space: normal !important; word-break: break-word !important;">{{ $pengajuan->jam_kegiatan }} WIB - {{ $pengajuan->waktu_selesai }} WIB</td>
+                                                        <td class="text-break" style="white-space: normal !important; word-break: break-word !important;">
+                                                            @if (Auth::user()->is_admin)
+                                                                <div class="p-2 bg-light border rounded">
+                                                                    <div class="row g-2">
+                                                                        <div class="col-12 col-sm-6">
+                                                                            <label for="jam_kegiatan" class="form-label small text-muted mb-1 fw-bold">
+                                                                                <i class="fa-regular fa-clock me-1 text-primary"></i> Jam Mulai (WIB)
+                                                                            </label>
+                                                                            <input type="time" name="jam_kegiatan" id="jam_kegiatan" class="form-control form-control-sm" value="{{ $pengajuan->jam_kegiatan ? substr($pengajuan->jam_kegiatan, 0, 5) : '' }}">
+                                                                        </div>
+                                                                        <div class="col-12 col-sm-6">
+                                                                            <label for="waktu_selesai" class="form-label small text-muted mb-1 fw-bold">
+                                                                                <i class="fa-regular fa-clock me-1 text-success"></i> Waktu Selesai (WIB)
+                                                                            </label>
+                                                                            <input type="time" name="waktu_selesai" id="waktu_selesai" class="form-control form-control-sm" value="{{ $pengajuan->waktu_selesai ? substr($pengajuan->waktu_selesai, 0, 5) : '' }}">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            @else
+                                                                {{ $pengajuan->jam_kegiatan ? substr($pengajuan->jam_kegiatan, 0, 5) : '-' }} WIB - {{ $pengajuan->waktu_selesai ? substr($pengajuan->waktu_selesai, 0, 5) : '-' }} WIB
+                                                            @endif
+                                                        </td>
                                                     </tr>
                                                     @endif
                                                     <tr>
