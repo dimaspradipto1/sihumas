@@ -181,9 +181,9 @@
                                     <th class="ps-3 text-muted small text-uppercase">{{ $isDesainOnly ? 'Brief Desain' : ($isPublikasiOnly ? 'Brief Publikasi' : 'Deskripsi Kegiatan') }}</th>
                                     <td class="pe-3 text-break">
                                         @php
-                                            $cleanDesk = trim(strip_tags($pengajuan->deskripsi_kegiatan ?? ''));
+                                            $cleanDesk = $pengajuan->formatted_deskripsi;
                                         @endphp
-                                        @if ($cleanDesk)
+                                        @if ($cleanDesk !== '')
                                             <div class="p-3 bg-light rounded border text-gray-800" style="white-space: pre-wrap; font-size: 0.875rem; line-height: 1.6;">{{ $cleanDesk }}</div>
                                         @else
                                             <span class="text-muted fst-italic">-</span>

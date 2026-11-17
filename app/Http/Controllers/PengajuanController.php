@@ -133,8 +133,8 @@ class PengajuanController extends Controller
             'tgl_selesai'       => $tglSelesai,
             'jam_kegiatan'      => $jamKegiatan,
             'waktu_selesai'     => $waktuSelesai,
-            'deskripsi_kegiatan' => isset($data['deskripsi_kegiatan']) ? trim(strip_tags($data['deskripsi_kegiatan'])) : null,
-            'perlengkapan'      => !$isFlexibleSchedule && isset($data['perlengkapan']) ? trim(strip_tags($data['perlengkapan'])) : null,
+            'deskripsi_kegiatan' => Pengajuan::cleanRichText($data['deskripsi_kegiatan'] ?? null),
+            'perlengkapan'      => !$isFlexibleSchedule ? Pengajuan::cleanRichText($data['perlengkapan'] ?? null) : null,
             'link_zoom'         => !$isFlexibleSchedule ? ($data['link_zoom'] ?? null) : null,
             'unit_kegiatan'     => $unitKegiatanVal,
             'tempat_kegiatan'   => $tempatKegiatan,
@@ -305,10 +305,10 @@ class PengajuanController extends Controller
             }
 
             if (isset($data['deskripsi_kegiatan'])) {
-                $data['deskripsi_kegiatan'] = trim(strip_tags($data['deskripsi_kegiatan']));
+                $data['deskripsi_kegiatan'] = Pengajuan::cleanRichText($data['deskripsi_kegiatan']);
             }
             if (isset($data['perlengkapan'])) {
-                $data['perlengkapan'] = trim(strip_tags($data['perlengkapan']));
+                $data['perlengkapan'] = Pengajuan::cleanRichText($data['perlengkapan']);
             }
 
             // Memproses daftar Petugas / PIC yang ditugaskan (dibagi menjadi PIC Desain & PIC Dokumentasi dengan Catatan tugas)
@@ -501,10 +501,10 @@ class PengajuanController extends Controller
             }
 
             if (isset($data['deskripsi_kegiatan'])) {
-                $data['deskripsi_kegiatan'] = trim(strip_tags($data['deskripsi_kegiatan']));
+                $data['deskripsi_kegiatan'] = Pengajuan::cleanRichText($data['deskripsi_kegiatan']);
             }
             if (isset($data['perlengkapan'])) {
-                $data['perlengkapan'] = trim(strip_tags($data['perlengkapan']));
+                $data['perlengkapan'] = Pengajuan::cleanRichText($data['perlengkapan']);
             }
 
             $pengajuan->update($data);

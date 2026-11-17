@@ -138,7 +138,7 @@
                                         <label for="deskripsi_kegiatan" id="label_deskripsi_kegiatan" class="text-capitalize fw-bold">deskripsi
                                             kegiatan</label>
                                         <textarea class="form-control" id="deskripsi_kegiatan" name="deskripsi_kegiatan"
-                                            rows="3" placeholder="Masukkan Deskripsi Kegiatan">{{ old('deskripsi_kegiatan', trim(strip_tags($pengajuan->deskripsi_kegiatan ?? ''))) }}</textarea>
+                                            rows="3" placeholder="Masukkan Deskripsi Kegiatan">{{ old('deskripsi_kegiatan', $pengajuan->formatted_deskripsi) }}</textarea>
                                         <small id="hint_brief_desain" class="text-muted d-none mt-1">
                                             <i class="fa-solid fa-palette me-1 text-primary"></i> Jelaskan brief desain: jenis media (Flyer IG / Spanduk / Backdrop / Sertifikat), ukuran, teks/judul acara, tema warna, dan detail narasumber.
                                         </small>
@@ -395,7 +395,16 @@
                                                     @endif
                                                     <tr>
                                                         <th class="ps-3">{{ $isDesainOnly ? 'Brief Desain' : ($isPublikasiOnly ? 'Brief Publikasi' : 'Deskripsi') }}</th>
-                                                        <td class="text-break" style="white-space: normal !important; word-break: break-word !important;">{{ trim(strip_tags($pengajuan->deskripsi_kegiatan ?? '')) ?: '-' }}</td>
+                                                        <td class="text-break" style="white-space: normal !important; word-break: break-word !important;">
+                                                            @php
+                                                                $cleanDeskEdit = $pengajuan->formatted_deskripsi;
+                                                            @endphp
+                                                            @if ($cleanDeskEdit !== '')
+                                                                <div class="p-3 bg-light rounded border text-gray-800" style="white-space: pre-wrap; font-size: 0.875rem; line-height: 1.6;">{{ $cleanDeskEdit }}</div>
+                                                            @else
+                                                                <span class="text-muted fst-italic">-</span>
+                                                            @endif
+                                                        </td>
                                                     </tr>
                                                     @php
                                                         $cleanPerlengkapan = trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags($pengajuan->perlengkapan ?? ''), ENT_QUOTES | ENT_HTML5, 'UTF-8')));

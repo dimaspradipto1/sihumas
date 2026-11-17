@@ -156,4 +156,33 @@ class Pengajuan extends Model
 
         return false;
     }
+
+    /**
+     * Bersihkan teks HTML dari CKEditor/TinyMCE agar tetap terstruktur per baris
+     * dan bebas dari entitas HTML mentah seperti &nbsp; atau &ndash;.
+     */
+    public static function cleanRichText(?string $raw): ?string
+    {
+        if ($raw === null || trim($raw) === '') {
+            return null;
+        }
+
+        $text = preg_replace('/<br\s*\/?>/i', "\n", $raw);
+        $text = preg_replace('/<\/(p|div|h[1-6]|li|tr)>/i', "\n", $text);
+        $text = preg_replace('/<li[^>]*>/i', '• ', $text);
+        $text = strip_tags($text);
+        $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $text = str_replace("\xC2\xA0", ' ', $text);
+        $text = preg_replace('/[ \t]{2,}/', ' ', $text);
+        $text = preg_replace('/ *\n */', "\n", $text);
+        $text = preg_replace("/\n{3,}/", "\n\n", $text);
+        $text = trim($text);
+
+        return $text !== '' ? $text : null;
+    }
+
+    public function getFormattedDeskripsiAttribute(): string
+    {
+        return static::cleanRichText($this->deskripsi_kegiatan) ?? '';
+    }
 }
