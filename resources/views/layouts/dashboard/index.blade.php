@@ -3,52 +3,157 @@
 @section('content')
 <div class="py-3">
     {{-- 1. HERO WELCOME BANNER (PROFESSIONAL UIS GREEN #046B26 & YELLOW #FED802) --}}
-    <div class="card border-0 shadow-sm mb-4 text-white overflow-hidden hero-welcome-card">
-        <div class="card-body p-4 p-lg-5 position-relative">
-            <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center position-relative" style="z-index: 2;">
-                <div class="mb-3 mb-lg-0">
-                    <div class="d-inline-flex align-items-center gap-2 mb-2 px-3 py-1 rounded-pill hero-role-badge">
-                        <span class="badge hero-role-tag">
-                            {{ $roleLabel }}
+    @if (Auth::user()->is_admin)
+        <div class="card border-0 shadow-sm mb-4 text-white overflow-hidden hero-welcome-card">
+            {{-- BAGIAN ATAS: BANNER IMAGE / DEFAULT GREY PLACEHOLDER (KHUSUS ADMIN) --}}
+            <div class="position-relative w-100" style="height: 220px; background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%); overflow: hidden;">
+                @php
+                    $hasCustomBanner = !empty($dashboardBanner) && \Illuminate\Support\Facades\Storage::disk('public')->exists($dashboardBanner);
+                @endphp
+
+                <img id="adminBannerPreviewImg"
+                     src="{{ $hasCustomBanner ? asset('storage/' . $dashboardBanner) : '#' }}"
+                     alt="Dashboard Banner"
+                     class="{{ $hasCustomBanner ? '' : 'd-none' }}"
+                     style="width: 100%; height: 220px; object-fit: cover; display: block;">
+
+                <div id="adminBannerDefaultGrey"
+                     class="w-100 h-100 d-flex flex-column align-items-center justify-content-center text-center px-3 {{ $hasCustomBanner ? 'd-none' : '' }}"
+                     style="background: linear-gradient(135deg, #e5e7eb 0%, #cfd4dc 100%); color: #4b5563;">
+                    <i class="fa-regular fa-image fa-3x mb-2 text-secondary opacity-75"></i>
+                    <div class="fw-bold text-gray-700" style="font-size: 0.9rem;">Default Image Banner Dashboard</div>
+                    <div class="small text-gray-600 mt-1">
+                        <span class="badge bg-secondary bg-opacity-25 text-dark border px-2 py-1">
+                            <i class="fa-solid fa-ruler-combined me-1"></i> Ukuran Desain Rekomendasi: <strong>1400 × 260 px</strong> (Rasio ~16:3 • JPG, PNG, WEBP • Maks. 5MB)
                         </span>
-                        <span class="text-white small fw-semibold">{{ $unitName }}</span>
                     </div>
-                    <h1 class="h3 fw-bold text-white mb-2">
-                        Selamat Datang, {{ Auth::user()->name }}! 👋
-                    </h1>
-                    <p class="hero-desc mb-0 font-small" style="max-width: 680px; line-height: 1.6;">
-                        @if ($role === 'admin')
-                            Sistem Informasi Humas & Publikasi Universitas Ibnu Sina. Pantau status pengajuan kegiatan, verifikasi permohonan dari seluruh fakultas, serta kelola dokumentasi publikasi secara terpadu.
-                        @else
-                            Portal layanan terpadu Humas & Publikasi untuk {{ $unitName }}. Ajukan kegiatan unit Anda, pantau persetujuan berkas, dan laporkan dokumentasi publikasi kampus dengan cepat dan transparan.
-                        @endif
-                    </p>
                 </div>
-                <div class="d-flex flex-wrap gap-2 flex-shrink-0">
-                    @if ($role === 'admin')
-                        <a href="{{ route('kotak-masuk-pengajuan.index') }}" class="btn btn-uis-yellow px-3 py-2 shadow-sm d-inline-flex align-items-center">
-                            <i class="fa-solid fa-inbox me-2"></i> Kotak Masuk
-                            @if (($total_pending ?? 0) > 0)
-                                <span class="badge bg-danger ms-2 px-2 py-1 rounded-pill text-white">{{ $total_pending }}</span>
-                            @endif
-                        </a>
-                        <a href="{{ route('publikasi.index') }}" class="btn btn-uis-white px-3 py-2 shadow-sm d-inline-flex align-items-center">
-                            <i class="fa-solid fa-newspaper me-2"></i> Pelaporan Kegiatan
-                        </a>
-                    @else
-                        <a href="{{ route('pengajuan.create') }}" class="btn btn-uis-yellow px-3 py-2 shadow-sm d-inline-flex align-items-center">
-                            <i class="fa-solid fa-circle-plus me-2"></i> Buat Pengajuan Baru
-                        </a>
-                        <a href="{{ route('pengajuan.index') }}" class="btn btn-uis-white px-3 py-2 shadow-sm d-inline-flex align-items-center">
-                            <i class="fa-solid fa-list-check me-2"></i> Status Pengajuan
-                        </a>
+
+                {{-- Kontrol Upload / Ganti Banner di Pojok Kanan Atas --}}
+                <div class="position-absolute top-0 end-0 p-2 p-md-3 d-flex flex-wrap align-items-center justify-content-end gap-2" style="z-index: 5;">
+                    <span class="badge bg-dark bg-opacity-75 text-white px-2 py-1 d-none d-sm-inline-flex align-items-center shadow-sm" style="font-size: 0.72rem;" title="Ukuran desain banner yang disarankan">
+                        <i class="fa-solid fa-ruler-combined me-1 text-warning"></i> Size: 1400 × 260 px
+                    </span>
+
+                    <form action="{{ route('dashboard.banner.update') }}" method="POST" enctype="multipart/form-data" class="d-inline-flex align-items-center gap-1 m-0">
+                        @csrf
+                        <label for="inputBannerDashboard" class="btn btn-xs btn-light text-dark fw-semibold px-2 py-1 shadow-sm m-0 d-inline-flex align-items-center" style="cursor: pointer; font-size: 0.75rem;">
+                            <i class="fa-solid fa-camera me-1 text-primary"></i> {{ $hasCustomBanner ? 'Ganti Gambar' : 'Upload Gambar' }}
+                        </label>
+                        <input type="file" name="banner_image" id="inputBannerDashboard" accept="image/*" class="d-none" onchange="previewDashboardBanner(this)">
+                        <button type="submit" id="btnSaveBannerDashboard" class="btn btn-xs btn-success text-white fw-semibold px-2 py-1 shadow-sm d-none" style="font-size: 0.75rem;">
+                            <i class="fa-solid fa-check me-1"></i> Simpan
+                        </button>
+                    </form>
+
+                    @if ($hasCustomBanner)
+                        <form action="{{ route('dashboard.banner.update') }}" method="POST" class="d-inline m-0">
+                            @csrf
+                            <input type="hidden" name="delete_banner" value="1">
+                            <button type="submit" class="btn btn-xs btn-danger text-white px-2 py-1 shadow-sm" style="font-size: 0.75rem;" title="Kembalikan ke gambar abu-abu default">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </button>
+                        </form>
                     @endif
                 </div>
             </div>
-            <!-- Background Decorative Element (UIS Yellow Glow) -->
-            <div class="hero-decorative-shape"></div>
+
+            {{-- BAGIAN BAWAH: KONTEN SELAMAT DATANG (COMPACT / DIKECILKAN) --}}
+            <div class="card-body p-3 px-lg-4 py-lg-3 position-relative">
+                <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center position-relative" style="z-index: 2;">
+                    <div class="mb-2 mb-lg-0">
+                        <div class="d-inline-flex align-items-center gap-2 mb-1 px-2 py-1 rounded-pill hero-role-badge" style="font-size: 0.72rem;">
+                            <span class="badge hero-role-tag" style="font-size: 0.65rem;">
+                                {{ $roleLabel }}
+                            </span>
+                            <span class="text-white small fw-semibold" style="font-size: 0.75rem;">{{ $unitName }}</span>
+                        </div>
+                        <h1 class="h5 fw-bold text-white mb-1">
+                            Selamat Datang, {{ Auth::user()->name }}! 👋
+                        </h1>
+                        <p class="hero-desc mb-0" style="max-width: 680px; font-size: 0.8rem; line-height: 1.45;">
+                            Sistem Informasi Humas & Publikasi Universitas Ibnu Sina. Pantau status pengajuan kegiatan, verifikasi permohonan dari seluruh fakultas, serta kelola dokumentasi publikasi secara terpadu.
+                        </p>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2 flex-shrink-0">
+                        <a href="{{ route('kotak-masuk-pengajuan.index') }}" class="btn btn-sm btn-uis-yellow px-3 py-1.5 shadow-sm d-inline-flex align-items-center">
+                            <i class="fa-solid fa-inbox me-1"></i> Kotak Masuk
+                            @if (($total_pending ?? 0) > 0)
+                                <span class="badge bg-danger ms-2 px-1.5 py-0.5 rounded-pill text-white">{{ $total_pending }}</span>
+                            @endif
+                        </a>
+                        <a href="{{ route('publikasi.index') }}" class="btn btn-sm btn-uis-white px-3 py-1.5 shadow-sm d-inline-flex align-items-center">
+                            <i class="fa-solid fa-newspaper me-1"></i> Pelaporan Kegiatan
+                        </a>
+                    </div>
+                </div>
+                <div class="hero-decorative-shape"></div>
+            </div>
         </div>
-    </div>
+
+        <script>
+            function previewDashboardBanner(input) {
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.getElementById('adminBannerPreviewImg');
+                        const grey = document.getElementById('adminBannerDefaultGrey');
+                        const btnSave = document.getElementById('btnSaveBannerDashboard');
+                        if (img) {
+                            img.src = e.target.result;
+                            img.classList.remove('d-none');
+                        }
+                        if (grey) grey.classList.add('d-none');
+                        if (btnSave) btnSave.classList.remove('d-none');
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+        </script>
+    @else
+        {{-- TAMPILAN BANNER STANDAR UNTUK PENGGUNA LAIN (SELAIN ADMIN) --}}
+        <div class="card border-0 shadow-sm mb-4 text-white overflow-hidden hero-welcome-card">
+            <div class="card-body p-4 p-lg-5 position-relative">
+                <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center position-relative" style="z-index: 2;">
+                    <div class="mb-3 mb-lg-0">
+                        <div class="d-inline-flex align-items-center gap-2 mb-2 px-3 py-1 rounded-pill hero-role-badge">
+                            <span class="badge hero-role-tag">
+                                {{ $roleLabel }}
+                            </span>
+                            <span class="text-white small fw-semibold">{{ $unitName }}</span>
+                        </div>
+                        <h1 class="h3 fw-bold text-white mb-2">
+                            Selamat Datang, {{ Auth::user()->name }}! 👋
+                        </h1>
+                        <p class="hero-desc mb-0 font-small" style="max-width: 680px; line-height: 1.6;">
+                            Portal layanan terpadu Humas & Publikasi untuk {{ $unitName }}. Ajukan kegiatan unit Anda, pantau persetujuan berkas, dan laporkan dokumentasi publikasi kampus dengan cepat dan transparan.
+                        </p>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2 flex-shrink-0">
+                        @if ($role === 'admin')
+                            <a href="{{ route('kotak-masuk-pengajuan.index') }}" class="btn btn-uis-yellow px-3 py-2 shadow-sm d-inline-flex align-items-center">
+                                <i class="fa-solid fa-inbox me-2"></i> Kotak Masuk
+                                @if (($total_pending ?? 0) > 0)
+                                    <span class="badge bg-danger ms-2 px-2 py-1 rounded-pill text-white">{{ $total_pending }}</span>
+                                @endif
+                            </a>
+                            <a href="{{ route('publikasi.index') }}" class="btn btn-uis-white px-3 py-2 shadow-sm d-inline-flex align-items-center">
+                                <i class="fa-solid fa-newspaper me-2"></i> Pelaporan Kegiatan
+                            </a>
+                        @else
+                            <a href="{{ route('pengajuan.create') }}" class="btn btn-uis-yellow px-3 py-2 shadow-sm d-inline-flex align-items-center">
+                                <i class="fa-solid fa-circle-plus me-2"></i> Buat Pengajuan Baru
+                            </a>
+                            <a href="{{ route('pengajuan.index') }}" class="btn btn-uis-white px-3 py-2 shadow-sm d-inline-flex align-items-center">
+                                <i class="fa-solid fa-list-check me-2"></i> Status Pengajuan
+                            </a>
+                        @endif
+                    </div>
+                </div>
+                <div class="hero-decorative-shape"></div>
+            </div>
+        </div>
+    @endif
 
     {{-- 2. JADWAL MINGGU INI (EDLINK STYLE SCHEDULE WIDGET - PLACED AT THE TOP) --}}
     <div class="card border-0 shadow-sm mb-4 edlink-schedule-card">

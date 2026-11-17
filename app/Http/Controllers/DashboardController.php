@@ -300,6 +300,40 @@ class DashboardController extends Controller
             'selectedDate' => $selectedDate,
             'todayFormatted' => $todayFormatted,
             'weekOffset' => $weekOffset,
+            'dashboardBanner' => \App\Models\Setting::getValue('dashboard_banner_image'),
         ]);
+    }
+
+    public function updateBanner(Request $request)
+    {
+        if (!auth()->check() || !auth()->user()->is_admin) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $oldBanner = \App\Models\Setting::getValue('dashboard_banner_image');
+
+        if ($request->input('delete_banner') == '1') {
+            if ($oldBanner && \Illuminate\Support\Facades\Storage::disk('public')->exists($oldBanner)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($oldBanner);
+            }
+            \App\Models\Setting::setValue('dashboard_banner_image', '');
+            \RealRashid\SweetAlert\Facades\Alert::success('Berhasil', 'Banner dikembalikan ke gambar default')->autoclose(2000)->toToast();
+            return redirect()->route('dashboard');
+        }
+
+        $request->validate([
+            'banner_image' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
+        ]);
+
+        if ($request->hasFile('banner_image')) {
+            if ($oldBanner && \Illuminate\Support\Facades\Storage::disk('public')->exists($oldBanner)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($oldBanner);
+            }
+            $path = $request->file('banner_image')->store('dashboard_banner', 'public');
+            \App\Models\Setting::setValue('dashboard_banner_image', $path);
+        }
+
+        \RealRashid\SweetAlert\Facades\Alert::success('Berhasil', 'Banner dashboard berhasil diperbarui')->autoclose(2000)->toToast();
+        return redirect()->route('dashboard');
     }
 }
