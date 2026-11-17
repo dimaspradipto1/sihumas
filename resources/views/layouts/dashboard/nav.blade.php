@@ -202,11 +202,11 @@
                                 src="{{ $pegawai && $pegawai->foto ? asset('storage/' . $pegawai->foto) : asset('volt/assets/img/team/avatar-grey.png') }}"
                                 style="width: 32px; height: 32px; object-fit: cover;">
                             <div class="d-none d-md-block text-start me-1">
-                                <span class="fw-bold text-gray-900 text-capitalize d-block text-truncate"
-                                    style="font-size: 0.825rem; max-width: 170px; line-height: 1.2;">
+                                <span class="fw-bold text-gray-900 text-capitalize d-block text-nowrap"
+                                    style="font-size: 0.825rem; line-height: 1.2;">
                                     {{ Auth::user()->name }}
                                 </span>
-                                <small class="text-muted d-block text-truncate" style="font-size: 0.7rem; line-height: 1; max-width: 170px;">
+                                <small class="text-muted d-block text-nowrap" style="font-size: 0.7rem; line-height: 1.1;">
                                     {{ Auth::user()->role_label }}
                                 </small>
                             </div>
