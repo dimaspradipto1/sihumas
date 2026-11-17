@@ -25,13 +25,14 @@ class UnitKegiatanDataTable extends DataTable
             ->addIndexColumn()
             ->addColumn('DT_RowIndex', '')
             ->addColumn('action', function($item){
+                $btnStyle = 'width: 32px; height: 32px; font-size: 0.875rem;';
                 return '
-                    <div class="d-flex justify-content-center gap-1">
-                        <a href="'.route('unit-kegiatan.edit', $item->id).'" class="btn btn-sm btn-warning text-white px-2 py-1" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
+                    <div class="d-inline-flex align-items-center justify-content-center gap-1 flex-nowrap">
+                        <a href="'.route('unit-kegiatan.edit', $item->id).'" class="btn btn-sm btn-warning text-white d-inline-flex align-items-center justify-content-center p-0" style="'.$btnStyle.'" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
                         <form action="'.route('unit-kegiatan.destroy', $item->id).'" method="POST" style="display: inline" class="form-action-delete">
                         '.csrf_field().'
                         '.method_field('DELETE').'
-                        <button type="submit" class="btn btn-sm btn-danger px-2 py-1" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
+                        <button type="submit" class="btn btn-sm btn-danger d-inline-flex align-items-center justify-content-center p-0" style="'.$btnStyle.'" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
                     </form>
                 </div>
                 ';

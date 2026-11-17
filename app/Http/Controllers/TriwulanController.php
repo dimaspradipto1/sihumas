@@ -82,30 +82,58 @@ class TriwulanController extends Controller
         return redirect()->route('triwulan.index');
     }
 
-    public function setActive(Triwulan $triwulan)
+    public function setActive(Request $request, Triwulan $triwulan)
     {
         session(['triwulan_manual_mode' => true]);
 
         if ($triwulan->is_active) {
             $triwulan->update(['is_active' => false]);
-            Alert::success('Berhasil', "{$triwulan->nama} dinonaktifkan.")->autoclose(2500)->toToast();
+            $message = "{$triwulan->nama} dinonaktifkan.";
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'is_active' => false,
+                    'active_name' => null,
+                    'message' => $message,
+                ]);
+            }
+            Alert::success('Berhasil', $message)->autoclose(2500)->toToast();
             return back();
         }
 
         Triwulan::where('id', '!=', $triwulan->id)->update(['is_active' => false]);
         $triwulan->update(['is_active' => true]);
 
-        Alert::success('Berhasil', "{$triwulan->nama} sekarang berstatus Aktif.")->autoclose(2500)->toToast();
+        $message = "{$triwulan->nama} sekarang berstatus Aktif.";
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'is_active' => true,
+                'active_name' => $triwulan->nama,
+                'message' => $message,
+            ]);
+        }
+
+        Alert::success('Berhasil', $message)->autoclose(2500)->toToast();
         return back();
     }
 
-    public function syncAuto()
+    public function syncAuto(Request $request)
     {
         session()->forget('triwulan_manual_mode');
         $activeTw = Triwulan::syncActiveByCurrentMonth();
         $nama = $activeTw?->nama ?? '-';
+        $message = "Triwulan otomatis disinkronkan ke {$nama} sesuai bulan berjalan.";
 
-        Alert::success('Berhasil', "Triwulan otomatis disinkronkan ke {$nama} sesuai bulan berjalan.")->autoclose(2500)->toToast();
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'active_name' => $activeTw?->nama,
+                'message' => $message,
+            ]);
+        }
+
+        Alert::success('Berhasil', $message)->autoclose(2500)->toToast();
         return back();
     }
 

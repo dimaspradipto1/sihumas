@@ -129,5 +129,10 @@ class TriwulanTest extends TestCase
         $res2 = $this->actingAs($admin)->post(route('triwulan.set-active', $tw->id));
         $res2->assertRedirect();
         $this->assertTrue((bool) $tw->fresh()->is_active);
+
+        // Ensure AJAX toggle returns JSON without page reload
+        $ajaxRes = $this->actingAs($admin)->postJson(route('triwulan.set-active', $tw->id));
+        $ajaxRes->assertStatus(200)->assertJson(['success' => true, 'is_active' => false]);
+        $this->assertFalse((bool) $tw->fresh()->is_active);
     }
 }

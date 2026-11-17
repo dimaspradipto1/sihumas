@@ -29,7 +29,7 @@ class TahunAkademikDataTable extends DataTable
                     return '<span class="badge bg-success text-white px-3 py-2"><i class="fa-solid fa-circle-check me-1"></i> Aktif (Default)</span>';
                 }
                 return '
-                    <form action="'.route('tahun-akademik.set-active', $item->id).'" method="POST" style="display: inline">
+                    <form action="'.route('tahun-akademik.set-active', $item->id).'" method="POST" style="display: inline" class="form-toggle-active">
                         '.csrf_field().'
                         <button type="submit" class="btn btn-xs btn-outline-primary" title="Jadikan Tahun Akademik Aktif">
                             <i class="fa-solid fa-toggle-off me-1"></i> Jadikan Aktif
@@ -38,13 +38,14 @@ class TahunAkademikDataTable extends DataTable
                 ';
             })
             ->addColumn('action', function($item){
+                $btnStyle = 'width: 32px; height: 32px; font-size: 0.875rem;';
                 return '
-                    <div class="d-flex justify-content-center gap-1">
-                        <a href="'.route('tahun-akademik.edit', $item->id).'" class="btn btn-sm btn-warning text-white px-2 py-1" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
+                    <div class="d-inline-flex align-items-center justify-content-center gap-1 flex-nowrap">
+                        <a href="'.route('tahun-akademik.edit', $item->id).'" class="btn btn-sm btn-warning text-white d-inline-flex align-items-center justify-content-center p-0" style="'.$btnStyle.'" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
                         <form action="'.route('tahun-akademik.destroy', $item->id).'" method="POST" style="display: inline" class="form-action-delete">
                             '.csrf_field().'
                             '.method_field('DELETE').'
-                            <button type="submit" class="btn btn-sm btn-danger px-2 py-1" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
+                            <button type="submit" class="btn btn-sm btn-danger d-inline-flex align-items-center justify-content-center p-0" style="'.$btnStyle.'" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
                         </form>
                     </div>
                 ';

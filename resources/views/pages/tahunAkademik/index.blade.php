@@ -48,4 +48,48 @@
     @else
         {!! $dataTable->scripts() !!}
     @endif
+
+    <script>
+        $(document).on('submit', '.form-toggle-active', function (e) {
+            e.preventDefault();
+            const form = this;
+            const btn = form.querySelector('button[type="submit"]');
+            if (btn) btn.disabled = true;
+
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                },
+                body: new FormData(form),
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.success) {
+                    if (window.LaravelDataTables && window.LaravelDataTables['tahunakademik-table']) {
+                        window.LaravelDataTables['tahunakademik-table'].ajax.reload(null, false);
+                    }
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: data.message,
+                            showConfirmButton: false,
+                            timer: 2500,
+                            timerProgressBar: true,
+                        });
+                    }
+                }
+            })
+            .catch(() => {
+                form.submit();
+            })
+            .finally(() => {
+                if (btn) btn.disabled = false;
+            });
+        });
+    </script>
 @endpush

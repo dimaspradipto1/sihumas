@@ -34,14 +34,17 @@ class UsersDataTable extends DataTable
                      . '</div>';
             })
             ->addColumn('action', function($user){
+                $btnStyle = 'width: 32px; height: 32px; font-size: 0.875rem;';
                 return '
-                    <a href="'.route('users.updatePassword', $user->id).'" class="btn btn-sm btn-info text-white px-3" title="Ubah Password"><i class="fa-solid fa-key"></i></a>
-                    <a href="'.route('users.edit', $user->id).'" class="btn btn-sm btn-warning text-white px-3" title="Edit Pengguna"><i class="fa-solid fa-pen-to-square"></i></a>
-                    <form action="'.route('users.destroy', $user->id).'" method="POST" style="display: inline" class="form-action-delete">
-                        '.csrf_field().'
-                        '.method_field('DELETE').'
-                        <button type="submit" class="btn btn-sm btn-danger px-3" title="Hapus Pengguna"><i class="fa-solid fa-trash"></i></button>
-                    </form>
+                    <div class="d-inline-flex align-items-center justify-content-center gap-1 flex-nowrap">
+                        <a href="'.route('users.updatePassword', $user->id).'" class="btn btn-sm btn-info text-white d-inline-flex align-items-center justify-content-center p-0" style="'.$btnStyle.'" title="Ubah Password"><i class="fa-solid fa-key"></i></a>
+                        <a href="'.route('users.edit', $user->id).'" class="btn btn-sm btn-warning text-white d-inline-flex align-items-center justify-content-center p-0" style="'.$btnStyle.'" title="Edit Pengguna"><i class="fa-solid fa-pen-to-square"></i></a>
+                        <form action="'.route('users.destroy', $user->id).'" method="POST" style="display: inline" class="form-action-delete">
+                            '.csrf_field().'
+                            '.method_field('DELETE').'
+                            <button type="submit" class="btn btn-sm btn-danger d-inline-flex align-items-center justify-content-center p-0" style="'.$btnStyle.'" title="Hapus Pengguna"><i class="fa-solid fa-trash"></i></button>
+                        </form>
+                    </div>
                 ';
             })
             ->editColumn('no_wa', function ($user) {

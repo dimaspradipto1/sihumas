@@ -90,12 +90,20 @@ class TahunAkademikController extends Controller
     /**
      * Set tahun akademik menjadi aktif.
      */
-    public function setActive(TahunAkademik $tahunAkademik)
+    public function setActive(Request $request, TahunAkademik $tahunAkademik)
     {
         TahunAkademik::where('id', '!=', $tahunAkademik->id)->update(['is_active' => false]);
         $tahunAkademik->update(['is_active' => true]);
 
-        Alert::success('Berhasil', "Tahun Akademik {$tahunAkademik->tahun_akademik} sekarang berstatus Aktif.")->autoclose(2500)->toToast();
+        $message = "Tahun Akademik {$tahunAkademik->tahun_akademik} sekarang berstatus Aktif.";
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+            ]);
+        }
+
+        Alert::success('Berhasil', $message)->autoclose(2500)->toToast();
         return back();
     }
 

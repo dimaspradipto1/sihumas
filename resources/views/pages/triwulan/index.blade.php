@@ -24,13 +24,15 @@
                 <h1 class="h4 text-capitalize mb-1">Triwulan (TW)</h1>
                 <p class="mb-0 text-muted small">
                     Acuan periode triwulan aktif otomatis mengikuti bulan berjalan
-                    @if ($activeTw)
-                        (Saat ini: <strong>{{ $activeTw->nama }}</strong>).
-                    @endif
+                    <span id="activeTwSubtitle">
+                        @if ($activeTw)
+                            (Saat ini: <strong>{{ $activeTw->nama }}</strong>).
+                        @endif
+                    </span>
                 </p>
             </div>
             <div class="d-flex gap-2">
-                <form action="{{ route('triwulan.sync-auto') }}" method="POST" class="d-inline">
+                <form action="{{ route('triwulan.sync-auto') }}" method="POST" class="d-inline form-sync-auto">
                     @csrf
                     <button type="submit" class="btn btn-outline-primary d-inline-flex align-items-center">
                         <i class="fa-solid fa-rotate me-1"></i> Sinkron Bulan Berjalan
@@ -58,4 +60,54 @@
     @else
         {!! $dataTable->scripts() !!}
     @endif
+
+    <script>
+        $(document).on('submit', '.form-toggle-active, .form-sync-auto', function (e) {
+            e.preventDefault();
+            const form = this;
+            const btn = form.querySelector('button[type="submit"]');
+            if (btn) btn.disabled = true;
+
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                },
+                body: new FormData(form),
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.success) {
+                    if (window.LaravelDataTables && window.LaravelDataTables['triwulan-table']) {
+                        window.LaravelDataTables['triwulan-table'].ajax.reload(null, false);
+                    }
+                    const subtitle = document.getElementById('activeTwSubtitle');
+                    if (subtitle) {
+                        subtitle.innerHTML = data.active_name
+                            ? `(Saat ini: <strong>${data.active_name}</strong>).`
+                            : '(Saat ini: <em>Tidak ada yang aktif</em>).';
+                    }
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: data.message,
+                            showConfirmButton: false,
+                            timer: 2500,
+                            timerProgressBar: true,
+                        });
+                    }
+                }
+            })
+            .catch(() => {
+                form.submit();
+            })
+            .finally(() => {
+                if (btn) btn.disabled = false;
+            });
+        });
+    </script>
 @endpush
