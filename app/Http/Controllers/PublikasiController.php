@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PublikasiRequest;
 use App\Models\Publikasi;
 use Illuminate\Http\Request;
 use App\Models\TahunAkademik;
@@ -33,7 +34,7 @@ class PublikasiController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(PublikasiRequest $request)
     {
         // Data untuk tabel pengajuan
         $data['tahun_akademik_id'] = $request->input('tahun_akademik_id') ?: (\App\Models\TahunAkademik::getActive()?->id);
@@ -142,7 +143,7 @@ class PublikasiController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Publikasi $publikasi)
+    public function update(PublikasiRequest $request, Publikasi $publikasi)
     {
         $data = $request->only([
             'tahun_akademik_id',

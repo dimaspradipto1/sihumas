@@ -408,4 +408,43 @@ class PublikasiTest extends TestCase
         $showResponse->assertSee('foto_kegiatan1.jpg');
         $showResponse->assertSee('dokumen_rundown.pdf');
     }
+
+    public function test_publikasi_update_rejects_invalid_urls_and_disallowed_file_types(): void
+    {
+        Storage::fake('public');
+        $admin = User::factory()->create(['is_admin' => 1]);
+
+        $pengajuan = Pengajuan::create([
+            'user_id' => $admin->id,
+            'nama_kegiatan' => 'Validasi Input Publikasi',
+            'unit_kegiatan' => 'Humas Universitas',
+            'tempat_kegiatan' => 'Auditorium UIS',
+            'tgl_awal' => '2026-12-05',
+            'tgl_selesai' => '2026-12-05',
+            'jam_kegiatan' => '09:00',
+            'waktu_selesai' => '12:00',
+            'status' => 'diterima',
+        ]);
+
+        $publikasi = Publikasi::create([
+            'user_id' => $admin->id,
+            'pengajuan_id' => $pengajuan->id,
+        ]);
+
+        $badFile = UploadedFile::fake()->create('script.exe', 100, 'application/x-msdownload');
+
+        $response = $this->actingAs($admin)->put(route('publikasi.update', $publikasi), [
+            'link_dokumentasi' => 'bukan-url-valid',
+            'link_desain' => 'tidak-valid',
+            'link_publikasi' => ['invalid-link'],
+            'dokumentasi_files' => [$badFile],
+        ]);
+
+        $response->assertSessionHasErrors([
+            'link_dokumentasi',
+            'link_desain',
+            'link_publikasi.0',
+            'dokumentasi_files.0',
+        ]);
+    }
 }
