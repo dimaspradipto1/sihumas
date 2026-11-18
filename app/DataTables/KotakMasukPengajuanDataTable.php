@@ -61,9 +61,45 @@ class KotakMasukPengajuanDataTable extends DataTable
                 return '<span class="badge bg-secondary text-white px-2 rounded-pill px-3 py-2">-</span>';
             })
             ->addColumn('pengajuan.petugas_ditugaskan', function ($kotakMasukPengajuan) {
-                $pic = $kotakMasukPengajuan->pengajuan?->petugas_ditugaskan;
+                $pengajuan = $kotakMasukPengajuan->pengajuan;
+                $picList = is_array($pengajuan?->pic_petugas) ? $pengajuan->pic_petugas : [];
+
+                if (!empty($picList)) {
+                    $desainNames = [];
+                    $dokNames = [];
+                    foreach ($picList as $item) {
+                        $nama = trim((string) ($item['nama'] ?? $item['name'] ?? ''));
+                        if ($nama === '') {
+                            continue;
+                        }
+                        $peran = strtolower(trim((string) ($item['peran'] ?? 'desain')));
+                        if ($peran === 'dokumentasi') {
+                            $dokNames[] = $nama;
+                        } else {
+                            $desainNames[] = $nama;
+                        }
+                    }
+
+                    if (!empty($desainNames) || !empty($dokNames)) {
+                        $html = '<div class="d-flex flex-column align-items-start gap-1">';
+                        if (!empty($desainNames)) {
+                            $html .= '<span class="badge bg-primary text-white px-2 py-1 text-start" style="white-space: normal; line-height: 1.35;">'
+                                   . '<i class="fa-solid fa-palette me-1"></i> <strong>Desain:</strong> ' . e(implode(', ', $desainNames))
+                                   . '</span>';
+                        }
+                        if (!empty($dokNames)) {
+                            $html .= '<span class="badge bg-info text-white px-2 py-1 text-start" style="white-space: normal; line-height: 1.35;">'
+                                   . '<i class="fa-solid fa-camera me-1"></i> <strong>Dokumentasi:</strong> ' . e(implode(', ', $dokNames))
+                                   . '</span>';
+                        }
+                        $html .= '</div>';
+                        return $html;
+                    }
+                }
+
+                $pic = $pengajuan?->petugas_ditugaskan;
                 if (!empty($pic)) {
-                    return '<span class="badge bg-primary text-white px-2 py-1"><i class="fa-solid fa-user-check me-1"></i> ' . e($pic) . '</span>';
+                    return '<span class="badge bg-primary text-white px-2 py-1" style="white-space: normal;"><i class="fa-solid fa-user-check me-1"></i> ' . e($pic) . '</span>';
                 }
                 return '<span class="text-muted fst-italic">Belum ditugaskan</span>';
             })
@@ -240,8 +276,8 @@ class KotakMasukPengajuanDataTable extends DataTable
         if (auth()->check() && auth()->user()->is_admin) {
             $columns[] = Column::make('pengajuan.petugas_ditugaskan')
                 ->title('Petugas / PIC')
-                ->addClass('text-center')
-                ->width('14%');
+                ->addClass('text-start')
+                ->width('18%');
         }
 
         $columns[] = Column::make('pengajuan.user_id')
