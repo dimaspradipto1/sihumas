@@ -91,7 +91,7 @@ class KotakMasukPengajuanDataTable extends DataTable
                                 continue;
                             }
                             $html .= '<div>'
-                                   . '<div class="fw-bold text-gray-900" style="font-size: 11px; line-height: 1.4;">' . $group['label'] . '</div>';
+                                   . '<div class="fw-bold text-gray-900" style="font-size: 11px; font-weight: 700; line-height: 1.4;"><strong>' . $group['label'] . '</strong></div>';
                             if (count($group['names']) > 1) {
                                 $html .= '<ol class="mb-0 ps-3" style="font-size: 11px; line-height: 1.4;">';
                                 foreach ($group['names'] as $name) {
