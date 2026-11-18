@@ -82,26 +82,24 @@ class KotakMasukPengajuanDataTable extends DataTable
 
                     if (!empty($desainNames) || !empty($dokNames)) {
                         $groups = [
-                            ['label' => 'Desain', 'icon' => 'fa-palette', 'badge' => 'bg-primary', 'names' => $desainNames],
-                            ['label' => 'Dokumentasi', 'icon' => 'fa-camera', 'badge' => 'bg-info', 'names' => $dokNames],
+                            ['label' => 'PIC DOKUMENTASI:', 'names' => $dokNames],
+                            ['label' => 'PIC DESIGN:', 'names' => $desainNames],
                         ];
-                        $html = '<div class="d-flex flex-column align-items-start gap-2 text-start">';
+                        $html = '<div class="d-flex flex-column align-items-start gap-1 text-start text-gray-800" style="font-size: 11px; line-height: 1.4;">';
                         foreach ($groups as $group) {
                             if (empty($group['names'])) {
                                 continue;
                             }
-                            $html .= '<div class="d-flex flex-column align-items-start gap-1">'
-                                   . '<span class="badge ' . $group['badge'] . ' text-white px-2 py-1">'
-                                   . '<i class="fa-solid ' . $group['icon'] . ' me-1"></i> ' . $group['label']
-                                   . '</span>';
+                            $html .= '<div>'
+                                   . '<div class="fw-bold text-gray-900" style="font-size: 11px; line-height: 1.4;">' . $group['label'] . '</div>';
                             if (count($group['names']) > 1) {
-                                $html .= '<ol class="mb-0 ps-3 small text-gray-800" style="line-height: 1.4;">';
+                                $html .= '<ol class="mb-0 ps-3" style="font-size: 11px; line-height: 1.4;">';
                                 foreach ($group['names'] as $name) {
-                                    $html .= '<li>' . e($name) . '</li>';
+                                    $html .= '<li style="font-size: 11px; line-height: 1.4;">' . e($name) . '</li>';
                                 }
                                 $html .= '</ol>';
                             } else {
-                                $html .= '<div class="small text-gray-800 fw-semibold">' . e($group['names'][0]) . '</div>';
+                                $html .= '<div style="font-size: 11px; line-height: 1.4;">' . e($group['names'][0]) . '</div>';
                             }
                             $html .= '</div>';
                         }
@@ -112,9 +110,9 @@ class KotakMasukPengajuanDataTable extends DataTable
 
                 $pic = $pengajuan?->petugas_ditugaskan;
                 if (!empty($pic)) {
-                    return '<span class="badge bg-primary text-white px-2 py-1" style="white-space: normal;"><i class="fa-solid fa-user-check me-1"></i> ' . e($pic) . '</span>';
+                    return '<span class="text-gray-800" style="font-size: 11px; line-height: 1.4; white-space: normal;">' . e($pic) . '</span>';
                 }
-                return '<span class="text-muted fst-italic">Belum ditugaskan</span>';
+                return '<span class="text-muted fst-italic" style="font-size: 11px; line-height: 1.4;">Belum ditugaskan</span>';
             })
             ->addColumn('pengajuan.tgl_pelaksanaan', function ($kotakMasukPengajuan) {
                 Carbon::setLocale('id');
