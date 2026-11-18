@@ -81,16 +81,29 @@ class KotakMasukPengajuanDataTable extends DataTable
                     }
 
                     if (!empty($desainNames) || !empty($dokNames)) {
-                        $html = '<div class="d-flex flex-column align-items-start gap-1">';
-                        if (!empty($desainNames)) {
-                            $html .= '<span class="badge bg-primary text-white px-2 py-1 text-start" style="white-space: normal; line-height: 1.35;">'
-                                   . '<i class="fa-solid fa-palette me-1"></i> <strong>Desain:</strong> ' . e(implode(', ', $desainNames))
+                        $groups = [
+                            ['label' => 'Desain', 'icon' => 'fa-palette', 'badge' => 'bg-primary', 'names' => $desainNames],
+                            ['label' => 'Dokumentasi', 'icon' => 'fa-camera', 'badge' => 'bg-info', 'names' => $dokNames],
+                        ];
+                        $html = '<div class="d-flex flex-column align-items-start gap-2 text-start">';
+                        foreach ($groups as $group) {
+                            if (empty($group['names'])) {
+                                continue;
+                            }
+                            $html .= '<div class="d-flex flex-column align-items-start gap-1">'
+                                   . '<span class="badge ' . $group['badge'] . ' text-white px-2 py-1">'
+                                   . '<i class="fa-solid ' . $group['icon'] . ' me-1"></i> ' . $group['label']
                                    . '</span>';
-                        }
-                        if (!empty($dokNames)) {
-                            $html .= '<span class="badge bg-info text-white px-2 py-1 text-start" style="white-space: normal; line-height: 1.35;">'
-                                   . '<i class="fa-solid fa-camera me-1"></i> <strong>Dokumentasi:</strong> ' . e(implode(', ', $dokNames))
-                                   . '</span>';
+                            if (count($group['names']) > 1) {
+                                $html .= '<ol class="mb-0 ps-3 small text-gray-800" style="line-height: 1.4;">';
+                                foreach ($group['names'] as $name) {
+                                    $html .= '<li>' . e($name) . '</li>';
+                                }
+                                $html .= '</ol>';
+                            } else {
+                                $html .= '<div class="small text-gray-800 fw-semibold">' . e($group['names'][0]) . '</div>';
+                            }
+                            $html .= '</div>';
                         }
                         $html .= '</div>';
                         return $html;
