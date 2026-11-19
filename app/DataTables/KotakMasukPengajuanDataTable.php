@@ -174,12 +174,20 @@ class KotakMasukPengajuanDataTable extends DataTable
             ->addColumn('pengajuan.user_id', function ($kotakMasukPengajuan) {
                 return $kotakMasukPengajuan->pengajuan->user->name;
             })
+            ->addColumn('pengajuan.unit_kegiatan', function ($kotakMasukPengajuan) {
+                $unit = trim((string) ($kotakMasukPengajuan->pengajuan?->unit_kegiatan ?? ''));
+                if ($unit === '') {
+                    return '<span class="text-muted" style="font-size: 11px; line-height: 1.4;">-</span>';
+                }
+                return '<span class="text-gray-800" style="font-size: 11px; line-height: 1.4;">' . e($unit) . '</span>';
+            })
             ->filter(function ($query) {
                 if (request()->has('search') && request()->input('search')['value']) {
                     $search = request()->input('search')['value'];
                     $query->whereHas('pengajuan', function ($q) use ($search) {
                         $q->where(function ($sub) use ($search) {
                             $sub->where('nama_kegiatan', 'like', "%$search%")
+                                ->orWhere('unit_kegiatan', 'like', "%$search%")
                                 ->orWhere('tgl_awal', 'like', "%$search%")
                                 ->orWhere('tgl_selesai', 'like', "%$search%")
                                 ->orWhere('status', 'like', "%$search%")
@@ -191,7 +199,7 @@ class KotakMasukPengajuanDataTable extends DataTable
                     });
                 }
             })
-            ->rawColumns(['pengajuan.nama_kegiatan', 'pengajuan.tgl_pelaksanaan', 'pengajuan.tgl_awal', 'pengajuan.tgl_selesai', 'pengajuan.status', 'pengajuan.petugas_ditugaskan', 'pengajuan.user_id'])
+            ->rawColumns(['pengajuan.nama_kegiatan', 'pengajuan.unit_kegiatan', 'pengajuan.tgl_pelaksanaan', 'pengajuan.tgl_awal', 'pengajuan.tgl_selesai', 'pengajuan.status', 'pengajuan.petugas_ditugaskan', 'pengajuan.user_id'])
             ->setRowId('DT_RowIndex');
     }
 
@@ -270,11 +278,15 @@ class KotakMasukPengajuanDataTable extends DataTable
             Column::make('pengajuan.user_id')
                 ->title('SUBMIT PENGGUNA')
                 ->addClass('text-start text-nowrap')
-                ->width('20%'),
+                ->width('16%'),
+            Column::make('pengajuan.unit_kegiatan')
+                ->title('UNIT KEGIATAN')
+                ->addClass('text-start')
+                ->width('14%'),
             Column::make('pengajuan.nama_kegiatan')
                 ->title('JENIS PENGAJUAN')
                 ->addClass('text-start')
-                ->width('15%'),
+                ->width('14%'),
             Column::make('pengajuan.tgl_pelaksanaan')
                 ->title('TANGGAL')
                 ->addClass('text-start')
