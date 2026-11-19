@@ -267,6 +267,10 @@ class KotakMasukPengajuanDataTable extends DataTable
                 ->orderable(false)
                 ->searchable(false)
                 ->width('4%'),
+            Column::make('pengajuan.user_id')
+                ->title('SUBMIT PENGGUNA')
+                ->addClass('text-start text-nowrap')
+                ->width('20%'),
             Column::make('pengajuan.nama_kegiatan')
                 ->title('JENIS PENGAJUAN')
                 ->addClass('text-start')
@@ -290,11 +294,6 @@ class KotakMasukPengajuanDataTable extends DataTable
                 ->addClass('text-start')
                 ->width('18%');
         }
-
-        $columns[] = Column::make('pengajuan.user_id')
-            ->title('SUBMIT PENGGUNA')
-            ->addClass('text-start text-nowrap')
-            ->width('20%');
 
         return $columns;
     }
