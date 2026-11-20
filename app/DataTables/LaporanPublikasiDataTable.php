@@ -30,6 +30,14 @@ class LaporanPublikasiDataTable extends DataTable
                 }
                 return '<span class="fw-semibold text-gray-800">' . e($pengajuan->nama_kegiatan) . '</span>';
             })
+            ->addColumn('unit_kegiatan', function ($row) {
+                $pengajuan = $row->publikasi?->pengajuan ?? $row->pengajuan;
+                $unit = trim((string) ($pengajuan?->unit_kegiatan ?? ''));
+                if ($unit === '') {
+                    return '<span class="text-muted" style="font-size: 11px; line-height: 1.4;">-</span>';
+                }
+                return '<span class="text-gray-800" style="font-size: 11px; line-height: 1.4;">' . e($unit) . '</span>';
+            })
             ->addColumn('status_validasi', function ($row) {
                 $status = $row->publikasi?->status_validasi ?? 'belum_dilaporkan';
                 if ($status === 'disetujui') {
@@ -173,7 +181,7 @@ class LaporanPublikasiDataTable extends DataTable
                 $html .= '</div>';
                 return $html;
             })
-            ->rawColumns(['action', 'nama_kegiatan', 'status_validasi', 'tgl_pelaksanaan', 'tgl_awal', 'tgl_akhir', 'link_dokumentasi', 'link_publikasi', 'user_id'])
+            ->rawColumns(['action', 'nama_kegiatan', 'unit_kegiatan', 'status_validasi', 'tgl_pelaksanaan', 'tgl_awal', 'tgl_akhir', 'link_dokumentasi', 'link_publikasi', 'user_id'])
             ->setRowId('id')
             ->filter(function ($query) {
                 $search = request()->get('search')['value'] ?? null;
@@ -181,8 +189,8 @@ class LaporanPublikasiDataTable extends DataTable
                     $query->where(function ($q) use ($search) {
                         $q->whereHas('user', fn($uq) => $uq->where('name', 'like', "%$search%"))
                           ->orWhereHas('publikasi.user', fn($uq) => $uq->where('name', 'like', "%$search%"))
-                          ->orWhereHas('publikasi.pengajuan', fn($pq) => $pq->where('nama_kegiatan', 'like', "%$search%"))
-                          ->orWhereHas('pengajuan', fn($pq) => $pq->where('nama_kegiatan', 'like', "%$search%"));
+                          ->orWhereHas('publikasi.pengajuan', fn($pq) => $pq->where('nama_kegiatan', 'like', "%$search%")->orWhere('unit_kegiatan', 'like', "%$search%"))
+                          ->orWhereHas('pengajuan', fn($pq) => $pq->where('nama_kegiatan', 'like', "%$search%")->orWhere('unit_kegiatan', 'like', "%$search%"));
                     });
                 }
             });
@@ -273,13 +281,14 @@ class LaporanPublikasiDataTable extends DataTable
 
         return [
             Column::make('DT_RowIndex')->title('NO')->addClass('text-center')->orderable(false)->searchable(false)->width('4%'),
-            Column::make('nama_kegiatan')->data('nama_kegiatan')->name('pengajuan.nama_kegiatan')->title('JENIS PENGAJUAN')->width('14%'),
-            Column::make('status_validasi')->name('publikasi.status_validasi')->title('STATUS VALIDASI')->width('12%')->addClass('text-center'),
+            Column::make('user_id')->name('user.name')->title('SUBMIT PENGGUNA')->visible($isAdmin)->addClass('text-start text-nowrap')->width('15%'),
+            Column::make('unit_kegiatan')->title('UNIT KEGIATAN')->orderable(false)->addClass('text-start')->width('12%'),
+            Column::make('nama_kegiatan')->data('nama_kegiatan')->name('pengajuan.nama_kegiatan')->title('JENIS PENGAJUAN')->width('13%'),
             Column::make('tgl_pelaksanaan')->title('TANGGAL')->orderable(false)->searchable(false)->width('16%'),
+            Column::make('status_validasi')->name('publikasi.status_validasi')->title('STATUS VALIDASI')->width('11%')->addClass('text-center'),
             Column::make('link_dokumentasi')->title('DOKUMENTASI')->orderable(false)->searchable(false)->width('9%')->addClass('text-center'),
-            Column::make('link_publikasi')->title('LINK PUBLIKASI')->orderable(false)->searchable(false)->width('11%'),
-            Column::make('user_id')->name('user.name')->title('SUBMIT PENGGUNA')->visible($isAdmin)->addClass('text-start text-nowrap')->width('20%'),
-            Column::computed('action')->title('AKSI')->exportable(false)->printable(false)->width($isAdmin ? '15%' : '8%')->addClass('text-center text-nowrap'),
+            Column::make('link_publikasi')->title('LINK PUBLIKASI')->orderable(false)->searchable(false)->width('10%'),
+            Column::computed('action')->title('AKSI')->exportable(false)->printable(false)->width($isAdmin ? '14%' : '8%')->addClass('text-center text-nowrap'),
         ];
     }
 

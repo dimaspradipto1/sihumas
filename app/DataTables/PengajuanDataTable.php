@@ -29,6 +29,13 @@ class PengajuanDataTable extends DataTable
             ->addColumn('nama_kegiatan', function ($pengajuan) {
                 return '<span class="fw-semibold text-gray-800">' . e($pengajuan->nama_kegiatan) . '</span>';
             })
+            ->addColumn('unit_kegiatan', function ($pengajuan) {
+                $unit = trim((string) ($pengajuan->unit_kegiatan ?? ''));
+                if ($unit === '') {
+                    return '<span class="text-muted" style="font-size: 11px; line-height: 1.4;">-</span>';
+                }
+                return '<span class="text-gray-800" style="font-size: 11px; line-height: 1.4;">' . e($unit) . '</span>';
+            })
 
             ->addColumn('tgl_pelaksanaan', function ($pengajuan) {
                 Carbon::setLocale('id');
@@ -143,7 +150,7 @@ class PengajuanDataTable extends DataTable
                 return $html;
             })
 
-            ->rawColumns(['nama_kegiatan', 'action', 'tgl_pelaksanaan', 'tgl_awal', 'tgl_selesai', 'status', 'alasan_ditolak', 'user_id'])
+            ->rawColumns(['nama_kegiatan', 'unit_kegiatan', 'action', 'tgl_pelaksanaan', 'tgl_awal', 'tgl_selesai', 'status', 'alasan_ditolak', 'user_id'])
             ->setRowId('DT_RowIndex');
     }
 
@@ -206,21 +213,23 @@ class PengajuanDataTable extends DataTable
         if ($isAdmin) {
             return [
                 Column::make('DT_RowIndex')->title('NO')->addClass('text-center')->width('4%')->orderable(false)->searchable(false),
-                Column::make('nama_kegiatan')->title('JENIS PENGAJUAN')->addClass('text-start')->width('15%'),
-                Column::make('tgl_pelaksanaan')->title('TANGGAL')->addClass('text-start')->width('21%')->orderable(false)->searchable(false),
-                Column::make('status')->title('STATUS PENGAJUAN')->addClass('text-center')->width('13%'),
-                Column::make('alasan_ditolak')->title('KETERANGAN')->addClass('text-start')->width('17%'),
-                Column::make('user_id')->title('SUBMIT PENGGUNA')->addClass('text-start text-nowrap')->width('20%'),
+                Column::make('user_id')->title('SUBMIT PENGGUNA')->addClass('text-start text-nowrap')->width('15%'),
+                Column::make('unit_kegiatan')->title('UNIT KEGIATAN')->addClass('text-start')->width('13%'),
+                Column::make('nama_kegiatan')->title('JENIS PENGAJUAN')->addClass('text-start')->width('14%'),
+                Column::make('tgl_pelaksanaan')->title('TANGGAL')->addClass('text-start')->width('18%')->orderable(false)->searchable(false),
+                Column::make('status')->title('STATUS PENGAJUAN')->addClass('text-center')->width('12%'),
+                Column::make('alasan_ditolak')->title('KETERANGAN')->addClass('text-start')->width('14%'),
                 Column::computed('action')->title('AKSI')->exportable(false)->printable(false)->width('10%')->addClass('text-center text-nowrap'),
             ];
         }
 
         return [
             Column::make('DT_RowIndex')->title('NO')->addClass('text-center')->width('5%')->orderable(false)->searchable(false),
-            Column::make('nama_kegiatan')->title('JENIS PENGAJUAN')->addClass('text-start')->width('20%'),
-            Column::make('tgl_pelaksanaan')->title('TANGGAL')->addClass('text-start')->width('25%')->orderable(false)->searchable(false),
-            Column::make('status')->title('STATUS PENGAJUAN')->addClass('text-center')->width('14%'),
-            Column::make('alasan_ditolak')->title('KETERANGAN')->addClass('text-start')->width('26%'),
+            Column::make('unit_kegiatan')->title('UNIT KEGIATAN')->addClass('text-start')->width('15%'),
+            Column::make('nama_kegiatan')->title('JENIS PENGAJUAN')->addClass('text-start')->width('18%'),
+            Column::make('tgl_pelaksanaan')->title('TANGGAL')->addClass('text-start')->width('22%')->orderable(false)->searchable(false),
+            Column::make('status')->title('STATUS PENGAJUAN')->addClass('text-center')->width('12%'),
+            Column::make('alasan_ditolak')->title('KETERANGAN')->addClass('text-start')->width('18%'),
             Column::computed('action')->title('AKSI')->exportable(false)->printable(false)->width('10%')->addClass('text-center text-nowrap'),
         ];
     }
