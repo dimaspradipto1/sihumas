@@ -225,6 +225,18 @@ class KotakMasukTest extends TestCase
         ]);
         KotakMasukPengajuan::create(['pengajuan_id' => $todayTask->id]);
 
+        // 2b. Deadline 5 hari lagi (dalam 1 minggu -> harus muncul warning H-5)
+        $weekTask = Pengajuan::create([
+            'user_id' => $user->id,
+            'unit_kegiatan' => 'BAAK',
+            'nama_kegiatan' => 'Desain',
+            'judul_kegiatan' => 'Kegiatan Minggu Ini Test',
+            'tgl_awal' => now()->addDays(5)->toDateString(),
+            'tgl_selesai' => now()->addDays(5)->toDateString(),
+            'status' => 'pending',
+        ]);
+        KotakMasukPengajuan::create(['pengajuan_id' => $weekTask->id]);
+
         // 3. Sudah selesai (disetujui) walaupun tanggal lewat
         $completed = Pengajuan::create([
             'user_id' => $user->id,
@@ -249,6 +261,7 @@ class KotakMasukTest extends TestCase
         $this->assertStringContainsString('Kegiatan Hari Ini Test', $jsonBelum);
         $this->assertStringContainsString('Lewat Deadline', $jsonBelum);
         $this->assertStringContainsString('Deadline Hari Ini', $jsonBelum);
+        $this->assertStringContainsString('Deadline H-5', $jsonBelum);
         $this->assertStringNotContainsString('Kegiatan Selesai Valid Test', $jsonBelum);
 
         // Filter: lewat_deadline

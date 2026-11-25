@@ -138,15 +138,18 @@ class KotakMasukPengajuanDataTable extends DataTable
 
                 $deadlineBadge = '';
                 $isCompleted = ($p->status === 'ditolak') || ($p->publikasi?->status_validasi === 'disetujui');
-                $deadlineDate = $end ?? $start;
+                $deadlineDate = ($end ?? $start)?->copy()->startOfDay();
                 if (!$isCompleted && $deadlineDate) {
                     $today = Carbon::today();
-                    if ($deadlineDate->lt($today)) {
+                    $daysRemaining = (int) $today->diffInDays($deadlineDate, false);
+                    if ($daysRemaining < 0) {
                         $deadlineBadge = '<div><span class="badge bg-danger text-white" style="font-size: 10px;"><i class="fa-solid fa-triangle-exclamation me-1"></i>Lewat Deadline</span></div>';
-                    } elseif ($deadlineDate->isSameDay($today)) {
+                    } elseif ($daysRemaining === 0) {
                         $deadlineBadge = '<div><span class="badge bg-warning text-dark" style="font-size: 10px;"><i class="fa-solid fa-clock me-1"></i>Deadline Hari Ini</span></div>';
-                    } elseif ($deadlineDate->isSameDay($today->copy()->addDay())) {
-                        $deadlineBadge = '<div><span class="badge bg-warning bg-opacity-75 text-dark" style="font-size: 10px;"><i class="fa-solid fa-hourglass-half me-1"></i>Deadline Besok (H-1)</span></div>';
+                    } elseif ($daysRemaining === 1) {
+                        $deadlineBadge = '<div><span class="badge bg-warning text-dark" style="font-size: 10px;"><i class="fa-solid fa-hourglass-half me-1"></i>Deadline Besok (H-1)</span></div>';
+                    } elseif ($daysRemaining <= 7) {
+                        $deadlineBadge = '<div><span class="badge bg-warning bg-opacity-75 text-dark" style="font-size: 10px;"><i class="fa-solid fa-hourglass-half me-1"></i>Deadline H-' . $daysRemaining . '</span></div>';
                     }
                 }
 
