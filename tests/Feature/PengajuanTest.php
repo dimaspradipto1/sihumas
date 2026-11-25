@@ -536,6 +536,8 @@ class PengajuanTest extends TestCase
             'Desain dan Dokumentasi' => ['see' => ['1. PIC Desain', '2. PIC Dokumentasi', 'id="kontainerPicDesain"', 'id="kontainerPicDokumentasi"'], 'dontSee' => ['id="kontainerPicPublikasi"', 'id="kontainerPicGeneral"']],
             'Publikasi' => ['see' => ['1. PIC Publikasi', 'id="kontainerPicPublikasi"'], 'dontSee' => ['id="kontainerPicDesain"', 'id="kontainerPicDokumentasi"', 'id="kontainerPicGeneral"']],
             'Desain dan Publikasi' => ['see' => ['1. PIC Desain', '2. PIC Publikasi', 'id="kontainerPicDesain"', 'id="kontainerPicPublikasi"'], 'dontSee' => ['id="kontainerPicDokumentasi"', 'id="kontainerPicGeneral"']],
+            'DOKUMENTASI DAN PUBLIKASI' => ['see' => ['1. PIC Dokumentasi', '2. PIC Publikasi', 'id="kontainerPicDokumentasi"', 'id="kontainerPicPublikasi"'], 'dontSee' => ['id="kontainerPicDesain"', 'id="kontainerPicGeneral"']],
+            'Desain, Dokumentasi dan Publikasi' => ['see' => ['1. PIC Desain', '2. PIC Dokumentasi', '3. PIC Publikasi', 'id="kontainerPicDesain"', 'id="kontainerPicDokumentasi"', 'id="kontainerPicPublikasi"'], 'dontSee' => ['id="kontainerPicGeneral"']],
             'Liputan Khusus Custom' => ['see' => ['1. PIC General', 'id="kontainerPicGeneral"'], 'dontSee' => ['id="kontainerPicDesain"', 'id="kontainerPicDokumentasi"', 'id="kontainerPicPublikasi"']],
         ];
 

@@ -667,14 +667,20 @@
                                                 }
 
                                                 $jenisPengajuanVal = trim((string) ($pengajuan->nama_kegiatan ?? ''));
-                                                $visibleRoles = match ($jenisPengajuanVal) {
-                                                    'Desain' => ['desain'],
-                                                    'Dokumentasi' => ['dokumentasi'],
-                                                    'Desain dan Dokumentasi' => ['desain', 'dokumentasi'],
-                                                    'Publikasi' => ['publikasi'],
-                                                    'Desain dan Publikasi' => ['desain', 'publikasi'],
-                                                    default => ['general'],
-                                                };
+                                                $jenisLower = strtolower($jenisPengajuanVal);
+                                                $visibleRoles = [];
+                                                if (str_contains($jenisLower, 'desain') || str_contains($jenisLower, 'design')) {
+                                                    $visibleRoles[] = 'desain';
+                                                }
+                                                if (str_contains($jenisLower, 'dokumentasi')) {
+                                                    $visibleRoles[] = 'dokumentasi';
+                                                }
+                                                if (str_contains($jenisLower, 'publikasi')) {
+                                                    $visibleRoles[] = 'publikasi';
+                                                }
+                                                if (empty($visibleRoles)) {
+                                                    $visibleRoles = ['general'];
+                                                }
 
                                                 $roleConfigs = [
                                                     'desain' => [
@@ -725,7 +731,7 @@
                                                 }
 
                                                 // Kompatibilitas data lama sebelum pemisahan PIC Publikasi & PIC General
-                                                if ($jenisPengajuanVal === 'Publikasi' && empty($daftarPicByRole['publikasi']) && !empty($daftarPicByRole['desain'])) {
+                                                if ($jenisLower === 'publikasi' && empty($daftarPicByRole['publikasi']) && !empty($daftarPicByRole['desain'])) {
                                                     $daftarPicByRole['publikasi'] = array_map(fn($p) => array_merge($p, ['peran' => 'publikasi']), $daftarPicByRole['desain']);
                                                     $daftarPicByRole['desain'] = [];
                                                 }
