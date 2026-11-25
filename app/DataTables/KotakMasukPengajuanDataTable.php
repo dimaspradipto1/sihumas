@@ -241,16 +241,14 @@ class KotakMasukPengajuanDataTable extends DataTable
         $status = request('status');
         $user = auth()->user();
 
-        // Urutkan berdasarkan deadline selesai terdekat (yang belum selesai di atas, yang sudah selesai/ditolak di bawah)
+        // Urutkan berdasarkan pengajuan yang paling terakhir disubmit di paling atas
         $query = $model->newQuery()
             ->select('kotak_masuk_pengajuans.*')
             ->leftJoin('pengajuans', 'pengajuans.id', '=', 'kotak_masuk_pengajuans.pengajuan_id')
             ->leftJoin('publikasis', 'publikasis.pengajuan_id', '=', 'pengajuans.id')
             ->with(['pengajuan.user', 'pengajuan.publikasi'])
-            ->orderByRaw("CASE WHEN pengajuans.status = 'ditolak' OR publikasis.status_validasi = 'disetujui' THEN 1 ELSE 0 END ASC")
-            ->orderByRaw("CASE WHEN pengajuans.status = 'ditolak' OR publikasis.status_validasi = 'disetujui' THEN '9999-12-31' ELSE COALESCE(pengajuans.tgl_selesai, pengajuans.tgl_awal, '9999-12-31') END ASC")
-            ->orderByRaw("COALESCE(pengajuans.tgl_selesai, pengajuans.tgl_awal) DESC")
-            ->orderBy('kotak_masuk_pengajuans.created_at', 'desc');
+            ->orderBy('kotak_masuk_pengajuans.created_at', 'desc')
+            ->orderBy('kotak_masuk_pengajuans.id', 'desc');
 
         // Jika Petugas Humas (bukan Super Admin), HANYA tampilkan data pengajuan yang ditugaskan kepada dirinya sebagai PIC
         if (!empty($user->is_humas) && empty($user->is_admin)) {
