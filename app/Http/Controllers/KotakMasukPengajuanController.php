@@ -56,8 +56,32 @@ class KotakMasukPengajuanController extends Controller
             }
         }
 
+        // Hitung ringkasan filter tugas & deadline untuk Kotak Masuk
+        $kotakMasukBase = Pengajuan::whereHas('kotakMasukPengajuan');
+        if ($isHumasOnly) {
+            $kotakMasukBase->assignedToUser($user);
+        }
+
+        $today = now()->toDateString();
+        $belumSelesaiQuery = (clone $kotakMasukBase)
+            ->where('status', '!=', 'ditolak')
+            ->where(function ($q) {
+                $q->whereDoesntHave('publikasi')
+                  ->orWhereHas('publikasi', fn($pq) => $pq->whereNull('status_validasi')->orWhere('status_validasi', '!=', 'disetujui'));
+            });
+
+        $filterCounts = [
+            'all' => (clone $kotakMasukBase)->count(),
+            'belum_selesai' => (clone $belumSelesaiQuery)->count(),
+            'lewat_deadline' => (clone $belumSelesaiQuery)->whereRaw('COALESCE(tgl_selesai, tgl_awal) < ?', [$today])->count(),
+            'selesai' => (clone $kotakMasukBase)->where(function ($q) {
+                $q->where('status', 'ditolak')
+                  ->orWhereHas('publikasi', fn($pq) => $pq->where('status_validasi', 'disetujui'));
+            })->count(),
+        ];
+
         // Kirimkan jumlah pengajuan yang 'pending', 'ditolak', dan 'diterima' ke view
-        return $dataTable->render('pages.kotakMasukPengajuan.index', compact('pendingPengajuan', 'ditolakPengajuan', 'diterimaPengajuan'));
+        return $dataTable->render('pages.kotakMasukPengajuan.index', compact('pendingPengajuan', 'ditolakPengajuan', 'diterimaPengajuan', 'filterCounts'));
     }
 
     /**

@@ -34,6 +34,22 @@
 
     <div class="card border-0 shadow mb-4">
         <div class="card-body">
+            @if(isset($filterCounts))
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-3" id="kotakMasukFilterBar">
+                    <button type="button" class="btn btn-sm btn-primary filter-deadline-btn" data-filter="">
+                        Semua <span class="badge bg-white text-primary ms-1">{{ $filterCounts['all'] }}</span>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-warning text-dark filter-deadline-btn" data-filter="belum_selesai">
+                        <i class="fa-solid fa-hourglass-half me-1"></i> Belum Selesai <span class="badge bg-warning text-dark ms-1">{{ $filterCounts['belum_selesai'] }}</span>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-danger filter-deadline-btn" data-filter="lewat_deadline">
+                        <i class="fa-solid fa-triangle-exclamation me-1"></i> Lewat Deadline <span class="badge bg-danger text-white ms-1">{{ $filterCounts['lewat_deadline'] }}</span>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-success filter-deadline-btn" data-filter="selesai">
+                        <i class="fa-solid fa-circle-check me-1"></i> Selesai (Valid) <span class="badge bg-success text-white ms-1">{{ $filterCounts['selesai'] }}</span>
+                    </button>
+                </div>
+            @endif
             <div class="table-responsive">
                 {!! $dataTable->table(['class' => 'table table-striped table-bordered align-middle w-100', 'id' => 'pengajuan-table']) !!}
             </div>
@@ -42,6 +58,40 @@
 @endsection
 
 @push('scripts')
+    <script>
+        window.kotakMasukDeadlineFilter = '';
+        document.addEventListener('DOMContentLoaded', function () {
+            const buttons = document.querySelectorAll('.filter-deadline-btn');
+            const activeClasses = {
+                '': ['btn-primary', 'btn-outline-primary'],
+                'belum_selesai': ['btn-warning', 'btn-outline-warning'],
+                'lewat_deadline': ['btn-danger', 'btn-outline-danger'],
+                'selesai': ['btn-success', 'btn-outline-success']
+            };
+
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const filterVal = this.getAttribute('data-filter') || '';
+                    window.kotakMasukDeadlineFilter = filterVal;
+
+                    buttons.forEach(b => {
+                        const f = b.getAttribute('data-filter') || '';
+                        const [solidCls, outlineCls] = activeClasses[f] || ['btn-primary', 'btn-outline-primary'];
+                        b.classList.remove(solidCls);
+                        b.classList.add(outlineCls);
+                    });
+
+                    const [activeSolid, activeOutline] = activeClasses[filterVal] || ['btn-primary', 'btn-outline-primary'];
+                    this.classList.remove(activeOutline);
+                    this.classList.add(activeSolid);
+
+                    if (window.LaravelDataTables && window.LaravelDataTables['pengajuan-table']) {
+                        window.LaravelDataTables['pengajuan-table'].ajax.reload();
+                    }
+                });
+            });
+        });
+    </script>
     @if(app()->environment('production'))
         {!! str_replace('http:', 'https:', $dataTable->scripts()) !!}
     @else

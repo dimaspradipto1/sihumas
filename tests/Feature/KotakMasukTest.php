@@ -195,4 +195,75 @@ class KotakMasukTest extends TestCase
         $responseAdmin->assertStatus(200);
         $responseAdmin->assertSee('Petugas / PIC');
     }
+
+    public function test_kotak_masuk_deadline_badges_and_filters(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true, 'is_humas' => false]);
+        $user = User::factory()->create(['is_admin' => false, 'is_humas' => false, 'is_users' => true]);
+
+        // 1. Overdue & belum selesai
+        $overdue = Pengajuan::create([
+            'user_id' => $user->id,
+            'unit_kegiatan' => 'BAAK',
+            'nama_kegiatan' => 'Dokumentasi',
+            'judul_kegiatan' => 'Kegiatan Overdue Test',
+            'tgl_awal' => now()->subDays(2)->toDateString(),
+            'tgl_selesai' => now()->subDay()->toDateString(),
+            'status' => 'diterima',
+        ]);
+        KotakMasukPengajuan::create(['pengajuan_id' => $overdue->id]);
+
+        // 2. Deadline hari ini & belum selesai
+        $todayTask = Pengajuan::create([
+            'user_id' => $user->id,
+            'unit_kegiatan' => 'BAAK',
+            'nama_kegiatan' => 'Desain',
+            'judul_kegiatan' => 'Kegiatan Hari Ini Test',
+            'tgl_awal' => now()->toDateString(),
+            'tgl_selesai' => now()->toDateString(),
+            'status' => 'pending',
+        ]);
+        KotakMasukPengajuan::create(['pengajuan_id' => $todayTask->id]);
+
+        // 3. Sudah selesai (disetujui) walaupun tanggal lewat
+        $completed = Pengajuan::create([
+            'user_id' => $user->id,
+            'unit_kegiatan' => 'BAAK',
+            'nama_kegiatan' => 'Publikasi',
+            'judul_kegiatan' => 'Kegiatan Selesai Valid Test',
+            'tgl_awal' => now()->subDays(5)->toDateString(),
+            'tgl_selesai' => now()->subDays(4)->toDateString(),
+            'status' => 'diterima',
+        ]);
+        $completed->publikasi()->create([
+            'user_id' => $user->id,
+            'status_validasi' => 'disetujui',
+        ]);
+        KotakMasukPengajuan::create(['pengajuan_id' => $completed->id]);
+
+        // Filter: belum_selesai
+        $resBelum = $this->actingAs($admin)->getJson(route('kotak-masuk-pengajuan.index', ['deadline_filter' => 'belum_selesai']), ['X-Requested-With' => 'XMLHttpRequest']);
+        $resBelum->assertStatus(200);
+        $jsonBelum = json_encode($resBelum->json());
+        $this->assertStringContainsString('Kegiatan Overdue Test', $jsonBelum);
+        $this->assertStringContainsString('Kegiatan Hari Ini Test', $jsonBelum);
+        $this->assertStringContainsString('Lewat Deadline', $jsonBelum);
+        $this->assertStringContainsString('Deadline Hari Ini', $jsonBelum);
+        $this->assertStringNotContainsString('Kegiatan Selesai Valid Test', $jsonBelum);
+
+        // Filter: lewat_deadline
+        $resOverdue = $this->actingAs($admin)->getJson(route('kotak-masuk-pengajuan.index', ['deadline_filter' => 'lewat_deadline']), ['X-Requested-With' => 'XMLHttpRequest']);
+        $resOverdue->assertStatus(200);
+        $jsonOverdue = json_encode($resOverdue->json());
+        $this->assertStringContainsString('Kegiatan Overdue Test', $jsonOverdue);
+        $this->assertStringNotContainsString('Kegiatan Hari Ini Test', $jsonOverdue);
+        $this->assertStringNotContainsString('Kegiatan Selesai Valid Test', $jsonOverdue);
+
+        // Filter: selesai
+        $resSelesai = $this->actingAs($admin)->getJson(route('kotak-masuk-pengajuan.index', ['deadline_filter' => 'selesai']), ['X-Requested-With' => 'XMLHttpRequest']);
+        $resSelesai->assertStatus(200);
+        $jsonSelesai = json_encode($resSelesai->json());
+        $this->assertStringContainsString('Kegiatan Selesai Valid Test', $jsonSelesai);
+        $this->assertStringNotContainsString('Kegiatan Overdue Test', $jsonSelesai);
+    }
 }

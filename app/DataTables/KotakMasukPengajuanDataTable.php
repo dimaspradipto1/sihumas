@@ -136,6 +136,20 @@ class KotakMasukPengajuanDataTable extends DataTable
                 $jamMulai = !empty($p->jam_kegiatan) ? substr($p->jam_kegiatan, 0, 5) . ' WIB' : '';
                 $jamSelesai = !empty($p->waktu_selesai) ? substr($p->waktu_selesai, 0, 5) . ' WIB' : '';
 
+                $deadlineBadge = '';
+                $isCompleted = ($p->status === 'ditolak') || ($p->publikasi?->status_validasi === 'disetujui');
+                $deadlineDate = $end ?? $start;
+                if (!$isCompleted && $deadlineDate) {
+                    $today = Carbon::today();
+                    if ($deadlineDate->lt($today)) {
+                        $deadlineBadge = '<div><span class="badge bg-danger text-white" style="font-size: 10px;"><i class="fa-solid fa-triangle-exclamation me-1"></i>Lewat Deadline</span></div>';
+                    } elseif ($deadlineDate->isSameDay($today)) {
+                        $deadlineBadge = '<div><span class="badge bg-warning text-dark" style="font-size: 10px;"><i class="fa-solid fa-clock me-1"></i>Deadline Hari Ini</span></div>';
+                    } elseif ($deadlineDate->isSameDay($today->copy()->addDay())) {
+                        $deadlineBadge = '<div><span class="badge bg-warning bg-opacity-75 text-dark" style="font-size: 10px;"><i class="fa-solid fa-hourglass-half me-1"></i>Deadline Besok (H-1)</span></div>';
+                    }
+                }
+
                 if (in_array($p->nama_kegiatan, ['Desain', 'Publikasi', 'Desain dan Publikasi'], true) && empty($jamMulai)) {
                     if ($p->nama_kegiatan === 'Desain dan Publikasi') {
                         return '<div class="d-flex flex-column gap-1">'
@@ -146,6 +160,7 @@ class KotakMasukPengajuanDataTable extends DataTable
                              . '  <div class="d-inline-flex align-items-center">'
                              . '    <span class="text-nowrap"><span class="text-muted small">Target Publikasi:</span> <span class="fw-semibold">' . $endStr . '</span></span>'
                              . '  </div>'
+                             . $deadlineBadge
                              . '</div>';
                     }
                     $isDesain = $p->nama_kegiatan === 'Desain';
@@ -153,9 +168,12 @@ class KotakMasukPengajuanDataTable extends DataTable
                     $badge = $isDesain
                         ? '<span class="badge bg-light text-info border small ms-2"><i class="fa-solid fa-palette me-1"></i>Desain</span>'
                         : '<span class="badge bg-light text-success border small ms-2"><i class="fa-solid fa-bullhorn me-1"></i>Publikasi</span>';
-                    return '<div class="d-inline-flex align-items-center">'
-                         . '  <span class="text-nowrap"><span class="text-muted small">' . $label . '</span> <span class="fw-semibold">' . $startStr . '</span></span>'
-                         . '  ' . $badge
+                    return '<div class="d-flex flex-column gap-1">'
+                         . '  <div class="d-inline-flex align-items-center">'
+                         . '    <span class="text-nowrap"><span class="text-muted small">' . $label . '</span> <span class="fw-semibold">' . $startStr . '</span></span>'
+                         . '    ' . $badge
+                         . '  </div>'
+                         . $deadlineBadge
                          . '</div>';
                 }
 
@@ -168,6 +186,7 @@ class KotakMasukPengajuanDataTable extends DataTable
                      . '    <span class="text-nowrap"><span class="text-muted small">Selesai:</span> <span class="fw-semibold">' . $endStr . '</span></span>'
                      . ($jamSelesai ? '    <span class="badge bg-light text-success border small ms-2"><i class="fa-regular fa-clock me-1"></i>' . $jamSelesai . '</span>' : '')
                      . '  </div>'
+                     . $deadlineBadge
                      . '</div>';
             })
             ->addColumn('pengajuan.tgl_awal', function ($kotakMasukPengajuan) {
@@ -244,6 +263,29 @@ class KotakMasukPengajuanDataTable extends DataTable
             });
         }
 
+        // Filter cepat status tugas & deadline
+        $deadlineFilter = request('deadline_filter');
+        if ($deadlineFilter === 'belum_selesai') {
+            $query->where('pengajuans.status', '!=', 'ditolak')
+                ->where(function ($q) {
+                    $q->whereNull('publikasis.status_validasi')
+                      ->orWhere('publikasis.status_validasi', '!=', 'disetujui');
+                });
+        } elseif ($deadlineFilter === 'lewat_deadline') {
+            $today = Carbon::today()->toDateString();
+            $query->where('pengajuans.status', '!=', 'ditolak')
+                ->where(function ($q) {
+                    $q->whereNull('publikasis.status_validasi')
+                      ->orWhere('publikasis.status_validasi', '!=', 'disetujui');
+                })
+                ->whereRaw('COALESCE(pengajuans.tgl_selesai, pengajuans.tgl_awal) < ?', [$today]);
+        } elseif ($deadlineFilter === 'selesai') {
+            $query->where(function ($q) {
+                $q->where('pengajuans.status', 'ditolak')
+                  ->orWhere('publikasis.status_validasi', 'disetujui');
+            });
+        }
+
         return $query;
     }
 
@@ -255,7 +297,7 @@ class KotakMasukPengajuanDataTable extends DataTable
         return $this->builder()
             ->setTableId('pengajuan-table')
             ->columns($this->getColumns())
-            ->minifiedAjax()
+            ->minifiedAjax('', 'data.deadline_filter = window.kotakMasukDeadlineFilter || "";')
             ->selectStyleSingle()
             ->parameters([
                 'scrollX' => false,
