@@ -65,26 +65,33 @@ class KotakMasukPengajuanDataTable extends DataTable
                 $picList = is_array($pengajuan?->pic_petugas) ? $pengajuan->pic_petugas : [];
 
                 if (!empty($picList)) {
-                    $desainNames = [];
-                    $dokNames = [];
+                    $namesByRole = [
+                        'dokumentasi' => [],
+                        'desain' => [],
+                        'publikasi' => [],
+                        'general' => [],
+                    ];
                     foreach ($picList as $item) {
                         $nama = trim((string) ($item['nama'] ?? $item['name'] ?? ''));
                         if ($nama === '') {
                             continue;
                         }
                         $peran = strtolower(trim((string) ($item['peran'] ?? 'desain')));
-                        if ($peran === 'dokumentasi') {
-                            $dokNames[] = $nama;
-                        } else {
-                            $desainNames[] = $nama;
+                        if (!isset($namesByRole[$peran])) {
+                            $peran = 'general';
                         }
+                        $namesByRole[$peran][] = $nama;
                     }
 
-                    if (!empty($desainNames) || !empty($dokNames)) {
-                        $groups = [
-                            ['label' => 'PIC DOKUMENTASI:', 'names' => $dokNames],
-                            ['label' => 'PIC DESIGN:', 'names' => $desainNames],
-                        ];
+                    $groups = [
+                        ['label' => 'PIC DOKUMENTASI:', 'names' => $namesByRole['dokumentasi']],
+                        ['label' => 'PIC DESIGN:', 'names' => $namesByRole['desain']],
+                        ['label' => 'PIC PUBLIKASI:', 'names' => $namesByRole['publikasi']],
+                        ['label' => 'PIC GENERAL:', 'names' => $namesByRole['general']],
+                    ];
+
+                    $hasAnyPic = !empty(array_filter($groups, fn($g) => !empty($g['names'])));
+                    if ($hasAnyPic) {
                         $html = '<div class="d-flex flex-column align-items-start gap-1 text-start text-gray-800" style="font-size: 11px; line-height: 1.4;">';
                         foreach ($groups as $group) {
                             if (empty($group['names'])) {

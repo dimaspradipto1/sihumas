@@ -300,64 +300,52 @@
                     <div class="card-body">
                         @php
                             $picList = $pengajuan->getVisiblePicPetugas(Auth::user());
-                            $picDesain = array_values(array_filter($picList, fn($p) => ($p['peran'] ?? 'desain') === 'desain'));
-                            $picDokumentasi = array_values(array_filter($picList, fn($p) => ($p['peran'] ?? '') === 'dokumentasi'));
+                            $picRoles = [
+                                'desain' => ['label' => 'PIC Desain', 'color' => 'primary', 'icon' => 'fa-palette'],
+                                'dokumentasi' => ['label' => 'PIC Dokumentasi', 'color' => 'info', 'icon' => 'fa-camera'],
+                                'publikasi' => ['label' => 'PIC Publikasi', 'color' => 'success', 'icon' => 'fa-bullhorn'],
+                                'general' => ['label' => 'PIC General', 'color' => 'dark', 'icon' => 'fa-user-gear'],
+                            ];
+                            $picByRole = ['desain' => [], 'dokumentasi' => [], 'publikasi' => [], 'general' => []];
+                            foreach ($picList as $pItem) {
+                                $rKey = strtolower(trim((string) ($pItem['peran'] ?? 'desain')));
+                                if (!isset($picByRole[$rKey])) {
+                                    $rKey = 'general';
+                                }
+                                $picByRole[$rKey][] = $pItem;
+                            }
+                            $hasAnyVisiblePic = !empty(array_filter($picByRole));
                         @endphp
 
-                        @if (!empty($picDesain) || !empty($picDokumentasi))
-                            @if (!empty($picDesain))
-                                <div class="mb-3">
-                                    <span class="badge bg-primary text-white mb-2"><i class="fa-solid fa-palette me-1"></i> PIC Desain</span>
-                                    <div class="d-flex flex-column gap-2">
-                                        @foreach ($picDesain as $pd)
-                                            @if (!empty($pd['nama']) || !empty($pd['no_wa']))
-                                                <div class="p-2 border rounded bg-light">
-                                                    <div class="d-flex justify-content-between align-items-center">
-                                                        <strong class="text-gray-900 small">{{ $pd['nama'] ?: '-' }}</strong>
-                                                        @if (!empty($pd['no_wa']))
-                                                            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $pd['no_wa']) }}" target="_blank" class="badge bg-success text-white text-decoration-none">
-                                                                <i class="fa-brands fa-whatsapp me-1"></i> WA
-                                                            </a>
+                        @if ($hasAnyVisiblePic)
+                            @foreach ($picRoles as $rKey => $rCfg)
+                                @if (!empty($picByRole[$rKey]))
+                                    <div class="mb-3">
+                                        <span class="badge bg-{{ $rCfg['color'] }} text-white mb-2"><i class="fa-solid {{ $rCfg['icon'] }} me-1"></i> {{ $rCfg['label'] }}</span>
+                                        <div class="d-flex flex-column gap-2">
+                                            @foreach ($picByRole[$rKey] as $pItem)
+                                                @if (!empty($pItem['nama']) || !empty($pItem['no_wa']))
+                                                    <div class="p-2 border rounded bg-light">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <strong class="text-gray-900 small">{{ $pItem['nama'] ?: '-' }}</strong>
+                                                            @if (!empty($pItem['no_wa']))
+                                                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $pItem['no_wa']) }}" target="_blank" class="badge bg-success text-white text-decoration-none">
+                                                                    <i class="fa-brands fa-whatsapp me-1"></i> WA
+                                                                </a>
+                                                            @endif
+                                                        </div>
+                                                        @if (!empty($pItem['catatan']))
+                                                            <div class="text-muted small fst-italic mt-1 border-top pt-1">
+                                                                <i class="fa-solid fa-comment-dots me-1 text-{{ $rCfg['color'] }}"></i> {{ $pItem['catatan'] }}
+                                                            </div>
                                                         @endif
                                                     </div>
-                                                    @if (!empty($pd['catatan']))
-                                                        <div class="text-muted small fst-italic mt-1 border-top pt-1">
-                                                            <i class="fa-solid fa-comment-dots me-1 text-primary"></i> {{ $pd['catatan'] }}
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                            @endif
-                                        @endforeach
+                                                @endif
+                                            @endforeach
+                                        </div>
                                     </div>
-                                </div>
-                            @endif
-
-                            @if (!empty($picDokumentasi))
-                                <div>
-                                    <span class="badge bg-info text-white mb-2"><i class="fa-solid fa-camera me-1"></i> PIC Dokumentasi</span>
-                                    <div class="d-flex flex-column gap-2">
-                                        @foreach ($picDokumentasi as $pdk)
-                                            @if (!empty($pdk['nama']) || !empty($pdk['no_wa']))
-                                                <div class="p-2 border rounded bg-light">
-                                                    <div class="d-flex justify-content-between align-items-center">
-                                                        <strong class="text-gray-900 small">{{ $pdk['nama'] ?: '-' }}</strong>
-                                                        @if (!empty($pdk['no_wa']))
-                                                            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $pdk['no_wa']) }}" target="_blank" class="badge bg-success text-white text-decoration-none">
-                                                                <i class="fa-brands fa-whatsapp me-1"></i> WA
-                                                            </a>
-                                                        @endif
-                                                    </div>
-                                                    @if (!empty($pdk['catatan']))
-                                                        <div class="text-muted small fst-italic mt-1 border-top pt-1">
-                                                            <i class="fa-solid fa-comment-dots me-1 text-info"></i> {{ $pdk['catatan'] }}
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                            @endif
-                                        @endforeach
-                                    </div>
-                                </div>
-                            @endif
+                                @endif
+                            @endforeach
                         @elseif ($pengajuan->petugas_ditugaskan)
                             <div class="p-2 border rounded bg-light d-flex justify-content-between align-items-center">
                                 <span class="fw-semibold small"><i class="fa-solid fa-user me-1 text-primary"></i> {{ $pengajuan->petugas_ditugaskan }}</span>

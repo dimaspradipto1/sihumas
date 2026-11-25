@@ -408,7 +408,12 @@ class PengajuanController extends Controller
                 }
 
                 $namaPic = $pic['nama'] ?: 'Petugas Humas';
-                $peranPic = ($pic['peran'] ?? '') === 'dokumentasi' ? 'PIC Dokumentasi' : 'PIC Desain';
+                $peranPic = match (strtolower(trim((string) ($pic['peran'] ?? 'desain')))) {
+                    'dokumentasi' => 'PIC Dokumentasi',
+                    'publikasi' => 'PIC Publikasi',
+                    'general' => 'PIC General',
+                    default => 'PIC Desain',
+                };
                 $catatanKhusus = !empty($pic['catatan']) ? $pic['catatan'] : '-';
 
                 $message = "*PENUGASAN KEGIATAN HUMAS*\n\n" .

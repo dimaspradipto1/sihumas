@@ -333,7 +333,8 @@ class PengajuanTest extends TestCase
         $editResponse = $this->actingAs($admin)->get(route('pengajuan.edit', $pengajuan->id));
         $editResponse->assertStatus(200);
         $editResponse->assertSee('Target Publikasi');
-        $editResponse->assertSee('1. PIC Publikasi / Humas');
+        $editResponse->assertSee('1. PIC Publikasi');
+        $editResponse->assertDontSee('1. PIC Desain');
         $editResponse->assertDontSee('2. PIC Dokumentasi');
 
         $pengajuan->update([
@@ -523,6 +524,40 @@ class PengajuanTest extends TestCase
         $this->assertEquals('628118989777', $waAdminList[0]['no_wa']);
         $this->assertEquals('Admin 3', $waAdminList[1]['nama']);
         $this->assertEquals('6282283736481', $waAdminList[1]['no_wa']);
+    }
+
+    public function test_pic_sections_match_selected_jenis_pengajuan(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true, 'is_humas' => false, 'is_users' => false]);
+        $user = User::factory()->create(['is_admin' => false, 'is_humas' => false, 'is_users' => true]);
+
+        $cases = [
+            'Desain' => ['see' => ['1. PIC Desain', 'id="kontainerPicDesain"'], 'dontSee' => ['id="kontainerPicDokumentasi"', 'id="kontainerPicPublikasi"', 'id="kontainerPicGeneral"']],
+            'Desain dan Dokumentasi' => ['see' => ['1. PIC Desain', '2. PIC Dokumentasi', 'id="kontainerPicDesain"', 'id="kontainerPicDokumentasi"'], 'dontSee' => ['id="kontainerPicPublikasi"', 'id="kontainerPicGeneral"']],
+            'Publikasi' => ['see' => ['1. PIC Publikasi', 'id="kontainerPicPublikasi"'], 'dontSee' => ['id="kontainerPicDesain"', 'id="kontainerPicDokumentasi"', 'id="kontainerPicGeneral"']],
+            'Desain dan Publikasi' => ['see' => ['1. PIC Desain', '2. PIC Publikasi', 'id="kontainerPicDesain"', 'id="kontainerPicPublikasi"'], 'dontSee' => ['id="kontainerPicDokumentasi"', 'id="kontainerPicGeneral"']],
+            'Liputan Khusus Custom' => ['see' => ['1. PIC General', 'id="kontainerPicGeneral"'], 'dontSee' => ['id="kontainerPicDesain"', 'id="kontainerPicDokumentasi"', 'id="kontainerPicPublikasi"']],
+        ];
+
+        foreach ($cases as $jenis => $expected) {
+            $pengajuan = Pengajuan::create([
+                'user_id' => $user->id,
+                'unit_kegiatan' => 'BAAK',
+                'nama_kegiatan' => $jenis,
+                'tgl_awal' => now()->addDays(2)->toDateString(),
+                'tgl_selesai' => now()->addDays(2)->toDateString(),
+                'status' => 'pending',
+            ]);
+
+            $resp = $this->actingAs($admin)->get(route('pengajuan.edit', $pengajuan->id));
+            $resp->assertStatus(200);
+            foreach ($expected['see'] as $text) {
+                $resp->assertSee($text, false);
+            }
+            foreach ($expected['dontSee'] as $text) {
+                $resp->assertDontSee($text, false);
+            }
+        }
     }
 }
 
