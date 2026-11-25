@@ -99,6 +99,12 @@
                                     </td>
                                 </tr>
                                 <tr>
+                                    <th class="ps-3 text-muted small text-uppercase">Nama Kegiatan</th>
+                                    <td class="pe-3 fw-semibold text-gray-800">
+                                        {{ $pengajuan->nama_kegiatan_display }}
+                                    </td>
+                                </tr>
+                                <tr>
                                     <th class="ps-3 text-muted small text-uppercase">Unit Pengusul</th>
                                     <td class="pe-3">
                                         <span class="badge bg-primary px-2 py-1"><i class="fa-solid fa-building me-1"></i> {{ $pengajuan->unit_kegiatan ?: ($pengajuan->user?->unitKegiatan?->unit_kegiatan ?? '-') }}</span>

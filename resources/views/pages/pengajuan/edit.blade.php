@@ -167,6 +167,14 @@
 
                                 <div class="mb-4">
                                     <div class="form-group">
+                                        <label for="judul_kegiatan" class="text-capitalize fw-bold">nama kegiatan <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="judul_kegiatan" name="judul_kegiatan"
+                                            value="{{ old('judul_kegiatan', $pengajuan->judul_kegiatan) }}" placeholder="Masukkan Nama Kegiatan" required>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <div class="form-group">
                                         <label for="deskripsi_kegiatan" id="label_deskripsi_kegiatan" class="text-capitalize fw-bold">deskripsi
                                             kegiatan</label>
                                         <textarea class="form-control" id="deskripsi_kegiatan" name="deskripsi_kegiatan"
@@ -338,6 +346,10 @@
                                                     <tr>
                                                         <th class="ps-3">Jenis Pengajuan</th>
                                                         <td class="text-break" style="white-space: normal !important; word-break: break-word !important;"><span class="badge bg-primary text-uppercase text-wrap" style="white-space: normal !important;">{{ $pengajuan->nama_kegiatan }}</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="ps-3">Nama Kegiatan</th>
+                                                        <td class="text-break fw-semibold text-gray-800" style="white-space: normal !important; word-break: break-word !important;">{{ $pengajuan->nama_kegiatan_display }}</td>
                                                     </tr>
                                                     @php
                                                         $isDesainOnly = ($pengajuan->nama_kegiatan === 'Desain');

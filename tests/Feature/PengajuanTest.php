@@ -32,6 +32,7 @@ class PengajuanTest extends TestCase
 
         $response = $this->actingAs($user)->post(route('pengajuan.store'), [
             'nama_kegiatan' => 'Desain dan Dokumentasi',
+            'judul_kegiatan' => 'Seminar Nasional FEB',
             'tgl_awal' => now()->toDateString(),
             'tgl_selesai' => now()->addDay()->toDateString(),
             'jam_kegiatan' => '09:00',
@@ -60,6 +61,7 @@ class PengajuanTest extends TestCase
 
         $response = $this->actingAs($user)->post(route('pengajuan.store'), [
             'nama_kegiatan' => 'Desain dan Dokumentasi',
+            'judul_kegiatan' => 'Seminar Nasional FEB',
             'tgl_awal' => now()->toDateString(),
             'tgl_selesai' => now()->addDay()->toDateString(),
             'jam_kegiatan' => '10:00',
@@ -251,6 +253,7 @@ class PengajuanTest extends TestCase
             'nama_kegiatan' => 'Desain',
             'tgl_awal' => $deadline,
             'deskripsi_kegiatan' => 'Poster Seminar Nasional AI, ukuran A3, warna hijau UIS.',
+            'judul_kegiatan' => 'Poster Seminar Nasional AI',
             'unit_kegiatan' => 'FST',
         ]);
 
@@ -306,6 +309,7 @@ class PengajuanTest extends TestCase
             'nama_kegiatan' => 'Publikasi',
             'tgl_awal' => $targetTayang,
             'deskripsi_kegiatan' => 'Rilis berita prestasi mahasiswa FST juara lomba UI/UX Nasional.',
+            'judul_kegiatan' => 'Rilis Berita Prestasi Mahasiswa FST',
             'unit_kegiatan' => 'FST',
         ]);
 
@@ -461,6 +465,7 @@ class PengajuanTest extends TestCase
             'nama_kegiatan' => 'Desain dan Publikasi',
             'tgl_awal' => $deadline,
             'tgl_selesai' => $targetPublikasi,
+            'judul_kegiatan' => 'Wisuda Universitas Ibnu Sina',
             'deskripsi_kegiatan' => 'Poster dan rilis berita wisuda UIS.',
             'unit_kegiatan' => 'BAAK',
         ]);
@@ -513,6 +518,7 @@ class PengajuanTest extends TestCase
 
         $storeResp = $this->actingAs($user)->post(route('pengajuan.store'), [
             'nama_kegiatan' => 'Desain',
+            'judul_kegiatan' => 'Poster Seminar Nasional',
             'tgl_awal' => now()->addDays(2)->toDateString(),
             'deskripsi_kegiatan' => 'Poster seminar.',
         ]);
@@ -560,6 +566,53 @@ class PengajuanTest extends TestCase
                 $resp->assertDontSee($text, false);
             }
         }
+    }
+
+    public function test_judul_kegiatan_is_required_and_kotak_masuk_falls_back_to_deskripsi(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true, 'is_humas' => false, 'is_users' => false]);
+        $user = User::factory()->create(['is_admin' => false, 'is_humas' => false, 'is_users' => true]);
+
+        // Validasi required judul_kegiatan
+        $invalidResp = $this->actingAs($user)->post(route('pengajuan.store'), [
+            'nama_kegiatan' => 'Desain',
+            'tgl_awal' => now()->addDays(2)->toDateString(),
+            'deskripsi_kegiatan' => 'Poster tanpa nama kegiatan',
+        ]);
+        $invalidResp->assertSessionHasErrors('judul_kegiatan');
+
+        // Pengajuan baru dengan judul_kegiatan & pengajuan lama tanpa judul_kegiatan (fallback ke deskripsi)
+        $withJudul = Pengajuan::create([
+            'user_id' => $user->id,
+            'unit_kegiatan' => 'BAAK',
+            'nama_kegiatan' => 'Desain',
+            'judul_kegiatan' => 'Judul Kegiatan Baru',
+            'deskripsi_kegiatan' => 'Deskripsi singkat',
+            'tgl_awal' => now()->addDays(2)->toDateString(),
+            'tgl_selesai' => now()->addDays(2)->toDateString(),
+            'status' => 'pending',
+        ]);
+        \App\Models\KotakMasukPengajuan::create(['pengajuan_id' => $withJudul->id]);
+
+        $legacyWithoutJudul = Pengajuan::create([
+            'user_id' => $user->id,
+            'unit_kegiatan' => 'BAAK',
+            'nama_kegiatan' => 'Dokumentasi',
+            'judul_kegiatan' => null,
+            'deskripsi_kegiatan' => '<p>Kegiatan Lama Dari Deskripsi</p>',
+            'tgl_awal' => now()->addDays(3)->toDateString(),
+            'tgl_selesai' => now()->addDays(3)->toDateString(),
+            'status' => 'pending',
+        ]);
+        \App\Models\KotakMasukPengajuan::create(['pengajuan_id' => $legacyWithoutJudul->id]);
+
+        $dtResponse = $this->actingAs($admin)->getJson(route('kotak-masuk-pengajuan.index'), [
+            'X-Requested-With' => 'XMLHttpRequest',
+        ]);
+        $dtResponse->assertStatus(200);
+        $jsonString = json_encode($dtResponse->json());
+        $this->assertStringContainsString('Judul Kegiatan Baru', $jsonString);
+        $this->assertStringContainsString('Kegiatan Lama Dari Deskripsi', $jsonString);
     }
 }
 

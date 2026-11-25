@@ -180,6 +180,14 @@
 
                                     <div class="mb-4">
                                         <div class="form-group">
+                                            <label for="judul_kegiatan" class="text-capitalize fw-bold">nama kegiatan <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="judul_kegiatan" name="judul_kegiatan"
+                                                value="{{ old('judul_kegiatan') }}" placeholder="Masukkan Nama Kegiatan" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <div class="form-group">
                                             <label for="deskripsi_kegiatan" id="label_deskripsi_kegiatan" class="text-capitalize fw-bold">deskripsi
                                                 kegiatan</label>
                                             <textarea class="form-control" id="deskripsi_kegiatan" name="deskripsi_kegiatan"

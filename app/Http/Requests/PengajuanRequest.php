@@ -25,6 +25,7 @@ class PengajuanRequest extends FormRequest
         return [
             // 'tahun_akademik_id' => 'required|exists:tahun_akademiks,id',
             'nama_kegiatan' => 'required|string|max:255',
+            'judul_kegiatan' => 'required|string|max:255',
             'tgl_awal' => 'required|date',
             'tgl_selesai' => 'required_unless:nama_kegiatan,Desain,Publikasi,Desain dan Publikasi|nullable|date',
             'jam_kegiatan' => 'required_unless:nama_kegiatan,Desain,Publikasi,Desain dan Publikasi|nullable|string|max:255',

@@ -17,6 +17,19 @@ class Pengajuan extends Model
         'pic_petugas' => 'array',
     ];
 
+    /**
+     * Ambil nama kegiatan (judul_kegiatan), atau fallback dari deskripsi untuk data lama.
+     */
+    public function getNamaKegiatanDisplayAttribute(): string
+    {
+        $judul = trim((string) ($this->judul_kegiatan ?? ''));
+        if ($judul !== '') {
+            return $judul;
+        }
+        $plainDesc = trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags((string) ($this->deskripsi_kegiatan ?? '')))));
+        return $plainDesc !== '' ? \Illuminate\Support\Str::limit($plainDesc, 120) : '-';
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

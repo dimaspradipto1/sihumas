@@ -129,6 +129,7 @@ class PengajuanController extends Controller
         $pengajuan = Pengajuan::create([
             'user_id'           => auth()->id(),
             'nama_kegiatan'     => $data['nama_kegiatan'],
+            'judul_kegiatan'    => $data['judul_kegiatan'],
             'tgl_awal'          => $data['tgl_awal'],
             'tgl_selesai'       => $tglSelesai,
             'jam_kegiatan'      => $jamKegiatan,
