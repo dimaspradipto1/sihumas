@@ -183,7 +183,7 @@ class KotakMasukPengajuanDataTable extends DataTable
             })
             ->addColumn('pengajuan.judul_kegiatan', function ($kotakMasukPengajuan) {
                 $namaKegiatan = $kotakMasukPengajuan->pengajuan?->nama_kegiatan_display ?? '-';
-                return '<span class="text-gray-800" style="font-size: 11px; line-height: 1.4;">' . e($namaKegiatan) . '</span>';
+                return '<span class="text-gray-800" style="font-size: 11px; line-height: 1.4; white-space: normal; word-break: break-word;">' . e($namaKegiatan) . '</span>';
             })
             ->filter(function ($query) {
                 if (request()->has('search') && request()->input('search')['value']) {
@@ -219,10 +219,15 @@ class KotakMasukPengajuanDataTable extends DataTable
         $status = request('status');
         $user = auth()->user();
 
-        // Start a query to get the KotakMasukPengajuan data
+        // Urutkan berdasarkan deadline selesai terdekat (yang belum selesai di atas, yang sudah selesai/ditolak di bawah)
         $query = $model->newQuery()
             ->select('kotak_masuk_pengajuans.*')
+            ->leftJoin('pengajuans', 'pengajuans.id', '=', 'kotak_masuk_pengajuans.pengajuan_id')
+            ->leftJoin('publikasis', 'publikasis.pengajuan_id', '=', 'pengajuans.id')
             ->with(['pengajuan.user', 'pengajuan.publikasi'])
+            ->orderByRaw("CASE WHEN pengajuans.status = 'ditolak' OR publikasis.status_validasi = 'disetujui' THEN 1 ELSE 0 END ASC")
+            ->orderByRaw("CASE WHEN pengajuans.status = 'ditolak' OR publikasis.status_validasi = 'disetujui' THEN '9999-12-31' ELSE COALESCE(pengajuans.tgl_selesai, pengajuans.tgl_awal, '9999-12-31') END ASC")
+            ->orderByRaw("COALESCE(pengajuans.tgl_selesai, pengajuans.tgl_awal) DESC")
             ->orderBy('kotak_masuk_pengajuans.created_at', 'desc');
 
         // Jika Petugas Humas (bukan Super Admin), HANYA tampilkan data pengajuan yang ditugaskan kepada dirinya sebagai PIC
@@ -251,13 +256,13 @@ class KotakMasukPengajuanDataTable extends DataTable
             ->setTableId('pengajuan-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
-            ->orderBy(2, 'desc')
             ->selectStyleSingle()
             ->parameters([
                 'scrollX' => false,
                 'autoWidth' => false,
                 'responsive' => false,
                 'searching' => true,
+                'order' => [],
             ])
             ->buttons([
                 Button::make('excel'),

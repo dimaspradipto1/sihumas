@@ -27,7 +27,7 @@ class Pengajuan extends Model
             return $judul;
         }
         $plainDesc = trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags((string) ($this->deskripsi_kegiatan ?? '')))));
-        return $plainDesc !== '' ? \Illuminate\Support\Str::limit($plainDesc, 120) : '-';
+        return $plainDesc !== '' ? $plainDesc : '-';
     }
 
     public function user()
