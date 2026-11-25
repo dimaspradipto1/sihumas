@@ -304,7 +304,7 @@
                                 'desain' => ['label' => 'PIC Desain', 'color' => 'primary', 'icon' => 'fa-palette'],
                                 'dokumentasi' => ['label' => 'PIC Dokumentasi', 'color' => 'info', 'icon' => 'fa-camera'],
                                 'publikasi' => ['label' => 'PIC Publikasi', 'color' => 'success', 'icon' => 'fa-bullhorn'],
-                                'general' => ['label' => 'PIC General', 'color' => 'dark', 'icon' => 'fa-user-gear'],
+                                'general' => ['label' => 'PIC General', 'color' => 'primary', 'icon' => 'fa-user-gear'],
                             ];
                             $picByRole = ['desain' => [], 'dokumentasi' => [], 'publikasi' => [], 'general' => []];
                             foreach ($picList as $pItem) {

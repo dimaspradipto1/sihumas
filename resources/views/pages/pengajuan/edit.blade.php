@@ -708,7 +708,7 @@
                                                         'title' => 'PIC General',
                                                         'containerId' => 'kontainerPicGeneral',
                                                         'icon' => 'fa-user-gear',
-                                                        'color' => 'dark',
+                                                        'color' => 'primary',
                                                         'btnText' => 'Tambah PIC General',
                                                         'catatanLabel' => 'Catatan / Instruksi Tugas General',
                                                         'placeholder' => 'Contoh: Koordinasi kegiatan, pendampingan tamu, atau tugas umum lainnya...',
@@ -1080,7 +1080,7 @@
                 },
                 general: {
                     kontainerId: 'kontainerPicGeneral',
-                    badgeClass: 'bg-dark text-white',
+                    badgeClass: 'bg-primary text-white',
                     badgeIcon: 'fa-user-gear',
                     badgeTitle: 'PIC General',
                     catatanLabel: 'Catatan / Instruksi Tugas General',
