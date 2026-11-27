@@ -314,9 +314,18 @@
                             ];
                             $picByRole = ['desain' => [], 'dokumentasi' => [], 'publikasi' => [], 'general' => []];
                             foreach ($picList as $pItem) {
-                                $rKey = strtolower(trim((string) ($pItem['peran'] ?? 'desain')));
-                                if (!isset($picByRole[$rKey])) {
-                                    $rKey = 'general';
+                                $rawPeran = trim((string) ($pItem['peran'] ?? 'desain'));
+                                if ($rawPeran === '') {
+                                    $rawPeran = 'general';
+                                }
+                                $lowerPeran = strtolower($rawPeran);
+                                $rKey = isset($picRoles[$lowerPeran]) ? $lowerPeran : $rawPeran;
+                                if (!isset($picRoles[$rKey])) {
+                                    $picRoles[$rKey] = [
+                                        'label' => str_starts_with(strtolower($rawPeran), 'pic ') ? $rawPeran : 'PIC ' . $rawPeran,
+                                        'color' => 'primary',
+                                        'icon' => 'fa-user-tag',
+                                    ];
                                 }
                                 $picByRole[$rKey][] = $pItem;
                             }

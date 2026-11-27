@@ -409,11 +409,13 @@ class PengajuanController extends Controller
                 }
 
                 $namaPic = $pic['nama'] ?: 'Petugas Humas';
-                $peranPic = match (strtolower(trim((string) ($pic['peran'] ?? 'desain')))) {
+                $rawPeran = trim((string) ($pic['peran'] ?? 'desain'));
+                $peranPic = match (strtolower($rawPeran)) {
+                    'desain' => 'PIC Desain',
                     'dokumentasi' => 'PIC Dokumentasi',
                     'publikasi' => 'PIC Publikasi',
                     'general' => 'PIC General',
-                    default => 'PIC Desain',
+                    default => str_starts_with(strtolower($rawPeran), 'pic ') ? $rawPeran : 'PIC ' . $rawPeran,
                 };
                 $catatanKhusus = !empty($pic['catatan']) ? $pic['catatan'] : '-';
 

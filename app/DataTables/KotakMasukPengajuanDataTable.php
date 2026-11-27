@@ -71,16 +71,26 @@ class KotakMasukPengajuanDataTable extends DataTable
                         'publikasi' => [],
                         'general' => [],
                     ];
+                    $customRoleOrder = [];
                     foreach ($picList as $item) {
                         $nama = trim((string) ($item['nama'] ?? $item['name'] ?? ''));
                         if ($nama === '') {
                             continue;
                         }
-                        $peran = strtolower(trim((string) ($item['peran'] ?? 'desain')));
-                        if (!isset($namesByRole[$peran])) {
-                            $peran = 'general';
+                        $rawPeran = trim((string) ($item['peran'] ?? 'desain'));
+                        if ($rawPeran === '') {
+                            $rawPeran = 'general';
                         }
-                        $namesByRole[$peran][] = $nama;
+                        $lowerPeran = strtolower($rawPeran);
+                        if (isset($namesByRole[$lowerPeran])) {
+                            $namesByRole[$lowerPeran][] = $nama;
+                        } else {
+                            if (!isset($namesByRole[$rawPeran])) {
+                                $namesByRole[$rawPeran] = [];
+                                $customRoleOrder[] = $rawPeran;
+                            }
+                            $namesByRole[$rawPeran][] = $nama;
+                        }
                     }
 
                     $groups = [
@@ -89,6 +99,11 @@ class KotakMasukPengajuanDataTable extends DataTable
                         ['label' => 'PIC PUBLIKASI:', 'names' => $namesByRole['publikasi']],
                         ['label' => 'PIC GENERAL:', 'names' => $namesByRole['general']],
                     ];
+                    foreach ($customRoleOrder as $customRole) {
+                        $upperRole = strtoupper($customRole);
+                        $label = str_starts_with($upperRole, 'PIC ') ? $upperRole . ':' : 'PIC ' . $upperRole . ':';
+                        $groups[] = ['label' => $label, 'names' => $namesByRole[$customRole]];
+                    }
 
                     $hasAnyPic = !empty(array_filter($groups, fn($g) => !empty($g['names'])));
                     if ($hasAnyPic) {

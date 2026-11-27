@@ -614,5 +614,51 @@ class PengajuanTest extends TestCase
         $this->assertStringContainsString('Judul Kegiatan Baru', $jsonString);
         $this->assertStringContainsString('Kegiatan Lama Dari Deskripsi', $jsonString);
     }
+
+    public function test_admin_can_assign_dynamic_and_custom_pic_categories(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true, 'is_humas' => false, 'is_users' => false]);
+        $user = User::factory()->create(['is_admin' => false, 'is_humas' => false, 'is_users' => true]);
+
+        $pengajuan = Pengajuan::create([
+            'user_id' => $user->id,
+            'unit_kegiatan' => 'BAAK',
+            'nama_kegiatan' => 'Desain',
+            'judul_kegiatan' => 'Acara Wisuda',
+            'tgl_awal' => now()->addDays(2)->toDateString(),
+            'tgl_selesai' => now()->addDays(2)->toDateString(),
+            'status' => 'pending',
+        ]);
+        \App\Models\KotakMasukPengajuan::create(['pengajuan_id' => $pengajuan->id]);
+
+        $updateResp = $this->actingAs($admin)->put(route('pengajuan.update', $pengajuan->id), [
+            'status' => 'diterima',
+            'pic_nama' => ['Andi Desain', 'Budi MC'],
+            'pic_no_wa' => ['081111111111', '082222222222'],
+            'pic_peran' => ['desain', 'MC / Protokol'],
+            'pic_catatan' => ['Buat backdrop', 'Pandu acara'],
+        ]);
+        $updateResp->assertRedirect(route('kotak-masuk-pengajuan.index'));
+
+        $pengajuan->refresh();
+        $this->assertCount(2, $pengajuan->pic_petugas);
+        $this->assertEquals('MC / Protokol', $pengajuan->pic_petugas[1]['peran']);
+
+        // Edit page tetap menampilkan kategori custom yang sudah tersimpan
+        $editResp = $this->actingAs($admin)->get(route('pengajuan.edit', $pengajuan->id));
+        $editResp->assertStatus(200);
+        $editResp->assertSee('PIC MC / Protokol');
+        $editResp->assertSee('toolbarTambahKategoriPic');
+
+        // Show page menampilkan kategori custom
+        $showResp = $this->actingAs($admin)->get(route('pengajuan.show', $pengajuan->id));
+        $showResp->assertStatus(200);
+        $showResp->assertSee('PIC MC / Protokol');
+
+        // Kotak Masuk menampilkan PIC MC / PROTOKOL:
+        $dtResp = $this->actingAs($admin)->getJson(route('kotak-masuk-pengajuan.index'), ['X-Requested-With' => 'XMLHttpRequest']);
+        $dtResp->assertStatus(200);
+        $this->assertStringContainsString('PIC MC / PROTOKOL:', json_encode($dtResp->json(), JSON_UNESCAPED_SLASHES));
+    }
 }
 

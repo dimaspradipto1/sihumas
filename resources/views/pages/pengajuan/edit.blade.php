@@ -733,22 +733,42 @@
                                                     ],
                                                 ];
 
-                                                $daftarPicByRole = ['desain' => [], 'dokumentasi' => [], 'publikasi' => [], 'general' => []];
+                                                $daftarPicByRole = [];
                                                 foreach ($daftarPic as $picItem) {
-                                                    $roleKey = strtolower(trim((string) ($picItem['peran'] ?? 'desain')));
-                                                    if (!isset($daftarPicByRole[$roleKey])) {
-                                                        $roleKey = 'general';
+                                                    $rawPeran = trim((string) ($picItem['peran'] ?? 'desain'));
+                                                    if ($rawPeran === '') {
+                                                        $rawPeran = 'general';
                                                     }
-                                                    $daftarPicByRole[$roleKey][] = $picItem;
+                                                    $lowerPeran = strtolower($rawPeran);
+                                                    $roleKey = in_array($lowerPeran, ['desain', 'dokumentasi', 'publikasi', 'general'], true)
+                                                        ? $lowerPeran
+                                                        : $rawPeran;
+                                                    $daftarPicByRole[$roleKey][] = array_merge($picItem, ['peran' => $roleKey]);
                                                 }
 
                                                 // Kompatibilitas data lama sebelum pemisahan PIC Publikasi & PIC General
                                                 if ($jenisLower === 'publikasi' && empty($daftarPicByRole['publikasi']) && !empty($daftarPicByRole['desain'])) {
                                                     $daftarPicByRole['publikasi'] = array_map(fn($p) => array_merge($p, ['peran' => 'publikasi']), $daftarPicByRole['desain']);
-                                                    $daftarPicByRole['desain'] = [];
+                                                    unset($daftarPicByRole['desain']);
                                                 }
                                                 if ($visibleRoles === ['general'] && empty($daftarPicByRole['general']) && !empty($daftarPic)) {
-                                                    $daftarPicByRole['general'] = array_map(fn($p) => array_merge($p, ['peran' => 'general']), $daftarPic);
+                                                    $hasCustomSaved = false;
+                                                    foreach ($daftarPicByRole as $k => $v) {
+                                                        if (!in_array($k, ['desain', 'dokumentasi', 'publikasi', 'general'], true) && !empty($v)) {
+                                                            $hasCustomSaved = true;
+                                                            break;
+                                                        }
+                                                    }
+                                                    if (!$hasCustomSaved) {
+                                                        $daftarPicByRole['general'] = array_map(fn($p) => array_merge($p, ['peran' => 'general']), $daftarPic);
+                                                    }
+                                                }
+
+                                                // Pastikan kategori yang sudah memiliki data PIC tersimpan tetap tampil di form edit
+                                                foreach ($daftarPicByRole as $savedRoleKey => $savedItems) {
+                                                    if (!empty($savedItems) && !in_array($savedRoleKey, $visibleRoles, true)) {
+                                                        $visibleRoles[] = $savedRoleKey;
+                                                    }
                                                 }
 
                                                 foreach ($visibleRoles as $rKey) {
@@ -758,25 +778,57 @@
                                                 }
                                             @endphp
 
-                                            <div class="row g-3">
+                                            <!-- Toolbar Tambah Kategori PIC Dinamis / Custom -->
+                                            <div class="d-flex flex-wrap align-items-center gap-2 p-2 mb-3 bg-light border rounded" id="toolbarTambahKategoriPic">
+                                                <span class="small fw-bold text-gray-700 me-1">
+                                                    <i class="fa-solid fa-sliders me-1 text-primary"></i> Tambah Kategori PIC:
+                                                </span>
+                                                <select id="selectTambahKategoriPic" class="form-select form-select-sm" style="max-width: 240px;" onchange="toggleCustomKategoriInput()">
+                                                    <option value="desain">PIC Desain</option>
+                                                    <option value="dokumentasi">PIC Dokumentasi</option>
+                                                    <option value="publikasi">PIC Publikasi</option>
+                                                    <option value="general">PIC General</option>
+                                                    <option value="__custom__">➕ Custom Kategori (Ketik Manual)...</option>
+                                                </select>
+                                                <input type="text" id="inputCustomKategoriPic" class="form-control form-control-sm d-none" style="max-width: 220px;"
+                                                    placeholder="Contoh: MC / Protokol, Videografer...">
+                                                <button type="button" class="btn btn-sm btn-primary d-inline-flex align-items-center" onclick="tambahKategoriPic()">
+                                                    <i class="fa-solid fa-plus me-1"></i> Tambah Kategori
+                                                </button>
+                                            </div>
+
+                                            <div class="row g-3" id="picCategoriesRow">
                                                 @foreach ($visibleRoles as $roleIndex => $roleKey)
                                                     @php
-                                                        $cfg = $roleConfigs[$roleKey];
+                                                        $cfg = $roleConfigs[$roleKey] ?? [
+                                                            'title' => str_starts_with(strtolower($roleKey), 'pic ') ? $roleKey : 'PIC ' . $roleKey,
+                                                            'containerId' => 'kontainerPic_' . md5($roleKey),
+                                                            'icon' => 'fa-user-tag',
+                                                            'color' => 'primary',
+                                                            'btnText' => 'Tambah PIC',
+                                                            'catatanLabel' => 'Catatan / Instruksi Tugas (' . $roleKey . ')',
+                                                            'placeholder' => 'Tuliskan instruksi atau catatan tugas untuk ' . $roleKey . '...',
+                                                        ];
                                                         $items = $daftarPicByRole[$roleKey];
                                                         $colClass = count($visibleRoles) > 1 ? 'col-12 col-lg-6' : 'col-12';
                                                     @endphp
-                                                    <div class="{{ $colClass }}">
+                                                    <div class="{{ $colClass }} pic-category-col" data-role-card="1" data-peran-key="{{ $roleKey }}">
                                                         <div class="card border border-{{ $cfg['color'] }} border-opacity-25 h-100 shadow-xs mb-0">
-                                                            <div class="card-header bg-{{ $cfg['color'] }} bg-opacity-10 py-2 px-3 d-flex justify-content-between align-items-center">
-                                                                <span class="fw-bold text-{{ $cfg['color'] }} small text-uppercase">
-                                                                    <i class="fa-solid {{ $cfg['icon'] }} me-1"></i> {{ $roleIndex + 1 }}. {{ $cfg['title'] }}
+                                                            <div class="card-header bg-{{ $cfg['color'] }} bg-opacity-10 py-2 px-3 d-flex justify-content-between align-items-center flex-wrap gap-1">
+                                                                <span class="fw-bold text-{{ $cfg['color'] }} small text-uppercase pic-category-title">
+                                                                    <i class="fa-solid {{ $cfg['icon'] }} me-1"></i> <span class="pic-category-label" data-role-title="{{ $cfg['title'] }}">{{ $roleIndex + 1 }}. {{ $cfg['title'] }}</span>
                                                                 </span>
-                                                                <button type="button" class="btn btn-xs btn-{{ $cfg['color'] }} text-white d-inline-flex align-items-center" onclick="tambahBarisPic('{{ $roleKey }}')">
-                                                                    <i class="fa-solid fa-plus me-1"></i> {{ $cfg['btnText'] }}
-                                                                </button>
+                                                                <div class="d-flex align-items-center gap-1">
+                                                                    <button type="button" class="btn btn-xs btn-{{ $cfg['color'] }} text-white d-inline-flex align-items-center" onclick="tambahBarisPic(@js($roleKey))">
+                                                                        <i class="fa-solid fa-plus me-1"></i> {{ $cfg['btnText'] }}
+                                                                    </button>
+                                                                    <button type="button" class="btn btn-xs btn-outline-danger d-inline-flex align-items-center" title="Hapus kategori PIC ini" onclick="hapusKategoriPic(this)">
+                                                                        <i class="fa-solid fa-xmark"></i>
+                                                                    </button>
+                                                                </div>
                                                             </div>
                                                             <div class="card-body p-3">
-                                                                <div id="{{ $cfg['containerId'] }}" class="d-flex flex-column gap-3">
+                                                                <div id="{{ $cfg['containerId'] }}" data-pic-container="{{ $roleKey }}" class="d-flex flex-column gap-3">
                                                                     @foreach ($items as $pic)
                                                                         <div class="baris-pic border rounded p-3 bg-white shadow-sm" data-peran="{{ $roleKey }}">
                                                                             <input type="hidden" name="pic_peran[]" value="{{ $roleKey }}">
@@ -1098,33 +1150,82 @@
                 },
                 general: {
                     kontainerId: 'kontainerPicGeneral',
+                    color: 'primary',
                     badgeClass: 'bg-primary text-white',
                     badgeIcon: 'fa-user-gear',
                     badgeTitle: 'PIC General',
+                    btnText: 'Tambah PIC General',
                     catatanLabel: 'Catatan / Instruksi Tugas General',
                     placeholder: 'Contoh: Koordinasi kegiatan, pendampingan tamu, atau tugas umum lainnya...'
                 }
             };
 
-            function tambahBarisPic(peran) {
-                peran = peran || 'desain';
-                const cfg = picRoleConfig[peran] || picRoleConfig.general;
-                const kontainer = document.getElementById(cfg.kontainerId);
-                if (!kontainer) return;
+            function escapeHtmlPic(str) {
+                return String(str ?? '').replace(/[&<>"']/g, function (m) {
+                    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+                });
+            }
 
+            function getPicRoleConfig(peran) {
+                if (picRoleConfig[peran]) {
+                    return picRoleConfig[peran];
+                }
+                const clean = String(peran || 'General').trim();
+                const title = /^pic\s+/i.test(clean) ? clean : `PIC ${clean}`;
+                return {
+                    color: 'primary',
+                    badgeClass: 'bg-primary text-white',
+                    badgeIcon: 'fa-user-tag',
+                    badgeTitle: title,
+                    btnText: 'Tambah PIC',
+                    catatanLabel: `Catatan / Instruksi Tugas (${clean})`,
+                    placeholder: `Tuliskan instruksi atau catatan tugas untuk ${clean}...`
+                };
+            }
+
+            function toggleCustomKategoriInput() {
+                const sel = document.getElementById('selectTambahKategoriPic');
+                const customInput = document.getElementById('inputCustomKategoriPic');
+                if (!sel || !customInput) return;
+                if (sel.value === '__custom__') {
+                    customInput.classList.remove('d-none');
+                    customInput.focus();
+                } else {
+                    customInput.classList.add('d-none');
+                    customInput.value = '';
+                }
+            }
+
+            function refreshPicCategoryLayout() {
+                const row = document.getElementById('picCategoriesRow');
+                if (!row) return;
+                const cols = row.querySelectorAll('.pic-category-col');
+                const isMulti = cols.length > 1;
+                cols.forEach((col, idx) => {
+                    col.classList.toggle('col-lg-6', isMulti);
+                    const lblEl = col.querySelector('.pic-category-label');
+                    if (lblEl) {
+                        const title = lblEl.getAttribute('data-role-title') || '';
+                        lblEl.textContent = `${idx + 1}. ${title}`;
+                    }
+                });
+            }
+
+            function buildBarisPicElement(peran) {
+                const cfg = getPicRoleConfig(peran);
                 let optionsHtml = '<option value="">-- Cari & Pilih PIC Humas --</option><option value="__clear__">-- Tidak Dipilih / Kosongkan PIC --</option>';
                 if (listPetugasHumas && listPetugasHumas.length > 0) {
-                    optionsHtml += listPetugasHumas.map(ph => `<option value="${ph.name}" data-wa="${ph.no_wa || ''}">${ph.name}</option>`).join('');
+                    optionsHtml += listPetugasHumas.map(ph => `<option value="${escapeHtmlPic(ph.name)}" data-wa="${escapeHtmlPic(ph.no_wa || '')}">${escapeHtmlPic(ph.name)}</option>`).join('');
                 }
 
                 const div = document.createElement('div');
                 div.className = 'baris-pic border rounded p-3 bg-white shadow-sm';
                 div.setAttribute('data-peran', peran);
                 div.innerHTML = `
-                    <input type="hidden" name="pic_peran[]" value="${peran}">
+                    <input type="hidden" name="pic_peran[]" value="${escapeHtmlPic(peran)}">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <span class="badge ${cfg.badgeClass} small">
-                            <i class="fa-solid ${cfg.badgeIcon} me-1"></i> ${cfg.badgeTitle}
+                            <i class="fa-solid ${cfg.badgeIcon} me-1"></i> ${escapeHtmlPic(cfg.badgeTitle)}
                         </span>
                         <button type="button" class="btn btn-xs btn-outline-danger" title="Hapus PIC ini" onclick="hapusBarisPic(this)">
                             <i class="fa-solid fa-trash me-1"></i> Hapus
@@ -1157,12 +1258,120 @@
 
                     <div>
                         <label class="form-label small text-muted fw-bold mb-1">
-                            <i class="fa-solid fa-note-sticky me-1 text-warning"></i> ${cfg.catatanLabel}
+                            <i class="fa-solid fa-note-sticky me-1 text-warning"></i> ${escapeHtmlPic(cfg.catatanLabel)}
                         </label>
                         <textarea name="pic_catatan[]" class="form-control form-control-sm input-pic-catatan" rows="2"
-                            placeholder="${cfg.placeholder}"></textarea>
+                            placeholder="${escapeHtmlPic(cfg.placeholder)}"></textarea>
                     </div>
                 `;
+                return div;
+            }
+
+            function tambahKategoriPic() {
+                const sel = document.getElementById('selectTambahKategoriPic');
+                const customInput = document.getElementById('inputCustomKategoriPic');
+                const row = document.getElementById('picCategoriesRow');
+                if (!sel || !row) return;
+
+                let peran = sel.value;
+                if (peran === '__custom__') {
+                    let customVal = (customInput ? customInput.value : '').trim().replace(/\s+/g, ' ');
+                    customVal = customVal.replace(/^pic\s+/i, '').trim();
+                    if (!customVal) {
+                        alert('Silakan ketik nama kategori PIC custom terlebih dahulu.');
+                        if (customInput) customInput.focus();
+                        return;
+                    }
+                    const lowerCustom = customVal.toLowerCase();
+                    if (['desain', 'dokumentasi', 'publikasi', 'general'].includes(lowerCustom)) {
+                        peran = lowerCustom;
+                    } else {
+                        peran = customVal;
+                    }
+                }
+
+                // Anti-duplikat: jika card kategori sudah ada (case-insensitive), tambah baris PIC di card tersebut
+                const existingCard = Array.from(row.querySelectorAll('.pic-category-col')).find(col => {
+                    return (col.getAttribute('data-peran-key') || '').toLowerCase() === peran.toLowerCase();
+                });
+
+                if (existingCard) {
+                    const actualKey = existingCard.getAttribute('data-peran-key');
+                    tambahBarisPic(actualKey);
+                    existingCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    return;
+                }
+
+                const cfg = getPicRoleConfig(peran);
+                const col = document.createElement('div');
+                col.className = 'col-12 pic-category-col';
+                col.setAttribute('data-role-card', '1');
+                col.setAttribute('data-peran-key', peran);
+
+                const cardColor = cfg.color || 'primary';
+                col.innerHTML = `
+                    <div class="card border border-${cardColor} border-opacity-25 h-100 shadow-xs mb-0">
+                        <div class="card-header bg-${cardColor} bg-opacity-10 py-2 px-3 d-flex justify-content-between align-items-center flex-wrap gap-1">
+                            <span class="fw-bold text-${cardColor} small text-uppercase pic-category-title">
+                                <i class="fa-solid ${cfg.badgeIcon} me-1"></i> <span class="pic-category-label" data-role-title="${escapeHtmlPic(cfg.badgeTitle)}">1. ${escapeHtmlPic(cfg.badgeTitle)}</span>
+                            </span>
+                            <div class="d-flex align-items-center gap-1">
+                                <button type="button" class="btn btn-xs btn-${cardColor} text-white d-inline-flex align-items-center btn-tambah-pic-role">
+                                    <i class="fa-solid fa-plus me-1"></i> ${escapeHtmlPic(cfg.btnText)}
+                                </button>
+                                <button type="button" class="btn btn-xs btn-outline-danger d-inline-flex align-items-center" title="Hapus kategori PIC ini" onclick="hapusKategoriPic(this)">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body p-3">
+                            <div data-pic-container="${escapeHtmlPic(peran)}" class="d-flex flex-column gap-3"></div>
+                        </div>
+                    </div>
+                `;
+
+                col.querySelector('.btn-tambah-pic-role').addEventListener('click', function () {
+                    tambahBarisPic(peran);
+                });
+
+                const container = col.querySelector('[data-pic-container]');
+                const barisDiv = buildBarisPicElement(peran);
+                container.appendChild(barisDiv);
+
+                row.appendChild(col);
+                refreshPicCategoryLayout();
+
+                const newSelect = barisDiv.querySelector('.select-petugas-humas');
+                if (newSelect) {
+                    inisialisasiSelect2(newSelect);
+                }
+                if (customInput) {
+                    customInput.value = '';
+                }
+                col.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            function hapusKategoriPic(btn) {
+                const col = btn.closest('.pic-category-col');
+                if (!col) return;
+                col.querySelectorAll('.select-petugas-humas').forEach(select => {
+                    if (window.$ && $(select).hasClass('select2-hidden-accessible')) {
+                        $(select).select2('destroy');
+                    }
+                });
+                col.remove();
+                refreshPicCategoryLayout();
+            }
+
+            function tambahBarisPic(peran) {
+                peran = peran || 'desain';
+                const row = document.getElementById('picCategoriesRow');
+                const kontainer = row
+                    ? Array.from(row.querySelectorAll('[data-pic-container]')).find(el => (el.getAttribute('data-pic-container') || '') === peran)
+                    : null;
+                if (!kontainer) return;
+
+                const div = buildBarisPicElement(peran);
                 kontainer.appendChild(div);
 
                 const newSelect = div.querySelector('.select-petugas-humas');
@@ -1224,7 +1433,7 @@
 
                 const peranInput = row.querySelector('input[name="pic_peran[]"]');
                 const peranKey = peranInput ? peranInput.value : 'desain';
-                const peranVal = (picRoleConfig[peranKey] && picRoleConfig[peranKey].badgeTitle) ? picRoleConfig[peranKey].badgeTitle : 'PIC Desain';
+                const peranVal = getPicRoleConfig(peranKey).badgeTitle;
                 const inputCatatan = row.querySelector('.input-pic-catatan');
                 const catatanKhusus = inputCatatan && inputCatatan.value.trim() ? inputCatatan.value.trim() : '';
 
