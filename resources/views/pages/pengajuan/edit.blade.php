@@ -818,12 +818,12 @@
                                                                 <span class="fw-bold text-{{ $cfg['color'] }} small text-uppercase pic-category-title">
                                                                     <i class="fa-solid {{ $cfg['icon'] }} me-1"></i> <span class="pic-category-label" data-role-title="{{ $cfg['title'] }}">{{ $roleIndex + 1 }}. {{ $cfg['title'] }}</span>
                                                                 </span>
-                                                                <div class="d-flex align-items-center gap-1">
-                                                                    <button type="button" class="btn btn-xs btn-{{ $cfg['color'] }} text-white d-inline-flex align-items-center" onclick="tambahBarisPic(@js($roleKey))">
+                                                                <div class="d-flex align-items-center gap-2">
+                                                                    <button type="button" class="btn btn-xs btn-{{ $cfg['color'] }} text-white d-inline-flex align-items-center px-2 py-1 text-nowrap" style="line-height: 1.2;" onclick="tambahBarisPic(@js($roleKey))">
                                                                         <i class="fa-solid fa-plus me-1"></i> {{ $cfg['btnText'] }}
                                                                     </button>
-                                                                    <button type="button" class="btn btn-xs btn-outline-danger d-inline-flex align-items-center" title="Hapus kategori PIC ini" onclick="hapusKategoriPic(this)">
-                                                                        <i class="fa-solid fa-xmark"></i>
+                                                                    <button type="button" class="btn btn-xs btn-outline-danger d-inline-flex align-items-center px-2 py-1 text-nowrap" style="line-height: 1.2;" title="Hapus kategori PIC ini" onclick="hapusKategoriPic(this)">
+                                                                        <i class="fa-solid fa-trash-can me-1"></i> Hapus
                                                                     </button>
                                                                 </div>
                                                             </div>
@@ -1126,25 +1126,31 @@
             const picRoleConfig = {
                 desain: {
                     kontainerId: 'kontainerPicDesain',
+                    color: 'primary',
                     badgeClass: 'bg-primary text-white',
                     badgeIcon: 'fa-palette',
                     badgeTitle: 'PIC Desain',
+                    btnText: 'Tambah PIC Desain',
                     catatanLabel: 'Catatan / Instruksi Tugas Desain',
                     placeholder: 'Contoh: Buat banner ukuran 3x1m & flyer IG, gunakan tema biru...'
                 },
                 dokumentasi: {
                     kontainerId: 'kontainerPicDokumentasi',
+                    color: 'info',
                     badgeClass: 'bg-info text-white',
                     badgeIcon: 'fa-camera',
                     badgeTitle: 'PIC Dokumentasi',
+                    btnText: 'Tambah PIC Dokumentasi',
                     catatanLabel: 'Catatan / Instruksi Tugas Dokumentasi',
                     placeholder: 'Contoh: Foto saat pembukaan, sesi pemateri, dan foto bersama peserta...'
                 },
                 publikasi: {
                     kontainerId: 'kontainerPicPublikasi',
+                    color: 'success',
                     badgeClass: 'bg-success text-white',
                     badgeIcon: 'fa-bullhorn',
                     badgeTitle: 'PIC Publikasi',
+                    btnText: 'Tambah PIC Publikasi',
                     catatanLabel: 'Catatan / Instruksi Tugas Publikasi',
                     placeholder: 'Contoh: Publikasikan berita di website, Instagram, dan media sosial kampus...'
                 },
@@ -1315,12 +1321,12 @@
                             <span class="fw-bold text-${cardColor} small text-uppercase pic-category-title">
                                 <i class="fa-solid ${cfg.badgeIcon} me-1"></i> <span class="pic-category-label" data-role-title="${escapeHtmlPic(cfg.badgeTitle)}">1. ${escapeHtmlPic(cfg.badgeTitle)}</span>
                             </span>
-                            <div class="d-flex align-items-center gap-1">
-                                <button type="button" class="btn btn-xs btn-${cardColor} text-white d-inline-flex align-items-center btn-tambah-pic-role">
+                            <div class="d-flex align-items-center gap-2">
+                                <button type="button" class="btn btn-xs btn-${cardColor} text-white d-inline-flex align-items-center px-2 py-1 text-nowrap btn-tambah-pic-role" style="line-height: 1.2;">
                                     <i class="fa-solid fa-plus me-1"></i> ${escapeHtmlPic(cfg.btnText)}
                                 </button>
-                                <button type="button" class="btn btn-xs btn-outline-danger d-inline-flex align-items-center" title="Hapus kategori PIC ini" onclick="hapusKategoriPic(this)">
-                                    <i class="fa-solid fa-xmark"></i>
+                                <button type="button" class="btn btn-xs btn-outline-danger d-inline-flex align-items-center px-2 py-1 text-nowrap" style="line-height: 1.2;" title="Hapus kategori PIC ini" onclick="hapusKategoriPic(this)">
+                                    <i class="fa-solid fa-trash-can me-1"></i> Hapus
                                 </button>
                             </div>
                         </div>
