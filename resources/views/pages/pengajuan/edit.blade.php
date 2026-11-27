@@ -783,14 +783,14 @@
                                                 <span class="small fw-bold text-gray-700 me-1">
                                                     <i class="fa-solid fa-sliders me-1 text-primary"></i> Tambah Kategori PIC:
                                                 </span>
-                                                <select id="selectTambahKategoriPic" class="form-select form-select-sm" style="max-width: 240px;" onchange="toggleCustomKategoriInput()">
+                                                <select id="selectTambahKategoriPic" class="form-select form-select-sm w-auto" style="min-width: 280px; max-width: 100%; padding-right: 2.25rem;" onchange="toggleCustomKategoriInput()">
                                                     <option value="desain">PIC Desain</option>
                                                     <option value="dokumentasi">PIC Dokumentasi</option>
                                                     <option value="publikasi">PIC Publikasi</option>
                                                     <option value="general">PIC General</option>
                                                     <option value="__custom__">➕ Custom Kategori (Ketik Manual)...</option>
                                                 </select>
-                                                <input type="text" id="inputCustomKategoriPic" class="form-control form-control-sm d-none" style="max-width: 220px;"
+                                                <input type="text" id="inputCustomKategoriPic" class="form-control form-control-sm d-none" style="width: 260px; max-width: 100%;"
                                                     placeholder="Contoh: MC / Protokol, Videografer...">
                                                 <button type="button" class="btn btn-sm btn-primary d-inline-flex align-items-center" onclick="tambahKategoriPic()">
                                                     <i class="fa-solid fa-plus me-1"></i> Tambah Kategori
